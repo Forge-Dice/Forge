@@ -165,3 +165,28 @@ describe("injected hash port", () => {
     expect(calls).toBe(0);
   });
 });
+
+describe("persistent states (phase 8)", () => {
+  it("branching from one state yields independent successors", () => {
+    const base = stateOf(HISTORY.slice(0, 3));
+    const left = kernel.applyEvent(base, decide(h1, "approved"));
+    const right = kernel.applyEvent(base, decide(h1, "changes_requested"));
+    expect(left.ok && right.ok).toBe(true);
+    if (!left.ok || !right.ok) return;
+    expect(contractRevisionState(left.state, "TASK-0001", h1)).toBe("approved");
+    expect(contractRevisionState(right.state, "TASK-0001", h1)).toBe("changes_requested");
+    expect(contractRevisionState(base, "TASK-0001", h1)).toBe("draft");
+    expect(left.state.log).toHaveLength(4);
+    expect(base.log).toHaveLength(3);
+  });
+
+  it("successor states share no mutable structure with their predecessor", () => {
+    const base = stateOf(HISTORY.slice(0, 3));
+    const next = kernel.applyEvent(base, decide(h1, "approved"));
+    expect(next.ok).toBe(true);
+    if (!next.ok) return;
+    expect(next.state.tasks).not.toBe(base.tasks);
+    expect(next.state.log[0]).not.toBe(base.log[0]);
+    expect(unfrozenPaths(base)).toEqual([]);
+  });
+});

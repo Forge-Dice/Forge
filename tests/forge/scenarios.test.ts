@@ -388,3 +388,75 @@ describe("adversarial: structurally broken events never throw and never corrupt 
     }
   });
 });
+
+// ---------- Phase 8: differential test of the task-state rules (FORGE-CORE-0001B §10) ----------
+// An independent reference model written from the contract text. It tracks only facts from
+// accepted events and asks the kernel nothing except runState (tested separately).
+
+type ModelTask = { versions: { hash: string; approved: boolean }[]; acceptedRun: string | null };
+type ModelRun = { taskId: string; hash: string; verdict: { verdict: string; requires: string | null } | null };
+
+function referenceTaskState(model: { tasks: Map<string, ModelTask>; runs: Map<string, ModelRun> }, state: ForgeState, taskId: string): string {
+  const task = model.tasks.get(taskId)!;
+  if (task.acceptedRun !== null) return "accepted";
+  const runsOfTask = [...model.runs.entries()].filter(([, r]) => r.taskId === taskId);
+  if (runsOfTask.some(([id]) => !["verified", "failed", "abandoned"].includes(runState(state, id)!))) return "implementing";
+  const current = task.versions.at(-1);
+  if (current === undefined) return "planned";
+  const verifiedOnCurrent = runsOfTask.filter(([id, r]) => r.hash === current.hash && runState(state, id) === "verified");
+  const latest = verifiedOnCurrent.at(-1);
+  if (latest !== undefined) {
+    const verdict = latest[1].verdict;
+    if (verdict === null) return "awaiting_review";
+    if (verdict.verdict === "approve") return "review_approved";
+    return verdict.requires === "code_change" ? "rework_required" : "contract_revision_required";
+  }
+  return current.approved ? "ready" : "specifying";
+}
+
+function updateModel(model: { tasks: Map<string, ModelTask>; runs: Map<string, ModelRun> }, event: { body: Record<string, any> }, hashOf: (text: string) => string) {
+  const b = event.body;
+  switch (b.type) {
+    case "task_registered":
+      model.tasks.set(b.taskId, { versions: [], acceptedRun: null });
+      break;
+    case "contract_registered":
+      model.tasks.get(b.taskId)!.versions.push({ hash: hashOf(b.contractText), approved: false });
+      break;
+    case "approval_recorded":
+      if (b.verdict === "approved") model.tasks.get(b.taskId)!.versions.find((v) => v.hash === b.contentHash)!.approved = true;
+      break;
+    case "run_started":
+      model.runs.set(b.runId, { taskId: b.taskId, hash: b.contentHash, verdict: null });
+      break;
+    case "code_review_recorded":
+      model.runs.get(b.runId)!.verdict = { verdict: b.verdict, requires: b.requires };
+      break;
+    case "task_accepted":
+      model.tasks.get(b.taskId)!.acceptedRun = b.runId;
+      break;
+  }
+}
+
+describe("differential: kernel task states equal an independent reference model", () => {
+  it.each(Array.from({ length: 30 }, (_, i) => i + 501))("seed %i", (seed) => {
+    const rnd = prng(seed);
+    const counter = { n: 0 };
+    const model = { tasks: new Map<string, ModelTask>(), runs: new Map<string, ModelRun>() };
+    let state = kernel.emptyState();
+    let compared = 0;
+    for (let i = 0; i < 200; i++) {
+      const candidate = nextEvent(state, counter, rnd);
+      const result = kernel.applyEvent(state, candidate);
+      if (!result.ok) continue;
+      state = result.state;
+      updateModel(model, candidate as { body: Record<string, any> }, hashOf);
+      if ((candidate as { body: { type: string } }).body.type === "run_started") counter.n++;
+      for (const taskId of model.tasks.keys()) {
+        expect(taskState(state, taskId)).toBe(referenceTaskState(model, state, taskId));
+        compared++;
+      }
+    }
+    expect(compared).toBeGreaterThan(50);
+  });
+});
