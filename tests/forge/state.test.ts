@@ -44,7 +44,7 @@ describe("event schema and roles", () => {
     ["unknown event type", event(OWNER, "owner", { type: "task_deleted", taskId: "TASK-0001" }), ["body", "type"]],
     ["extra event field", { ...registerTask(), seq: 1 }, []],
     ["extra body field", event(OWNER, "owner", { type: "task_registered", taskId: "TASK-0001", title: "x", status: "ready" }), ["body"]],
-    ["unknown role", event(OWNER, "developer", { type: "task_registered", taskId: "TASK-0001", title: "x" }), ["role"]],
+    ["unknown role", event(OWNER, "janitor", { type: "task_registered", taskId: "TASK-0001", title: "x" }), ["role"]],
     ["invalid actor", event({ ...OWNER, provider: "Human" }, "owner", { type: "task_registered", taskId: "TASK-0001", title: "x" }), ["actor", "provider"]],
     ["blank title", event(OWNER, "owner", { type: "task_registered", taskId: "TASK-0001", title: " " }), ["body", "title"]],
   ])("rejects %s with EVENT_SCHEMA", (_name, candidate, path) => {
@@ -53,6 +53,7 @@ describe("event schema and roles", () => {
 
   it.each<[string, unknown, unknown[]]>([
     ["task registered by a spec author", event(AUTHOR, "spec_author", { type: "task_registered", taskId: "TASK-0001", title: "x" }), []],
+    ["task registered by a developer (valid role since 0001B)", event(AUTHOR, "developer", { type: "task_registered", taskId: "TASK-0001", title: "x" }), []],
     ["contract registered by an owner", { ...registerContract(v1), role: "owner" }, [registerTask()]],
     ["approval recorded by a spec author", { ...decide(h1, "approved"), role: "spec_author" }, [registerTask(), registerContract(v1)]],
   ])("rejects %s with ROLE_NOT_ALLOWED", (_name, candidate, prefix) => {

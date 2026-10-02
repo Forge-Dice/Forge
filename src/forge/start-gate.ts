@@ -1,28 +1,15 @@
 import { z } from "zod";
 import { isAncestorOrSelf, isReachableFromRefs } from "./ancestry.ts";
 import { deepFreeze } from "./freeze.ts";
-import { CommitShaSchema, RefNameSchema, RepoPathSchema, Sha256HexSchema, TaskIdSchema, compareCodeUnits } from "./primitives.ts";
+import { RepoObservationSchema, type RepoObservation } from "./events.ts";
+import { Sha256HexSchema, TaskIdSchema, compareCodeUnits } from "./primitives.ts";
 import { findRevision, findTask, isApproved, currentContract, taskState, type ForgeState } from "./state.ts";
 
 // Developer Start Gate (FORGE-CORE-0001A §12).
 // Log facts are proven from the state. Repo facts come from a witnessed observation and are
 // only as true as that observation; missing edges can only block (fail-closed).
 
-// z.record silently drops an own "__proto__" key instead of rejecting it; reject it explicitly.
-function strictRecord<T extends z.ZodType>(schema: T) {
-  return z
-    .unknown()
-    .refine((value) => typeof value !== "object" || value === null || !Object.hasOwn(value, "__proto__"), {
-      message: '"__proto__" is not a valid key',
-    })
-    .pipe(schema);
-}
-
-export const RepoObservationSchema = z.strictObject({
-  refs: strictRecord(z.record(RefNameSchema, CommitShaSchema)),
-  parents: strictRecord(z.record(CommitShaSchema, z.array(CommitShaSchema))),
-  contractAtCommit: z.strictObject({ commit: CommitShaSchema, path: RepoPathSchema, contentHash: Sha256HexSchema }),
-});
+export { RepoObservationSchema };
 
 export const StartRequestSchema = z.strictObject({
   taskId: TaskIdSchema,
@@ -30,13 +17,14 @@ export const StartRequestSchema = z.strictObject({
   repoObservation: RepoObservationSchema,
 });
 
-export type RepoObservation = z.output<typeof RepoObservationSchema>;
+export type { RepoObservation };
 export type StartRequest = z.output<typeof StartRequestSchema>;
 
 export type BlockReasonCode =
   | "REQUEST_INVALID"
   | "TASK_UNKNOWN"
   | "TASK_NOT_STARTABLE"
+  | "RUN_ALREADY_ACTIVE"
   | "CONTRACT_UNKNOWN"
   | "CONTRACT_NOT_CURRENT"
   | "CONTRACT_NOT_APPROVED"
@@ -75,7 +63,9 @@ export function canStartDeveloperRun(state: ForgeState, request: unknown): Start
   const add = (code: BlockReasonCode, subject: string | null = null) => reasons.push({ code, subject });
 
   const currentTaskState = taskState(state, taskId)!;
-  if (currentTaskState !== "ready") add("TASK_NOT_STARTABLE", currentTaskState);
+  // Startable: ready and rework_required (FORGE-CORE-0001B §11). An active run is its own reason.
+  if (currentTaskState === "implementing") add("RUN_ALREADY_ACTIVE");
+  else if (currentTaskState !== "ready" && currentTaskState !== "rework_required") add("TASK_NOT_STARTABLE", currentTaskState);
 
   const revision = findRevision(state, taskId, contentHash);
   if (revision === null) {

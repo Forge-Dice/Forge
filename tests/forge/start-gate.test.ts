@@ -212,3 +212,21 @@ describe("request validation", () => {
     expect(reasonsOf(canStartDeveloperRun(state, request))).toEqual(["REQUEST_INVALID"]);
   });
 });
+
+describe("task states from FORGE-CORE-0001B", () => {
+  // Imported lazily to keep the 0001A part of this file independent of run fixtures.
+  it.each<[string, (rf: typeof import("./run-fixtures.ts")) => unknown[], string[]]>([
+    ["implementing → RUN_ALREADY_ACTIVE", (rf) => [...rf.approvedTask().events, rf.startRun("run:1")], ["RUN_ALREADY_ACTIVE"]],
+    ["awaiting_review", (rf) => rf.verifiedRun().events, ["TASK_NOT_STARTABLE:awaiting_review"]],
+    ["review_approved", (rf) => [...rf.verifiedRun().events, rf.review("run:1", "approve")], ["TASK_NOT_STARTABLE:review_approved"]],
+    ["contract_revision_required", (rf) => [...rf.verifiedRun().events, rf.review("run:1", "request_changes", { requires: "contract_change" })], ["TASK_NOT_STARTABLE:contract_revision_required"]],
+    ["accepted", (rf) => [...rf.verifiedRun().events, rf.review("run:1", "approve"), rf.accept("run:1")], ["TASK_NOT_STARTABLE:accepted"]],
+    ["rework_required is startable", (rf) => [...rf.verifiedRun().events, rf.review("run:1", "request_changes", { requires: "code_change" })], []],
+    ["ready after a failed run is startable", (rf) => [...rf.approvedTask().events, rf.startRun("run:1"), rf.fail("run:1", "DEVELOPER_ABORTED")], []],
+  ])("%s", async (_name, build, expected) => {
+    const rf = await import("./run-fixtures.ts");
+    const state = stateOf(build(rf));
+    const decision = canStartDeveloperRun(state, { taskId: "TASK-0001", contentHash: rf.CONTENT_HASH, repoObservation: observation(rf.CONTENT_HASH) });
+    expect(reasonsOf(decision)).toEqual(expected);
+  });
+});

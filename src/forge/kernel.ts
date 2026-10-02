@@ -18,7 +18,7 @@ export type ForgeKernel = {
 
 export function createForgeKernel(config: { sha256Utf8: Sha256Utf8; policy: ReviewPolicy }): ForgeKernel {
   const policy = deepFreeze(ReviewPolicySchema.parse(config.policy));
-  const deps: KernelDeps = Object.freeze({ sha256Utf8: config.sha256Utf8, policy });
+  const deps: KernelDeps = Object.freeze({ sha256Utf8: config.sha256Utf8, policy, startGate: canStartDeveloperRun });
   return Object.freeze({
     policy,
     emptyState: () => emptyForgeState(policy),

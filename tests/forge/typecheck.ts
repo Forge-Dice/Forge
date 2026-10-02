@@ -30,3 +30,25 @@ if (!decision.allowed) decision.reasons.pop();
 kernel.policy = { aiReviewIndependence: "different_identity" };
 
 export {};
+
+// FORGE-CORE-0001B
+import type { RunRecord, RunState, TaskState } from "../../src/forge/state.ts";
+import type { VerificationEvaluation } from "../../src/forge/verification.ts";
+
+declare const run: RunRecord;
+declare const evaluation: VerificationEvaluation;
+
+// @ts-expect-error run records are readonly facts
+run.report = null;
+// @ts-expect-error observations are append-only only inside the reducer
+run.observations.push(run.observations[0]!);
+// @ts-expect-error there is no stored run status
+run.state;
+// @ts-expect-error a passed evaluation has no failures
+if (evaluation.passed) evaluation.failures;
+// @ts-expect-error "merged" is not a V0.0 task state
+const merged: TaskState = "merged";
+// @ts-expect-error "created" was removed from the run lifecycle
+const created: RunState = "created";
+
+export { merged, created };
