@@ -132,6 +132,23 @@ describe("form and local rules", () => {
     expectRejectedAt(variant((c) => (c.propositions[4].claim.at = tick)), ["propositions", 4, "claim", "at"]);
   });
 
+  // Later timeline logic relies on every tick and revision being a JS safe integer.
+  it.each<[string, Mutation, (string | number)[]]>([
+    ["interval end", (c) => (c.events[0].time.end = 2 ** 53), ["events", 0, "time", "end"]],
+    ["relationship time end", (c) => (c.relationships[0].time.end = 2 ** 53), ["relationships", 0, "time", "end"]],
+    ["revision", (c) => (c.revision = 2 ** 53), ["revision"]],
+  ])("AC-08: rejects an unsafe integer (2**53) as %s", (_name, mutate, path) => {
+    expectRejectedAt(variant(mutate), path);
+  });
+
+  it.each<[string, Mutation]>([
+    ["instant at", (c) => (c.events[1].time.at = Number.MAX_SAFE_INTEGER)],
+    ["interval end", (c) => (c.events[0].time.end = Number.MAX_SAFE_INTEGER)],
+    ["revision", (c) => (c.revision = Number.MAX_SAFE_INTEGER)],
+  ])("AC-08: accepts Number.MAX_SAFE_INTEGER as %s", (_name, mutate) => {
+    expect(CaseTruthSchema.safeParse(variant(mutate)).success).toBe(true);
+  });
+
   it.each([
     [1200, 1200],
     [1200, 600],
@@ -282,9 +299,9 @@ describe("AC-23: structural success is not semantic validity", () => {
     expect(CaseTruthSchema.safeParse(cycle).success).toBe(true);
   });
 
-  it("accepts a red herring whose target is true (red herring rules are checked later)", () => {
-    const wrongHerring = variant((c) => (c.redHerrings[0].misleadingPropositionId = "proposition:ben-at-murder"));
-    expect(CaseTruthSchema.safeParse(wrongHerring).success).toBe(true);
+  it("accepts a red herring whose target is true (no red-herring truth rule exists; see TASK-0002 revision)", () => {
+    const trueTargetHerring = variant((c) => (c.redHerrings[0].misleadingPropositionId = "proposition:ben-at-murder"));
+    expect(CaseTruthSchema.safeParse(trueTargetHerring).success).toBe(true);
   });
 
   it("the snapshot carries no validity or playability marker", () => {
