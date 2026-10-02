@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { runState, taskState, type ForgeState } from "../../src/forge/state.ts";
-import { contractText, decide, hashOf, kernel, metadata, registerContract, registerTask, stateOf, unfrozenPaths } from "./fixtures.ts";
+import { ai, contractText, decide, hashOf, human, kernel, metadata, registerContract, registerTask, stateOf, unfrozenPaths } from "./fixtures.ts";
 import {
   RESULT,
   SHA,
@@ -156,5 +156,235 @@ describe("long mixed logs", () => {
     const sequential = stateOf([...a, ...b]);
     const mixed = stateOf(interleaved);
     for (const taskId of ["TASK-0100", "TASK-0200"]) expect(taskState(mixed, taskId)).toBe(taskState(sequential, taskId));
+  });
+});
+
+// ---------- Phase 8: property-based random histories (seeded, no dependency) ----------
+
+function prng(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const TASKS = ["TASK-0001", "TASK-0002", "TASK-0003"];
+
+/** Candidate next events for the current state: mostly plausible, some deliberately wrong. */
+function candidates(state: ForgeState, runCounter: { n: number }, rnd: () => number): unknown[] {
+  const out: unknown[] = [];
+  const pick = <T>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)]!;
+  for (const taskId of TASKS) {
+    const task = state.tasks.find((t) => t.taskId === taskId);
+    if (task === undefined) {
+      out.push(registerTask(taskId));
+      continue;
+    }
+    const version = (task.contracts.at(-1)?.ref.contractVersion ?? 0) + 1;
+    const next = contractFor({ taskId, contractVersion: version, mutationSmoke: pick(["none", "optional", "required"]) });
+    out.push(registerContract(next.text, { taskId }));
+    const current = task.contracts.at(-1);
+    if (current === undefined) continue;
+    const hash = current.ref.contentHash;
+    out.push(decide(hash, pick(["approved", "changes_requested"] as const), { taskId, actor: pick([ai("vendor-b", "r"), ai("vendor-a", "r"), ai("vendor-a", "spec-author")]) }));
+    const runId = `run:p${runCounter.n}`;
+    const obs = { refs: { b: SHA.head }, parents: runGraph(), contractAtCommit: { commit: SHA.contract, path: `forge/contracts/${taskId}.md`, contentHash: hash } };
+    out.push(startRun(runId, { taskId, contentHash: hash, obs: rnd() < 0.15 ? { ...obs, refs: {} } : obs }));
+    for (const run of state.runs.filter((r) => r.taskId === taskId)) {
+      const id = run.runId;
+      const goodMutations = [mutation("m1", "detected"), mutation("eq", "survived", "equivalent", "same behaviour")];
+      out.push(reportFor(id, { mutations: rnd() < 0.2 ? [mutation("m1", "survived")] : goodMutations }));
+      out.push(observe(id, rnd() < 0.4 ? { head: pick([null, SHA.contract, FOREIGN_HEAD]) } : {}));
+      out.push(verify(id, rnd() < 0.25 ? pick([{ checks: [] }, { changedFiles: [{ path: "src/zzz.ts", change: "added" }] }, { verifiedCommit: SHA.head }]) : {}));
+      out.push(review(id, pick(["approve", "request_changes"] as const), { ack: rnd() < 0.8 ? ["eq"] : [], actor: pick([ai("vendor-b", "cr"), ai("vendor-a", "cr"), human("alice")]) }));
+      out.push(review(id, "request_changes", { requires: "contract_change", ack: ["eq"] }));
+      out.push(accept(id, pick([human("owner"), ai("vendor-b", "owner")]), taskId));
+      out.push(fail(id, pick(["PUSH_REJECTED", "REMOTE_NOT_PERSISTED", "DEVELOPER_ABORTED"])));
+      out.push(abandon(id));
+    }
+  }
+  out.push(null, { garbage: true }, registerTask("bad id"));
+  return out;
+}
+
+const FOREIGN_HEAD = "9".repeat(40);
+
+function checkInvariants(state: ForgeState) {
+  for (const taskId of TASKS) {
+    const ts = taskState(state, taskId);
+    const runs = state.runs.filter((r) => r.taskId === taskId);
+    const active = runs.filter((r) => !["verified", "failed", "abandoned"].includes(runState(state, r.runId)!));
+    expect(active.length).toBeLessThanOrEqual(1);
+    // implementing <=> exactly one active run (both directions)
+    expect(ts === "implementing").toBe(active.length === 1);
+    const task = state.tasks.find((t) => t.taskId === taskId);
+    for (const revision of task?.contracts ?? []) {
+      expect(revision.decisions.filter((d) => d.gate === "architecture_review").length).toBeLessThanOrEqual(1);
+    }
+    if (ts === "accepted") {
+      const run = state.runs.find((r) => r.runId === task!.acceptance!.runId)!;
+      expect(runState(state, run.runId)).toBe("verified");
+      expect(run.verdict?.verdict).toBe("approve");
+      expect(task!.acceptance!.owner.actorType).toBe("human");
+      expect(run.contract.contentHash).toBe(task!.contracts.at(-1)!.ref.contentHash);
+    }
+    for (const run of runs) {
+      if (runState(state, run.runId) === "verified") {
+        expect(run.report).not.toBeNull();
+        expect(run.verification!.evidence.verifiedCommit).toBe(run.report!.claimedResultCommit);
+      }
+      if (run.verdict !== null) expect(runState(state, run.runId)).toBe("verified");
+    }
+    const current = task?.contracts.at(-1);
+    if (current !== undefined && ts !== null && ts !== "accepted") {
+      const decision = kernel.canStartDeveloperRun(state, {
+        taskId,
+        contentHash: current.ref.contentHash,
+        repoObservation: { refs: { b: SHA.head }, parents: runGraph(), contractAtCommit: { commit: SHA.contract, path: `forge/contracts/${taskId}.md`, contentHash: current.ref.contentHash } },
+      });
+      expect(decision.allowed).toBe(ts === "ready" || ts === "rework_required");
+    }
+  }
+}
+
+/** State-guided next step for one task (85%), falling back to broad noise (15%). */
+function nextEvent(state: ForgeState, counter: { n: number }, rnd: () => number): unknown {
+  const pick = <T>(xs: readonly T[]): T => xs[Math.floor(rnd() * xs.length)]!;
+  if (rnd() < 0.15) return pick(candidates(state, counter, rnd));
+  const taskId = pick(TASKS);
+  const task = state.tasks.find((t) => t.taskId === taskId);
+  if (task === undefined) return registerTask(taskId);
+  const ts = taskState(state, taskId)!;
+  const current = task.contracts.at(-1);
+  const newVersion = () =>
+    registerContract(contractFor({ taskId, contractVersion: (current?.ref.contractVersion ?? 0) + 1, mutationSmoke: pick(["none", "optional", "required"]) }).text, { taskId });
+  if (ts === "planned" || ts === "contract_revision_required") return newVersion();
+  const hash = current!.ref.contentHash;
+  if (ts === "specifying") return rnd() < 0.8 ? decide(hash, "approved", { taskId }) : rnd() < 0.5 ? decide(hash, "changes_requested", { taskId }) : newVersion();
+  if (ts === "ready" || ts === "rework_required") {
+    const obs = { refs: { b: SHA.head }, parents: runGraph(), contractAtCommit: { commit: SHA.contract, path: `forge/contracts/${taskId}.md`, contentHash: hash } };
+    return startRun(`run:p${counter.n}`, { taskId, contentHash: hash, obs: rnd() < 0.1 ? { ...obs, refs: {} } : obs });
+  }
+  const run = [...state.runs].reverse().find((r) => r.taskId === taskId)!;
+  const id = run.runId;
+  const rs = runState(state, id);
+  if (ts === "implementing") {
+    if (rnd() < 0.06) return rnd() < 0.5 ? fail(id, "DEVELOPER_ABORTED") : abandon(id);
+    if (rs === "running") return reportFor(id, { mutations: rnd() < 0.15 ? [mutation("m1", "survived")] : [mutation("m1", "detected"), mutation("eq", "survived", "equivalent", "same behaviour")] });
+    if (rs === "reported") return rnd() < 0.6 ? observe(id) : rnd() < 0.8 ? observe(id, { head: pick([null, SHA.contract, FOREIGN_HEAD]) }) : fail(id, "PUSH_REJECTED");
+    return verify(id, rnd() < 0.2 ? { checks: [] } : {});
+  }
+  if (ts === "awaiting_review") {
+    const roll = rnd();
+    const actor = pick([ai("vendor-b", "cr"), human("alice"), ai("vendor-a", "cr")]);
+    if (roll < 0.5) return review(id, "approve", { ack: ["eq"], actor });
+    return review(id, "request_changes", { requires: roll < 0.8 ? "code_change" : "contract_change", ack: ["eq"], actor });
+  }
+  if (ts === "review_approved") return accept(id, rnd() < 0.85 ? human("owner") : ai("vendor-b", "owner"), taskId);
+  return pick(candidates(state, counter, rnd)); // accepted: anything, should be rejected
+}
+
+describe("property: random histories keep all invariants", () => {
+  it.each(Array.from({ length: 40 }, (_, i) => i + 1))("seed %i", (seed) => {
+    const rnd = prng(seed);
+    const counter = { n: 0 };
+    let state = kernel.emptyState();
+    const accepted: unknown[] = [];
+    for (let i = 0; i < 200; i++) {
+      const candidate = nextEvent(state, counter, rnd);
+      const before = JSON.stringify(state);
+      let result: ReturnType<typeof kernel.applyEvent>;
+      expect(() => (result = kernel.applyEvent(state, candidate))).not.toThrow();
+      if (result!.ok) {
+        state = result!.state;
+        accepted.push(candidate);
+        if ((candidate as { body?: { type?: string } })?.body?.type === "run_started") counter.n++;
+        checkInvariants(state);
+      } else {
+        expect(JSON.stringify(state)).toBe(before);
+      }
+    }
+    const replayed = kernel.replay(accepted);
+    expect(replayed.ok && replayed.state).toEqual(state);
+    expect(unfrozenPaths(state)).toEqual([]);
+  });
+});
+
+// ---------- Phase 8: adversarial structural fuzzing of real events ----------
+
+const REJECT_CODES = new Set([
+  "POLICY_MISMATCH", "EVENT_SCHEMA", "ROLE_NOT_ALLOWED", "TASK_ALREADY_REGISTERED", "TASK_UNKNOWN", "TASK_ALREADY_ACCEPTED",
+  "TASK_STATE_INVALID", "CONTRACT_DOCUMENT_INVALID", "CONTRACT_HASH_MISMATCH", "CONTRACT_TASK_MISMATCH", "CONTRACT_PATH_MISMATCH",
+  "CONTRACT_VERSION_NOT_NEXT", "CONTRACT_UNKNOWN", "CONTRACT_SUPERSEDED", "APPROVAL_ALREADY_DECIDED", "REVIEWER_NOT_INDEPENDENT",
+  "FINDINGS_REQUIRED", "DEPENDENCY_UNRESOLVED", "DEPENDENCY_NOT_ACCEPTED", "DEPENDENCY_MISMATCH", "START_NOT_ALLOWED",
+  "RUN_ALREADY_EXISTS", "RUN_UNKNOWN", "RUN_STATE_INVALID", "ACTOR_NOT_RUN_DEVELOPER", "VERIFIED_COMMIT_MISMATCH",
+  "RUN_NOT_LATEST_VERIFIED", "REVIEW_ALREADY_RECORDED", "REVIEWED_COMMIT_MISMATCH", "VERDICT_INCONSISTENT",
+  "EQUIVALENT_MUTATIONS_NOT_ACKNOWLEDGED", "OWNER_NOT_HUMAN",
+]);
+
+const NASTY: unknown[] = [null, undefined, 0, -0, NaN, Infinity, -1, 2 ** 53, 1.5, "", " ", "x".repeat(100_000), "\uD800", true, [], {}, [[[[]]]], { __proto__: null }, "run:x", SHA.head, "TASK-0001"];
+
+function mutateStructurally(value: unknown, rnd: () => number): unknown {
+  if (typeof value !== "object" || value === null) return NASTY[Math.floor(rnd() * NASTY.length)];
+  const copy = structuredClone(value) as Record<string, unknown>;
+  const containers: Record<string, unknown>[] = [];
+  const walk = (v: unknown) => {
+    if (typeof v === "object" && v !== null) {
+      containers.push(v as Record<string, unknown>);
+      for (const child of Object.values(v)) walk(child);
+    }
+  };
+  walk(copy);
+  const target = containers[Math.floor(rnd() * containers.length)]!;
+  const keys = Object.keys(target);
+  const key = keys[Math.floor(rnd() * keys.length)];
+  const roll = rnd();
+  if (key !== undefined && roll < 0.3) delete target[key];
+  else if (key !== undefined && roll < 0.75) target[key] = NASTY[Math.floor(rnd() * NASTY.length)];
+  else if (roll < 0.85) Object.defineProperty(target, "__proto__", { value: { injected: true }, enumerable: true, configurable: true, writable: true });
+  else if (roll < 0.95) target[`extra${Math.floor(rnd() * 3)}`] = "x";
+  else if (Array.isArray(target)) target.push(...target);
+  return copy;
+}
+
+describe("adversarial: structurally broken events never throw and never corrupt state", () => {
+  it.each(Array.from({ length: 25 }, (_, i) => i + 101))("seed %i", (seed) => {
+    const rnd = prng(seed);
+    const counter = { n: 0 };
+    let state = kernel.emptyState();
+    let acceptedBroken = 0;
+    for (let i = 0; i < 160; i++) {
+      const valid = nextEvent(state, counter, rnd);
+      const broken = rnd() < 0.5 ? mutateStructurally(valid, rnd) : valid;
+      const before = JSON.stringify(state);
+      let result!: ReturnType<typeof kernel.applyEvent>;
+      expect(() => (result = kernel.applyEvent(state, broken))).not.toThrow();
+      if (result.ok) {
+        if (broken !== valid) acceptedBroken++;
+        state = result.state;
+        if ((broken as { body?: { type?: string } })?.body?.type === "run_started") counter.n++;
+        checkInvariants(state);
+      } else {
+        expect(REJECT_CODES.has(result.rejection.code)).toBe(true);
+        expect(JSON.stringify(state)).toBe(before);
+      }
+    }
+    // Some mutations are harmless (e.g. another label); invariants were checked for each of them above.
+    void acceptedBroken;
+    expect(unfrozenPaths(state)).toEqual([]);
+  });
+
+  it("the start gate never throws on hostile requests", () => {
+    const rnd = prng(7);
+    const { state } = (() => ({ state: stateOf(approvedTask().events) }))();
+    const valid = { taskId: "TASK-0001", contentHash: approvedTask().contentHash, repoObservation: { refs: { b: SHA.head }, parents: runGraph(), contractAtCommit: { commit: SHA.contract, path: "forge/contracts/TASK-0001.md", contentHash: approvedTask().contentHash } } };
+    for (let i = 0; i < 500; i++) {
+      const hostile = mutateStructurally(valid, rnd);
+      expect(() => kernel.canStartDeveloperRun(state, hostile)).not.toThrow();
+    }
   });
 });
