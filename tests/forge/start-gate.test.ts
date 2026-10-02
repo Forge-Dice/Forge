@@ -230,3 +230,54 @@ describe("task states from FORGE-CORE-0001B", () => {
     expect(reasonsOf(decision)).toEqual(expected);
   });
 });
+
+describe("metamorphic: the gate is monotone in witnessed facts (fail-closed)", () => {
+  function prng(seed: number) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6d2b79f5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const text = contractText(metadata({ dependencies: [{ taskId: "TASK-0002", acceptedCommit: SHA.dep }] }));
+  const contentHash = hashOf(text);
+  const state = stateOf([registerTask(), registerContract(text)]);
+  const FULL_EDGES: [string, string][] = [
+    [SHA.head, SHA.contract],
+    [SHA.contract, SHA.base],
+    [SHA.base, SHA.dep],
+    [SHA.side, SHA.other],
+    [SHA.other, SHA.base],
+  ];
+  const FULL_REFS: [string, string][] = [["main", SHA.head], ["side", SHA.side], ["old", SHA.dep]];
+  const toGraph = (edges: [string, string][]) => {
+    const graph: Record<string, string[]> = {};
+    for (const [child, parent] of edges) (graph[child] ??= []).push(parent);
+    return graph;
+  };
+  const decide = (edges: [string, string][], refs: [string, string][]) =>
+    canStartDeveloperRun(state, {
+      taskId: "TASK-0001",
+      contentHash,
+      repoObservation: { refs: Object.fromEntries(refs), parents: toGraph(edges), contractAtCommit: { commit: SHA.contract, path: "forge/contracts/TASK-0001.md", contentHash } },
+    });
+  const repoReasons = (d: ReturnType<typeof decide>) => new Set(reasonsOf(d).filter((r) => !r.startsWith("CONTRACT_NOT_APPROVED") && !r.startsWith("TASK_NOT_STARTABLE")));
+
+  it.each(Array.from({ length: 30 }, (_, i) => i + 1))("seed %i: subset of facts never has fewer reasons than the superset", (seed) => {
+    const rnd = prng(seed);
+    const subsetEdges = FULL_EDGES.filter(() => rnd() < 0.6);
+    const subsetRefs = FULL_REFS.filter(() => rnd() < 0.6);
+    const small = repoReasons(decide(subsetEdges, subsetRefs));
+    const large = repoReasons(decide(FULL_EDGES, FULL_REFS));
+    for (const reason of large) expect(small.has(reason)).toBe(true);
+    // permuting the order of edges and refs never changes anything
+    expect(decide([...subsetEdges].reverse(), [...subsetRefs].reverse())).toEqual(decide(subsetEdges, subsetRefs));
+  });
+
+  it("the full witness has no repo reasons; only the unapproved contract blocks", () => {
+    expect(reasonsOf(decide(FULL_EDGES, FULL_REFS))).toEqual(["CONTRACT_NOT_APPROVED", "TASK_NOT_STARTABLE:specifying"]);
+  });
+});
