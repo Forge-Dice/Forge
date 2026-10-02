@@ -1,0 +1,21 @@
+{
+  "forgeApprovalRecord": 1,
+  "taskId": "FORGE-CORE-0001B",
+  "contractVersion": 1,
+  "contentHash": "680db30f45ca77b449fa0565d94db11475135f42c871ad589f5445355f279f6d",
+  "gate": "architecture_review",
+  "verdict": "approved",
+  "actor": {
+    "actorType": "human",
+    "provider": "human",
+    "model": null,
+    "label": "owner"
+  },
+  "recordedBy": {
+    "actorType": "ai_agent",
+    "provider": "anthropic",
+    "model": null,
+    "label": "night-run developer session"
+  },
+  "basis": "Owner pre-authorized the eight architecture decisions of the night-run assignment of 2026-10-02 (listed in FORGE-CORE-0001A section 2) and asked the developer to reconcile 0001B against the 0001A commit and treat that as the architecture review for this night. The reconciliation decisions F8-F12 in this contract's section 2 were made by the developer and were NOT reviewed by the owner or anyone else. No line-by-line review of this exact text took place. Independent ChatGPT code review is still pending. No other reviewer identity is claimed."
+}
