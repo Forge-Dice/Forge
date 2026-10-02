@@ -27,7 +27,9 @@ const base = world();
 
 function project(w: { truth: CaseTruth; solution: CaseSolution | null }, edit: Edit): ProjectionResult {
   const snapshot = parseNpcKnowledge(npcInput(w.truth, w.solution, edit), w.truth, w.solution);
-  return projectNpcKnowledge(snapshot, w.truth, w.solution);
+  const result = projectNpcKnowledge(snapshot, w.truth, w.solution);
+  expectNoLeaks(result, snapshot, w.truth, w.solution);
+  return result;
 }
 
 const MISMATCH = { success: false, code: "CONTEXT_BINDING_MISMATCH" };
@@ -131,6 +133,20 @@ const ANNA_EXPECTED = {
 };
 
 describe("projection output", () => {
+  it("M1: a visible belief stance is not the source snapshot object", () => {
+    const snapshot = parseNpcKnowledge(
+      npcInput(base.truth, base.solution, (n) => n.attitudes.push(propositionAttitude("ben-at-library", belief(true)))),
+      base.truth,
+      base.solution,
+    );
+    const result = projectNpcKnowledge(snapshot, base.truth, base.solution);
+    expect(result.success).toBe(true);
+    if (!result.success) throw new Error("Expected a successful projection");
+    expect(result.context.attitudes[0]!.stance).toEqual(snapshot.attitudes[0]!.stance);
+    expect(result.context.attitudes[0]!.stance).not.toBe(snapshot.attitudes[0]!.stance);
+    expectNoLeaks(result, snapshot, base.truth, base.solution);
+  });
+
   it("14.1: exact handles, co-reference and ordering", () => {
     const result = project(base, annaEdit);
     expect(result).toStrictEqual(ANNA_EXPECTED);
