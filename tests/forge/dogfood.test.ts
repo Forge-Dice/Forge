@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { kernel } from "./fixtures.ts";
 import { taskState } from "../../src/forge/state.ts";
@@ -8,7 +9,7 @@ import { taskState } from "../../src/forge/state.ts";
 // bytes are decoded with fatal UTF-8 and ignoreBOM, so a BOM stays visible to the kernel.
 
 const decode = (path: string) => new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(readFileSync(path));
-const ROOT = new URL("../../", import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 
 const forgeContracts = readdirSync(join(ROOT, "forge/contracts")).filter((name) => name.startsWith("FORGE-CORE-"));
 const approvals = readdirSync(join(ROOT, "forge/approvals")).filter((name) => name.endsWith(".json"));
@@ -26,7 +27,8 @@ describe("Forge contracts in this repository", () => {
 
   it.each(forgeContracts)("%s parses in its own format", (name) => {
     const document = parsed(name);
-    expect(`${document.ref.taskId}.md`).toBe(name);
+    const suffix = document.ref.contractVersion === 1 ? "" : `.v${document.ref.contractVersion}`;
+    expect(`${document.ref.taskId}${suffix}.md`).toBe(name);
   });
 
   it.each(approvals)("approval record %s is bound to the exact contract text", (name) => {

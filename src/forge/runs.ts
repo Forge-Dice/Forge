@@ -22,11 +22,11 @@ export const CommitGraphSchema = strictRecord(z.record(CommitShaSchema, z.array(
 /** Witnessed remote heads. Ref names carry no task identity. */
 export const RefHeadsSchema = strictRecord(z.record(RefNameSchema, CommitShaSchema));
 
-function uniqueBy<T>(key: (item: T) => string, message: string) {
+function uniqueBy<T>(key: (item: T) => string, message: string, field?: string) {
   return (items: readonly T[], ctx: z.RefinementCtx) => {
     const seen = new Set<string>();
     items.forEach((item, i) => {
-      if (seen.has(key(item))) ctx.addIssue({ code: "custom", message, path: [i] });
+      if (seen.has(key(item))) ctx.addIssue({ code: "custom", message, path: field === undefined ? [i] : [i, field] });
       seen.add(key(item));
     });
   };
@@ -52,17 +52,27 @@ export const DeveloperReportSchema = z.strictObject({
   reviewHints: z.array(TextSchema),
 });
 
-export const ChangedFileSchema = z.strictObject({
-  path: RepoPathSchema,
-  change: z.enum(["added", "modified", "deleted", "renamed"]),
-});
+export const ChangedFileSchema = z.discriminatedUnion("change", [
+  z.strictObject({ path: RepoPathSchema, change: z.enum(["added", "modified", "deleted"]) }),
+  z.strictObject({ fromPath: RepoPathSchema, toPath: RepoPathSchema, change: z.literal("renamed") }),
+]);
 
 export const VerificationEvidenceSchema = z.strictObject({
   runId: RunIdSchema,
   verifiedCommit: CommitShaSchema,
   method: z.literal("fresh_clone"),
-  changedFiles: z.array(ChangedFileSchema).superRefine(uniqueBy((f) => f.path, "Duplicate changed path")),
-  checks: z.array(z.strictObject({ name: z.string().regex(/^[a-z][a-z0-9-]{0,31}$/), command: TextSchema, exitCode: ExitCodeSchema })),
+  changedFiles: z.array(ChangedFileSchema).superRefine((files, ctx) => {
+    const seen = new Set<string>();
+    files.forEach((file, i) => {
+      const paths = file.change === "renamed" ? [["fromPath", file.fromPath], ["toPath", file.toPath]] : [["path", file.path]];
+      for (const [field, path] of paths as [string, string][]) {
+        if (seen.has(path)) ctx.addIssue({ code: "custom", message: "Duplicate changed path", path: [i, field] });
+        seen.add(path);
+      }
+    });
+  }),
+  checks: z.array(z.strictObject({ name: z.string().regex(/^[a-z][a-z0-9-]{0,31}$/), command: TextSchema, exitCode: ExitCodeSchema }))
+    .superRefine(uniqueBy((check) => check.name, "Duplicate check name", "name")),
   mutations: z.array(MutationResultSchema).nullable(),
 });
 

@@ -48,12 +48,23 @@ export function effectiveMutations(
 
 function scopeViolations(metadata: MetadataLike, evidence: Readonly<Pick<VerificationEvidence, "changedFiles">>): string[] {
   const violations: string[] = [];
-  for (const { path, change } of evidence.changedFiles) {
+  for (const file of evidence.changedFiles) {
+    if (file.change === "renamed") {
+      // Both endpoints are required: neither side may hide a move across the boundary.
+      const allowed = file.fromPath.startsWith(PROCESS_NOTE_PREFIX) && file.toPath.startsWith(PROCESS_NOTE_PREFIX);
+      if (!allowed) violations.push(file.fromPath, file.toPath);
+      continue;
+    }
+    const { path, change } = file;
+    const forbidden = ALWAYS_FORBIDDEN_PREFIXES.some((prefix) => path === prefix.slice(0, -1) || path.startsWith(prefix));
+    if (forbidden || change === "deleted") {
+      violations.push(path);
+      continue;
+    }
     if (path.startsWith(PROCESS_NOTE_PREFIX)) continue;
-    const forbidden = ALWAYS_FORBIDDEN_PREFIXES.some((prefix) => path.startsWith(prefix));
     const allowed =
       (change === "added" && metadata.scope.create.includes(path)) || (change === "modified" && metadata.scope.modify.includes(path));
-    if (forbidden || !allowed) violations.push(path);
+    if (!allowed) violations.push(path);
   }
   return violations;
 }
@@ -94,7 +105,8 @@ export function evaluateVerification(
 ): VerificationEvaluation {
   const failures: VerificationFailure[] = [];
   for (const required of metadata.requiredChecks) {
-    const ok = evidence.checks.some((c) => c.name === required.name && c.command === required.command && c.exitCode === 0);
+    const matches = evidence.checks.filter((c) => c.name === required.name);
+    const ok = matches.length === 1 && matches[0]!.command === required.command && matches[0]!.exitCode === 0;
     if (!ok) failures.push({ code: "CHECK_FAILED", subject: required.name });
   }
   for (const path of scopeViolations(metadata, evidence)) failures.push({ code: "SCOPE_VIOLATION", subject: path });

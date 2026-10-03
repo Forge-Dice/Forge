@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createForgeKernel } from "../../src/forge/kernel.ts";
 import { nodeSha256Utf8 } from "../../src/forge/node-sha256.ts";
-import { contractRevisionState, taskState } from "../../src/forge/state.ts";
+import { contractRevisionState, taskState, type ForgeState } from "../../src/forge/state.ts";
 import {
   AUTHOR,
   ai,
@@ -166,7 +166,20 @@ describe("injected hash port", () => {
   });
 });
 
-describe("persistent states (phase 8)", () => {
+describe("persistent data structures (not authoritative state persistence)", () => {
+  it("restores authoritative JSON events via replay, never a forged disposable state cache", () => {
+    const real = stateOf(HISTORY);
+    const cache = structuredClone(real) as unknown as { tasks: { title: string }[] };
+    cache.tasks[0]!.title = "FORGED CACHE";
+    const checkpoint = { log: JSON.parse(JSON.stringify(real.log)) as unknown[], cache: cache as unknown as ForgeState };
+    // Test-only example of the normative caller boundary, not a production persistence API.
+    const restore = () => kernel.replay(checkpoint.log);
+    const restored = restore();
+    expect(restored.ok && restored.state).toEqual(real);
+    expect(restored.ok && restored.state.tasks[0]!.title).not.toBe("FORGED CACHE");
+    expect(restored.ok && unfrozenPaths(restored.state)).toEqual([]);
+  });
+
   it("branching from one state yields independent successors", () => {
     const base = stateOf(HISTORY.slice(0, 3));
     const left = kernel.applyEvent(base, decide(h1, "approved"));

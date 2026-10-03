@@ -71,6 +71,9 @@ export type RunRecord = {
   readonly verdict: ReviewVerdict | null;
 };
 
+// ForgeLog (state.log) is authoritative. ForgeState is a disposable replay projection,
+// never an authoritative persistence payload. Restore JSON events via replay, with the
+// same configured policy; applyEvent accepts only kernel-produced/replayed states.
 export type ForgeState = {
   readonly policy: Readonly<ReviewPolicy>;
   readonly log: readonly ForgeEvent[];
@@ -232,7 +235,8 @@ export function taskState(state: ForgeState, taskId: string): TaskState | null {
   return isApproved(current) ? "ready" : "specifying";
 }
 
-/** Accepted result commit of a task: the verified commit of its accepted run, else null. */
+/** Accepted result commit of a task: the verified commit of its accepted run, else null.
+ * B22 equivalence with claimedResultCommit holds only for valid kernel-produced/replayed states. */
 export function acceptedCommitOf(state: ForgeState, taskId: string): string | null {
   const acceptance = findTask(state, taskId)?.acceptance ?? null;
   if (acceptance === null) return null;

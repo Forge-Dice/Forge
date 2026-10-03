@@ -17,6 +17,7 @@ type Meta = {
   mutationSmoke: "none" | "optional" | "required";
 };
 type Mut = { name: string; outcome: string; classification: string; equivalenceRationale: string | null };
+type FileChange = { path: string; change: "added" | "modified" | "deleted" } | { fromPath: string; toPath: string; change: "renamed" };
 type Version = { hash: string; meta: Meta; path: string; commit: string; author: Id; decision: { verdict: string } | null };
 type ModelTask = { taskId: string; versions: Version[]; acceptedRun: string | null };
 type Obs = { ref: string; head: string | null; parents: Record<string, string[]> };
@@ -28,7 +29,7 @@ type ModelRun = {
   start: string;
   report: { claimedResultCommit: string; claimedRemoteRef: string; mutations: Mut[] } | null;
   observations: Obs[];
-  verification: { verifiedCommit: string; changedFiles: { path: string; change: string }[]; checks: { name: string; command: string; exitCode: number }[]; mutations: Mut[] | null } | null;
+  verification: { verifiedCommit: string; changedFiles: FileChange[]; checks: { name: string; command: string; exitCode: number }[]; mutations: Mut[] | null } | null;
   failed: boolean;
   abandoned: boolean;
   verdict: { verdict: string; requires: string | null } | null;
@@ -102,11 +103,27 @@ export function refEffectiveMutations(meta: Meta, r: ModelRun): Mut[] {
 export function refPassed(meta: Meta, r: ModelRun): boolean {
   const ev = r.verification!;
   for (const req of meta.requiredChecks) {
-    if (!ev.checks.some((c) => c.name === req.name && c.command === req.command && c.exitCode === 0)) return false;
+    let count = 0;
+    for (const check of ev.checks) {
+      if (check.name !== req.name) continue;
+      count++;
+      if (check.command !== req.command || check.exitCode !== 0) return false;
+    }
+    if (count !== 1) return false;
   }
+  const coordination = (path: string) => {
+    const parts = path.split("/");
+    return parts.length > 2 && parts[0] === "forge" && parts[1] === "coordination";
+  };
   for (const f of ev.changedFiles) {
-    if (f.path.startsWith("forge/coordination/")) continue;
-    if (f.path.startsWith("forge/contracts/") || f.path.startsWith("forge/approvals/")) return false;
+    if (f.change === "renamed") {
+      if (!coordination(f.fromPath) || !coordination(f.toPath)) return false;
+      continue;
+    }
+    const parts = f.path.split("/");
+    if (parts[0] === "forge" && (parts[1] === "contracts" || parts[1] === "approvals")) return false;
+    if (f.change === "deleted") return false;
+    if (coordination(f.path)) continue;
     const ok = (f.change === "added" && meta.scope.create.includes(f.path)) || (f.change === "modified" && meta.scope.modify.includes(f.path));
     if (!ok) return false;
   }

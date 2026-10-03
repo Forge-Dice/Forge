@@ -52,3 +52,14 @@ const merged: TaskState = "merged";
 const created: RunState = "created";
 
 export { merged, created };
+
+import type { ChangedFile } from "../../src/forge/runs.ts";
+const move: ChangedFile = { change: "renamed", fromPath: "a", toPath: "b" };
+const edit: ChangedFile = { change: "modified", path: "a" };
+// @ts-expect-error a rename cannot omit either endpoint
+const oldRename: ChangedFile = { change: "renamed", path: "a" };
+// @ts-expect-error no target endpoint
+const missingTarget: ChangedFile = { change: "renamed", fromPath: "a" };
+// @ts-expect-error non-rename cannot carry rename fields
+const mixed: ChangedFile = { change: "added", path: "a", toPath: "b" };
+export { move, edit, oldRename, missingTarget, mixed };

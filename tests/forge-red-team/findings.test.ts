@@ -27,21 +27,19 @@ import {
 // finding or a deliberate limit. They are expected to flip when a later contract changes the rule.
 
 const META = { scope: { create: ["src/a.ts"], modify: ["src/b.ts"] }, requiredChecks: [{ name: "test", command: "npm test" }], mutationSmoke: "optional" as const };
-const evaluate = (changedFiles: { path: string; change: "added" | "modified" | "deleted" | "renamed" }[], checks = [{ name: "test", command: "npm test", exitCode: 0 }]) =>
+const evaluate = (changedFiles: import("../../src/forge/runs.ts").ChangedFile[], checks = [{ name: "test", command: "npm test", exitCode: 0 }]) =>
   evaluateVerification(META, { mutations: [] }, { changedFiles, checks, mutations: null });
 
 describe("RT verification scope", () => {
-  it("RT-01 documents: a rename is one path, so the coordination exemption hides both rename directions", () => {
-    // contract file moved into coordination (new path recorded) and coordination note moved into src (old path recorded)
-    expect(evaluate([{ path: "forge/coordination/TASK-0001.md", change: "renamed" }]).passed).toBe(true);
-    // the same move recorded with the other path is a violation: the outcome depends on an unspecified convention
-    expect(evaluate([{ path: "forge/contracts/TASK-0001.md", change: "renamed" }]).passed).toBe(false);
-    expect(evaluate([{ path: "src/evil.ts", change: "renamed" }]).passed).toBe(false);
+  it("RT-01 regression: both rename endpoints determine the coordination exception", () => {
+    expect(evaluate([{ fromPath: "forge/contracts/TASK-0001.md", toPath: "forge/coordination/TASK-0001.md", change: "renamed" }]).passed).toBe(false);
+    expect(evaluate([{ fromPath: "forge/coordination/TASK-0001.md", toPath: "src/evil.ts", change: "renamed" }]).passed).toBe(false);
+    expect(evaluate([{ fromPath: "forge/coordination/old.md", toPath: "forge/coordination/new.md", change: "renamed" }]).passed).toBe(true);
   });
 
   it("RT-02 documents: the coordination exemption covers every agent's coordination file", () => {
     expect(evaluate([{ path: "forge/coordination/CODEX.md", change: "modified" }]).passed).toBe(true);
-    expect(evaluate([{ path: "forge/coordination/CODEX.md", change: "deleted" }]).passed).toBe(true);
+    expect(evaluate([{ path: "forge/coordination/CODEX.md", change: "deleted" }]).passed).toBe(false); // v2: deletion is never exempt
   });
 
   it("prefix tricks around the coordination exemption do not bypass the scope", () => {
@@ -55,12 +53,12 @@ describe("RT verification scope", () => {
     }
   });
 
-  it("RT-03 documents: contradictory duplicate check entries pass if one of them passes", () => {
+  it("RT-03 regression: contradictory duplicate checks cannot mask a failure", () => {
     const contradictory = [
       { name: "test", command: "npm test", exitCode: 1 },
       { name: "test", command: "npm test", exitCode: 0 },
     ];
-    expect(evaluate([{ path: "src/a.ts", change: "added" }], contradictory).passed).toBe(true);
+    expect(evaluate([{ path: "src/a.ts", change: "added" }], contradictory).passed).toBe(false);
     // name and command are both required; extra checks never matter
     expect(evaluate([], [{ name: "tests", command: "npm test", exitCode: 0 }]).passed).toBe(false);
     expect(evaluate([], [{ name: "test", command: "npm  test", exitCode: 0 }]).passed).toBe(false);

@@ -158,6 +158,11 @@ function evidenceFor(g: Gen, runId: string, claimed: string) {
     [{ path: "forge/contracts/TASK-0001.md", change: "modified" }],
     [{ path: "forge/approvals/x.json", change: "added" }],
     [{ path: "forge/coordination/TASK-0001.md", change: "renamed" }],
+    [{ fromPath: "forge/coordination/old.md", toPath: "forge/coordination/notes/new.md", change: "renamed" }],
+    [{ fromPath: "forge/contracts/TASK-0001.md", toPath: "forge/coordination/TASK-0001.md", change: "renamed" }],
+    [{ fromPath: "forge/coordination/note.md", toPath: "forge/approvals/new.json", change: "renamed" }],
+    [{ fromPath: "forge/coordinationX/a", toPath: "forge/coordination/a", change: "renamed" }],
+    [{ path: "forge/coordination/old.md", change: "deleted" }],
     [{ path: "forge/coordinationX/a", change: "added" }],
   ]);
   const checks = chance(g, 0.65) ? [{ name: "test", command: "npm test", exitCode: 0 }] : pick(g, [

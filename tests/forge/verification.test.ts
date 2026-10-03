@@ -43,9 +43,10 @@ describe("required checks", () => {
     expect(failuresOf(meta(), evidence({ checks }))).toEqual(expected);
   });
 
-  it("extra checks do not hurt, and a passing duplicate satisfies the requirement", () => {
+  it("extra checks do not hurt, but a passing duplicate cannot mask failure", () => {
     const checks = [...okChecks, { name: "lint", command: "npm run lint", exitCode: 1 }, { ...okChecks[1]!, exitCode: 1 }];
-    expect(failuresOf(meta(), evidence({ checks }))).toEqual([]);
+    expect(failuresOf(meta(), evidence({ checks: checks.slice(0, -1) }))).toEqual([]);
+    expect(failuresOf(meta(), evidence({ checks }))).toEqual(["CHECK_FAILED:test"]);
   });
 });
 
@@ -57,9 +58,9 @@ describe("scope", () => {
     ["modified a create-only path", [{ path: "src/a.ts", change: "modified" }], ["SCOPE_VIOLATION:src/a.ts"]],
     ["added a modify-only path", [{ path: "src/b.ts", change: "added" }], ["SCOPE_VIOLATION:src/b.ts"]],
     ["deleted a scoped path", [{ path: "src/b.ts", change: "deleted" }], ["SCOPE_VIOLATION:src/b.ts"]],
-    ["renamed a scoped path", [{ path: "src/a.ts", change: "renamed" }], ["SCOPE_VIOLATION:src/a.ts"]],
+    ["renamed a scoped path", [{ fromPath: "src/a.ts", toPath: "src/b.ts", change: "renamed" }], ["SCOPE_VIOLATION:src/a.ts", "SCOPE_VIOLATION:src/b.ts"]],
     ["coordination note (F8)", [{ path: `${PROCESS_NOTE_PREFIX}CLAUDE.md`, change: "modified" }], []],
-    ["deleted coordination note", [{ path: "forge/coordination/old.md", change: "deleted" }], []],
+    ["deleted coordination note", [{ path: "forge/coordination/old.md", change: "deleted" }], ["SCOPE_VIOLATION:forge/coordination/old.md"]],
     ["contract file changed", [{ path: "forge/contracts/TASK-0001.md", change: "modified" }], ["SCOPE_VIOLATION:forge/contracts/TASK-0001.md"]],
     ["approval forged", [{ path: "forge/approvals/TASK-0001.v1.architecture_review.json", change: "added" }], ["SCOPE_VIOLATION:forge/approvals/TASK-0001.v1.architecture_review.json"]],
     ["other forge/ paths are not exempt", [{ path: "forge/notes.md", change: "added" }], ["SCOPE_VIOLATION:forge/notes.md"]],
