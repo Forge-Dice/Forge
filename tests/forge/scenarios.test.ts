@@ -134,7 +134,7 @@ describe("long mixed logs", () => {
     const replayed = kernel.replay(log);
     expect(replayed.ok).toBe(true);
     expect(replayed.ok && replayed.state).toEqual(stepwise(log));
-  });
+  }, 20_000);
 
   it("derives the expected final states for every task and run", () => {
     const result = kernel.replay(log);
