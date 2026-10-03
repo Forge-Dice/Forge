@@ -312,6 +312,7 @@ function applyBody(work: Work, view: ForgeState, event: ForgeEvent, deps: Kernel
       if (!isIndependentReviewer(revision.author, actor, work.policy)) return reject("REVIEWER_NOT_INDEPENDENT", ["actor"]);
       if (body.verdict === "changes_requested" && body.findings.length === 0) return reject("FINDINGS_REQUIRED", ["body", "findings"]);
       if (body.verdict === "approved") {
+        if (body.findings.some((f) => f.severity === "blocking")) return reject("VERDICT_INCONSISTENT", ["body", "verdict"]);
         for (const dep of revision.metadata.dependencies) {
           if (dep.acceptedCommit === null) return reject("DEPENDENCY_UNRESOLVED", ["body", "contentHash"], dep.taskId);
           const accepted = acceptedCommitOf(view, dep.taskId);

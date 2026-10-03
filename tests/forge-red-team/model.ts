@@ -227,6 +227,7 @@ export function refApply(m: ModelState, e: { actor: Id; role: string; body: any 
       if (!v || v !== t.versions.at(-1) || v.decision !== null || !independent(v.author, a)) return false;
       if (b.verdict === "changes_requested" && b.findings.length === 0) return false;
       if (b.verdict === "approved") {
+        if (b.findings.some((f: { severity: string }) => f.severity === "blocking")) return false;
         for (const d of v.meta.dependencies) {
           if (d.acceptedCommit === null || refAcceptedCommit(m, d.taskId) !== d.acceptedCommit) return false;
         }

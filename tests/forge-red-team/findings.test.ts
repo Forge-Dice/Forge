@@ -161,10 +161,12 @@ describe("RT identity and independence (FORGE-CORE-0001A §5)", () => {
 });
 
 describe("RT state machine corners", () => {
-  it("RT-06 documents: an architecture approval may carry a blocking finding", () => {
+  it("RT-06 regression: an architecture approval cannot carry a blocking finding", () => {
     const text = contractText(metadata());
-    const state = stateOf([registerTask(), registerContract(text), decide(hashOf(text), "approved", { findings: [{ severity: "blocking", summary: "unresolved", location: null }] })]);
-    expect(taskState(state, "TASK-0001")).toBe("ready");
+    const state = stateOf([registerTask(), registerContract(text)]);
+    const result = kernel.applyEvent(state, decide(hashOf(text), "approved", { findings: [{ severity: "blocking", summary: "unresolved", location: null }] }));
+    expect(result).toEqual({ ok: false, rejection: { code: "VERDICT_INCONSISTENT", path: ["body", "verdict"], subject: null, issues: [] } });
+    expect(taskState(state, "TASK-0001")).toBe("specifying");
   });
 
   it("RT-07 documents: a new contract version may be registered while a run is active; the run finishes on a superseded revision", () => {
