@@ -1,0 +1,487 @@
+{
+  "formatVersion": 1,
+  "implementationCommit": "811ed0d3a2322c0f1c65726422ad6ae8ca0d2f0e",
+  "method": "Vite enforce:pre transform in memory; every source replacement matched exactly once; no source-file writes.",
+  "runnerTemplate": "(async()=>{\n const {startVitest}=await import('vitest/node');\n const {createHash}=await import('node:crypto');\n const config=CONFIG;\n let applied=0,summary;\n const ctx=await startVitest(config.tests,{run:true,maxWorkers:1,reporters:[{onTestRunEnd(modules,errors,reason){\n  const ts=modules.flatMap(m=>[...m.children.allTests()]);\n  summary={reason,total:ts.length,passed:ts.filter(t=>t.result().state==='passed').length,failed:ts.filter(t=>t.result().state==='failed').map(t=>t.fullName),errors:errors.map(e=>e.message)};\n }}]},{plugins:[{name:'repair-in-memory-mutation',enforce:'pre',transform(code,id){\n  if(!id.replaceAll('\\\\','/').endsWith('/'+config.file))return;\n  const count=code.split(config.before).length-1;\n  if(count!==1)throw Error('MUTATION_NOT_APPLIED '+count);\n  const changed=code.replace(config.before,config.after);applied++;\n  console.log(JSON.stringify({id:config.id,applied,sourceHash:createHash('sha256').update(code).digest('hex'),mutantHash:createHash('sha256').update(changed).digest('hex')}));\n  return {code:changed,map:null};\n }}]});\n await ctx.close();console.log(JSON.stringify({id:config.id,applied,...summary}));\n if(applied!==1||!summary||summary.errors.length)process.exitCode=2;\n})().catch(e=>{console.error(e);process.exitCode=2});",
+  "mutations": [
+    {
+      "config": {
+        "id": "R01-to-only",
+        "file": "src/forge/verification.ts",
+        "before": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX) && file.toPath.startsWith(PROCESS_NOTE_PREFIX)",
+        "after": "file.toPath.startsWith(PROCESS_NOTE_PREFIX)",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R01-to-only",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "ee5c470215d91b6f1de803ae4c51935cf2e8b9f6908482135bd3dea99d710f71"
+      },
+      "testRun": {
+        "id": "R01-to-only",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 39,
+        "failed": [
+          "0001B v2 rename and scope > neither rename direction exempts forge/contracts/TASK-0001.md",
+          "0001B v2 rename and scope > neither rename direction exempts forge/approvals/a.json",
+          "0001B v2 rename and scope > neither rename direction exempts src/a.ts",
+          "0001B v2 rename and scope > neither rename direction exempts forge/coordinationX/a",
+          "0001B v2 rename and scope > neither rename direction exempts forge/coordination",
+          "0001B v2 kernel boundary > valid but forbidden rename evidence produces failed, not a schema rejection"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R02-from-only",
+        "file": "src/forge/verification.ts",
+        "before": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX) && file.toPath.startsWith(PROCESS_NOTE_PREFIX)",
+        "after": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX)",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R02-from-only",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "3b761ce92184fb7ad1f96435a75e29d200e4551eb104ec89010c65384477726f"
+      },
+      "testRun": {
+        "id": "R02-from-only",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 40,
+        "failed": [
+          "0001B v2 rename and scope > neither rename direction exempts forge/contracts/TASK-0001.md",
+          "0001B v2 rename and scope > neither rename direction exempts forge/approvals/a.json",
+          "0001B v2 rename and scope > neither rename direction exempts src/a.ts",
+          "0001B v2 rename and scope > neither rename direction exempts forge/coordinationX/a",
+          "0001B v2 rename and scope > neither rename direction exempts forge/coordination"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R03-either-endpoint",
+        "file": "src/forge/verification.ts",
+        "before": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX) && file.toPath.startsWith(PROCESS_NOTE_PREFIX)",
+        "after": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX) || file.toPath.startsWith(PROCESS_NOTE_PREFIX)",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R03-either-endpoint",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "fbc3e519e8b1286f24988f7415fdc66027a43cbbc09bd35446bac78a6d1dc7cc"
+      },
+      "testRun": {
+        "id": "R03-either-endpoint",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 39,
+        "failed": [
+          "0001B v2 rename and scope > neither rename direction exempts forge/contracts/TASK-0001.md",
+          "0001B v2 rename and scope > neither rename direction exempts forge/approvals/a.json",
+          "0001B v2 rename and scope > neither rename direction exempts src/a.ts",
+          "0001B v2 rename and scope > neither rename direction exempts forge/coordinationX/a",
+          "0001B v2 rename and scope > neither rename direction exempts forge/coordination",
+          "0001B v2 kernel boundary > valid but forbidden rename evidence produces failed, not a schema rejection"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R04-contract-move",
+        "file": "src/forge/verification.ts",
+        "before": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX) && file.toPath.startsWith(PROCESS_NOTE_PREFIX)",
+        "after": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX) && file.toPath.startsWith(PROCESS_NOTE_PREFIX) || file.fromPath.startsWith(\"forge/contracts/\") || file.toPath.startsWith(\"forge/contracts/\")",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R04-contract-move",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "30f65187f1a0b85c46eed7f067084d5ecd969ed8f9b5a7b3bc0f1e6403f93dc0"
+      },
+      "testRun": {
+        "id": "R04-contract-move",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 43,
+        "failed": [
+          "0001B v2 rename and scope > neither rename direction exempts forge/contracts/TASK-0001.md",
+          "0001B v2 kernel boundary > valid but forbidden rename evidence produces failed, not a schema rejection"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R05-approval-move",
+        "file": "src/forge/verification.ts",
+        "before": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX) && file.toPath.startsWith(PROCESS_NOTE_PREFIX)",
+        "after": "file.fromPath.startsWith(PROCESS_NOTE_PREFIX) && file.toPath.startsWith(PROCESS_NOTE_PREFIX) || file.fromPath.startsWith(\"forge/approvals/\") || file.toPath.startsWith(\"forge/approvals/\")",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R05-approval-move",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "6b4564644a2988877e897bd3c6779a73982ae8c5444c961dd275ccdd1d33b5a3"
+      },
+      "testRun": {
+        "id": "R05-approval-move",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 44,
+        "failed": [
+          "0001B v2 rename and scope > neither rename direction exempts forge/approvals/a.json"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R06-passing-duplicate",
+        "file": "src/forge/verification.ts",
+        "before": "const ok = matches.length === 1 && matches[0]!.command === required.command && matches[0]!.exitCode === 0;",
+        "after": "const ok = matches.some((c) => c.command === required.command && c.exitCode === 0);",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R06-passing-duplicate",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "b543af5f75866a15335644286c83cbdacfdcdbb9525adbebdbf348dac93e98e9"
+      },
+      "testRun": {
+        "id": "R06-passing-duplicate",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 41,
+        "failed": [
+          "0001B v2 required check cardinality > rejects duplicate required checks 0",
+          "0001B v2 required check cardinality > rejects duplicate required checks 1",
+          "0001B v2 required check cardinality > rejects duplicate required checks 2",
+          "0001B v2 required check cardinality > rejects duplicate required checks 3"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R07-ignore-command",
+        "file": "src/forge/verification.ts",
+        "before": "const ok = matches.length === 1 && matches[0]!.command === required.command && matches[0]!.exitCode === 0;",
+        "after": "const ok = matches.length === 1 && matches[0]!.exitCode === 0;",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R07-ignore-command",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "ddce3a88732defd0a31d02065a0ab80e0ee28e2ecb660268a711b249084632a4"
+      },
+      "testRun": {
+        "id": "R07-ignore-command",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 44,
+        "failed": [
+          "0001B v2 required check cardinality > cannot satisfy a required check 1"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R08-ignore-missing",
+        "file": "src/forge/verification.ts",
+        "before": "const ok = matches.length === 1 && matches[0]!.command === required.command && matches[0]!.exitCode === 0;",
+        "after": "const ok = matches.length === 0 || (matches.length === 1 && matches[0]!.command === required.command && matches[0]!.exitCode === 0);",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R08-ignore-missing",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "b2aa196e269206ef73d0277f1798aab64f4ad6d3a58607f1e033552ab0c6bd83"
+      },
+      "testRun": {
+        "id": "R08-ignore-missing",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 42,
+        "failed": [
+          "0001B v2 required check cardinality > cannot satisfy a required check 0",
+          "0001B v2 required check cardinality > cannot satisfy a required check 4",
+          "0001B v2 required check cardinality > extra non-required checks cannot mask missing checks; unique failures are informational"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R09-blocking-approval",
+        "file": "src/forge/state.ts",
+        "before": "        if (body.findings.some((f) => f.severity === \"blocking\")) return reject(\"VERDICT_INCONSISTENT\", [\"body\", \"verdict\"]);",
+        "after": "",
+        "tests": [
+          "tests/forge/architecture-approval.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R09-blocking-approval",
+        "applied": 1,
+        "sourceHash": "68d37fa7f39b5a837edfd914dc9024b8c0c874e9a0ff88d040db566c93523f06",
+        "mutantHash": "32aea7007f8e545bfeff106bb821f738a6f20f7659f50d5b77bce1292780029c"
+      },
+      "testRun": {
+        "id": "R09-blocking-approval",
+        "applied": 1,
+        "reason": "failed",
+        "total": 9,
+        "passed": 6,
+        "failed": [
+          "0001A-PATCH-0001 architecture findings > approved with findings list 2",
+          "0001A-PATCH-0001 architecture findings > approved with findings list 3",
+          "0001A-PATCH-0001 architecture findings > retains prior validation precedence and checks findings before dependencies"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R10-state-cache-test-oracle",
+        "file": "tests/forge/kernel.test.ts",
+        "before": "const restore = () => kernel.replay(checkpoint.log);",
+        "after": "const restore = () => ({ ok: true as const, state: checkpoint.cache });",
+        "tests": [
+          "tests/forge/kernel.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R10-state-cache-test-oracle",
+        "applied": 1,
+        "sourceHash": "3db2aa44dab18c282b282f5bd394ec025a9d980bf60fca4f1d12f3e667b25475",
+        "mutantHash": "7a726b88ea7805b71643f045713263739e332c75a4b229d6e4809961f9d02af3"
+      },
+      "testRun": {
+        "id": "R10-state-cache-test-oracle",
+        "applied": 1,
+        "reason": "failed",
+        "total": 19,
+        "passed": 18,
+        "failed": [
+          "persistent data structures (not authoritative state persistence) > restores authoritative JSON events via replay, never a forged disposable state cache"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "test-oracle-only"
+    },
+    {
+      "config": {
+        "id": "R11-duplicate-schema",
+        "file": "src/forge/runs.ts",
+        "before": ".superRefine(uniqueBy((check) => check.name, \"Duplicate check name\", \"name\"))",
+        "after": "",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R11-duplicate-schema",
+        "applied": 1,
+        "sourceHash": "f166240e8290ff34dcfe7ddc71cbc006ebbac4ddfad92a878c63b9f43cc61ce1",
+        "mutantHash": "b10bc13e228bf980f270bcc6925900e3e9beebeed548833044f57c9886de6006"
+      },
+      "testRun": {
+        "id": "R11-duplicate-schema",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 39,
+        "failed": [
+          "0001B v2 required check cardinality > rejects duplicate required checks 0",
+          "0001B v2 required check cardinality > rejects duplicate required checks 1",
+          "0001B v2 required check cardinality > rejects duplicate required checks 2",
+          "0001B v2 required check cardinality > rejects duplicate required checks 3",
+          "0001B v2 required check cardinality > extra non-required checks cannot mask missing checks; unique failures are informational",
+          "0001B v2 kernel boundary > schema-invalid evidence never enters the log 1"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    },
+    {
+      "config": {
+        "id": "R12-coordination-delete",
+        "file": "src/forge/verification.ts",
+        "before": "if (forbidden || change === \"deleted\") {",
+        "after": "if (forbidden || (change === \"deleted\" && !path.startsWith(PROCESS_NOTE_PREFIX))) {",
+        "tests": [
+          "tests/forge/repair-v2.test.ts"
+        ]
+      },
+      "exitCode": 1,
+      "application": {
+        "id": "R12-coordination-delete",
+        "applied": 1,
+        "sourceHash": "2e7bd46865c74bfa14c6e3b50fb94677a3327902e9b2cf3edfefd1ac58ed3bce",
+        "mutantHash": "9810e70ac6f01532ff5ab0aa9a248af63d177c12339e36a8e9d1a5e963f1604a"
+      },
+      "testRun": {
+        "id": "R12-coordination-delete",
+        "applied": 1,
+        "reason": "failed",
+        "total": 45,
+        "passed": 44,
+        "failed": [
+          "0001B v2 rename and scope > deleted is never exempt: forge/coordination/a.md"
+        ],
+        "errors": []
+      },
+      "classification": "detected",
+      "scope": "production"
+    }
+  ],
+  "baselineProbe": {
+    "commit": "f712e50a1562233f31564af8218cef9fd1097b7c",
+    "script": "(async()=>{\n const {evaluateVerification}=await import('./src/forge/verification.ts');\n const {VerificationEvidenceSchema}=await import('./src/forge/runs.ts');\n const {kernel,contractText,metadata,registerTask,registerContract,decide,hashOf,stateOf}=await import('./tests/forge/fixtures.ts');\n const {taskState}=await import('./src/forge/state.ts');\n const meta={scope:{create:[],modify:[]},requiredChecks:[{name:'test',command:'npm test'}],mutationSmoke:'none'};\n const base={runId:'run:probe',verifiedCommit:'1'.repeat(40),method:'fresh_clone',changedFiles:[{path:'forge/coordination/TASK-0001.md',change:'renamed'}],checks:[{name:'test',command:'npm test',exitCode:0}],mutations:null};\n console.log(JSON.stringify({RT01:{schema:VerificationEvidenceSchema.safeParse(base).success,result:evaluateVerification(meta,{mutations:[]},base)}}));\n const dup={...base,changedFiles:[],checks:[{name:'test',command:'npm test',exitCode:1},{name:'test',command:'npm test',exitCode:0}]};\n console.log(JSON.stringify({RT03:{schema:VerificationEvidenceSchema.safeParse(dup).success,result:evaluateVerification(meta,{mutations:[]},dup)}}));\n const text=contractText(metadata());const before=stateOf([registerTask(),registerContract(text)]);\n const r=kernel.applyEvent(before,decide(hashOf(text),'approved',{findings:[{severity:'blocking',summary:'unresolved',location:null}]}));\n console.log(JSON.stringify({RT06:{accepted:r.ok,state:r.ok?taskState(r.state,'TASK-0001'):r.rejection}}));\n})();",
+    "observed": {
+      "RT01": {
+        "schema": true,
+        "passed": true
+      },
+      "RT03": {
+        "schema": true,
+        "passed": true
+      },
+      "RT06": {
+        "accepted": true,
+        "taskState": "ready"
+      }
+    }
+  },
+  "restoration": {
+    "method": "Compared on-disk source SHA-256 against pre-transform hashes; all equal. Then unmutated typecheck and full suite passed.",
+    "fullSuite": {
+      "files": 22,
+      "tests": 1086,
+      "exitCode": 0
+    }
+  },
+  "coarsePerformance": {
+    "script": "\nimport { performance } from 'node:perf_hooks';\nimport { kernel, registerTask, registerContract, decide, contractText, metadata, hashOf } from './tests/forge/fixtures.ts';\nimport { evaluateVerification } from './src/forge/verification.ts';\nimport { VerificationEvidenceSchema } from './src/forge/runs.ts';\nconst events=[];\nfor(let i=1;i<=150;i++) {\n const taskId='TASK-'+String(i).padStart(4,'0'), t=contractText(metadata({taskId}));\n events.push(registerTask(taskId),registerContract(t,{taskId}),decide(hashOf(t),'approved',{taskId}));\n}\nconst meta={scope:{create:['src/a.ts'],modify:[]},requiredChecks:[{name:'test',command:'npm test'}],mutationSmoke:'none'};\nconst evidence={runId:'run:bench',verifiedCommit:'1'.repeat(40),method:'fresh_clone',changedFiles:[{path:'src/a.ts',change:'added'}],checks:[{name:'test',command:'npm test',exitCode:0}],mutations:null};\nconst samples=[];\nfor(let n=0;n<4;n++){\n let t=performance.now(); const replay=kernel.replay(events);\n if(!replay.ok||replay.state.log.length!==450)throw Error('replay');\n const replayMs=performance.now()-t;t=performance.now();\n for(let i=0;i<10000;i++){ const parsed=VerificationEvidenceSchema.parse(evidence); if(!evaluateVerification(meta,{mutations:[]},parsed).passed)throw Error('verify'); }\n const verifyMs=performance.now()-t;if(n>0)samples.push({replayMs,verifyMs});\n}\nconsole.log(JSON.stringify({events:450,verificationsPerSample:10000,warmups:1,samples,medianReplayMs:[...samples.map(x=>x.replayMs)].sort((a,b)=>a-b)[1],medianVerifyMs:[...samples.map(x=>x.verifyMs)].sort((a,b)=>a-b)[1]}));\n",
+    "baseline": {
+      "commit": "f712e50a1562233f31564af8218cef9fd1097b7c",
+      "exitCode": 0,
+      "result": {
+        "events": 450,
+        "verificationsPerSample": 10000,
+        "warmups": 1,
+        "samples": [
+          {
+            "replayMs": 9.078500000000076,
+            "verifyMs": 24.929399999999987
+          },
+          {
+            "replayMs": 5.5896000000000186,
+            "verifyMs": 23.910099999999943
+          },
+          {
+            "replayMs": 8.367600000000039,
+            "verifyMs": 18.69290000000001
+          }
+        ],
+        "medianReplayMs": 8.367600000000039,
+        "medianVerifyMs": 23.910099999999943
+      }
+    },
+    "repaired": {
+      "commit": "811ed0d3a2322c0f1c65726422ad6ae8ca0d2f0e",
+      "exitCode": 0,
+      "result": {
+        "events": 450,
+        "verificationsPerSample": 10000,
+        "warmups": 1,
+        "samples": [
+          {
+            "replayMs": 7.404600000000016,
+            "verifyMs": 32.94999999999999
+          },
+          {
+            "replayMs": 5.9669999999999845,
+            "verifyMs": 25.98309999999998
+          },
+          {
+            "replayMs": 6.1317000000000235,
+            "verifyMs": 24.736500000000035
+          }
+        ],
+        "medianReplayMs": 6.1317000000000235,
+        "medianVerifyMs": 25.98309999999998
+      }
+    },
+    "limitation": "Same synthetic workload, one warmup plus three samples, sequential processes on this Windows host; no claim about asymptotic behavior or production latency."
+  }
+}

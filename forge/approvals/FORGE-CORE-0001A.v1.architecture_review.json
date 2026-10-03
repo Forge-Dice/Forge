@@ -1,0 +1,21 @@
+{
+  "forgeApprovalRecord": 1,
+  "taskId": "FORGE-CORE-0001A",
+  "contractVersion": 1,
+  "contentHash": "af91442ec38f712076648da97464c887e4925819c13838afe1fd7923b8fc4c69",
+  "gate": "architecture_review",
+  "verdict": "approved",
+  "actor": {
+    "actorType": "human",
+    "provider": "human",
+    "model": null,
+    "label": "owner"
+  },
+  "recordedBy": {
+    "actorType": "ai_agent",
+    "provider": "anthropic",
+    "model": null,
+    "label": "night-run developer session"
+  },
+  "basis": "Owner pre-authorized the architecture decisions listed in contract section 2 in the night-run assignment of 2026-10-02 and asked the developer to treat that as the architecture review for this night. No line-by-line owner review of this exact text took place. Independent ChatGPT code review is still pending. No other reviewer identity is claimed."
+}
