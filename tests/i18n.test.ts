@@ -15,7 +15,7 @@ import { createWebApp } from "../src/play/web.ts";
 const CASES = Object.keys(PLAY_CASES) as PlayCaseName[];
 const INTERNAL_ID = /\b(?:case|person|location|item|event|evidence|proposition|conclusion|question|secret|red-herring|rule):[a-z0-9]/;
 const PLAYER_REF = /pr1_[0-9a-hjkmnp-tv-z]{16}/;
-const GERMAN = /[äöüß„]|\b(?:und|nicht|Fund|Aussage|Hinweis|Anklage)\b/;
+const GERMAN = /„|\b(?:und|nicht|der|die|das|Fund|Aussage|Hinweis|Anklage|Nein)\b/; // place names may keep umlauts
 const fixture = (name: PlayCaseName) => join("tests/fixtures", PLAY_CASES[name].dir);
 
 /** A player who only follows the English hints, typed into the English CLI commands. */
