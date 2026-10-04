@@ -391,9 +391,10 @@ export function createWebHandler(
     }
     if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp(lang));
     if (method === "GET" && url.pathname === "/sprache") {
-      // Only local paths: never redirect to another host.
+      // Only the app's own pages: never another host (a tab or newline after "/" is dropped by
+      // browsers, "/\t/evil" becomes "//evil"), and nothing writeHead would reject.
       const back = url.searchParams.get("zurueck") ?? "/";
-      const to = back.startsWith("/") && !back.startsWith("//") && !back.includes("\\") ? back : "/";
+      const to = /^\/(hilfe|fall\/[a-z0-9-]+)?$/.test(back) ? back : "/";
       const chosen = parseLang(url.searchParams.get("l")) ?? DEFAULT_LANG;
       return { status: 303, headers: { location: to, "set-cookie": `${LANG_COOKIE}=${chosen}; Path=/; Max-Age=31536000; SameSite=Lax` }, body: "" };
     }

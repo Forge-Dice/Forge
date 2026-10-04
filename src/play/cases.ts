@@ -75,12 +75,18 @@ export const LOCALE_FILES = ["public-content.json", "evidence-presentation.json"
 
 const readFixture = (c: PlayCase, name: string, lang: Lang = DEFAULT_LANG): unknown => {
   const localized = new URL(`${lang}/${name}`, fixtureDir(c));
-  const url = lang !== DEFAULT_LANG && (LOCALE_FILES as readonly string[]).includes(name) && existsSync(localized) ? localized : new URL(name, fixtureDir(c));
-  return JSON.parse(readFileSync(url, "utf8"));
+  const isLocale = lang !== DEFAULT_LANG && (LOCALE_FILES as readonly string[]).includes(name) && existsSync(new URL(`${lang}/public-content.json`, fixtureDir(c)));
+  // public-content.json marks the locale folder (the browser build embeds files, not folders).
+  // A locale folder must be complete: a missing file would mix German case text into English play.
+  if (isLocale && !existsSync(localized)) throw new Error(`Case ${c.dir}: ${lang}/${name} is missing`);
+  return JSON.parse(readFileSync(isLocale ? localized : new URL(name, fixtureDir(c)), "utf8"));
 };
 
 /** Languages a case has player text for: the default plus every locale folder. */
-export const caseLangs = (c: PlayCase): Lang[] => [DEFAULT_LANG, ...(["en"] as const).filter((l) => existsSync(new URL(`${l}/public-content.json`, fixtureDir(c))))];
+export const caseLangs = (c: PlayCase): Lang[] => [
+  DEFAULT_LANG,
+  ...(["en"] as const).filter((l) => LOCALE_FILES.every((f) => existsSync(new URL(`${l}/${f}`, fixtureDir(c))))),
+];
 
 /** The case list of the CLI: name, title and measured difficulty, one case per line. */
 export function caseListText(lang: Lang = DEFAULT_LANG): string {
