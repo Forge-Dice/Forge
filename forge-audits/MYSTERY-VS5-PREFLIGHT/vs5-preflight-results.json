@@ -1,0 +1,699 @@
+{
+  "baseline": "3d7545d843883418348004e68717399a64da7a7d",
+  "prototypeOnly": true,
+  "tests": 123,
+  "passed": 123,
+  "transcript": [
+    {
+      "kind": "started",
+      "phase": "active"
+    },
+    {
+      "kind": "investigation",
+      "seq": 1,
+      "discovered": [
+        "clue-garden"
+      ]
+    },
+    {
+      "kind": "investigation",
+      "seq": 2,
+      "discovered": []
+    },
+    {
+      "kind": "interrogation",
+      "seq": 3,
+      "observations": [
+        {
+          "speaker": "anna",
+          "claim": {
+            "kind": "personAt",
+            "person": "ben",
+            "location": "library",
+            "at": 300
+          },
+          "position": {
+            "kind": "asserts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "verdict",
+      "seq": 4,
+      "verdict": "not_solved"
+    },
+    {
+      "kind": "investigation",
+      "seq": 5,
+      "discovered": [
+        "clue-knife"
+      ]
+    },
+    {
+      "kind": "verdict",
+      "seq": 6,
+      "verdict": "solved"
+    }
+  ],
+  "final": {
+    "phase": "solved",
+    "events": 6,
+    "evidence": [
+      "clue-garden",
+      "clue-knife"
+    ],
+    "statements": 1,
+    "verdicts": [
+      "not_solved",
+      "solved"
+    ]
+  },
+  "roundtripEqual": true,
+  "saveBytes": 1622,
+  "limitations": [
+    "VS-1 uses existing parser oracle, not a production evaluator",
+    "VS-2 is mock access routing and synthetic safe release registry",
+    "VS-3 is not implemented; origin checks only model the historical contract",
+    "VS-4 is authored mock with one explicit bridge; general bridge validation missing",
+    "1000 events/1MiB are scratch limits, not proposed production limits",
+    "No resistance to rechecksummed valid edits or prefix truncation"
+  ],
+  "results": [
+    {
+      "id": "P001",
+      "name": "same log twice",
+      "status": "PASS"
+    },
+    {
+      "id": "P002",
+      "name": "step by step equals replay",
+      "status": "PASS"
+    },
+    {
+      "id": "P003",
+      "name": "save/load roundtrip",
+      "status": "PASS"
+    },
+    {
+      "id": "P004",
+      "name": "byte stable resave",
+      "status": "PASS"
+    },
+    {
+      "id": "P005",
+      "name": "parsed save deeply frozen",
+      "status": "PASS"
+    },
+    {
+      "id": "P006",
+      "name": "state and package deeply frozen",
+      "status": "PASS"
+    },
+    {
+      "id": "P007",
+      "name": "input action mutation detached",
+      "status": "PASS"
+    },
+    {
+      "id": "P008",
+      "name": "raw package mutation detached",
+      "status": "PASS"
+    },
+    {
+      "id": "P009",
+      "name": "wrong verdict then continue",
+      "status": "PASS"
+    },
+    {
+      "id": "P010",
+      "name": "correct verdict then terminal",
+      "status": "PASS"
+    },
+    {
+      "id": "P011",
+      "name": "empty log initial active",
+      "status": "PASS"
+    },
+    {
+      "id": "P012",
+      "name": "empty accusation valid not_solved",
+      "status": "PASS"
+    },
+    {
+      "id": "P013",
+      "name": "duplicate sequence rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P014",
+      "name": "first sequence 2 rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P015",
+      "name": "sequence gap rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P016",
+      "name": "negative sequence rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P017",
+      "name": "fractional sequence rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P018",
+      "name": "unsafe sequence rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P019",
+      "name": "unknown event rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P020",
+      "name": "derived output injected into event rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P021",
+      "name": "foreign investigation target rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P022",
+      "name": "wrong target kind rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P023",
+      "name": "unaware target rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P024",
+      "name": "duplicate investigation logged no discovery duplicate",
+      "status": "PASS"
+    },
+    {
+      "id": "P025",
+      "name": "no result investigation is valid event",
+      "status": "PASS"
+    },
+    {
+      "id": "P026",
+      "name": "all search types cannot unlock inaccessible clue",
+      "status": "PASS"
+    },
+    {
+      "id": "P027",
+      "name": "multiple evidence per action",
+      "status": "PASS"
+    },
+    {
+      "id": "P028",
+      "name": "stale access binding rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P029",
+      "name": "missing evidence access entry rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P030",
+      "name": "duplicate evidence access entry rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P031",
+      "name": "foreign evidence in access rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P032",
+      "name": "foreign NPC rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P033",
+      "name": "known person without NPC snapshot rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P034",
+      "name": "unknown question rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P035",
+      "name": "NPC before awareness rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P036",
+      "name": "repeated interrogation keeps one statement and two provenance sources",
+      "status": "PASS"
+    },
+    {
+      "id": "P037",
+      "name": "statement reference grants awareness explicitly",
+      "status": "PASS"
+    },
+    {
+      "id": "P038",
+      "name": "opposite reports retained without authoritative overwrite",
+      "status": "PASS"
+    },
+    {
+      "id": "P039",
+      "name": "untrusted mock receives no raw domain strings or truth",
+      "status": "PASS"
+    },
+    {
+      "id": "P040",
+      "name": "safe transcript contains no speaking IDs or truth fields",
+      "status": "PASS"
+    },
+    {
+      "id": "P041",
+      "name": "old raw snapshot cannot be projected with changed solution",
+      "status": "PASS"
+    },
+    {
+      "id": "P042",
+      "name": "solution-less NPC must be projected with null",
+      "status": "PASS"
+    },
+    {
+      "id": "P043",
+      "name": "partial shotgun accepted",
+      "status": "PASS"
+    },
+    {
+      "id": "P044",
+      "name": "complete shotgun rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P045",
+      "name": "negative requirement must be explicit",
+      "status": "PASS"
+    },
+    {
+      "id": "P046",
+      "name": "same truth same accusation changed solution different verdict",
+      "status": "PASS"
+    },
+    {
+      "id": "P047",
+      "name": "old saved session with original package keeps verdict",
+      "status": "PASS"
+    },
+    {
+      "id": "P048",
+      "name": "multiple wrong accusations allowed",
+      "status": "PASS"
+    },
+    {
+      "id": "P049",
+      "name": "invalid accusation context is technical failure",
+      "status": "PASS"
+    },
+    {
+      "id": "P050",
+      "name": "foreign claim person is technical failure",
+      "status": "PASS"
+    },
+    {
+      "id": "P051",
+      "name": "duplicate claim rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P052",
+      "name": "opposite claim polarity rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P053",
+      "name": "failed event leaves prior state unchanged",
+      "status": "PASS"
+    },
+    {
+      "id": "P054",
+      "name": "replay failure returns no partial state",
+      "status": "PASS"
+    },
+    {
+      "id": "P055",
+      "name": "changed truth package refuses old save",
+      "status": "PASS"
+    },
+    {
+      "id": "P056",
+      "name": "changed solution same revision refuses old save",
+      "status": "PASS"
+    },
+    {
+      "id": "P057",
+      "name": "changed access map refuses old save",
+      "status": "PASS"
+    },
+    {
+      "id": "P058",
+      "name": "changed NPC revision refuses old save",
+      "status": "PASS"
+    },
+    {
+      "id": "P059",
+      "name": "changed NPC content same revision refuses old save",
+      "status": "PASS"
+    },
+    {
+      "id": "P060",
+      "name": "changed dialogue refuses old save",
+      "status": "PASS"
+    },
+    {
+      "id": "P061",
+      "name": "changed initial awareness refuses old save",
+      "status": "PASS"
+    },
+    {
+      "id": "P062",
+      "name": "inconsistent authored projection bridge rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P063",
+      "name": "nonexistent alias backing ID rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P064",
+      "name": "duplicate player alias rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P065",
+      "name": "unknown initial alias rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P066",
+      "name": "truncated JSON rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P067",
+      "name": "unknown save schema rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P068",
+      "name": "unknown replay ruleset rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P069",
+      "name": "derived state injection rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P070",
+      "name": "stored verdict injection rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P071",
+      "name": "unknown package metadata rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P072",
+      "name": "corrupted checksum rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P073",
+      "name": "event payload changed without checksum rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P074",
+      "name": "middle event deletion without checksum rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P075",
+      "name": "tail event deletion without checksum rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P076",
+      "name": "event insertion without checksum rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P077",
+      "name": "swapped events without checksum rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P078",
+      "name": "duplicate event with checksum recomputed fails sequence",
+      "status": "PASS"
+    },
+    {
+      "id": "P079",
+      "name": "middle deletion with checksum recomputed fails sequence",
+      "status": "PASS"
+    },
+    {
+      "id": "P080",
+      "name": "swap without renumbering with checksum recomputed fails sequence",
+      "status": "PASS"
+    },
+    {
+      "id": "P081",
+      "name": "valid prefix deletion and recomputed checksum is UNDETECTABLE",
+      "status": "PASS"
+    },
+    {
+      "id": "P082",
+      "name": "valid action edit and recomputed checksum is NOT anti-cheat",
+      "status": "PASS"
+    },
+    {
+      "id": "P083",
+      "name": "resequenced commuting events with recomputed checksum accepted",
+      "status": "PASS"
+    },
+    {
+      "id": "P084",
+      "name": "solved then additional event rejected even with valid checksum",
+      "status": "PASS"
+    },
+    {
+      "id": "P085",
+      "name": "canonical save property reorder rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P086",
+      "name": "JSON duplicate key rejected by canonical framing",
+      "status": "PASS"
+    },
+    {
+      "id": "P087",
+      "name": "prototype key rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P088",
+      "name": "constructor key rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P089",
+      "name": "prototype remains unpolluted",
+      "status": "PASS"
+    },
+    {
+      "id": "P090",
+      "name": "null save rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P091",
+      "name": "trailing bytes rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P092",
+      "name": "trailing whitespace rejected by canonical policy",
+      "status": "PASS"
+    },
+    {
+      "id": "P093",
+      "name": "BOM rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P094",
+      "name": "one MiB scratch bound enforced",
+      "status": "PASS"
+    },
+    {
+      "id": "P095",
+      "name": "event count scratch bound enforced",
+      "status": "PASS"
+    },
+    {
+      "id": "P096",
+      "name": "investigations commute on evidence set, not full history",
+      "status": "PASS"
+    },
+    {
+      "id": "P097",
+      "name": "accusation order noncommutative",
+      "status": "PASS"
+    },
+    {
+      "id": "P098",
+      "name": "save checksum preserves event array order",
+      "status": "PASS"
+    },
+    {
+      "id": "P099",
+      "name": "truth and solution hashes unchanged by session work",
+      "status": "PASS"
+    },
+    {
+      "id": "P100",
+      "name": "semantic report reproducible and frozen",
+      "status": "PASS"
+    },
+    {
+      "id": "P101",
+      "name": "observations never become required conclusion truth",
+      "status": "PASS"
+    },
+    {
+      "id": "P102",
+      "name": "replay after caller failure remains deterministic",
+      "status": "PASS"
+    },
+    {
+      "id": "P103",
+      "name": "loaded solved session stays terminal",
+      "status": "PASS"
+    },
+    {
+      "id": "P104",
+      "name": "empty save roundtrip",
+      "status": "PASS"
+    },
+    {
+      "id": "P105",
+      "name": "claim property order irrelevant",
+      "status": "PASS"
+    },
+    {
+      "id": "P106",
+      "name": "player hypothesis never automatically learned as NPC statement",
+      "status": "PASS"
+    },
+    {
+      "id": "P107",
+      "name": "NPC local handles are context scoped",
+      "status": "PASS"
+    },
+    {
+      "id": "P108",
+      "name": "visible set changes shift handle index",
+      "status": "PASS"
+    },
+    {
+      "id": "P109",
+      "name": "no autonomous NPC temporal progression",
+      "status": "PASS"
+    },
+    {
+      "id": "P110",
+      "name": "81 length-four investigation logs roundtrip and replay",
+      "status": "PASS"
+    },
+    {
+      "id": "P111",
+      "name": "all six permutations preserve investigation discovery set",
+      "status": "PASS"
+    },
+    {
+      "id": "P112",
+      "name": "checksum binds package identity as well as events",
+      "status": "PASS"
+    },
+    {
+      "id": "P113",
+      "name": "falsified package digest rechecksummed still mismatches supplied package",
+      "status": "PASS"
+    },
+    {
+      "id": "P114",
+      "name": "strict nested action prototype key rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "P115",
+      "name": "foreign cause reference technical failure",
+      "status": "PASS"
+    },
+    {
+      "id": "P116",
+      "name": "event without resolution is technical failure not undetermined",
+      "status": "PASS"
+    },
+    {
+      "id": "P117",
+      "name": "known but inaccessible evidence cannot be direct investigation target",
+      "status": "PASS"
+    },
+    {
+      "id": "P118",
+      "name": "player private save is not a safe projection",
+      "status": "PASS"
+    },
+    {
+      "id": "P119",
+      "name": "snapshot array permutation conservatively changes scratch identity",
+      "status": "PASS"
+    },
+    {
+      "id": "P120",
+      "name": "untrusted conversation consumer receives only acts",
+      "status": "PASS"
+    },
+    {
+      "id": "P121",
+      "name": "projection original refs valid for modeled query-origin check",
+      "status": "PASS"
+    },
+    {
+      "id": "P122",
+      "name": "JSON-roundtripped handles fail modeled query-origin check",
+      "status": "PASS"
+    },
+    {
+      "id": "P123",
+      "name": "old projection refs fail new projection origin check",
+      "status": "PASS"
+    }
+  ]
+}
