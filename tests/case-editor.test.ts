@@ -7,8 +7,8 @@ import { join } from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { checkCaseFolder } from "../src/authoring/check-case.ts";
 import { applyEdits, caseSources, CaseWorkspace, editsFromForm, getAt } from "../src/play/editor.ts";
-import { renderEditor } from "../src/play/editor-page.ts";
 import { createWebServerApp } from "../src/play/web-server.ts";
+import { renderEditor } from "../src/play/editor-page.ts";
 
 // Case editor (/editor in play:web): working copies only, live check-case on a scratch copy, save
 // with automatic hash maintenance, and the repository's fixtures are never written.
@@ -98,6 +98,35 @@ describe("editor model", () => {
     ws.save(name, [{ kind: "act", file: "interrogation-ida.json", rule: 0, act: "decline", stance: null }]);
     const back = ws.preview(name, [{ kind: "act", file: "interrogation-ida.json", rule: 0, act: "answer", stance: null }])!;
     expect(back.check.problems).toContainEqual(expect.objectContaining({ file: "interrogation-ida.json", field: expect.stringMatching(/^rules\[0\]/), severity: "error" }));
+  });
+
+  it("answer and admission sentences: editable per question, empty removes, admission only where a confrontation exists", () => {
+    const ws = new CaseWorkspace(join(scratch, "sentences"));
+    const brief = caseSources().find((s) => s.key === "fixtures/brieffoeffner")!;
+    const name = ws.open(brief);
+    const dir = ws.dirOf(name)!;
+    const pc = () => json(dir, "public-content.json");
+    const ben = (pc().questionTexts as { npc: string; questionId: string }[]).findIndex((q) => q.npc === "person:ben" && q.questionId === "question:q01");
+    const page = renderEditor(name, dir, checkCaseFolder(dir), 0, null);
+    expect(page).toContain(`name="f:public-content.json:questionTexts[${ben}].admission"`);
+    // Ben has no confrontation on q02: no admission field there.
+    const q02 = (pc().questionTexts as { npc: string; questionId: string }[]).findIndex((q) => q.npc === "person:ben" && q.questionId === "question:q02");
+    expect(page).toContain(`name="f:public-content.json:questionTexts[${q02}].answer"`);
+    expect(page).not.toContain(`name="f:public-content.json:questionTexts[${q02}].admission"`);
+    const saved = ws.save(name, [
+      { kind: "field", file: "public-content.json", field: `questionTexts[${ben}].admission`, value: "Also gut, ich war doch in der Bibliothek." },
+      { kind: "field", file: "public-content.json", field: `questionTexts[${q02}].answer`, value: "" },
+    ])!;
+    expect(saved.apply.errors).toEqual([]);
+    expect(saved.check.ok).toBe(true);
+    expect(pc().questionTexts[ben].admission).toBe("Also gut, ich war doch in der Bibliothek.");
+    expect("answer" in pc().questionTexts[q02]).toBe(false);
+    // The translation cannot keep a sentence the German case no longer has.
+    expect("answer" in json(join(dir, "en"), "public-content.json").questionTexts[q02]).toBe(false);
+    // An empty field for a sentence that does not exist is no change; a new one is created.
+    expect(ws.save(name, [{ kind: "field", file: "public-content.json", field: `questionTexts[${q02}].answer`, value: "" }])!.apply.applied).toBe(0);
+    ws.save(name, [{ kind: "field", file: "public-content.json", field: `questionTexts[${q02}].answer`, value: "Nein, das stimmt nicht." }]);
+    expect(pc().questionTexts[q02].answer).toBe("Nein, das stimmt nicht.");
   });
 
   it("a generated case lands in the working folder and is valid", () => {

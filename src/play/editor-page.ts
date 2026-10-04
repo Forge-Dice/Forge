@@ -111,7 +111,15 @@ function interrogationSection(check: CaseCheck, dir: string, pc: Json, labels: L
       const rules = (profile.rules ?? [])
         .map((rule: Json, i: number) => {
           const q = (pc?.questionTexts ?? []).findIndex((x: Json) => x.npc === profile.npcId && x.questionId === rule.questionId);
-          const question = q < 0 ? `<p class="muted">${escape(I.noPlayerText(rule.questionId))}</p>` : control(check, lang, "public-content.json", `questionTexts[${q}].text`, I.question(String(rule.questionId).replace(/^question:/, "")), String(pc.questionTexts[q].text));
+          const question =
+            q < 0
+              ? `<p class="muted">${escape(I.noPlayerText(rule.questionId))}</p>`
+              : control(check, lang, "public-content.json", `questionTexts[${q}].text`, I.question(String(rule.questionId).replace(/^question:/, "")), String(pc.questionTexts[q].text)) +
+                // Own sentences instead of yes/no; giving in only where a confrontation can break the answer.
+                control(check, lang, "public-content.json", `questionTexts[${q}].answer`, I.answerSentence, String(pc.questionTexts[q].answer ?? "")) +
+                ((profile.confrontations ?? []).some((c: Json) => c.questionId === rule.questionId)
+                  ? control(check, lang, "public-content.json", `questionTexts[${q}].admission`, I.admissionSentence, String(pc.questionTexts[q].admission ?? ""))
+                  : "");
           const attrs = (extra: string) => `data-file="${escape(file)}" data-field="rules[${i}]"${extra}`;
           const what =
             rule.act === "decline"

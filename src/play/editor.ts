@@ -85,17 +85,21 @@ export function getAt(json: unknown, field: string): unknown {
   return keys === null ? undefined : keys.reduce<unknown>((o, k) => (typeof o === "object" && o !== null ? (o as Record<string | number, unknown>)[k] : undefined), json);
 }
 
-/** Sets a string value; an empty value removes an optional top-level text (the epilogue). */
+/** Optional texts: an empty value removes them, a value on a missing one creates it. */
+const OPTIONAL_TEXT = /^(epilogue|questionTexts\[\d{1,4}\]\.(answer|admission))$/;
+
+/** Sets a string value; an empty value removes an optional text (epilogue, answer, admission). */
 function setAt(json: unknown, field: string, value: string): boolean {
   const keys = parsePath(field);
   if (keys === null) return false;
   const holder = keys.slice(0, -1).reduce<unknown>((o, k) => (typeof o === "object" && o !== null ? (o as Record<string | number, unknown>)[k] : undefined), json);
   const last = keys.at(-1)!;
+  const optional = OPTIONAL_TEXT.test(field) && typeof holder === "object" && holder !== null && !Array.isArray(holder);
   if (typeof holder !== "object" || holder === null || typeof (holder as Record<string | number, unknown>)[last] !== "string") {
-    if (field === "epilogue" && typeof holder === "object" && holder !== null && value.trim() !== "") return void ((holder as Record<string, unknown>).epilogue = value), true;
+    if (optional && value.trim() !== "") return void ((holder as Record<string, unknown>)[last as string] = value), true;
     return false;
   }
-  if (field === "epilogue" && value.trim() === "") delete (holder as Record<string, unknown>).epilogue;
+  if (optional && value.trim() === "") delete (holder as Record<string, unknown>)[last as string];
   else (holder as Record<string | number, unknown>)[last] = value;
   return true;
 }
@@ -166,7 +170,7 @@ export function applyEdits(dir: string, edits: readonly Edit[], lang: Lang = DEF
       replaced.add(edit.file);
     } else if (edit.kind === "field") {
       const before = getAt(json(edit.file), edit.field);
-      if (before === edit.value || (before === undefined && edit.field === "epilogue" && edit.value.trim() === "")) continue;
+      if (before === edit.value || (before === undefined && OPTIONAL_TEXT.test(edit.field) && edit.value.trim() === "")) continue;
       if (!setAt(json(edit.file), edit.field, edit.value)) {
         errors.push({ file: edit.file, field: edit.field, message: t.fieldNotEditable });
         continue;
@@ -256,6 +260,23 @@ export function syncLocales(dir: string): void {
   }
 }
 
+/**
+ * An optional base text (answer, admission, epilogue) emptied in the German case cannot stay in a
+ * translation: it is removed there too. Changed texts stay in the translation (check-case flags them).
+ */
+function dropRemovedTranslations(dir: string, edits: readonly Edit[]): void {
+  const removed = edits.filter((e): e is Extract<Edit, { kind: "field" }> => e.kind === "field" && e.file === "public-content.json" && OPTIONAL_TEXT.test(e.field) && e.value.trim() === "");
+  if (removed.length === 0) return;
+  for (const lang of caseLocales(dir)) {
+    const file = join(dir, lang, "public-content.json");
+    if (!existsSync(file)) continue;
+    const pc = JSON.parse(readFileSync(file, "utf8"));
+    let changed = false;
+    for (const e of removed) if (typeof getAt(pc, e.field) === "string") changed = setAt(pc, e.field, "") || changed;
+    if (changed) writeFileSync(file, `${JSON.stringify(pc, null, 2)}\n`);
+  }
+}
+
 /** Whether edits touch a locale variant (a translation was edited). */
 const translates = (edits: readonly Edit[]) => edits.some((e) => /^[a-z]{2}\//.test(e.file));
 
@@ -306,6 +327,7 @@ export class CaseWorkspace {
       const copy = join(scratch, name);
       cpSync(dir, copy, { recursive: true });
       const apply = applyEdits(copy, edits, lang);
+      dropRemovedTranslations(copy, edits);
       const check = checkAndFix(copy, translates(edits));
       return { check: { ...check, dir }, apply, ...(inspect === undefined ? {} : { inspected: inspect(copy, check) }) };
     } finally {
@@ -351,6 +373,7 @@ export class CaseWorkspace {
     const dir = this.dirOf(name);
     if (dir === null) return null;
     const apply = applyEdits(dir, edits, lang);
+    dropRemovedTranslations(dir, edits);
     return { check: checkAndFix(dir, translates(edits)), apply };
   }
 }
