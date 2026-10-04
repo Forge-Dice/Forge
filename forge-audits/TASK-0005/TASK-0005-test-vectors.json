@@ -1,0 +1,940 @@
+{
+  "artifact": "TASK-0005 hand-authored review vectors",
+  "status": "planned_not_executed_against_TASK_0005",
+  "contractCommit": "0453f85ad2ccb557a1f215e8bb912655597588fa",
+  "dependencyCommit": "1de7efeefccb8c0ab130b582d1389f7fc0f5ebf8",
+  "instructions": [
+    "Review/test planning data only; no TASK-0005 evaluator exists.",
+    "Create world() from tests/npc-knowledge.fixture.ts, then npcInput and parseNpcKnowledge/projectNpcKnowledge with the following recipe.",
+    "Context pointers in query/policy recipes select actual original objects from a successful projection; never reconstruct VisibleRefs from the expected JSON.",
+    "expectedContext and expectedResult are comparison oracles, not inputs to createDialoguePolicyEngine.",
+    "Unless specified: policy defaultAction=answer, rules=[]; query kind=ask_about_claim.",
+    "queryClaimAt selects the original claim at that JSON pointer. shallowQuery overrides only scalars and preserves original entity-ref objects.",
+    "ruleSubjectAt selects the original statement subject; action is the single rule. Defaults remain answer.",
+    "All expected results are written explicitly; do not calculate expected values using the implementation under test."
+  ],
+  "fixtureRecipe": {
+    "awareness": [
+      {
+        "kind": "person",
+        "slug": "ben"
+      },
+      {
+        "kind": "event",
+        "slug": "ben-kills-clara"
+      },
+      {
+        "kind": "evidence",
+        "slug": "bloody-knife"
+      }
+    ],
+    "attitudes": [
+      {
+        "kind": "proposition",
+        "slug": "ben-at-library",
+        "stance": {
+          "kind": "knowledge",
+          "value": true
+        }
+      },
+      {
+        "kind": "proposition",
+        "slug": "ben-in-killing",
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "kind": "proposition",
+        "slug": "knife-used",
+        "stance": {
+          "kind": "belief",
+          "value": false
+        }
+      },
+      {
+        "kind": "conclusion",
+        "slug": "argument-caused-killing",
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "kind": "conclusion",
+        "slug": "ben-responsible",
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "kind": "conclusion",
+        "slug": "ben-role-actor",
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "kind": "conclusion",
+        "slug": "killing-intended",
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "kind": "conclusion",
+        "slug": "killing-ordinary",
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "kind": "conclusion",
+        "slug": "nobody-responsible",
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      }
+    ]
+  },
+  "expectedContext": {
+    "schemaVersion": 1,
+    "asOf": 500,
+    "self": {
+      "kind": "person",
+      "index": 1
+    },
+    "awareness": [
+      {
+        "kind": "person",
+        "index": 2
+      },
+      {
+        "kind": "event",
+        "index": 2
+      },
+      {
+        "kind": "evidence",
+        "index": 1
+      }
+    ],
+    "attitudes": [
+      {
+        "subject": {
+          "kind": "proposition",
+          "index": 1
+        },
+        "claim": {
+          "kind": "personAt",
+          "person": {
+            "kind": "person",
+            "index": 2
+          },
+          "location": {
+            "kind": "location",
+            "index": 1
+          },
+          "at": 300
+        },
+        "stance": {
+          "kind": "knowledge",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "proposition",
+          "index": 2
+        },
+        "claim": {
+          "kind": "eventHasParticipant",
+          "event": {
+            "kind": "event",
+            "index": 2
+          },
+          "person": {
+            "kind": "person",
+            "index": 2
+          }
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "proposition",
+          "index": 3
+        },
+        "claim": {
+          "kind": "eventHasItem",
+          "event": {
+            "kind": "event",
+            "index": 2
+          },
+          "item": {
+            "kind": "item",
+            "index": 1
+          }
+        },
+        "stance": {
+          "kind": "belief",
+          "value": false
+        }
+      },
+      {
+        "subject": {
+          "kind": "conclusion",
+          "index": 1
+        },
+        "claim": {
+          "kind": "eventCausedEvent",
+          "causeEvent": {
+            "kind": "event",
+            "index": 1
+          },
+          "event": {
+            "kind": "event",
+            "index": 2
+          }
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "conclusion",
+          "index": 2
+        },
+        "claim": {
+          "kind": "personResponsibleForEvent",
+          "person": {
+            "kind": "person",
+            "index": 2
+          },
+          "event": {
+            "kind": "event",
+            "index": 2
+          }
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "conclusion",
+          "index": 3
+        },
+        "claim": {
+          "kind": "personRoleForEvent",
+          "person": {
+            "kind": "person",
+            "index": 2
+          },
+          "event": {
+            "kind": "event",
+            "index": 2
+          },
+          "role": "direct_actor"
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "conclusion",
+          "index": 4
+        },
+        "claim": {
+          "kind": "eventIntent",
+          "event": {
+            "kind": "event",
+            "index": 2
+          },
+          "value": "intended"
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "conclusion",
+          "index": 5
+        },
+        "claim": {
+          "kind": "eventMechanism",
+          "event": {
+            "kind": "event",
+            "index": 2
+          },
+          "value": "ordinary"
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "conclusion",
+          "index": 6
+        },
+        "claim": {
+          "kind": "noPersonResponsibleForEvent",
+          "event": {
+            "kind": "event",
+            "index": 2
+          }
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      }
+    ]
+  },
+  "vectors": [
+    {
+      "id": "V01",
+      "queryClaimAt": "/attitudes/0/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "proposition",
+              "index": 1
+            },
+            "claim": {
+              "kind": "personAt",
+              "person": {
+                "kind": "person",
+                "index": 2
+              },
+              "location": {
+                "kind": "location",
+                "index": 1
+              },
+              "at": 300
+            },
+            "value": true,
+            "commitment": "unqualified"
+          }
+        }
+      }
+    },
+    {
+      "id": "V02",
+      "queryClaimAt": "/attitudes/1/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "proposition",
+              "index": 2
+            },
+            "claim": {
+              "kind": "eventHasParticipant",
+              "event": {
+                "kind": "event",
+                "index": 2
+              },
+              "person": {
+                "kind": "person",
+                "index": 2
+              }
+            },
+            "value": true,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V03",
+      "queryClaimAt": "/attitudes/2/claim",
+      "note": "Objectively true item proposition, sincerely believed false; no objective-status lookup.",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "proposition",
+              "index": 3
+            },
+            "claim": {
+              "kind": "eventHasItem",
+              "event": {
+                "kind": "event",
+                "index": 2
+              },
+              "item": {
+                "kind": "item",
+                "index": 1
+              }
+            },
+            "value": false,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V04",
+      "queryClaimAt": "/attitudes/3/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "conclusion",
+              "index": 1
+            },
+            "claim": {
+              "kind": "eventCausedEvent",
+              "causeEvent": {
+                "kind": "event",
+                "index": 1
+              },
+              "event": {
+                "kind": "event",
+                "index": 2
+              }
+            },
+            "value": true,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V05",
+      "queryClaimAt": "/attitudes/4/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "conclusion",
+              "index": 2
+            },
+            "claim": {
+              "kind": "personResponsibleForEvent",
+              "person": {
+                "kind": "person",
+                "index": 2
+              },
+              "event": {
+                "kind": "event",
+                "index": 2
+              }
+            },
+            "value": true,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V06",
+      "queryClaimAt": "/attitudes/5/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "conclusion",
+              "index": 3
+            },
+            "claim": {
+              "kind": "personRoleForEvent",
+              "person": {
+                "kind": "person",
+                "index": 2
+              },
+              "event": {
+                "kind": "event",
+                "index": 2
+              },
+              "role": "direct_actor"
+            },
+            "value": true,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V07",
+      "queryClaimAt": "/attitudes/6/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "conclusion",
+              "index": 4
+            },
+            "claim": {
+              "kind": "eventIntent",
+              "event": {
+                "kind": "event",
+                "index": 2
+              },
+              "value": "intended"
+            },
+            "value": true,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V08",
+      "queryClaimAt": "/attitudes/7/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "conclusion",
+              "index": 5
+            },
+            "claim": {
+              "kind": "eventMechanism",
+              "event": {
+                "kind": "event",
+                "index": 2
+              },
+              "value": "ordinary"
+            },
+            "value": true,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V09",
+      "queryClaimAt": "/attitudes/8/claim",
+      "note": "Canonical no-person conclusion is false, but sincere belief is true.",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "conclusion",
+              "index": 6
+            },
+            "claim": {
+              "kind": "noPersonResponsibleForEvent",
+              "event": {
+                "kind": "event",
+                "index": 2
+              }
+            },
+            "value": true,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V10",
+      "queryClaimAt": "/attitudes/0/claim",
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "invert",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "deceptive",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "proposition",
+              "index": 1
+            },
+            "claim": {
+              "kind": "personAt",
+              "person": {
+                "kind": "person",
+                "index": 2
+              },
+              "location": {
+                "kind": "location",
+                "index": 1
+              },
+              "at": 300
+            },
+            "value": false,
+            "commitment": "unqualified"
+          }
+        }
+      }
+    },
+    {
+      "id": "V11",
+      "queryClaimAt": "/attitudes/2/claim",
+      "ruleSubjectAt": "/attitudes/2/subject",
+      "action": "invert",
+      "note": "Intentional negation of a mistaken belief happens to match objective truth; still deceptive.",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "deceptive",
+          "act": {
+            "kind": "assert",
+            "subject": {
+              "kind": "proposition",
+              "index": 3
+            },
+            "claim": {
+              "kind": "eventHasItem",
+              "event": {
+                "kind": "event",
+                "index": 2
+              },
+              "item": {
+                "kind": "item",
+                "index": 1
+              }
+            },
+            "value": true,
+            "commitment": "belief"
+          }
+        }
+      }
+    },
+    {
+      "id": "V12",
+      "queryClaimAt": "/attitudes/0/claim",
+      "shallowQuery": {
+        "at": 301
+      },
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "claim_ignorance"
+          }
+        }
+      }
+    },
+    {
+      "id": "V13",
+      "queryClaimAt": "/attitudes/0/claim",
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "feign_ignorance",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "deceptive",
+          "act": {
+            "kind": "claim_ignorance"
+          }
+        }
+      }
+    },
+    {
+      "id": "V14",
+      "queryClaimAt": "/attitudes/0/claim",
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "refuse",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "withholding",
+          "act": {
+            "kind": "refuse"
+          }
+        }
+      },
+      "defaultAction": "refuse"
+    },
+    {
+      "id": "V15",
+      "queryClaimAt": "/attitudes/0/claim",
+      "shallowQuery": {
+        "at": 301
+      },
+      "defaultAction": "refuse",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "withholding",
+          "act": {
+            "kind": "refuse"
+          }
+        }
+      },
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "refuse"
+    },
+    {
+      "id": "V16",
+      "queryClaimAt": "/attitudes/0/claim",
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "evade",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "withholding",
+          "act": {
+            "kind": "evade"
+          }
+        }
+      },
+      "defaultAction": "evade"
+    },
+    {
+      "id": "V17",
+      "queryClaimAt": "/attitudes/0/claim",
+      "shallowQuery": {
+        "at": 301
+      },
+      "defaultAction": "evade",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "withholding",
+          "act": {
+            "kind": "evade"
+          }
+        }
+      },
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "evade"
+    },
+    {
+      "id": "V18",
+      "fixtureStanceOverride": {
+        "attitude": 0,
+        "stance": {
+          "kind": "uncertain",
+          "leaning": null
+        }
+      },
+      "queryClaimAt": "/attitudes/0/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "express_uncertainty",
+            "subject": {
+              "kind": "proposition",
+              "index": 1
+            },
+            "claim": {
+              "kind": "personAt",
+              "person": {
+                "kind": "person",
+                "index": 2
+              },
+              "location": {
+                "kind": "location",
+                "index": 1
+              },
+              "at": 300
+            },
+            "leaning": null
+          }
+        }
+      }
+    },
+    {
+      "id": "V19",
+      "fixtureStanceOverride": {
+        "attitude": 0,
+        "stance": {
+          "kind": "uncertain",
+          "leaning": true
+        }
+      },
+      "queryClaimAt": "/attitudes/0/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "express_uncertainty",
+            "subject": {
+              "kind": "proposition",
+              "index": 1
+            },
+            "claim": {
+              "kind": "personAt",
+              "person": {
+                "kind": "person",
+                "index": 2
+              },
+              "location": {
+                "kind": "location",
+                "index": 1
+              },
+              "at": 300
+            },
+            "leaning": true
+          }
+        }
+      }
+    },
+    {
+      "id": "V20",
+      "fixtureStanceOverride": {
+        "attitude": 0,
+        "stance": {
+          "kind": "uncertain",
+          "leaning": false
+        }
+      },
+      "queryClaimAt": "/attitudes/0/claim",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "express_uncertainty",
+            "subject": {
+              "kind": "proposition",
+              "index": 1
+            },
+            "claim": {
+              "kind": "personAt",
+              "person": {
+                "kind": "person",
+                "index": 2
+              },
+              "location": {
+                "kind": "location",
+                "index": 1
+              },
+              "at": 300
+            },
+            "leaning": false
+          }
+        }
+      }
+    },
+    {
+      "id": "V21",
+      "queryClaimAt": "/attitudes/0/claim",
+      "shallowQuery": {
+        "at": 301
+      },
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "feign_ignorance",
+      "note": "Same policy as V13; only query differs. Honest/deceptive ignorance have byte-equal Acts.",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "claim_ignorance"
+          }
+        }
+      }
+    },
+    {
+      "id": "V22",
+      "queryClaimAt": "/attitudes/0/claim",
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "refuse",
+      "note": "Default answer: refusal deliberately distinguishable from absence in V23.",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "withholding",
+          "act": {
+            "kind": "refuse"
+          }
+        }
+      }
+    },
+    {
+      "id": "V23",
+      "queryClaimAt": "/attitudes/0/claim",
+      "shallowQuery": {
+        "at": 301
+      },
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "refuse",
+      "note": "Same policy as V22; existence hint documented, not denied.",
+      "expectedResult": {
+        "success": true,
+        "decision": {
+          "intent": "sincere",
+          "act": {
+            "kind": "claim_ignorance"
+          }
+        }
+      }
+    }
+  ],
+  "contractVersion": 2,
+  "negativeVectors": [
+    {
+      "id": "B1-refuse",
+      "queryClaimAt": "/attitudes/0/claim",
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "feign_ignorance",
+      "defaultAction": "refuse",
+      "expectedStage": "policy_parse",
+      "expectedSuccess": false,
+      "expectedIssuePath": [
+        "rules",
+        0,
+        "action"
+      ]
+    },
+    {
+      "id": "B1-evade",
+      "queryClaimAt": "/attitudes/0/claim",
+      "ruleSubjectAt": "/attitudes/0/subject",
+      "action": "feign_ignorance",
+      "defaultAction": "evade",
+      "expectedStage": "policy_parse",
+      "expectedSuccess": false,
+      "expectedIssuePath": [
+        "rules",
+        0,
+        "action"
+      ]
+    }
+  ]
+}
