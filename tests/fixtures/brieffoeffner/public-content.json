@@ -121,42 +121,51 @@
     {
       "npc": "person:anna",
       "questionId": "question:q01",
-      "text": "War Ben bei Claras Tod dabei?"
+      "text": "War Ben bei Claras Tod dabei?",
+      "answer": "Ich glaube schon. Ben war in der Nähe, ich habe so ein Gefühl."
     },
     {
       "npc": "person:anna",
       "questionId": "question:q02",
-      "text": "Waren Sie bei Claras Tod dabei?"
+      "text": "Waren Sie bei Claras Tod dabei?",
+      "answer": "Ich ... ich weiß es nicht. Ich weiß nicht einmal, wann es genau passiert ist."
     },
     {
       "npc": "person:anna",
       "questionId": "question:q04",
-      "text": "Waren Sie um 20:25 im Garten?"
+      "text": "Waren Sie um 20:25 im Garten?",
+      "answer": "Ja, um 20:25 war ich draußen im Garten."
     },
     {
       "npc": "person:anna",
       "questionId": "question:q05",
-      "text": "Waren Sie um 20:25 in der Bibliothek?"
+      "text": "Waren Sie um 20:25 in der Bibliothek?",
+      "answer": "Nein, in der Bibliothek war ich da nicht."
     },
     {
       "npc": "person:ben",
       "questionId": "question:q01",
-      "text": "Waren Sie bei Claras Tod dabei?"
+      "text": "Waren Sie bei Claras Tod dabei?",
+      "answer": "Nein. Ich war nicht dabei, das schwöre ich Ihnen.",
+      "admission": "Also gut. Ja, ich war dabei, als Clara starb."
     },
     {
       "npc": "person:ben",
       "questionId": "question:q02",
-      "text": "War Anna bei Claras Tod dabei?"
+      "text": "War Anna bei Claras Tod dabei?",
+      "answer": "Ja, Anna war dabei. Fragen Sie sie doch selbst."
     },
     {
       "npc": "person:ben",
       "questionId": "question:q03",
-      "text": "Wurde Clara mit dem Brieföffner getötet?"
+      "text": "Wurde Clara mit dem Brieföffner getötet?",
+      "answer": "Dazu sage ich ohne meinen Anwalt kein Wort."
     },
     {
       "npc": "person:ben",
       "questionId": "question:q04",
-      "text": "War Anna um 20:25 im Garten?"
+      "text": "War Anna um 20:25 im Garten?",
+      "answer": "Ja, Anna war um 20:25 im Garten."
     }
   ],
   "publicRules": [

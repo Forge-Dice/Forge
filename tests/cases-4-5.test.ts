@@ -106,11 +106,11 @@ describe("Die Hüttenkasse", () => {
     expect(say("a")).not.toContain("Tobias Wenger");
     expect(pick("a", "Lukas Brandl")).toContain("noch nicht");
     expect(pick("u", "Hüttenbuch")).toContain("Tobias Wenger war um 21:40:00 am Ort „Winterraum“");
-    expect(pick("f", "Haben Sie um 23:10 im Funkraum gefunkt?")).toContain("„Ja.“");
+    expect(pick("f", "Haben Sie um 23:10 im Funkraum gefunkt?")).toContain("Um 23:10 hab ich im Funkraum gefunkt.");
     expect(pick("u", "Funkgerät")).toContain("Johanna Pichler war um 23:10:00 am Ort „Funkraum“");
     expect(pick("u", "Sonnenterrasse")).toContain("Intervallmodus");
     expect(pick("u", "Gerds Kamera")).toContain("Mira Hofer war um 23:10:00 am Ort „Sonnenterrasse“");
-    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("„Nein.“");
+    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("ich bin den ganzen Abend im Winterraum geblieben");
     const solved = pick("a", "Tobias Wenger");
     expect(solved).toContain("Fall gelöst");
     expect(solved).toContain("=== Auflösung ===");
@@ -121,10 +121,10 @@ describe("Die Hüttenkasse", () => {
     pick("u", "Gaststube");
     pick("u", "Hüttenbuch");
     expect(pick("u", "Winterraum")).toContain("Geldbanderole");
-    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("„Nein.“");
+    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("ich bin den ganzen Abend im Winterraum geblieben");
     expect(pick("v", "vorhalten: Steigfelle")).not.toContain("gibt nach");
-    expect(pick("v", "vorhalten: Banderole")).toContain("gibt nach: „Ja.“");
-    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("„Ja.“");
+    expect(pick("v", "vorhalten: Banderole")).toContain("gibt nach: „Gut, ja. Um 23:10 war ich in der Gaststube.“");
+    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("„Gut, ja. Um 23:10 war ich in der Gaststube.“");
   });
 
   it("Tobias can only be questioned once the winter room is known", () => {
@@ -182,7 +182,7 @@ describe("Der Nachtzug nach Triest", () => {
     expect(pick("u", "Person untersuchen: Janek")).toContain("Janek Novak war um 01:20:00 am Ort „Bahnsteig Villach Hbf“");
     expect(pick("u", "Person untersuchen: Felix")).toContain("Felix Roth war um 01:12:00 am Ort „Liegewagen“");
     expect(say("u")).not.toContain("Türterminal");
-    expect(pick("f", "Dora Lenz: Waren Sie um 01:20")).toContain("„Ja.“");
+    expect(pick("f", "Dora Lenz: Waren Sie um 01:20")).toContain("Ja, ich hatte mich eingeschlossen.");
     expect(pick("u", "Türterminal")).toContain("Dora Lenz war um 01:20:00 am Ort „Abteil 6“");
     expect(pick("a", "Bruno Kessler")).toContain("noch nicht");
     expect(pick("a", "Clara Mai")).toContain("Fall gelöst");
@@ -192,11 +192,11 @@ describe("Der Nachtzug nach Triest", () => {
 describe("Der Nachtzug nach Triest: Clara's lie", () => {
   it("Clara claims the dining car; the cash journal breaks her story", () => {
     const { pick } = player("nachtzug");
-    expect(pick("f", "Clara Mai: Waren Sie um 01:20 im Speisewagen?")).toContain("„Ja.“");
+    expect(pick("f", "Clara Mai: Waren Sie um 01:20 im Speisewagen?")).toContain("Felix hat mich doch gesehen.");
     pick("u", "Abteil 7");
     expect(pick("v", "vorhalten: Weinkorken")).not.toContain("gibt nach");
     pick("u", "Speisewagen");
-    expect(pick("v", "vorhalten: Kassenjournal")).toContain("gibt nach: „Nein.“");
+    expect(pick("v", "vorhalten: Kassenjournal")).toContain("gibt nach: „Nein. Ich war um 01:20 nicht im Speisewagen.“");
   });
 });
 

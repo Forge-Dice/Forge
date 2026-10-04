@@ -74,8 +74,9 @@ describe("existing cases stay valid unchanged", () => {
     const v1 = resolveCasePackage({ ...playPackageInput(PLAY_CASES.vitrine), rulesetVersion: "mystery-session-v1" }, refSource(playPackageInput(PLAY_CASES.vitrine).truth, PLAY_CASES.vitrine.salt));
     expect(v1.ok && v1.package.identity).toEqual({
       schemaVersion: 1,
-      // Re-pinned after the editorial pass on the Vitrine player texts (LEKTORAT); before: b1dd6757….
-      packageHash: "561afd4a19199b77957bf049c3e508036390b439d38f1887dcf8c56db921dfc2",
+      // Re-pinned for the Vitrine answer sentences (ANSWER-TEXT); before: 561afd4a… (LEKTORAT), b1dd6757….
+      // Without the answer fields the hash is unchanged (tests/answer-text.test.ts).
+      packageHash: "d2eb05de4134788811d594ffe1301893d1212d597a828b290fa543835a4a9254",
       rulesetVersion: "mystery-session-v1",
     });
   });
@@ -129,7 +130,7 @@ describe("the player never sees a lie marker", () => {
     const listing = command(game, "f").text;
     const line = listing.split("\n").find((l) => l.includes("Ben") && l.includes("Waren Sie bei Claras Tod dabei?"))!;
     const step = command(game, `f ${line.trim().split(".")[0]}`);
-    expect(step.text).toContain("„Nein.“");
+    expect(step.text).toContain("„Nein. Ich war nicht dabei, das schwöre ich Ihnen.“");
     expect(step.text).not.toMatch(/lüg|lie\b|falsch/i);
   });
 });

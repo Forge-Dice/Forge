@@ -89,7 +89,7 @@ describe("npm run play -- leuchtfeuer", () => {
 
   it("Ole's answer is a second way to learn of Knut and the west beach", () => {
     const { pick, say } = player();
-    expect(pick("f", "Lag heute Nacht ein fremdes Boot")).toContain("„Ja.“");
+    expect(pick("f", "Lag heute Nacht ein fremdes Boot")).toContain("Keins von hier.");
     expect(say("u")).toContain("Weststrand");
     expect(say("a")).toContain("Knut Sievers");
   });
@@ -99,18 +99,18 @@ describe("npm run play -- leuchtfeuer", () => {
     expect(pick("u", "Laternenraum")).toContain("Meerschaumpfeife");
     expect(pick("f", "Marlene Voss: War Hinrich Paulsen")).toContain("Ich glaube schon");
     expect(pick("a", "Hinrich Paulsen")).toContain("noch nicht");
-    expect(pick("f", "Ole Brodersen: Waren Sie um 02:00 zu Hause?")).toContain("„Ja.“");
+    expect(pick("f", "Ole Brodersen: Waren Sie um 02:00 zu Hause?")).toContain("Klar war ich zu Hause.");
     pick("u", "Weststrand");
-    expect(pick("f", "Jasper Kühl: Waren Sie um 01:00 am Weststrand?")).toContain("„Nein.“");
+    expect(pick("f", "Jasper Kühl: Waren Sie um 01:00 am Weststrand?")).toContain("Um eins habe ich geschlafen.");
     expect(pick("v", "vorhalten: Schlauchboot")).not.toContain("gibt nach");
-    expect(pick("v", "Jasper Kühl zu „Waren Sie um 01:00 am Weststrand?“ vorhalten: Visitenkarte")).toContain("gibt nach: „Ja.“");
+    expect(pick("v", "Jasper Kühl zu „Waren Sie um 01:00 am Weststrand?“ vorhalten: Visitenkarte")).toContain("gibt nach: „Also schön. Ja, um eins war ich am Weststrand.“");
     expect(pick("u", "Fährhaus")).toContain("Hinrich Paulsen war um 01:45:00 am Ort „Fährhaus“");
     expect(pick("u", "Telefon")).toContain("Jasper Kühl war um 02:03:00 am Ort „Fährhaus“");
     pick("u", "Hafen");
     expect(pick("u", "Pegelkamera")).toContain("Ole Brodersen war um 02:00:00 am Ort „Hafen“");
-    expect(pick("v", "Ole Brodersen zu „Waren Sie um 02:00 zu Hause?“ vorhalten: Pegelfoto")).toContain("gibt nach: „Nein.“");
+    expect(pick("v", "Ole Brodersen zu „Waren Sie um 02:00 zu Hause?“ vorhalten: Pegelfoto")).toContain("gibt nach: „Na gut. Nee, um zwei war ich nicht zu Hause.“");
     expect(pick("u", "Vogelwarte")).toContain("Marlene Voss war um 02:00:00 am Ort „Vogelwarte“");
-    expect(pick("f", "Knut Sievers: Waren Sie")).toContain("Dazu sage ich nichts");
+    expect(pick("f", "Knut Sievers: Waren Sie")).toContain("Dazu sag ich nichts. Gar nichts.");
     const solved = pick("a", "Knut Sievers");
     expect(solved).toContain("Fall gelöst");
     expect(solved).toContain("=== Auflösung ===");
