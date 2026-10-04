@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "revision": 1,
+  "questions": [
+    {
+      "id": "question:q01",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        }
+      ]
+    },
+    {
+      "id": "question:q02",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        }
+      ]
+    },
+    {
+      "id": "question:q03",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "location",
+          "id": "location:hof"
+        }
+      ]
+    },
+    {
+      "id": "question:q04",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        }
+      ]
+    },
+    {
+      "id": "question:q05",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        }
+      ]
+    },
+    {
+      "id": "question:q06",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "location",
+          "id": "location:hof"
+        }
+      ]
+    },
+    {
+      "id": "question:q07",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:nora"
+        },
+        {
+          "kind": "location",
+          "id": "location:hof"
+        }
+      ]
+    },
+    {
+      "id": "question:q08",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:nora"
+        },
+        {
+          "kind": "event",
+          "id": "event:e05"
+        }
+      ]
+    },
+    {
+      "id": "question:q09",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        }
+      ]
+    },
+    {
+      "id": "question:q10",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        }
+      ]
+    },
+    {
+      "id": "question:q11",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        }
+      ]
+    },
+    {
+      "id": "question:q12",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        }
+      ]
+    },
+    {
+      "id": "question:q13",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:oskar"
+        },
+        {
+          "kind": "location",
+          "id": "location:archiv"
+        }
+      ]
+    },
+    {
+      "id": "question:q14",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:oskar"
+        }
+      ]
+    },
+    {
+      "id": "question:q15",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "location",
+          "id": "location:archiv"
+        }
+      ]
+    },
+    {
+      "id": "question:q16",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        }
+      ]
+    },
+    {
+      "id": "question:q17",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "event",
+          "id": "event:e04"
+        }
+      ]
+    },
+    {
+      "id": "question:q18",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "location",
+          "id": "location:werkstatt"
+        }
+      ]
+    },
+    {
+      "id": "question:q19",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:nora"
+        },
+        {
+          "kind": "location",
+          "id": "location:hof"
+        }
+      ]
+    },
+    {
+      "id": "question:q20",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "event",
+          "id": "event:e04"
+        }
+      ]
+    }
+  ]
+}

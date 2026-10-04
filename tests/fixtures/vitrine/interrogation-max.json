@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "catalogueHash": "c039106c98bf55e0eddb3bc407269690e69bbdfa52dc9953f95516f3d1d871a8",
+  "npcId": "person:max",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q01",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:max",
+        "locationId": "location:galerie",
+        "at": 120
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q02",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:max",
+        "locationId": "location:galerie",
+        "at": 240
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q03",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:max",
+        "locationId": "location:hof",
+        "at": 240
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q04",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:lina",
+        "locationId": "location:galerie",
+        "at": 240
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q05",
+      "act": "answer",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:e05",
+        "itemId": "item:kamera"
+      },
+      "reveal": [
+        {
+          "kind": "event",
+          "id": "event:e05"
+        },
+        {
+          "kind": "item",
+          "id": "item:kamera"
+        }
+      ]
+    }
+  ]
+}
