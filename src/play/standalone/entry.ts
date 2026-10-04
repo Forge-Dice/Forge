@@ -6,5 +6,7 @@ import { PLAY_CASES } from "../cases.ts";
 
 (globalThis as { kriminalfaelle?: unknown }).kriminalfaelle = {
   handle: createWebHandler(),
+  // A fresh handler with no games in memory (tests compare it with a fresh server handler).
+  create: () => createWebHandler(),
   slugs: Object.values(PLAY_CASES).map((c) => c.dir),
 };

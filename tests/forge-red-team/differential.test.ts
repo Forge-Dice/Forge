@@ -382,14 +382,35 @@ function runHistory(seed: number, steps: number, cov: Coverage) {
 }
 
 describe("red team: differential fuzzing against an independent reference model", () => {
-  const cov: Coverage = { taskStates: new Map(), runStates: new Map(), rejections: new Map(), accepted: new Map() };
-  let acceptedEvents = 0;
+  const SEEDS = Array.from({ length: 30 }, (_, i) => i + 1);
+  // Each seed's history is run (and checked) once, by whichever test needs it first, so the
+  // coverage test does not depend on the seed tests having run before it.
+  const histories = new Map<number, { events: number; cov: Coverage }>();
+  const history = (seed: number) => {
+    let h = histories.get(seed);
+    if (h === undefined) {
+      const cov: Coverage = { taskStates: new Map(), runStates: new Map(), rejections: new Map(), accepted: new Map() };
+      h = { events: runHistory(seed, 300, cov), cov };
+      histories.set(seed, h);
+    }
+    return h;
+  };
 
-  it.each(Array.from({ length: 30 }, (_, i) => i + 1))("seed %i: kernel and reference model agree on every decision and state", (seed) => {
-    acceptedEvents += runHistory(seed, 300, cov);
+  it.each(SEEDS)("seed %i: kernel and reference model agree on every decision and state", (seed) => {
+    history(seed);
   });
 
-  it("the generator reaches every task state, run state, event type and the main rejection codes", () => {
+  // Runs every seed itself when it comes first (shuffled order): the whole fuzz, so a whole-fuzz budget.
+  it("the generator reaches every task state, run state, event type and the main rejection codes", { timeout: 60_000 }, () => {
+    const cov: Coverage = { taskStates: new Map(), runStates: new Map(), rejections: new Map(), accepted: new Map() };
+    let acceptedEvents = 0;
+    for (const seed of SEEDS) {
+      const h = history(seed);
+      acceptedEvents += h.events;
+      for (const key of Object.keys(cov) as (keyof Coverage)[]) {
+        for (const [k, v] of h.cov[key]) cov[key].set(k, (cov[key].get(k) ?? 0) + v);
+      }
+    }
     expect(acceptedEvents).toBeGreaterThan(2000);
     if (process.env.RED_TEAM_COVERAGE) console.log(JSON.stringify({ acceptedEvents, ...Object.fromEntries(Object.entries(cov).map(([k, v]) => [k, Object.fromEntries(v)])) }));
     for (const s of ["planned", "specifying", "ready", "implementing", "awaiting_review", "review_approved", "rework_required", "contract_revision_required", "accepted"]) {

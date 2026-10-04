@@ -4,7 +4,7 @@ import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { checkCaseFolder } from "../src/authoring/check-case.ts";
 import { caseSources, CaseWorkspace } from "../src/play/editor.ts";
 import { slugify } from "../src/play/editor-structure.ts";
@@ -110,6 +110,8 @@ describe("structure, playtest and probe over HTTP", () => {
   });
   afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())));
   const post = (path: string, body: Record<string, string>) => fetch(`${base}${path}`, { method: "POST", body: new URLSearchParams(body), redirect: "manual" });
+  // Opening is idempotent: every test has the working copy, whatever ran before it.
+  beforeEach(() => post("/editor/open", { source: "fixtures/geige" }));
 
   it("the editor page shows the structure section, the playtest sidebar and the probe link", async () => {
     await post("/editor/open", { source: "fixtures/geige" });
@@ -139,8 +141,12 @@ describe("structure, playtest and probe over HTTP", () => {
     const game = await fetch(`${base}/fall/probe-geige`);
     expect(game.status).toBe(200);
     expect(await game.text()).toContain("Die Probegeige");
+    const text = json(join(workspaceDir, "geige"), "evidence-presentation.json").entries[0].text as string;
     await post("/editor/geige/save", { "f:evidence-presentation.json:entries[0].text": "Foto mit person:paul" });
     expect((await fetch(`${base}/fall/probe-geige`)).status).toBe(404);
+    // Leaves the copy valid for the tests that follow, in any order.
+    await post("/editor/geige/save", { "f:evidence-presentation.json:entries[0].text": text });
+    expect((await fetch(`${base}/fall/probe-geige`)).status).toBe(200);
     expect((await fetch(`${base}/fall/probe-nicht-da`)).status).toBe(404);
   });
 
