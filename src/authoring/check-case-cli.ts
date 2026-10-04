@@ -18,7 +18,8 @@ if (dirs.length === 0) {
 } else {
   for (const dir of dirs) {
     let check = checkCaseFolder(dir);
-    if (fix && check.filled.length > 0) {
+    // Hashes chain (truth -> solution and catalogue -> profiles -> release): one pass per link.
+    for (let pass = 0; fix && pass < 6 && check.filled.length > 0; pass++) {
       console.log(`--fix: Hashes eingetragen in ${writeFilledHashes(check).join(", ")}`);
       check = checkCaseFolder(dir);
     }

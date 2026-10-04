@@ -2,6 +2,8 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CaseCheck, Problem } from "../authoring/check-case.ts";
 import type { CaseSource } from "./editor.ts";
+import type { CaseReport } from "./playtest.ts";
+import { difficultyText } from "./difficulty.ts";
 import { escape, layout, type Feedback } from "./web-page.ts";
 
 // HTML views of the case editor. Every form control names its file and field in check-case notation
@@ -196,21 +198,119 @@ export function renderEditorHome(cards: readonly WorkspaceCard[], sources: reado
   );
 }
 
-export function renderEditor(name: string, dir: string, check: CaseCheck, origin: number, feedback: Feedback | null): string {
+// ---------- Structure: add and remove ----------
+
+const stepText = (event: Json, labels: Labels): string => {
+  const l = (ref: Json) => labels.get(ref?.$playerRefOf?.id) ?? ref?.$playerRefOf?.id ?? "?";
+  if (event?.type === "interrogate") return `${l(event.npc)} fragen (${String(event.questionId ?? "").replace(/^question:/, "")})`;
+  if (event?.action === "search_location") return `Ort durchsuchen: ${l(event.target)}`;
+  if (event?.action === "examine_item") return `Untersuchen: ${l(event.target)}`;
+  if (event?.action === "examine_person") return `Person untersuchen: ${l(event.target)}`;
+  return JSON.stringify(event);
+};
+
+const removeButton = (name: string, fields: Record<string, string>, what: string) =>
+  `<form method="post" action="/editor/${escape(name)}/struct" class="inline-form" data-struct>${Object.entries(fields)
+    .map(([k, v]) => `<input type="hidden" name="${escape(k)}" value="${escape(v)}">`)
+    .join("")}<button type="submit" class="small danger-ghost" data-confirm="${escape(`${what} entfernen? Alles, was darauf verweist, wird mit entfernt.`)}" aria-label="${escape(`${what} entfernen`)}">Entfernen</button></form>`;
+
+const options = (items: readonly [string, string][], selected = "") => items.map(([v, t]) => `<option value="${escape(v)}"${v === selected ? " selected" : ""}>${escape(t)}</option>`).join("");
+
+function structureSection(name: string, dir: string, labels: Labels, origin: number): string {
+  const truth = read(dir, "truth.json") ?? {};
+  const pc = read(dir, "public-content.json") ?? {};
+  const manifest = read(dir, "release-manifest.json");
+  const profile = read(dir, "proof-profile.json");
+  const config = read(dir, "case.json") ?? {};
+  const initial = new Set((read(dir, "initial-setup.json")?.known ?? []).map((k: Json) => k.id));
+  const npcs = readdirSync(dir).filter((f) => /^interrogation-.*\.json$/.test(f)).map((f) => read(dir, f)?.npcId).filter(Boolean);
+  const l = (id: string) => labels.get(id) ?? id;
+  const entities = (key: string, kind: string, title: string) =>
+    `<h3>${title} <span class="count">${(truth[key] ?? []).length}</span></h3><ul class="struct-list">${(truth[key] ?? [])
+      .map((e: Json) => `<li><span><strong>${escape(l(e.id))}</strong> <code>${escape(e.id)}</code>${initial.has(e.id) ? ` <span class="tag-soft">bekannt</span>` : ""}${npcs.includes(e.id) ? ` <span class="tag-soft">verhörbar</span>` : ""}</span>${removeButton(name, { op: "remove", id: e.id }, l(e.id))}</li>`)
+      .join("")}</ul>`;
+  const places = [...(truth.locations ?? []).map((e: Json) => [e.id, `Ort: ${l(e.id)}`]), ...(truth.items ?? []).map((e: Json) => [e.id, `Gegenstand: ${l(e.id)}`])] as [string, string][];
+  const propositions = (truth.propositions ?? []).map((p: Json) => [p.id, `${p.truth ? "wahr" : "falsch"}: ${claimText(p.claim, labels, origin)}`]) as [string, string][];
+  const mentionable = [...(truth.persons ?? []), ...(truth.locations ?? []), ...(truth.items ?? []), ...(truth.events ?? [])].map((e: Json) => [e.id, l(e.id)]) as [string, string][];
+  const questions = (read(dir, "questions.json")?.questions ?? []) as Json[];
+  const qText = (npc: string, q: string) => (pc.questionTexts ?? []).find((t: Json) => t.npc === npc && t.questionId === q)?.text;
+  const steps: Json[] = [...(manifest?.certificateData?.steps ?? []), ...(config.editorSteps ?? [])];
+  const stepLabel = (id: string) => {
+    const step = steps.find((x) => x.stepId === id);
+    return step === undefined ? `${id} (fehlt)` : stepText(step.event, labels);
+  };
+  const route = (id: string, stepIds: readonly string[], removable: boolean) =>
+    `<li class="route"><div class="route-head"><strong>${id === "witness" ? "Hauptweg" : `Weg ${escape(id)}`}</strong>${removable ? removeButton(name, { op: "remove-route", routeId: id }, `Weg ${id}`) : `<span class="muted small-text">im Beweisprofil</span>`}</div><ol>${stepIds
+      .map((s) => `<li><code>${escape(s)}</code> ${escape(stepLabel(s))}</li>`)
+      .join("")}</ol></li>`;
+  const form = (op: string, body: string, button: string) =>
+    `<form method="post" action="/editor/${escape(name)}/struct" class="struct-form" data-struct><input type="hidden" name="op" value="${op}">${body}<button type="submit">${button}</button></form>`;
+  return `<p class="muted">Hinzufügen und Entfernen ändert den gespeicherten Stand sofort; neue IDs entstehen aus dem Namen. „Rückgängig“ nimmt den letzten Schritt zurück.</p>
+<details class="raw" open><summary>Personen, Orte, Gegenstände</summary>
+${entities("persons", "person", "Personen")}${entities("locations", "location", "Orte")}${entities("items", "item", "Gegenstände")}
+${form("add-entity", `<label>Art <select name="kind">${options([["person", "Person"], ["location", "Ort"], ["item", "Gegenstand"]])}</select></label><label>Name <input name="name" required></label><label>Rolle <input name="role" placeholder="nur Personen"></label><label class="check"><input type="checkbox" name="known" value="1" checked> von Anfang an bekannt</label><label class="check"><input type="checkbox" name="npc" value="1"> verhörbar</label>`, "Hinzufügen")}
+</details>
+<details class="raw"><summary>Spuren <span class="count">${(truth.evidence ?? []).length}</span></summary><ul class="struct-list">${(truth.evidence ?? [])
+    .map((e: Json) => `<li><span><strong>${escape(l(e.id))}</strong> <code>${escape(e.id)}</code> <span class="muted">bei ${escape(l(e.source?.id))}</span></span>${removeButton(name, { op: "remove", id: e.id }, l(e.id))}</li>`)
+    .join("")}</ul>
+${form("add-clue", `<label>Name <input name="name" required></label><label>Fundort <select name="at">${options(places)}</select></label><label class="wide">Stützt <select name="supports">${options(propositions)}</select></label><label class="wide">Text für die Spieler <textarea name="text" rows="2" required></textarea></label>`, "Spur hinzufügen")}
+</details>
+<details class="raw"><summary>Fragen <span class="count">${questions.length}</span></summary><ul class="struct-list">${questions
+    .map((q) => {
+      const askedBy = (pc.questionTexts ?? []).filter((t: Json) => t.questionId === q.id).map((t: Json) => `${l(t.npc)}: „${t.text}“`);
+      return `<li><span><code>${escape(q.id)}</code> ${escape(askedBy.join(" · ") || "ohne Spielertext")}</span>${removeButton(name, { op: "remove", id: q.id }, `Frage ${q.id}`)}</li>`;
+    })
+    .join("")}</ul>
+${npcs.length === 0 ? `<p class="muted">Keine verhörbare Person.</p>` : form("add-question", `<label>An <select name="npc">${options(npcs.map((n: string) => [n, l(n)]))}</select></label><label class="wide">Frage <input name="text" required placeholder="Waren Sie um 20:40 im Foyer?"></label><fieldset class="wide"><legend>Worum geht es</legend><div class="checks">${mentionable.map(([id, t]) => `<label class="check"><input type="checkbox" name="about" value="${escape(id)}"> ${escape(t)}</label>`).join("")}</div></fieldset>`, "Frage hinzufügen")}
+</details>
+<details class="raw"><summary>Lösungswege <span class="count">${1 + (manifest?.certificateData?.routes?.length ?? 0)}</span></summary>
+<ul class="routes-list">${route("witness", profile?.witnessStepIds ?? [], false)}${(manifest?.certificateData?.routes ?? []).map((r: Json) => route(r.routeId, r.stepIds ?? [], true)).join("")}</ul>
+<h3>Schritte</h3><ul class="struct-list">${steps
+    .map((x) => `<li><span><code>${escape(x.stepId)}</code> ${escape(stepText(x.event, labels))}${(config.editorSteps ?? []).some((p: Json) => p.stepId === x.stepId) ? ` <span class="tag-soft">noch in keinem Weg</span>` : ""}</span>${removeButton(name, { op: "remove-step", stepId: x.stepId }, `Schritt ${x.stepId}`)}</li>`)
+    .join("")}</ul>
+${form("add-step", `<label>Aktion <select name="action">${options([["search_location", "Ort durchsuchen"], ["examine_item", "Gegenstand untersuchen"], ["ask", "Person fragen"]])}</select></label><label>Ziel <select name="target">${options([
+    ...(truth.locations ?? []).map((e: Json) => [e.id, `Ort: ${l(e.id)}`]),
+    ...(truth.items ?? []).map((e: Json) => [e.id, `Gegenstand: ${l(e.id)}`]),
+    ...npcs.map((n: string) => [n, `Person: ${l(n)}`]),
+  ] as [string, string][])}</select></label><label class="wide">Frage (nur beim Fragen) <select name="question"><option value="">–</option>${options(
+    questions.flatMap((q) => (pc.questionTexts ?? []).filter((t: Json) => t.questionId === q.id).map((t: Json) => [q.id, `${l(t.npc)}: ${t.text}`])) as [string, string][],
+  )}</select></label>`, "Schritt anlegen")}
+${form("add-route", `<label class="wide">Neuer Weg: Schritte in Reihenfolge <input name="steps" required placeholder="${escape(steps.slice(0, 3).map((x) => x.stepId).join(", "))}"></label>`, "Weg hinzufügen")}
+</details>`;
+}
+
+/** Live difficulty and balance warnings of the playtest bot. */
+export function playtestPanel(report: CaseReport | null, reason = ""): string {
+  if (report === null) return `<p class="muted">${escape(reason || "Erst wenn der Fall gültig ist, spielt der Bot ihn.")}</p>`;
+  const m = report.metrics;
+  const unsolved = report.runs.filter((r) => r.style !== "voreilig" && !r.solved).length;
+  return `<p class="difficulty-big" title="Schwierigkeit ${report.rating} von 5">${escape(difficultyText(report.rating))}</p>
+<dl class="metrics"><div><dt>Aktionen bis zur Lösung</dt><dd>${m.actionsToSolve}</dd></div><div><dt>Sackgassen</dt><dd>${Math.round(m.deadEndRate * 100)} %</dd></div><div><dt>Fehlanklagen (voreilig)</dt><dd>${m.wrongAccusations}</dd></div><div><dt>Funde für den Beweis</dt><dd>${m.findsNeeded} von ${m.findsAvailable}</dd></div><div><dt>Hinweise nötig</dt><dd>${m.hints}</dd></div><div><dt>Bot-Läufe ungelöst</dt><dd>${unsolved}</dd></div></dl>
+${report.warnings.length === 0 ? `<p class="ok-text">Keine Balance-Warnungen.</p>` : `<ul class="problems warn">${report.warnings.map((w) => `<li>${escape(w)}</li>`).join("")}</ul>`}`;
+}
+
+export function renderEditor(name: string, dir: string, check: CaseCheck, origin: number, feedback: Feedback | null, extra: { readonly playtest: string; readonly canUndo: boolean } = { playtest: playtestPanel(null), canUndo: false }): string {
   const pc = read(dir, "public-content.json");
   const labels: Labels = new Map((pc?.labels ?? []).map((l: Json) => [l.entity?.id, l.label]));
   return layout(
     `Editor: ${pc?.title ?? name}`,
     `<header class="topbar"><a class="home" href="/editor"><span aria-hidden="true">←</span> Werkstatt</a><div class="case-title"><p class="kicker">Fall-Editor · ${escape(name)}</p><h1>${escape(pc?.title ?? name)}</h1></div><span class="badge" id="status-badge">${check.ok ? "gültig" : "ungültig"}</span></header>
-<form id="editor" method="post" action="/editor/${escape(name)}/save" class="desk editor">
+<div class="desk editor">
 <aside class="dossier side-check"><section class="card check" aria-live="polite"><h2>check-case</h2><div id="check">${checkPanel(check)}</div>
-<div class="actions"><button type="submit" class="primary">Speichern</button><a class="button" href="/editor/${escape(name)}">Verwerfen</a></div>${noticeHtml(feedback)}</section></aside>
+<div class="actions"><button type="submit" form="editor" class="primary">Speichern</button><a class="button" href="/editor/${escape(name)}">Verwerfen</a>${
+      extra.canUndo ? `<form method="post" action="/editor/${escape(name)}/undo" class="inline-form" data-struct><button type="submit">Rückgängig</button></form>` : ""
+    }</div>
+<p class="probe"><a class="button${check.ok ? "" : " disabled"}" id="probe" href="/fall/probe-${escape(name)}" target="_blank" rel="noopener"${check.ok ? "" : ` aria-disabled="true"`}>Probespielen ↗</a> <span class="muted small-text">gespeicherter Stand</span></p>${noticeHtml(feedback)}</section>
+<section class="card" aria-live="polite"><h2>Spieltest</h2><div id="playtest">${extra.playtest}</div></section></aside>
 <div class="play">
+<form id="editor" method="post" action="/editor/${escape(name)}/save" class="stack">
 <section class="card" id="texte"><h2>Spielertexte</h2>${textsSection(check, pc)}</section>
 <section class="card" id="verhoere"><h2>Verhöre</h2>${interrogationSection(check, dir, pc, labels, origin)}</section>
 <section class="card" id="spuren"><h2>Spuren</h2>${evidenceSection(check, dir, labels)}</section>
 <section class="card" id="dateien"><h2>Dateien (JSON)</h2><p class="muted">Für alles, was die Formulare nicht abdecken. Hashes rechnet der Editor selbst nach.</p>${rawSection(dir, check)}</section>
-</div></form>
+</form>
+<section class="card" id="aufbau"><h2>Aufbau</h2>${structureSection(name, dir, labels, origin)}</section>
+</div></div>
 <script>${SCRIPT(name)}</script>`,
     "page-editor",
     EDITOR_STYLE,
@@ -237,6 +337,7 @@ async function check() {
   } catch { badge.textContent = "Prüfung nicht erreichbar"; return; }
   if (mine !== seq) return;
   panel.innerHTML = data.html;
+  if (typeof data.playtest === "string") document.getElementById("playtest").innerHTML = data.playtest;
   badge.textContent = data.ok ? "gültig" : "ungültig";
   for (const el of form.querySelectorAll("[data-field]")) {
     const own = data.problems.filter((p) => p.severity === "error" && hit(p, el.dataset.file, el.dataset.field));
@@ -245,7 +346,13 @@ async function check() {
     if (box && (el.matches("input, textarea") || el.matches("select[data-act]"))) { box.hidden = own.length === 0; box.innerHTML = own.map((p) => esc(p.field + ": " + p.message)).join("<br>"); }
   }
 }
-form.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(check, 400); });
+let dirty = false;
+form.addEventListener("input", () => { dirty = true; clearTimeout(timer); timer = setTimeout(check, 400); });
+form.addEventListener("submit", () => { dirty = false; });
+for (const f of document.querySelectorAll("form[data-struct]")) f.addEventListener("submit", (e) => {
+  const ask = e.submitter?.dataset.confirm;
+  if ((ask && !confirm(ask)) || (dirty && !confirm("Ungespeicherte Änderungen in den Formularen gehen dabei verloren. Fortfahren?"))) e.preventDefault();
+});
 form.addEventListener("change", () => { clearTimeout(timer); timer = setTimeout(check, 50); });
 panel.addEventListener("click", (e) => {
   const a = e.target.closest("a[data-file]"); if (!a) return;
@@ -296,5 +403,37 @@ label.inline { font: 600 13px var(--sans); color: var(--ink-soft); display: inli
 .generate { margin-top: 18px; color: var(--paper); font: 15px var(--sans); }
 .generate input { width: 110px; font: 15px var(--sans); padding: 8px; border-radius: var(--radius); border: 1px solid #b9a789; }
 .hint code { color: #e9dcc3; }
+.stack { display: flex; flex-direction: column; gap: 20px; }
+.side-check .card + .card { margin-top: 20px; }
+.side-check { max-height: calc(100vh - 90px); overflow: auto; }
+.probe { margin: 12px 0 0; }
+a.button.disabled { opacity: .45; pointer-events: none; }
+.small-text { font-size: 13px; }
+.difficulty-big { font: 700 22px var(--sans); margin: 0 0 10px; letter-spacing: .02em; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 10px; }
+.metrics div { background: #fffaf0; border: 1px solid var(--line); border-radius: 3px; padding: 6px 8px; }
+.metrics dt { font: 600 11px var(--sans); color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; }
+.metrics dd { margin: 0; font: 700 18px var(--type); }
+.ok-text { color: var(--ok); font: 600 14px var(--sans); }
+.struct-list { list-style: none; margin: 0 0 10px; padding: 0; }
+.struct-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px dashed var(--line); font: 15px var(--sans); }
+.struct-list code, .routes-list code { font: 12px var(--type); color: var(--ink-soft); }
+.tag-soft { font: 600 11px var(--sans); background: var(--paper-2); border: 1px solid var(--line); border-radius: 3px; padding: 1px 6px; color: var(--ink-soft); }
+.inline-form { display: inline; margin: 0; }
+button.small { min-height: 30px; padding: 4px 10px; font-size: 13px; }
+button.danger-ghost { color: var(--blood); border-color: rgba(143,45,31,.4); background: transparent; box-shadow: none; }
+button.danger-ghost:hover { background: var(--blood); color: #fff; }
+.struct-form { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; margin: 12px 0 6px; padding: 12px; background: var(--paper-2); border-radius: 3px; }
+.struct-form label { display: flex; flex-direction: column; gap: 3px; font: 600 12px var(--sans); color: var(--ink-soft); }
+.struct-form label.check { flex-direction: row; align-items: center; gap: 6px; font-weight: 500; }
+.struct-form .wide { flex: 1 1 100%; }
+.struct-form input:not([type=checkbox]), .struct-form textarea { font: 15px var(--sans); padding: 7px 9px; border: 1px solid #b9a789; border-radius: var(--radius); background: #fffaf0; }
+.struct-form fieldset { border: 1px solid var(--line); border-radius: 3px; margin: 0; padding: 6px 10px; }
+.struct-form legend { font: 600 12px var(--sans); color: var(--ink-soft); }
+.checks { display: flex; flex-wrap: wrap; gap: 4px 14px; max-height: 140px; overflow: auto; }
+.routes-list { list-style: none; padding: 0; margin: 0 0 10px; display: grid; gap: 10px; }
+.route { background: #fffaf0; border: 1px solid var(--line); border-left: 4px solid var(--brass); border-radius: 3px; padding: 8px 12px; }
+.route-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.route ol { margin: 6px 0 0; padding-left: 20px; font: 14px var(--sans); }
 @media (max-width: 1000px) { .side-check { position: static; } .editor .side-check, .editor .play { grid-column: 1; grid-row: auto; } .pair { grid-template-columns: 1fr; } }
 `;
