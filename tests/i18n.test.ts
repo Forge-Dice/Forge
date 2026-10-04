@@ -277,3 +277,83 @@ describe("review fixes", () => {
     }
   });
 });
+
+describe("case editor in English", () => {
+  const request = async (app: ReturnType<typeof createWebApp>, method: string, path: string, cookie = "", body = "") => {
+    const headers: Record<string, string> = {};
+    let status = 0;
+    let text = "";
+    const req = Object.assign(new (await import("node:stream")).Readable({ read() {} }), { method, url: path, headers: { cookie, host: "localhost" } });
+    req.push(body);
+    req.push(null);
+    const res = {
+      headersSent: false,
+      writeHead(code: number, h: Record<string, string> = {}) {
+        status = code;
+        Object.assign(headers, h);
+        return res;
+      },
+      end(chunk = "") {
+        text = String(chunk);
+      },
+    };
+    await app(req as never, res as never);
+    return { status, headers, text };
+  };
+  const editorApp = async () => {
+    const { createEditorRoutes } = await import("../src/play/editor-web.ts");
+    const geige = caseSources().find((s) => s.key === "fixtures/geige")!;
+    const ws = new CaseWorkspace(mkdtempSync(join(tmpdir(), "i18n-editor-en-")));
+    const name = ws.open(geige);
+    const { routes, probeCase } = createEditorRoutes({ workspaceDir: ws.root, sources: [geige] });
+    return { app: createWebApp({}, { routes, editorLink: true, extraCase: probeCase }), name, dir: ws.dirOf(name)! };
+  };
+  const frame = (page: string) => page.replace(/<style>[\s\S]*?<\/style>/, "");
+
+  it("shows the editor frame in English when the player chose English, case text unchanged", async () => {
+    const { app, name, dir } = await editorApp();
+    const title = JSON.parse(readFileSync(join(dir, "public-content.json"), "utf8")).title as string;
+    const page = frame((await request(app, "GET", `/editor/${name}`, "sprache=en")).text);
+    expect(page).toContain('<html lang="en">');
+    for (const english of [">Player texts</h2>", ">Interrogations</h2>", ">Clues</h2>", ">Files (JSON)</h2>", ">Structure</h2>", ">Playtest</h2>", ">Save</button>", "> Workshop</a>", ">Title</label>", ">Case file</label>", "Valid and solvable", '"checking …"']) {
+      expect(page).toContain(english);
+    }
+    for (const german of ["Speichern", "Spielertexte", "Werkstatt", "Verhöre", "Fallakte", "Rückgängig", "Probespielen", "prüft", "Gültig und lösbar", "Sprachfassung"]) {
+      expect(page).not.toContain(german);
+    }
+    // The case stays as written (German title), and the switch leads back to this editor page in German.
+    expect(page).toContain(`<h1>${title}</h1>`);
+    expect(page).toContain(`href="/sprache?l=de&amp;zurueck=%2Feditor%2F${name}"`);
+
+    const home = frame((await request(app, "GET", "/editor", "sprache=en")).text);
+    expect(home).toContain('<html lang="en">');
+    expect(home).toContain("<h1>Case editor</h1>");
+    expect(home).toContain(">Working copies</h2>");
+    expect(home).not.toMatch(/Werkstatt|Arbeitskopien|Fall öffnen|Erzeugen/);
+
+    // The live check answers in the same frame.
+    const check = JSON.parse((await request(app, "POST", `/editor/${name}/check`, "sprache=en", "")).text);
+    expect(check.html).toContain("Valid and solvable");
+    expect(check.html).not.toContain("lösbar");
+  });
+
+  it("keeps the German editor frame without the cookie", async () => {
+    const { app, name } = await editorApp();
+    const page = (await request(app, "GET", `/editor/${name}`)).text;
+    expect(page).toContain('<html lang="de">');
+    expect(page).toContain(">Speichern</button>");
+    expect(page).toContain(">Spielertexte</h2>");
+    expect(page).toContain(`href="/sprache?l=en&amp;zurueck=%2Feditor%2F${name}"`);
+  });
+
+  it("the language switch returns to editor pages, nothing else new", async () => {
+    const app = createWebApp();
+    const back = async (to: string) => (await request(app, "GET", `/sprache?l=en&zurueck=${encodeURIComponent(to)}`)).headers.location;
+    expect(await back("/editor")).toBe("/editor");
+    expect(await back("/editor/geige")).toBe("/editor/geige");
+    expect(await back("/editor/fall-42")).toBe("/editor/fall-42");
+    for (const bad of ["/editor/", "/editor/Geige", "/editor/-x", "/editor/geige/save", `/editor/${"a".repeat(65)}`, "/editorx", "//editor"]) {
+      expect(await back(bad)).toBe("/");
+    }
+  });
+});

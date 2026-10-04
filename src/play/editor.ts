@@ -8,6 +8,8 @@ import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import { PLAY_CASES, loadFolderPackage } from "./cases.ts";
 import { playtestCase, type CaseReport } from "./playtest.ts";
 import { applyStructure, undoStructure, type StructureOp, type StructureResult } from "./editor-structure.ts";
+import { EDITOR_MESSAGES } from "./editor-messages.ts";
+import { DEFAULT_LANG, type Lang } from "./messages.ts";
 
 // Case editor behind `/editor` of play:web. A case is edited in a local working folder (a copy of a
 // fixture, a generated folder, or a fresh generated case); the sources are only ever read. Every
@@ -32,7 +34,8 @@ const ROOT = new URL("../../", import.meta.url).pathname;
 export const isCaseName = (name: string): boolean => NAME.test(name);
 
 /** Read-only sources: the repo's case fixtures and the generator's default output folder. */
-export function caseSources(root = ROOT): CaseSource[] {
+export function caseSources(root = ROOT, lang: Lang = DEFAULT_LANG): CaseSource[] {
+  const t = EDITOR_MESSAGES[lang].home;
   const list = (base: string, prefix: string, label: string) =>
     existsSync(join(root, base))
       ? readdirSync(join(root, base))
@@ -40,7 +43,7 @@ export function caseSources(root = ROOT): CaseSource[] {
           .sort()
           .map((d) => ({ key: `${prefix}/${d}`, label: `${label}: ${titleOf(join(root, base, d)) ?? d}`, dir: join(root, base, d) }))
       : [];
-  return [...list("tests/fixtures", "fixtures", "Fall"), ...list("generated", "generated", "Generiert")];
+  return [...list("tests/fixtures", "fixtures", t.sourceFixture), ...list("generated", "generated", t.sourceGenerated)];
 }
 
 function titleOf(dir: string): string | null {
@@ -122,7 +125,8 @@ export function editsFromForm(form: URLSearchParams): Edit[] {
 }
 
 /** Applies edits to the JSON files of dir (in place). Only values that differ are written. */
-export function applyEdits(dir: string, edits: readonly Edit[]): ApplyResult {
+export function applyEdits(dir: string, edits: readonly Edit[], lang: Lang = DEFAULT_LANG): ApplyResult {
+  const t = EDITOR_MESSAGES[lang].apply;
   const errors: { file: string; field: string; message: string }[] = [];
   const files = new Map<string, unknown>();
   const changed = new Set<string>();
@@ -137,14 +141,14 @@ export function applyEdits(dir: string, edits: readonly Edit[]): ApplyResult {
   const replaced = new Set<string>();
   for (const edit of edits) {
     if (!existsSync(join(dir, edit.file))) {
-      errors.push({ file: edit.file, field: "(Datei)", message: "Datei fehlt im Arbeitsordner" });
+      errors.push({ file: edit.file, field: "(Datei)", message: t.fileMissing });
       continue;
     }
     if (stale.has(edit.file)) continue;
     if (edit.kind === "base") {
       if (fileDigest(readFileSync(join(dir, edit.file), "utf8")) !== edit.digest) {
         stale.add(edit.file);
-        errors.push({ file: edit.file, field: "(Datei)", message: "inzwischen anderswo geändert: Seite neu laden, Änderungen an dieser Datei wurden nicht gespeichert" });
+        errors.push({ file: edit.file, field: "(Datei)", message: t.stale });
       }
       continue;
     }
@@ -154,7 +158,7 @@ export function applyEdits(dir: string, edits: readonly Edit[]): ApplyResult {
       try {
         parsed = JSON.parse(edit.text);
       } catch (error) {
-        errors.push({ file: edit.file, field: "(JSON)", message: `kein gültiges JSON: ${(error as Error).message}` });
+        errors.push({ file: edit.file, field: "(JSON)", message: t.badJson((error as Error).message) });
         continue;
       }
       if (JSON.stringify(parsed) === JSON.stringify(json(edit.file))) continue;
@@ -164,13 +168,13 @@ export function applyEdits(dir: string, edits: readonly Edit[]): ApplyResult {
       const before = getAt(json(edit.file), edit.field);
       if (before === edit.value || (before === undefined && edit.field === "epilogue" && edit.value.trim() === "")) continue;
       if (!setAt(json(edit.file), edit.field, edit.value)) {
-        errors.push({ file: edit.file, field: edit.field, message: "Feld nicht bearbeitbar" });
+        errors.push({ file: edit.file, field: edit.field, message: t.fieldNotEditable });
         continue;
       }
     } else {
       const rule = getAt(json(edit.file), `rules[${edit.rule}]`) as Record<string, unknown> | undefined;
       if (typeof rule !== "object" || rule === null || !ACTS.has(edit.act)) {
-        errors.push({ file: edit.file, field: `rules[${edit.rule}]`, message: "Regel nicht bearbeitbar" });
+        errors.push({ file: edit.file, field: `rules[${edit.rule}]`, message: t.ruleNotEditable });
         continue;
       }
       const stance = edit.act === "lie" ? (edit.stance === "affirms" ? "affirms" : "denies") : undefined;
@@ -294,14 +298,14 @@ export class CaseWorkspace {
     return name;
   }
   /** Live check: the edits on a scratch copy; the working folder is untouched. */
-  preview<T = undefined>(name: string, edits: readonly Edit[], inspect?: (dir: string, check: CaseCheck) => T): { check: CaseCheck; apply: ApplyResult; inspected?: T } | null {
+  preview<T = undefined>(name: string, edits: readonly Edit[], inspect?: (dir: string, check: CaseCheck) => T, lang: Lang = DEFAULT_LANG): { check: CaseCheck; apply: ApplyResult; inspected?: T } | null {
     const dir = this.dirOf(name);
     if (dir === null) return null;
     const scratch = mkdtempSync(join(tmpdir(), "case-editor-"));
     try {
       const copy = join(scratch, name);
       cpSync(dir, copy, { recursive: true });
-      const apply = applyEdits(copy, edits);
+      const apply = applyEdits(copy, edits, lang);
       const check = checkAndFix(copy, translates(edits));
       return { check: { ...check, dir }, apply, ...(inspect === undefined ? {} : { inspected: inspect(copy, check) }) };
     } finally {
@@ -312,10 +316,10 @@ export class CaseWorkspace {
     return join(this.root, ".history", name);
   }
   /** A structural edit on the saved working copy (one undo level), then hash maintenance. */
-  structure(name: string, op: StructureOp): StructureResult | null {
+  structure(name: string, op: StructureOp, lang: Lang = DEFAULT_LANG): StructureResult | null {
     const dir = this.dirOf(name);
     if (dir === null) return null;
-    const result = applyStructure(dir, op, this.history(name));
+    const result = applyStructure(dir, op, this.history(name), lang);
     if (result.ok) {
       syncLocales(dir);
       checkAndFix(dir);
@@ -343,10 +347,10 @@ export class CaseWorkspace {
     probes.set(dir, { version, value });
     return value;
   }
-  save(name: string, edits: readonly Edit[]): { check: CaseCheck; apply: ApplyResult } | null {
+  save(name: string, edits: readonly Edit[], lang: Lang = DEFAULT_LANG): { check: CaseCheck; apply: ApplyResult } | null {
     const dir = this.dirOf(name);
     if (dir === null) return null;
-    const apply = applyEdits(dir, edits);
+    const apply = applyEdits(dir, edits, lang);
     return { check: checkAndFix(dir, translates(edits)), apply };
   }
 }
@@ -375,13 +379,14 @@ export function folderPackage(dir: string, check: CaseCheck): ResolvedCasePackag
 export const EDITOR_PLAYTEST_SEEDS = 4;
 
 /** The playtest bot on a folder: difficulty and balance warnings, or why it cannot run. */
-export function playtestFolder(dir: string, check: CaseCheck): { report: CaseReport | null; reason: string } {
+export function playtestFolder(dir: string, check: CaseCheck, lang: Lang = DEFAULT_LANG): { report: CaseReport | null; reason: string } {
+  const t = EDITOR_MESSAGES[lang].playtest;
   const pkg = folderPackage(dir, check);
-  if (pkg === null) return { report: null, reason: check.ok ? "Der Fall lässt sich nicht als Spiel laden." : "Erst wenn der Fall gültig ist, spielt der Bot ihn." };
+  if (pkg === null) return { report: null, reason: check.ok ? t.notLoadable : t.notYet };
   try {
     return { report: playtestCase(pkg, EDITOR_PLAYTEST_SEEDS), reason: "" };
   } catch (error) {
-    return { report: null, reason: `Spieltest nicht möglich: ${(error as Error).message}` };
+    return { report: null, reason: t.failed((error as Error).message) };
   }
 }
 

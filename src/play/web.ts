@@ -394,7 +394,7 @@ export function createWebHandler(
       // Only the app's own pages: never another host (a tab or newline after "/" is dropped by
       // browsers, "/\t/evil" becomes "//evil"), and nothing writeHead would reject.
       const back = url.searchParams.get("zurueck") ?? "/";
-      const to = /^\/(hilfe|fall\/[a-z0-9-]+)?$/.test(back) ? back : "/";
+      const to = /^\/(hilfe|fall\/[a-z0-9-]+|editor(\/[a-z0-9][a-z0-9-]{0,63})?)?$/.test(back) ? back : "/";
       const chosen = parseLang(url.searchParams.get("l")) ?? DEFAULT_LANG;
       return { status: 303, headers: { location: to, "set-cookie": `${LANG_COOKIE}=${chosen}; Path=/; Max-Age=31536000; SameSite=Lax` }, body: "" };
     }

@@ -21,7 +21,7 @@ export const escape = (text: string): string =>
 const GROUPS = ["person", "location", "item", "event", "evidence"] as const;
 
 /** Link to the same page in the other language; the server remembers the choice in a cookie. */
-function langSwitch(m: Messages, back: string): string {
+export function langSwitch(m: Messages, back: string): string {
   const other = m.web.otherLang;
   return `<a class="lang-link" href="/sprache?l=${other.lang}&amp;zurueck=${encodeURIComponent(back)}" hreflang="${other.lang}" lang="${other.lang}" title="${escape(other.title)}">${escape(other.label)}</a>`;
 }

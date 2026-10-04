@@ -7,6 +7,10 @@ import { checkPanel, playtestPanel, renderEditor, renderEditorHome, type Workspa
 import type { StructureOp } from "./editor-structure.ts";
 import { exportCaseFiles } from "./case-share.ts";
 import type { Feedback } from "./web-page.ts";
+import { problemText } from "../authoring/check-case-en.ts";
+import { EDITOR_MESSAGES } from "./editor-messages.ts";
+import { langOfCookie } from "./web.ts";
+import type { Lang } from "./messages.ts";
 
 // HTTP routes of the case editor inside play:web:
 //   GET  /editor                 working copies, sources, generator
@@ -75,7 +79,7 @@ export function structureOpFromForm(form: URLSearchParams): StructureOp | null {
 
 export function createEditorRoutes(options: EditorOptions) {
   const workspace = new CaseWorkspace(options.workspaceDir);
-  const sources = () => options.sources ?? caseSources();
+  const sources = (lang?: Lang) => options.sources ?? caseSources(undefined, lang);
   const notices = new Map<string, Feedback>();
   const html = (res: ServerResponse, body: string): void =>
     void res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }).end(body);
@@ -97,35 +101,38 @@ export function createEditorRoutes(options: EditorOptions) {
   const routes = async (req: IncomingMessage, res: ServerResponse, url: URL): Promise<boolean> => {
     if (url.pathname !== "/editor" && !url.pathname.startsWith("/editor/")) return false;
     const route = `${req.method} ${url.pathname}`;
+    // The frame language is the game's: the cookie set by /sprache.
+    const lang = langOfCookie(req.headers.cookie);
+    const t = EDITOR_MESSAGES[lang].routes;
     if (route === "GET /editor") {
       const cards: WorkspaceCard[] = workspace.list().map((name) => {
         const check = checkCaseFolder(workspace.dirOf(name)!);
         return { name, title: workspace.title(name), ok: check.ok, errors: check.problems.filter((p) => p.severity === "error").length };
       });
-      html(res, renderEditorHome(cards, sources(), workspace.root, take("")));
+      html(res, renderEditorHome(cards, sources(lang), workspace.root, take(""), lang));
       return true;
     }
     if (route === "POST /editor/open") {
       const form = new URLSearchParams((await readBody(req)) ?? "");
       const source = sources().find((s) => s.key === form.get("source"));
-      if (source === undefined) return fail(res, 400, "Unbekannte Quelle."), true;
+      if (source === undefined) return fail(res, 400, t.unknownSource), true;
       const name = workspace.open(source, form.get("reset") === "1");
-      notices.set(name, { tone: "info", title: "Arbeitskopie geöffnet", lines: [`Quelle ${source.key} bleibt unverändert.`] });
+      notices.set(name, { tone: "info", title: t.opened, lines: [t.sourceUnchanged(source.key)] });
       redirect(res, `/editor/${name}`);
       return true;
     }
     if (route === "POST /editor/generate") {
       const seed = Number(new URLSearchParams((await readBody(req)) ?? "").get("seed"));
-      if (!Number.isSafeInteger(seed) || seed < 0 || seed > 999_999_999) return fail(res, 400, "Seed muss eine Zahl sein."), true;
+      if (!Number.isSafeInteger(seed) || seed < 0 || seed > 999_999_999) return fail(res, 400, t.seedNumber), true;
       const name = workspace.generate(seed);
-      notices.set(name, { tone: "info", title: "Fall erzeugt", lines: [`Seed ${seed}.`] });
+      notices.set(name, { tone: "info", title: t.generated, lines: [t.seed(seed)] });
       redirect(res, `/editor/${name}`);
       return true;
     }
     const m = /^\/editor\/([a-z0-9][a-z0-9-]{0,63})(\/(check|save|struct|undo|export))?$/.exec(url.pathname);
     const name = m?.[1] ?? "";
     const dir = m === null || !isCaseName(name) ? null : workspace.dirOf(name);
-    if (m === null || dir === null) return fail(res, 404, "Keine Arbeitskopie mit diesem Namen."), true;
+    if (m === null || dir === null) return fail(res, 404, t.noCopyNamed), true;
     switch (`${req.method} ${m[3] ?? ""}`) {
       case "GET export": {
         // The saved working copy as one share file; the game checks it again in full on import.
@@ -135,54 +142,56 @@ export function createEditorRoutes(options: EditorOptions) {
       }
       case "GET ": {
         const check = checkCaseFolder(dir);
-        const { report, reason } = playtestFolder(dir, check);
-        html(res, renderEditor(name, dir, check, clockOriginOf(dir), take(name), { playtest: playtestPanel(report, reason), canUndo: workspace.canUndo(name) }));
+        const { report, reason } = playtestFolder(dir, check, lang);
+        html(res, renderEditor(name, dir, check, clockOriginOf(dir), take(name), { playtest: playtestPanel(report, reason, lang), canUndo: workspace.canUndo(name) }, lang));
         return true;
       }
       case "POST struct": {
         const op = structureOpFromForm(new URLSearchParams((await readBody(req)) ?? ""));
-        const result = op === null ? { ok: false as const, message: "Angaben unvollständig" } : workspace.structure(name, op);
-        if (result === null) return fail(res, 404, "Keine Arbeitskopie."), true;
+        const result = op === null ? { ok: false as const, message: t.incomplete } : workspace.structure(name, op, lang);
+        if (result === null) return fail(res, 404, t.noCopy), true;
         const after = checkCaseFolder(dir);
         const errors = after.problems.filter((p) => p.severity === "error").length;
         notices.set(name, result.ok
-          ? { tone: errors === 0 ? "ok" : "warn", title: result.message, lines: [errors === 0 ? "Der Fall ist gültig und lösbar." : `${errors} Fehler offen, siehe check-case.`] }
-          : { tone: "warn", title: "Nicht geändert", lines: [result.message] });
+          ? { tone: errors === 0 ? "ok" : "warn", title: result.message, lines: [errors === 0 ? t.validSolvable : t.openErrors(errors)] }
+          : { tone: "warn", title: t.notChanged, lines: [result.message] });
         redirect(res, `/editor/${name}${result.ok ? "#aufbau" : ""}`);
         return true;
       }
       case "POST undo":
-        notices.set(name, workspace.undo(name) ? { tone: "info", title: "Letzter Aufbau-Schritt zurückgenommen", lines: [] } : { tone: "warn", title: "Nichts zum Zurücknehmen", lines: [] });
+        notices.set(name, workspace.undo(name) ? { tone: "info", title: t.undone, lines: [] } : { tone: "warn", title: t.nothingToUndo, lines: [] });
         redirect(res, `/editor/${name}`);
         return true;
       case "POST check": {
         const body = await readBody(req);
-        if (body === null) return fail(res, 413, "Zu groß."), true;
-        const result = workspace.preview(name, editsFromForm(new URLSearchParams(body)), (copy, c) => playtestFolder(copy, c));
-        if (result === null) return fail(res, 404, "Keine Arbeitskopie."), true;
+        if (body === null) return fail(res, 413, t.tooLarge), true;
+        const result = workspace.preview(name, editsFromForm(new URLSearchParams(body)), (copy, c) => playtestFolder(copy, c, lang), lang);
+        if (result === null) return fail(res, 404, t.noCopy), true;
         const problems = [...result.apply.errors.map((e) => ({ ...e, severity: "error" as const })), ...result.check.problems];
+        // The page script shows these beside the fields: worded like the panel.
+        const shown = problems.map((p) => ({ ...p, message: problemText(p.message, lang) }));
         const check = { ...result.check, problems, ok: result.check.ok && result.apply.errors.length === 0 };
         res.writeHead(200, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }).end(
-          JSON.stringify({ ok: check.ok, problems, routes: check.routes.map((r) => ({ routeId: r.routeId, status: r.report.status })), html: checkPanel(check), playtest: playtestPanel(result.inspected?.report ?? null, result.inspected?.reason ?? "") }),
+          JSON.stringify({ ok: check.ok, problems: shown, routes: check.routes.map((r) => ({ routeId: r.routeId, status: r.report.status })), html: checkPanel(check, lang), playtest: playtestPanel(result.inspected?.report ?? null, result.inspected?.reason ?? "", lang) }),
         );
         return true;
       }
       case "POST save": {
         const body = await readBody(req);
-        if (body === null) return fail(res, 413, "Zu groß."), true;
-        const result = workspace.save(name, editsFromForm(new URLSearchParams(body)));
-        if (result === null) return fail(res, 404, "Keine Arbeitskopie."), true;
+        if (body === null) return fail(res, 413, t.tooLarge), true;
+        const result = workspace.save(name, editsFromForm(new URLSearchParams(body)), lang);
+        if (result === null) return fail(res, 404, t.noCopy), true;
         const errors = result.check.problems.filter((p) => p.severity === "error").length + result.apply.errors.length;
         notices.set(name, {
           tone: errors === 0 ? "ok" : "warn",
-          title: result.apply.applied === 0 ? "Nichts geändert" : `${result.apply.applied} Änderung${result.apply.applied === 1 ? "" : "en"} gespeichert`,
-          lines: [errors === 0 ? "Der Fall ist gültig und lösbar." : `Gespeichert, aber ${errors} Fehler offen.`, ...result.apply.errors.map((e) => `${e.file} › ${e.field}: ${e.message}`)],
+          title: result.apply.applied === 0 ? t.nothingChanged : t.saved(result.apply.applied),
+          lines: [errors === 0 ? t.validSolvable : t.savedWithErrors(errors), ...result.apply.errors.map((e) => `${e.file} › ${e.field === "(Datei)" ? EDITOR_MESSAGES[lang].check.fileField : e.field}: ${e.message}`)],
         });
         redirect(res, `/editor/${name}`);
         return true;
       }
       default:
-        fail(res, 405, "Nicht erlaubt.");
+        fail(res, 405, t.notAllowed);
         return true;
     }
   };

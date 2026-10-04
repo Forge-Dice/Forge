@@ -1,5 +1,7 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { EDITOR_MESSAGES, type EditorMessages } from "./editor-messages.ts";
+import { DEFAULT_LANG, type Lang } from "./messages.ts";
 
 // Structural edits of a case folder for the editor: add and remove persons, places, items, clues,
 // questions, witness steps and solution routes. New IDs are derived from the display name and made
@@ -19,6 +21,8 @@ export type StructureOp =
   | { readonly op: "remove-route"; readonly routeId: string }
   | { readonly op: "remove-step"; readonly stepId: string };
 export type StructureResult = { readonly ok: true; readonly message: string; readonly id?: string } | { readonly ok: false; readonly message: string };
+
+type Msg = EditorMessages["struct"];
 
 const SLUG = /^[a-z0-9][a-z0-9_-]{0,63}$/;
 const ENTITY_ID = /^(person|location|item|event|evidence|proposition|question):[a-z0-9][a-z0-9_-]{0,63}$/;
@@ -96,9 +100,9 @@ const refOf = (id: string) => ({ $playerRefOf: { kind: kindOf(id), id } });
 
 // ---------- Add ----------
 
-function addEntity(f: Folder, op: Extract<StructureOp, { op: "add-entity" }>): StructureResult {
+function addEntity(f: Folder, op: Extract<StructureOp, { op: "add-entity" }>, t: Msg): StructureResult {
   const name = op.name.trim();
-  if (name === "") return { ok: false, message: "Name fehlt" };
+  if (name === "") return { ok: false, message: t.nameMissing };
   const id = freshId(f, op.kind, name);
   const key = { person: "persons", location: "locations", item: "items" }[op.kind];
   f.touch("truth.json")[key].push({ id, name });
@@ -110,40 +114,40 @@ function addEntity(f: Folder, op: Extract<StructureOp, { op: "add-entity" }>): S
     const slug = id.slice("person:".length);
     const sibling = f.files().find((file) => /^npc-.*\.json$/.test(file));
     const profileSibling = f.files().find((file) => /^interrogation-.*\.json$/.test(file));
-    if (sibling === undefined || profileSibling === undefined) return { ok: false, message: "Kein bestehendes Verhör als Vorlage im Fall" };
+    if (sibling === undefined || profileSibling === undefined) return { ok: false, message: t.noTemplate };
     const { awareness: _a, attitudes: _t, ...head } = f.get(sibling);
     f.set(`npc-${slug}.json`, { ...head, npcId: id, awareness: [{ subject: { kind: "person", id }, acquiredAt: 0, provenance: { kind: "prior_knowledge" } }], attitudes: [] });
     const { rules: _r, ...profileHead } = f.get(profileSibling);
     f.set(`interrogation-${slug}.json`, { ...profileHead, npcId: id, rules: [] });
   }
-  return { ok: true, message: `${name} angelegt (${id})`, id };
+  return { ok: true, message: t.added(name, id), id };
 }
 
-function addClue(f: Folder, op: Extract<StructureOp, { op: "add-clue" }>): StructureResult {
+function addClue(f: Folder, op: Extract<StructureOp, { op: "add-clue" }>, t: Msg): StructureResult {
   const name = op.name.trim();
-  if (name === "" || op.text.trim() === "") return { ok: false, message: "Name und Text der Spur fehlen" };
+  if (name === "" || op.text.trim() === "") return { ok: false, message: t.clueMissing };
   const sourceKind = kindOf(op.at);
-  if (sourceKind !== "location" && sourceKind !== "item") return { ok: false, message: "Fundort muss ein Ort oder Gegenstand sein" };
-  if (!/^proposition:/.test(op.supports)) return { ok: false, message: "Die Spur muss eine Aussage stützen" };
+  if (sourceKind !== "location" && sourceKind !== "item") return { ok: false, message: t.clueSource };
+  if (!/^proposition:/.test(op.supports)) return { ok: false, message: t.clueSupports };
   const known = takenIds(f);
-  for (const ref of [op.at, op.supports]) if (!known.has(ref)) return { ok: false, message: `Unbekannt: ${ref}` };
+  for (const ref of [op.at, op.supports]) if (!known.has(ref)) return { ok: false, message: t.unknown(ref) };
   const id = freshId(f, "evidence", name);
   f.touch("truth.json").evidence.push({ id, description: name, source: { kind: sourceKind, id: op.at }, links: [{ propositionId: op.supports, direction: "supports" }] });
   f.touch("evidence-presentation.json").entries.push({ evidenceId: id, text: op.text.trim(), mentions: [{ kind: sourceKind, id: op.at }], reports: [] });
   const path = sourceKind === "location" ? { kind: "search_location", locationId: op.at } : { kind: "examine_item", itemId: op.at };
   f.touch("evidence-access.json").entries.push({ evidenceId: id, access: { kind: "discoverable", paths: [path] } });
   f.touch("public-content.json").labels.push({ entity: { kind: "evidence", id }, label: name, role: null });
-  return { ok: true, message: `Spur ${name} angelegt (${id}), zu finden über ${label(f, op.at)}`, id };
+  return { ok: true, message: t.clueAdded(name, id, label(f, op.at)), id };
 }
 
-function addQuestion(f: Folder, op: Extract<StructureOp, { op: "add-question" }>): StructureResult {
+function addQuestion(f: Folder, op: Extract<StructureOp, { op: "add-question" }>, t: Msg): StructureResult {
   const slug = op.npc.slice("person:".length);
-  if (!f.has(`interrogation-${slug}.json`) || !f.has(`npc-${slug}.json`)) return { ok: false, message: `${label(f, op.npc)} ist nicht verhörbar` };
-  if (op.text.trim() === "") return { ok: false, message: "Fragetext fehlt" };
+  if (!f.has(`interrogation-${slug}.json`) || !f.has(`npc-${slug}.json`)) return { ok: false, message: t.notInterrogable(label(f, op.npc)) };
+  if (op.text.trim() === "") return { ok: false, message: t.questionTextMissing };
   const about = [...new Set([op.npc, ...op.about])].filter((id) => /^(person|location|item|event):/.test(id));
   const known = takenIds(f);
   const unknown = about.find((id) => !known.has(id));
-  if (unknown !== undefined) return { ok: false, message: `Unbekannt: ${unknown}` };
+  if (unknown !== undefined) return { ok: false, message: t.unknown(unknown) };
   const catalogue = f.touch("questions.json");
   let n = catalogue.questions.length + 1;
   const taken = new Set(catalogue.questions.map((q: Json) => q.id));
@@ -157,23 +161,23 @@ function addQuestion(f: Folder, op: Extract<StructureOp, { op: "add-question" }>
   for (const e of about) {
     if (!snapshot.awareness.some((a: Json) => a.subject?.id === e)) snapshot.awareness.push({ subject: { kind: kindOf(e), id: e }, acquiredAt: 0, provenance: { kind: "prior_knowledge" } });
   }
-  return { ok: true, message: `Frage ${id} an ${label(f, op.npc)} angelegt; sie wird zunächst verweigert`, id };
+  return { ok: true, message: t.questionAdded(id, label(f, op.npc)), id };
 }
 
-function addStep(f: Folder, op: Extract<StructureOp, { op: "add-step" }>): StructureResult {
+function addStep(f: Folder, op: Extract<StructureOp, { op: "add-step" }>, t: Msg): StructureResult {
   const manifest = f.touch("release-manifest.json");
   const steps: Json[] = manifest.certificateData.steps;
   let event: Json;
   let stepId: string;
   const known = takenIds(f);
-  if (!known.has(op.target) || (op.question !== undefined && !known.has(op.question))) return { ok: false, message: `Unbekannt: ${known.has(op.target) ? op.question : op.target}` };
+  if (!known.has(op.target) || (op.question !== undefined && !known.has(op.question))) return { ok: false, message: t.unknown(`${known.has(op.target) ? op.question : op.target}`) };
   if (op.action === "ask") {
-    if (op.question === undefined || !/^question:/.test(op.question)) return { ok: false, message: "Frage fehlt" };
+    if (op.question === undefined || !/^question:/.test(op.question)) return { ok: false, message: t.questionMissing };
     event = { type: "interrogate", npc: refOf(op.target), questionId: op.question };
     stepId = `ask-${slugify(op.target.split(":")[1]!)}-${op.question.split(":")[1]}`;
   } else {
     const kind = op.action === "search_location" ? "location" : "item";
-    if (kindOf(op.target) !== kind) return { ok: false, message: "Ziel passt nicht zur Aktion" };
+    if (kindOf(op.target) !== kind) return { ok: false, message: t.targetMismatch };
     event = { type: "investigate", action: op.action, target: refOf(op.target) };
     stepId = `${op.action === "search_location" ? "search" : "read"}-${slugify(op.target.split(":")[1]!)}`;
   }
@@ -183,7 +187,7 @@ function addStep(f: Folder, op: Extract<StructureOp, { op: "add-step" }>): Struc
   const pending = (f.get("case.json").editorSteps ??= []);
   for (let n = 2; [...steps, ...pending].some((s) => s.stepId === stepId); n++) stepId = `${base}-${n}`;
   pending.push({ stepId, event });
-  return { ok: true, message: `Schritt ${stepId} angelegt; nimm ihn in einen Lösungsweg auf`, id: stepId };
+  return { ok: true, message: t.stepAdded(stepId), id: stepId };
 }
 
 /** Steps a route may use: the manifest's plus the editor's pending ones from case.json. */
@@ -207,12 +211,12 @@ function syncSteps(f: Folder): void {
   }
 }
 
-function addRoute(f: Folder, op: Extract<StructureOp, { op: "add-route" }>): StructureResult {
+function addRoute(f: Folder, op: Extract<StructureOp, { op: "add-route" }>, t: Msg): StructureResult {
   const all = new Set(availableSteps(f).map((s) => s.stepId));
   const stepIds = op.stepIds.filter((s) => s !== "");
-  if (stepIds.length === 0) return { ok: false, message: "Ein Lösungsweg braucht mindestens einen Schritt" };
+  if (stepIds.length === 0) return { ok: false, message: t.routeNeedsStep };
   const unknown = stepIds.filter((s) => !all.has(s));
-  if (unknown.length > 0) return { ok: false, message: `Unbekannte Schritte: ${unknown.join(", ")}` };
+  if (unknown.length > 0) return { ok: false, message: t.unknownSteps(unknown.join(", ")) };
   const manifest = f.touch("release-manifest.json");
   const routes: Json[] = (manifest.certificateData.routes ??= []);
   let n = routes.length + 2;
@@ -220,7 +224,7 @@ function addRoute(f: Folder, op: Extract<StructureOp, { op: "add-route" }>): Str
   const routeId = `weg-${n}`;
   routes.push({ routeId, stepIds });
   syncSteps(f);
-  return { ok: true, message: `Lösungsweg ${routeId} angelegt (${stepIds.length} Schritte)`, id: routeId };
+  return { ok: true, message: t.routeAdded(routeId, stepIds.length), id: routeId };
 }
 
 // ---------- Remove ----------
@@ -261,8 +265,8 @@ function removeIds(f: Folder, ids: ReadonlySet<string>): string[] {
   return touched;
 }
 
-function remove(f: Folder, id: string): StructureResult {
-  if (!ENTITY_ID.test(id) || !takenIds(f).has(id)) return { ok: false, message: `Unbekannt: ${id}` };
+function remove(f: Folder, id: string, t: Msg): StructureResult {
+  if (!ENTITY_ID.test(id) || !takenIds(f).has(id)) return { ok: false, message: t.unknown(id) };
   const stepsBefore = availableSteps(f).map((s) => s.stepId);
   const touched = removeIds(f, new Set([id]));
   // Witness steps that pointed at the object are gone; drop them from every route as well.
@@ -270,21 +274,21 @@ function remove(f: Folder, id: string): StructureResult {
   const lostSteps = stepsBefore.filter((s) => !stepsAfter.has(s));
   if (lostSteps.length > 0) removeIds(f, new Set(lostSteps));
   syncSteps(f);
-  return { ok: true, message: `${id} entfernt (${touched.length} Dateien${lostSteps.length > 0 ? `, Schritte ${lostSteps.join(", ")}` : ""})` };
+  return { ok: true, message: t.removed(id, touched.length, lostSteps.join(", ")) };
 }
 
-function removeRoute(f: Folder, routeId: string): StructureResult {
+function removeRoute(f: Folder, routeId: string, t: Msg): StructureResult {
   const manifest = f.touch("release-manifest.json");
   const routes: Json[] = manifest.certificateData.routes ?? [];
-  if (!routes.some((r) => r.routeId === routeId)) return { ok: false, message: routeId === "witness" ? "Der Hauptweg kann nicht entfernt werden" : `Unbekannter Weg ${routeId}` };
+  if (!routes.some((r) => r.routeId === routeId)) return { ok: false, message: routeId === "witness" ? t.mainRouteFixed : t.unknownRoute(routeId) };
   manifest.certificateData.routes = routes.filter((r) => r.routeId !== routeId);
   if (manifest.certificateData.routes.length === 0) delete manifest.certificateData.routes;
   syncSteps(f);
-  return { ok: true, message: `Lösungsweg ${routeId} entfernt` };
+  return { ok: true, message: t.routeRemoved(routeId) };
 }
 
-function removeStep(f: Folder, stepId: string): StructureResult {
-  if (!availableSteps(f).some((s) => s.stepId === stepId)) return { ok: false, message: `Unbekannter Schritt ${stepId}` };
+function removeStep(f: Folder, stepId: string, t: Msg): StructureResult {
+  if (!availableSteps(f).some((s) => s.stepId === stepId)) return { ok: false, message: t.unknownStep(stepId) };
   removeIds(f, new Set([stepId]));
   if (f.has("case.json")) {
     const config = f.touch("case.json");
@@ -292,29 +296,30 @@ function removeStep(f: Folder, stepId: string): StructureResult {
     if (config.editorSteps.length === 0) delete config.editorSteps;
   }
   syncSteps(f);
-  return { ok: true, message: `Schritt ${stepId} entfernt` };
+  return { ok: true, message: t.stepRemoved(stepId) };
 }
 
 // ---------- Apply, with one undo level per operation ----------
 
 /** Applies one structural operation to the folder; a snapshot goes to `history` first (undo). */
-export function applyStructure(dir: string, op: StructureOp, history: string): StructureResult {
+export function applyStructure(dir: string, op: StructureOp, history: string, lang: Lang = DEFAULT_LANG): StructureResult {
+  const t = EDITOR_MESSAGES[lang].struct;
   const f = new Folder(dir);
-  for (const file of ["truth.json", "public-content.json", "initial-setup.json"]) if (!f.has(file)) return { ok: false, message: `${file} fehlt` };
+  for (const file of ["truth.json", "public-content.json", "initial-setup.json"]) if (!f.has(file)) return { ok: false, message: t.fileMissing(file) };
   if (!f.has("case.json")) f.set("case.json", {});
   let result: StructureResult;
   try {
     result =
-      op.op === "add-entity" ? addEntity(f, op)
-      : op.op === "add-clue" ? addClue(f, op)
-      : op.op === "add-question" ? addQuestion(f, op)
-      : op.op === "add-step" ? addStep(f, op)
-      : op.op === "add-route" ? addRoute(f, op)
-      : op.op === "remove" ? remove(f, op.id)
-      : op.op === "remove-route" ? removeRoute(f, op.routeId)
-      : removeStep(f, op.stepId);
+      op.op === "add-entity" ? addEntity(f, op, t)
+      : op.op === "add-clue" ? addClue(f, op, t)
+      : op.op === "add-question" ? addQuestion(f, op, t)
+      : op.op === "add-step" ? addStep(f, op, t)
+      : op.op === "add-route" ? addRoute(f, op, t)
+      : op.op === "remove" ? remove(f, op.id, t)
+      : op.op === "remove-route" ? removeRoute(f, op.routeId, t)
+      : removeStep(f, op.stepId, t);
   } catch (error) {
-    return { ok: false, message: `nicht möglich: ${(error as Error).message}` };
+    return { ok: false, message: t.impossible((error as Error).message) };
   }
   if (!result.ok) return result;
   rmSync(history, { recursive: true, force: true });
