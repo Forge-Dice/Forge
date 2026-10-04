@@ -10,6 +10,7 @@ Node 22, TypeScript, zod. `npm install`, then `npm run typecheck` and `npm test`
 npm run play                 # Terminal, Fall "vitrine"
 npm run play -- geige        # anderer Fall: vitrine, brieföffner (briefoeffner), geige, hüttenkasse, nachtzug
 npm run play:web             # Browser auf http://localhost:4173 (PORT=… für einen anderen Port)
+npm run build:web            # eine einzige HTML-Datei (dist/kriminalfaelle.html), spielbar ohne Server
 ```
 
 Befehle im Terminal (`hilfe` zeigt sie im Spiel):
