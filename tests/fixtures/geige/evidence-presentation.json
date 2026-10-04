@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:verstummte-geige",
+  "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
+  "entries": [
+    {
+      "evidenceId": "evidence:pausenfoto",
+      "text": "Ein Pressefoto aus dem Foyer, Zeitstempel 20:40:00. Darauf: Paul Adler und Vera Lind im Gespräch mit Gästen.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:paul"
+        },
+        {
+          "kind": "person",
+          "id": "person:vera"
+        },
+        {
+          "kind": "location",
+          "id": "location:foyer"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:paul",
+            "locationId": "location:foyer",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:vera",
+            "locationId": "location:foyer",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:heizungsprotokoll",
+      "text": "Das Display des Schaltschranks zeigt: Anmeldung Kurt Mohn, 20:38 bis 20:45 Uhr, direkt am Gerät im Heizungskeller.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:kurt"
+        },
+        {
+          "kind": "location",
+          "id": "location:keller"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:kurt",
+            "locationId": "location:keller",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:logenprotokoll",
+      "text": "Das elektronische Schloss der Ehrenloge: Henrik Sand ist um 20:35 hinein- und erst um 20:46 wieder hinausgegangen. Sonst niemand.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:henrik"
+        },
+        {
+          "kind": "location",
+          "id": "location:loge"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:henrik",
+            "locationId": "location:loge",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:kellerplan",
+      "text": "An der Kellertür hängt der Wartungsplan: Heute Pausenkontrolle am Schaltschrank, Kurt Mohn.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:kurt"
+        },
+        {
+          "kind": "item",
+          "id": "item:schaltschrank"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:haar",
+      "text": "Am leeren Geigenkasten klebt ein langes graues Haar, wie das von Paul Adler. Wann es dorthin kam, zeigt es nicht.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:paul"
+        },
+        {
+          "kind": "item",
+          "id": "item:geige"
+        }
+      ],
+      "reports": []
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:verstummte-geige",
+  "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
+  "solutionHash": "12e84c6b14ee0ca7b8ebd0c8674d703a9fca1f8122bf7be55bd1a9d1244cb501",
+  "npcId": "person:kurt",
+  "revision": 1,
+  "asOf": 3600,
+  "awareness": [
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:kurt"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:paul"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:ida"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:keller"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:garderobe"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:buehne"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "item",
+        "id": "item:schaltschrank"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "event",
+        "id": "event:wartung"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    }
+  ],
+  "attitudes": [
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:kurt-keller"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 2400,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:wartung"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:wartung-schaltschrank"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 2400,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:wartung"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:paul-garderobe"
+      },
+      "stance": {
+        "kind": "uncertain",
+        "leaning": true
+      },
+      "acquiredAt": 3000,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:ida-buehne"
+      },
+      "stance": {
+        "kind": "uncertain",
+        "leaning": null
+      },
+      "acquiredAt": 3000,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    }
+  ]
+}
