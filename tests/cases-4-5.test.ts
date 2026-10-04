@@ -35,6 +35,7 @@ function withWitness(dir: string, steps: Step[]): string {
   edit("release-manifest.json", (m) => {
     m.releaseContextHash = PLACEHOLDER;
     m.certificateData.steps = steps;
+    delete m.certificateData.routes;
   });
   edit("proof-profile.json", (p) => {
     p.bindings.releaseHash = PLACEHOLDER;
@@ -79,6 +80,7 @@ describe("Die Hüttenkasse", () => {
     expect(check.problems).toEqual([]);
     expect(check.filled).toEqual([]);
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });
+    expect(check.routes.map((r) => [r.routeId, r.report.status])).toEqual([["witness", "pass"], ["befragen", "pass"]]);
   });
 
   it("route A (searching the rooms) and route B (asking the people) each solve it", () => {
@@ -151,6 +153,7 @@ describe("Der Nachtzug nach Triest", () => {
     expect(check.problems).toEqual([]);
     expect(check.filled).toEqual([]);
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });
+    expect(check.routes.map((r) => [r.routeId, r.report.status])).toEqual([["witness", "pass"], ["tuerzettel", "pass"]]);
   });
 
   it("route A (Janek's service book) and route B (the door note and examining people) each solve it", () => {

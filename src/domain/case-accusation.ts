@@ -8,6 +8,7 @@ import {
   type CaseSolution,
   type ConclusionEvaluation,
 } from "./case-solution.ts";
+import { deepFreeze } from "./shared.ts";
 
 // Player accusation and verdict core (MYST-0002).
 // An Accusation is a set of structured claims with asserted polarity, bound to one exact
@@ -60,14 +61,6 @@ function checkAccusation(accusation: AccusationShape, truth: CaseTruth, truthHas
     if (seen.has(key)) issue("Claim is asserted more than once", ["literals", j, "claim"]);
     seen.add(key);
   });
-}
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
 }
 
 /** Zod schema bound to one CaseTruth snapshot. The only way to obtain an Accusation. */

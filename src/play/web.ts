@@ -14,6 +14,7 @@ import {
   newGame,
   questions,
   saveText,
+  SESSION_ERRORS,
   type Action,
   type Game,
 } from "./game.ts";
@@ -24,13 +25,6 @@ import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./
 // the CLI. The server holds one game per case in memory; saves are the Session C text.
 
 const MAX_BODY = 1024 * 1024 + 4096; // one Session C save plus slack for a form body
-
-const ERRORS: Record<string, string> = {
-  ACTION_UNAVAILABLE: "Das geht gerade nicht.",
-  SESSION_CLOSED: "Der Fall ist bereits gelöst.",
-  LIMIT_REACHED: "Das Aktionslimit dieses Falls ist erreicht.",
-  HOST_FAILURE: "Technischer Fehler, die Aktion wurde nicht ausgeführt.",
-};
 
 function readBody(req: IncomingMessage): Promise<string | null> {
   return new Promise((resolve) => {
@@ -99,8 +93,14 @@ function unlocked(before: Game, after: Game): Set<string> {
   return new Set(menu(after).filter((label) => !old.has(label)));
 }
 
-/** Request handler over one in-memory game per case; exported for tests. */
-export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}) {
+export type WebResponse = { readonly status: number; readonly headers: Readonly<Record<string, string>>; readonly body: string };
+export type WebHandler = (method: string, url: string, body: () => Promise<string | null>) => Promise<WebResponse>;
+
+/**
+ * The whole front end as a function of (method, url, body) over one in-memory game per case. The
+ * node server below and the single-file browser build (web-standalone.ts) both run exactly this.
+ */
+export function createWebHandler(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}): WebHandler {
   const slots = new Map<PlayCaseName, Slot>();
   const slot = (name: PlayCaseName): Slot => {
     let s = slots.get(name);
@@ -112,9 +112,9 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
     return s;
   };
   const slugOf = (name: PlayCaseName) => PLAY_CASES[name].dir;
-  const redirect = (res: ServerResponse, to: string): void => void res.writeHead(303, { location: to }).end();
-  const html = (res: ServerResponse, body: string): void =>
-    void res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }).end(body);
+  const redirect = (to: string): WebResponse => ({ status: 303, headers: { location: to }, body: "" });
+  const html = (body: string): WebResponse => ({ status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }, body });
+  const text = (status: number, body: string): WebResponse => ({ status, headers: { "content-type": "text/plain; charset=utf-8" }, body });
 
   function act(s: Slot, group: string | null, n: string | null, at: string | null): void {
     const { game } = s;
@@ -127,7 +127,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
     if (action === undefined) return;
     const result = reduceSession(game.pkg, game.state, action.event);
     if (!result.ok) {
-      s.feedback = { tone: "warn", title: ERRORS[result.code]!, lines: [] };
+      s.feedback = { tone: "warn", title: SESSION_ERRORS[result.code]!, lines: [] };
       return;
     }
     s.game = { ...game, state: result.state };
@@ -137,9 +137,9 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
     s.feedback = solved ? null : feedbackFor(game, s.game, action, result.output, s.fresh.size);
   }
 
-  return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
-    const url = new URL(req.url ?? "/", "http://localhost");
-    if (req.method === "GET" && url.pathname === "/") {
+  return async (method, rawUrl, readBody) => {
+    const url = new URL(rawUrl, "http://localhost");
+    if (method === "GET" && url.pathname === "/") {
       const cards = (Object.keys(PLAY_CASES) as PlayCaseName[]).map((name) => {
         const s = slot(name);
         const { publicContent } = s.game.pkg;
@@ -147,55 +147,62 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
         const progress = s.game.state.phase === "solved" ? "Gelöst" : steps === 0 ? null : `${steps} Aktionen`;
         return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress };
       });
-      return html(res, renderCaseList(cards));
+      return html(renderCaseList(cards));
     }
-    if (req.method === "GET" && url.pathname === "/hilfe") return html(res, renderHelp());
+    if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp());
     const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
     const name = match === null ? null : playCaseName(match[1]);
-    if (match === null || name === null) {
-      res.writeHead(404, { "content-type": "text/plain; charset=utf-8" }).end("Nicht gefunden.");
-      return;
-    }
+    if (match === null || name === null) return text(404, "Nicht gefunden.");
     const s = slot(name);
     const home = `/fall/${slugOf(name)}`;
-    const route = `${req.method} ${match[3] ?? ""}`;
+    const route = `${method} ${match[3] ?? ""}`;
     switch (route) {
       case "GET ": {
         const page = renderGame(s.game, slugOf(name), s.feedback, s.fresh);
         s.feedback = null;
-        return html(res, page);
+        return html(page);
       }
       case "GET save": {
         const saved = saveText(s.game);
         if (!saved.ok) {
           s.feedback = { tone: "warn", title: saved.text, lines: [] };
-          return redirect(res, home);
+          return redirect(home);
         }
-        res
-          .writeHead(200, { "content-type": "application/json; charset=utf-8", "content-disposition": `attachment; filename="${slugOf(name)}.save.json"` })
-          .end(saved.text);
-        return;
+        return {
+          status: 200,
+          headers: { "content-type": "application/json; charset=utf-8", "content-disposition": `attachment; filename="${slugOf(name)}.save.json"` },
+          body: saved.text,
+        };
       }
       case "POST act": {
-        const form = new URLSearchParams((await readBody(req)) ?? "");
+        const form = new URLSearchParams((await readBody()) ?? "");
         act(s, form.get("group"), form.get("n"), form.get("at"));
-        return redirect(res, home);
+        return redirect(home);
       }
       case "POST load": {
-        const loaded = loadText(s.game.pkg, (await readBody(req)) ?? "", PLAY_CASES[name].clockOrigin);
+        const loaded = loadText(s.game.pkg, (await readBody()) ?? "", PLAY_CASES[name].clockOrigin);
         if (loaded.ok) [s.game, s.fresh] = [loaded.game, new Set()];
         s.feedback = loaded.ok
           ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
           : { tone: "warn", title: loaded.text, lines: ["Lade eine unveränderte Datei, die mit diesem Fall gespeichert wurde."] };
-        return redirect(res, home);
+        return redirect(home);
       }
       case "POST new":
         [s.game, s.fresh] = [newGame(s.game.pkg, PLAY_CASES[name].clockOrigin), new Set()];
         s.feedback = { tone: "info", title: "Neues Spiel", lines: ["Der Fall beginnt von vorn."] };
-        return redirect(res, home);
+        return redirect(home);
       default:
-        res.writeHead(405, { "content-type": "text/plain; charset=utf-8" }).end("Nicht erlaubt.");
+        return text(405, "Nicht erlaubt.");
     }
+  };
+}
+
+/** Node request handler around createWebHandler; exported for tests. */
+export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}) {
+  const handle = createWebHandler(packages);
+  return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
+    const out = await handle(req.method ?? "GET", req.url ?? "/", () => readBody(req));
+    res.writeHead(out.status, out.headers).end(out.body);
   };
 }
 

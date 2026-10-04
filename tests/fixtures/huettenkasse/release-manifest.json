@@ -82,6 +82,45 @@
             }
           }
         }
+      },
+      {
+        "stepId": "ask-rosa-buch",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:rosa"
+            }
+          },
+          "questionId": "question:q04"
+        }
+      },
+      {
+        "stepId": "search-funkraum",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:funkraum"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-gerd-terrasse",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:gerd"
+            }
+          },
+          "questionId": "question:q02"
+        }
       }
     ],
     "observations": [
@@ -396,6 +435,19 @@
           "observed:gerd",
           "observed:mira",
           "observed:tobias"
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "routeId": "befragen",
+        "stepIds": [
+          "ask-rosa-buch",
+          "read-buch",
+          "search-funkraum",
+          "read-funkgeraet",
+          "ask-gerd-terrasse",
+          "read-kamera"
         ]
       }
     ]
