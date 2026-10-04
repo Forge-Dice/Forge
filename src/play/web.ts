@@ -2,7 +2,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
 import { accusations, answerText, evidenceText, investigations, known, loadText, newGame, questions, saveText, type Action, type Game } from "./game.ts";
-import { renderCaseList, renderGame, type Feedback } from "./web-page.ts";
+import { renderCaseList, renderGame, renderHelp, type Feedback } from "./web-page.ts";
 import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./cases.ts";
 
 // `npm run play:web`: the playable cases in the browser, one local player, same session logic as
@@ -124,6 +124,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
       });
       return html(res, renderCaseList(cards));
     }
+    if (req.method === "GET" && url.pathname === "/hilfe") return html(res, renderHelp());
     const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
     const name = match === null ? null : playCaseName(match[1]);
     if (match === null || name === null) {
