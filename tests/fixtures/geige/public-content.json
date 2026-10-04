@@ -193,67 +193,80 @@
     {
       "npc": "person:vera",
       "questionId": "question:q02",
-      "text": "War Paul Adler um 20:40 im Foyer?"
+      "text": "War Paul Adler um 20:40 im Foyer?",
+      "answer": "Ja, Adler stand im Foyer und hielt Hof, wie immer."
     },
     {
       "npc": "person:vera",
       "questionId": "question:q03",
-      "text": "War Henrik Sand um 20:40 in der Ehrenloge?"
+      "text": "War Henrik Sand um 20:40 in der Ehrenloge?",
+      "answer": "Ja, Herr Sand saß um 20:40 in seiner Ehrenloge."
     },
     {
       "npc": "person:vera",
       "questionId": "question:q04",
-      "text": "War Ida Reiner um 20:40 auf der Bühne?"
+      "text": "War Ida Reiner um 20:40 auf der Bühne?",
+      "answer": "Nein. Ida war um 20:40 nicht auf der Bühne, da bin ich sicher."
     },
     {
       "npc": "person:kurt",
       "questionId": "question:q01",
-      "text": "Waren Sie um 20:40 im Heizungskeller?"
+      "text": "Waren Sie um 20:40 im Heizungskeller?",
+      "answer": "Jo, um 20:40 war ich unten im Heizungskeller."
     },
     {
       "npc": "person:kurt",
       "questionId": "question:q07",
-      "text": "Haben Sie in der Pause den Schaltschrank im Keller kontrolliert?"
+      "text": "Haben Sie in der Pause den Schaltschrank im Keller kontrolliert?",
+      "answer": "Freilich, den Schaltschrank hab ich kontrolliert, wie jede Pause."
     },
     {
       "npc": "person:kurt",
       "questionId": "question:q05",
-      "text": "War Paul Adler um 20:40 in der Garderobe?"
+      "text": "War Paul Adler um 20:40 in der Garderobe?",
+      "answer": "Ich mein schon, dass der Dirigent da in der Garderobe war."
     },
     {
       "npc": "person:kurt",
       "questionId": "question:q04",
-      "text": "War Ida Reiner um 20:40 auf der Bühne?"
+      "text": "War Ida Reiner um 20:40 auf der Bühne?",
+      "answer": "Die Ida auf der Bühne? Kann sein, kann auch nicht sein."
     },
     {
       "npc": "person:paul",
       "questionId": "question:q02",
-      "text": "Waren Sie um 20:40 im Foyer?"
+      "text": "Waren Sie um 20:40 im Foyer?",
+      "answer": "Selbstverständlich. Um 20:40 war ich im Foyer."
     },
     {
       "npc": "person:paul",
       "questionId": "question:q04",
-      "text": "War Ida Reiner um 20:40 auf der Bühne?"
+      "text": "War Ida Reiner um 20:40 auf der Bühne?",
+      "answer": "Ja, Frau Reiner war um 20:40 auf der Bühne."
     },
     {
       "npc": "person:paul",
       "questionId": "question:q05",
-      "text": "Waren Sie um 20:40 in der Garderobe?"
+      "text": "Waren Sie um 20:40 in der Garderobe?",
+      "answer": "In der Garderobe? Nein, ganz bestimmt nicht."
     },
     {
       "npc": "person:ida",
       "questionId": "question:q04",
-      "text": "Waren Sie um 20:40 auf der Bühne?"
+      "text": "Waren Sie um 20:40 auf der Bühne?",
+      "answer": "Ja, um 20:40 war ich auf der Bühne."
     },
     {
       "npc": "person:ida",
       "questionId": "question:q06",
-      "text": "Waren Sie um 20:40 in der Garderobe?"
+      "text": "Waren Sie um 20:40 in der Garderobe?",
+      "answer": "In der Garderobe? Nein, wirklich nicht."
     },
     {
       "npc": "person:ida",
       "questionId": "question:q05",
-      "text": "War Paul Adler um 20:40 in der Garderobe?"
+      "text": "War Paul Adler um 20:40 in der Garderobe?",
+      "answer": "Paul? Nein, der war nicht in der Garderobe."
     }
   ],
   "publicRules": [

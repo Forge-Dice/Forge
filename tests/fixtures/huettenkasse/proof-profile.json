@@ -4,7 +4,7 @@
     "caseId": "case:huettenkasse",
     "truthHash": "7eb089891564275ca1e43ee76a8404bc99768a906729973fd1df2c668701e070",
     "solutionHash": "6e404e5860e94d0494fc326b1519ec7944a4d48ca3bf322c99a0c0b72af2232e",
-    "releaseHash": "a03767231b3b41fbd398da2d4e6cdeb7ed333eee5c72a6fe7c16c505293bffc2"
+    "releaseHash": "fce2bb9d4afe4b3a57f5c993843fdfa1407748fe3334b58f138abca5134362f8"
   },
   "answerScope": [
     "conclusion:actor-lukas",

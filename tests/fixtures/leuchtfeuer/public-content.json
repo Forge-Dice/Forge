@@ -281,57 +281,70 @@
     {
       "npc": "person:hinrich",
       "questionId": "question:q04",
-      "text": "Läuft die Kamera am Hafen auch nachts?"
+      "text": "Läuft die Kamera am Hafen auch nachts?",
+      "answer": "Jo, die Hafenkamera läuft Tag und Nacht."
     },
     {
       "npc": "person:hinrich",
       "questionId": "question:q05",
-      "text": "Waren Sie um 02:00 im Laternenraum?"
+      "text": "Waren Sie um 02:00 im Laternenraum?",
+      "answer": "Nee. Um zwei war ich nicht im Laternenraum."
     },
     {
       "npc": "person:frauke",
       "questionId": "question:q03",
-      "text": "Haben Sie um 02:00 telefoniert?"
+      "text": "Haben Sie um 02:00 telefoniert?",
+      "answer": "Ja, um zwei hab ich telefoniert, mitten in der Nacht."
     },
     {
       "npc": "person:frauke",
       "questionId": "question:q05",
-      "text": "War Hinrich Paulsen um 02:00 im Laternenraum?"
+      "text": "War Hinrich Paulsen um 02:00 im Laternenraum?",
+      "answer": "Hinrich? Nein, der war nicht oben im Laternenraum."
     },
     {
       "npc": "person:ole",
       "questionId": "question:q01",
-      "text": "Lag heute Nacht ein fremdes Boot an der Hallig?"
+      "text": "Lag heute Nacht ein fremdes Boot an der Hallig?",
+      "answer": "Jo, da lag ein fremdes Boot an der Hallig. Keins von hier."
     },
     {
       "npc": "person:ole",
       "questionId": "question:q02",
-      "text": "Waren Sie um 02:00 zu Hause?"
+      "text": "Waren Sie um 02:00 zu Hause?",
+      "answer": "Klar war ich zu Hause. Wo soll ich bei dem Wetter sonst sein?",
+      "admission": "Na gut. Nee, um zwei war ich nicht zu Hause."
     },
     {
       "npc": "person:marlene",
       "questionId": "question:q08",
-      "text": "Waren Sie um 02:00 in der Vogelwarte?"
+      "text": "Waren Sie um 02:00 in der Vogelwarte?",
+      "answer": "Ja, um zwei saß ich in der Vogelwarte, wie in jeder Zugnacht."
     },
     {
       "npc": "person:marlene",
       "questionId": "question:q05",
-      "text": "War Hinrich Paulsen um 02:00 im Laternenraum?"
+      "text": "War Hinrich Paulsen um 02:00 im Laternenraum?",
+      "answer": "Ich glaube schon, dass Hinrich oben im Laternenraum war."
     },
     {
       "npc": "person:jasper",
       "questionId": "question:q06",
-      "text": "Waren Sie um 01:00 am Weststrand?"
+      "text": "Waren Sie um 01:00 am Weststrand?",
+      "answer": "Am Weststrand? Nein. Um eins habe ich geschlafen.",
+      "admission": "Also schön. Ja, um eins war ich am Weststrand."
     },
     {
       "npc": "person:jasper",
       "questionId": "question:q09",
-      "text": "Haben Sie um 02:03 vom Fährhaus aus die Küstenwache angerufen?"
+      "text": "Haben Sie um 02:03 vom Fährhaus aus die Küstenwache angerufen?",
+      "answer": "Ja, um 02:03 habe ich vom Fährhaus aus die Küstenwache angerufen."
     },
     {
       "npc": "person:knut",
       "questionId": "question:q07",
-      "text": "Waren Sie um 02:00 im Laternenraum?"
+      "text": "Waren Sie um 02:00 im Laternenraum?",
+      "answer": "Dazu sag ich nichts. Gar nichts."
     }
   ],
   "publicRules": [

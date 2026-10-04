@@ -4,7 +4,7 @@
     "caseId": "case:leere-vitrine-v1",
     "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
     "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
-    "releaseHash": "4615e0ca88cdf0fe442e27ae8def2150a4f7de9b618d3ff6cbde60e2ce800b84"
+    "releaseHash": "533c39da0c20c22afb501b9ff612612323feb41f85f0d4db13472782c4916c5f"
   },
   "answerScope": [
     "conclusion:actor-max",
