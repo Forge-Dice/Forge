@@ -231,12 +231,33 @@ const STANCES: Record<string, string> = {
   does_not_know: "Das weiß ich nicht.",
 };
 
-export function answerText(game: Game, o: InterrogationObservation): string {
-  const npcId = game.pkg.refs.resolve(o.npc)?.id;
-  const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === o.questionId);
+function questionOf(game: Game, npc: string, questionId: string) {
+  const npcId = game.pkg.refs.resolve(npc)?.id;
+  return game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === questionId);
+}
+
+/** Whether the player broke this NPC's lie on the question before event index `before`. */
+function admittedBefore(game: Game, npc: string, questionId: string, before: number): boolean {
+  return game.state.knowledge.observations.some(
+    (r) =>
+      r.source.kind === "confrontation" &&
+      r.source.eventIndex < before &&
+      r.source.npc === npc &&
+      r.source.questionId === questionId &&
+      (r.observation as ConfrontationObservation).act === "admit",
+  );
+}
+
+/**
+ * The NPC's reply: the authored answer sentence when the case has one (the admission once the lie
+ * is broken), otherwise the plain stance. `at` is the record's event index (default: now).
+ */
+export function answerText(game: Game, o: InterrogationObservation, at = Infinity): string {
+  const question = questionOf(game, o.npc, o.questionId);
   const head = `${labelOf(game, o.npc)} auf „${question?.text ?? o.questionId}“`;
-  if (o.act === "decline") return `${head}: „Dazu sage ich nichts.“`;
-  const said = `${head}: „${STANCES[o.stance]}“`;
+  const authored = question?.admission !== undefined && admittedBefore(game, o.npc, o.questionId, at) ? question.admission : question?.answer;
+  const plain = o.act === "decline" ? "Dazu sage ich nichts." : STANCES[o.stance];
+  const said = `${head}: „${authored ?? plain}“`;
   return "statement" in o ? `${said}\n  (zur Behauptung: ${claimText(game, o.statement)})` : said;
 }
 
@@ -289,7 +310,8 @@ export function hintText(game: Game, hint: Hint): string {
 export function confrontationText(game: Game, o: ConfrontationObservation): string {
   const head = `${labelOf(game, o.npc)}, mit „${labelOf(game, o.evidence)}“ konfrontiert`;
   if (o.act === "stands_by") return `${head}: „Ich bleibe bei dem, was ich gesagt habe.“`;
-  return `${head}, gibt nach: „${STANCES[o.stance]}“\n  (zur Behauptung: ${claimText(game, o.statement)})`;
+  const said = questionOf(game, o.npc, o.questionId)?.admission ?? STANCES[o.stance];
+  return `${head}, gibt nach: „${said}“\n  (zur Behauptung: ${claimText(game, o.statement)})`;
 }
 
 function outputText(game: Game, output: SessionOutput): string {
@@ -337,7 +359,7 @@ export function recordText(game: Game, r: SessionState["knowledge"]["observation
     case "evidence":
       return evidenceText(game, r.observation as EvidenceObservation);
     case "npc":
-      return answerText(game, r.observation as InterrogationObservation);
+      return answerText(game, r.observation as InterrogationObservation, r.source.eventIndex);
     case "confrontation":
       return confrontationText(game, r.observation as ConfrontationObservation);
   }
