@@ -29,27 +29,31 @@ const pkg = resolveBriefPackage();
 const r = (kind: "person" | "location" | "item" | "event", id: string) => pkg.refs.refFor(kind, `${kind}:${id}`)!;
 
 describe("Der Brieföffner: components with the real parsers", () => {
-  it("truth is fullCase() revision 4 with exactly the roadmap changes, and semantically clean", () => {
+  it("truth is fullCase() plus the revision-5 balance changes (butler Dorian, kitchen), and semantically clean", () => {
     const original = fullCase();
     const input = briefRaw("truth.json") as ReturnType<typeof fullCase>;
-    expect(input.revision).toBe(4);
+    expect(input.revision).toBe(5);
+    // Everything of the original stays; revision 5 only appends the butler's trail.
     for (const key of ["persons", "locations", "items", "relationships", "events", "motives", "propositions", "secrets", "redHerrings"] as const) {
-      expect(input[key], key).toEqual(original[key]);
+      expect(input[key].slice(0, original[key].length), key).toEqual(original[key]);
     }
+    const ids = (list: { id: string }[], from = 0) => list.slice(from).map((e) => e.id);
+    expect(ids(input.persons, original.persons.length)).toEqual(["person:dorian"]);
+    expect(ids(input.locations, original.locations.length)).toEqual(["location:kitchen"]);
+    expect(ids(input.redHerrings, original.redHerrings.length)).toEqual(["red-herring:tray"]);
     const byId = (list: { id: string }[]) => Object.fromEntries(list.map((e) => [e.id, e]));
     const before = byId(original.evidence);
     const after = byId(input.evidence);
-    expect(Object.keys(after).sort()).toEqual(["evidence:cuff-button", "evidence:fingerprint", "evidence:gloves-dirty", "evidence:muddy-path"]);
+    expect(Object.keys(after).sort()).toEqual(["evidence:cuff-button", "evidence:fingerprint", "evidence:kitchen-log", "evidence:muddy-path", "evidence:tray"]);
     expect(after["evidence:fingerprint"]).toEqual(before["evidence:fingerprint"]);
     expect(after["evidence:muddy-path"]).toEqual(before["evidence:muddy-path"]);
-    expect(after["evidence:gloves-dirty"]).toEqual({ ...before["evidence:gloves-dirty"], source: { kind: "item", id: "item:gloves" } });
     expect(validateCaseSemantics(truth).findings).toEqual([]);
   });
 
   it("every component parses and is bound to this truth and solution", () => {
     const catalogue = parseQuestionCatalogue(briefRaw("questions.json"), truth);
-    expect(parseEvidenceAccessMap(briefRaw("evidence-access.json"), truth).entries).toHaveLength(4);
-    expect(parseEvidencePresentation(briefRaw("evidence-presentation.json"), truth).entries).toHaveLength(4);
+    expect(parseEvidenceAccessMap(briefRaw("evidence-access.json"), truth).entries).toHaveLength(5);
+    expect(parseEvidencePresentation(briefRaw("evidence-presentation.json"), truth).entries).toHaveLength(5);
     for (const npc of BRIEF.npcs) {
       expect(parseInterrogationProfile(briefRaw(`interrogation-${npc}.json`), truth, catalogue).npcId).toBe(`person:${npc}`);
       expect(parseNpcKnowledge(briefRaw(`npc-${npc}.json`), truth, solution).solutionHash).toBe(hashCaseSolution(solution));
@@ -88,15 +92,17 @@ describe("Der Brieföffner: solvability with the real witness", () => {
     });
   });
 
-  it("the garden first passes as well", () => {
-    expect(check(["search-garden", "search-library"]).status).toBe("pass");
+  it("another order passes as well", () => {
+    expect(check(["search-kitchen", "search-garden", "search-library", "ask-ben-presence", "confront-ben"]).status).toBe("pass");
   });
 
-  it("without the library Ben stays open; without the garden Anna stays open", () => {
-    for (const [steps, open] of [[["search-garden"], 2], [["search-library"], 2], [[], 4]] as const) {
+  it("Ben stays open without the confrontation (the cuff button alone proves nothing); Anna without the garden, Dorian without the kitchen", () => {
+    const all = ["search-library", "search-garden", "search-kitchen", "ask-ben-presence", "confront-ben"];
+    const without = (...ids: string[]) => all.filter((id) => !ids.includes(id));
+    for (const [steps, open] of [[without("confront-ben"), 2], [without("search-garden"), 2], [without("search-kitchen"), 2], [[], 8]] as const) {
       const report = check([...steps]);
       expect(report.status).toBe("fail");
-      expect(report.survivingAnswerCount).toBe(open);
+      expect(report.survivingAnswerCount, steps.join(",")).toBe(open);
       expect(codes(report)).toContain("REQUIRED_NOT_DERIVED");
     }
   });
@@ -116,7 +122,7 @@ describe("Der Brieföffner: played through the real session", () => {
     ask: (npc: string, q: string) => ({ type: "interrogate", npc: r("person", npc), questionId: `question:${q}` }),
     accuse: (who: string) => ({
       type: "accuse",
-      literals: ["anna", "ben", "clara"].map((p) => ({
+      literals: ["anna", "ben", "dorian"].map((p) => ({
         claim: { kind: "personResponsibleForEvent", person: r("person", p), event: r("event", "murder") },
         value: p === who,
       })),
@@ -130,15 +136,16 @@ describe("Der Brieföffner: played through the real session", () => {
     }, initialSession(pkg));
   const verdict = (state: SessionState) => state.verdicts.at(-1)?.verdict;
 
-  it("the gloves are unknown until the garden is searched; the fingerprint is a red herring", () => {
+  it("the gloves are never offered; the fingerprint and Dorian's tea tray are red herrings", () => {
     expect(reduceSession(pkg, initialSession(pkg), event.examine("gloves"))).toMatchObject({ ok: false, code: "ACTION_UNAVAILABLE" });
-    const state = play([event.search("garden"), event.examine("gloves"), event.examine("letter-opener")]);
-    expect(state.knowledge.discoveries).toHaveLength(3);
+    const state = play([event.search("garden"), event.examine("letter-opener"), event.search("library")]);
+    expect(state.knowledge.discoveries).toHaveLength(4);
     expect(verdict(play([event.examine("letter-opener"), event.accuse("anna")]))).toBe("not_solved");
+    expect(verdict(play([event.search("library"), event.accuse("dorian")]))).toBe("not_solved");
   });
 
-  it("exactly Ben solves; Anna and Clara do not", () => {
-    expect(["anna", "ben", "clara"].map((p) => verdict(play([event.accuse(p)])))).toEqual(["not_solved", "solved", "not_solved"]);
+  it("exactly Ben solves; Anna and Dorian do not", () => {
+    expect(["anna", "ben", "dorian"].map((p) => verdict(play([event.accuse(p)])))).toEqual(["not_solved", "solved", "not_solved"]);
   });
 
   it("Ben lies on q01 and q02 (as in the roadmap), answers q04 truthfully, and the cards refute him", () => {
@@ -151,7 +158,7 @@ describe("Der Brieföffner: played through the real session", () => {
     // The lie is a plain answer to the player: same fields as any sincere answer, no marker.
     expect(Object.keys(answers[0]).sort()).toEqual(Object.keys(answers[3]).sort());
     expect(JSON.stringify(answers)).not.toMatch(/lie|Lüge/i);
-    // Refuted by evidence: the cuff button puts Ben at the murder, the garden trail Anna outside.
+    // Refuted by evidence: the garden trail puts Anna outside; Ben gives in only when confronted.
     const cards = JSON.stringify(state.knowledge.observations.filter((o) => o.source.kind !== "npc"));
     expect(cards).toContain(`"stance":"affirms"`);
     expect(pkg.identity.rulesetVersion).toBe("mystery-session-v3");
@@ -159,7 +166,7 @@ describe("Der Brieföffner: played through the real session", () => {
 
   it("the full walkthrough replays to the same state", () => {
     const log = [
-      event.search("library"), event.examine("letter-opener"), event.search("garden"), event.examine("gloves"),
+      event.search("library"), event.examine("letter-opener"), event.search("garden"), event.search("kitchen"),
       event.ask("ben", "q01"), event.ask("ben", "q02"), event.ask("anna", "q04"), event.ask("anna", "q01"), event.ask("ben", "q04"),
       event.accuse("ben"),
     ];

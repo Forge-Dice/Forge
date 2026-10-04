@@ -28,6 +28,14 @@
     {
       "kind": "event",
       "id": "event:murder"
+    },
+    {
+      "kind": "person",
+      "id": "person:dorian"
+    },
+    {
+      "kind": "location",
+      "id": "location:kitchen"
     }
   ]
 }

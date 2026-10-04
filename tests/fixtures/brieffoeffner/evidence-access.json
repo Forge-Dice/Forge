@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "caseId": "case:letter-opener",
-  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "truthHash": "24accd1071c10c9b3539b46ab1034c22293f64d0b84fcf3fc861d7bca2610f96",
   "entries": [
     {
       "evidenceId": "evidence:cuff-button",
@@ -40,13 +40,25 @@
       }
     },
     {
-      "evidenceId": "evidence:gloves-dirty",
+      "evidenceId": "evidence:tray",
       "access": {
         "kind": "discoverable",
         "paths": [
           {
             "kind": "search_location",
-            "locationId": "location:garden"
+            "locationId": "location:library"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:kitchen-log",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:kitchen"
           }
         ]
       }

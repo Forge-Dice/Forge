@@ -1,34 +1,22 @@
 {
   "schemaVersion": 1,
   "caseId": "case:letter-opener",
-  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "truthHash": "24accd1071c10c9b3539b46ab1034c22293f64d0b84fcf3fc861d7bca2610f96",
   "entries": [
     {
       "evidenceId": "evidence:cuff-button",
-      "text": "Neben dem Schreibtisch liegt ein abgerissener Manschettenknopf von Bens Hemd. Daneben: Claras Blut, noch nicht getrocknet. Der Knopf riss bei der Tat ab.",
+      "text": "Neben dem Schreibtisch liegt ein abgerissener Manschettenknopf von Bens Hemd. Wann er abriss, zeigt er nicht: Ben war am Abend schon einmal in der Bibliothek.",
       "mentions": [
         {
           "kind": "person",
           "id": "person:ben"
         },
         {
-          "kind": "event",
-          "id": "event:murder"
+          "kind": "location",
+          "id": "location:library"
         }
       ],
-      "reports": [
-        {
-          "claim": {
-            "kind": "eventHasParticipant",
-            "eventId": "event:murder",
-            "personId": "person:ben"
-          },
-          "stance": "affirms",
-          "source": {
-            "kind": "observation"
-          }
-        }
-      ]
+      "reports": []
     },
     {
       "evidenceId": "evidence:fingerprint",
@@ -74,19 +62,60 @@
       ]
     },
     {
-      "evidenceId": "evidence:gloves-dirty",
-      "text": "Annas Gartenhandschuhe liegen auf der Bank, voller frischer Erde.",
+      "evidenceId": "evidence:tray",
+      "text": "Auf dem Bibliothekstisch steht Dorians Silbertablett mit zwei Teetassen, eine davon umgestoßen. Laut Teeliste servierte er hier um 20:20, fünf Minuten vor der Tat.",
       "mentions": [
         {
           "kind": "person",
-          "id": "person:anna"
+          "id": "person:dorian"
         },
         {
-          "kind": "item",
-          "id": "item:gloves"
+          "kind": "location",
+          "id": "location:library"
         }
       ],
-      "reports": []
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:dorian",
+            "locationId": "location:library",
+            "at": 1200
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:kitchen-log",
+      "text": "Im Silberbuch der Küche steht Dorians Eintrag von 20:25: Er zählte das Silber, die Köchin zeichnete daneben gegen.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:dorian"
+        },
+        {
+          "kind": "location",
+          "id": "location:kitchen"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:dorian",
+            "locationId": "location:kitchen",
+            "at": 1500
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
     }
   ]
 }

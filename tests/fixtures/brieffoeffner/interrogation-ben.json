@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "caseId": "case:letter-opener",
-  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
-  "catalogueHash": "93248f8bd8684d32d27a167b24765ec7396278ac5a6816147ae6c1f98336dd5d",
+  "truthHash": "24accd1071c10c9b3539b46ab1034c22293f64d0b84fcf3fc861d7bca2610f96",
+  "catalogueHash": "61084d7f75bcc856a265102b197c05f7ba0d313ec60fec8873ecbfe5966e6deb",
   "npcId": "person:ben",
   "revision": 1,
   "rules": [

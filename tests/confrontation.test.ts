@@ -159,9 +159,8 @@ describe("confronting in CLI and browser", () => {
         label: /<button[^>]*>(.*?)<\/button>/.exec(inner!)![1]!.replace(/<[^>]+>/g, ""),
         fields: Object.fromEntries([...inner!.matchAll(/name="(\w+)" value="([^"]*)"/g)].map(([, k, v]) => [k!, v!])),
       }));
-    const click = async (path: string, match: (label: string) => boolean) => {
-      // Last match: Ben's questions come after Anna's, and both ask "Waren Sie bei Claras Tod dabei?".
-      const form = forms(await (await fetch(`${base}${path}`)).text()).filter((f) => match(f.label)).at(-1)!;
+    const click = async (path: string, match: (label: string) => boolean, at = -1) => {
+      const form = forms(await (await fetch(`${base}${path}`)).text()).filter((f) => match(f.label)).at(at)!;
       await fetch(`${base}${path}/act`, { method: "POST", body: new URLSearchParams(form.fields), redirect: "manual" });
       return (await fetch(`${base}${path}`)).text();
     };
@@ -169,7 +168,9 @@ describe("confronting in CLI and browser", () => {
       const B = "/fall/brieffoeffner";
       expect(await (await fetch(`${base}${B}`)).text()).not.toContain("<h2>Vorhalten</h2>");
       await click(B, (l) => l === "Ort durchsuchen: Bibliothek");
-      const html = await click(B, (l) => l === "Waren Sie bei Claras Tod dabei?");
+      // Anna and Ben both offer "Waren Sie bei Claras Tod dabei?" (order follows the PlayerRefs): ask both.
+      await click(B, (l) => l === "Waren Sie bei Claras Tod dabei?", 0);
+      const html = await click(B, (l) => l === "Waren Sie bei Claras Tod dabei?", -1);
       expect(html).toContain("<h2>Vorhalten</h2>");
       const after = await click(B, (l) => l.includes("vorhalten") && l.includes("Manschettenknopf"));
       expect(after).toContain("Konfrontation: die Aussage bricht ein");

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "caseId": "case:letter-opener",
-  "revision": 4,
+  "revision": 5,
   "title": "Der Brieföffner",
   "timeline": {
     "unit": "second",
@@ -19,6 +19,10 @@
     {
       "id": "person:clara",
       "name": "Clara"
+    },
+    {
+      "id": "person:dorian",
+      "name": "Dorian"
     }
   ],
   "locations": [
@@ -29,6 +33,10 @@
     {
       "id": "location:garden",
       "name": "Garten"
+    },
+    {
+      "id": "location:kitchen",
+      "name": "Küche"
     }
   ],
   "items": [
@@ -39,6 +47,10 @@
     {
       "id": "item:gloves",
       "name": "Gartenhandschuhe"
+    },
+    {
+      "id": "item:tray",
+      "name": "Silbertablett"
     }
   ],
   "relationships": [
@@ -104,6 +116,23 @@
       ],
       "itemIds": [
         "item:gloves"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:tea",
+      "description": "Dorian serviert Tee in der Bibliothek",
+      "time": {
+        "kind": "interval",
+        "start": 1080,
+        "end": 1260
+      },
+      "locationId": "location:library",
+      "participantIds": [
+        "person:dorian"
+      ],
+      "itemIds": [
+        "item:tray"
       ],
       "causedByEventIds": []
     }
@@ -174,6 +203,35 @@
         "at": 1500
       },
       "truth": true
+    },
+    {
+      "id": "proposition:dorian-at-murder",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:murder",
+        "personId": "person:dorian"
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:dorian-in-library-tea",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:dorian",
+        "locationId": "location:library",
+        "at": 1200
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:dorian-in-kitchen",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:dorian",
+        "locationId": "location:kitchen",
+        "at": 1500
+      },
+      "truth": true
     }
   ],
   "evidence": [
@@ -210,22 +268,8 @@
       ]
     },
     {
-      "id": "evidence:gloves-dirty",
-      "description": "Erde an den Gartenhandschuhen",
-      "source": {
-        "kind": "item",
-        "id": "item:gloves"
-      },
-      "links": [
-        {
-          "propositionId": "proposition:anna-in-library",
-          "direction": "refutes"
-        }
-      ]
-    },
-    {
       "id": "evidence:cuff-button",
-      "description": "Abgerissener Manschettenknopf von Bens Hemd neben dem Schreibtisch",
+      "description": "Abgerissener Manschettenknopf von Bens Hemd neben dem Schreibtisch (wann er abriss, zeigt er nicht)",
       "source": {
         "kind": "location",
         "id": "location:library"
@@ -233,6 +277,38 @@
       "links": [
         {
           "propositionId": "proposition:ben-at-murder",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:tray",
+      "description": "Silbertablett mit zwei Teetassen auf dem Bibliothekstisch, Dorian servierte um 20:20",
+      "source": {
+        "kind": "location",
+        "id": "location:library"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:dorian-in-library-tea",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:dorian-at-murder",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:kitchen-log",
+      "description": "Silberbuch der Küche: Dorian zählte um 20:25 das Silber, die Köchin zeichnete gegen",
+      "source": {
+        "kind": "location",
+        "id": "location:kitchen"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:dorian-in-kitchen",
           "direction": "supports"
         }
       ]
@@ -253,6 +329,13 @@
         "evidence:fingerprint"
       ],
       "misleadingPropositionId": "proposition:anna-at-murder"
+    },
+    {
+      "id": "red-herring:tray",
+      "evidenceIds": [
+        "evidence:tray"
+      ],
+      "misleadingPropositionId": "proposition:dorian-at-murder"
     }
   ]
 }
