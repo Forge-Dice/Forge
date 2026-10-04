@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { parseCaseTruth, type CaseTruth } from "../domain/case-truth.ts";
@@ -26,10 +26,10 @@ import {
   hashReleaseManifest,
   serializeSessionJson,
 } from "../domain/case-package.identity.ts";
-import { resolveCasePackage, type PackageFinding, type ResolvedCasePackage, type RulesetVersion } from "../domain/case-package.ts";
+import { resolveCasePackage, WITNESS_ROUTE, type PackageFinding, type ResolvedCasePackage, type RulesetVersion } from "../domain/case-package.ts";
+import { checkCaseRoutes, type RouteReport } from "../domain/case-routes.ts";
 import { initialSession, reduceSession } from "../domain/case-session.ts";
 import {
-  checkCaseSolvability,
   parseCaseProofProfile,
   type ReleasedObservation,
   type SolvabilityReport,
@@ -43,11 +43,17 @@ import { refSource } from "../play/cases.ts";
 // field. Host/author tool: messages may contain private IDs and are never shown to players.
 
 export type Problem = { readonly file: string; readonly field: string; readonly message: string; readonly severity: "error" | "warning" };
+/** A hash the tool computed: for a TO_BE_COMPUTED placeholder, or (stale) to replace an outdated value. */
+export type FilledHash = { readonly file: string; readonly field: string; readonly value: string; readonly stale?: true };
 export type CaseCheck = {
   readonly dir: string;
   readonly problems: readonly Problem[];
+  readonly filled: readonly FilledHash[];
   readonly checkedFiles: readonly string[];
+  /** Report of the profile's witness route. */
   readonly solvability: SolvabilityReport | null;
+  /** Every certified route, the witness first; each replayed and checked on its own. */
+  readonly routes: readonly RouteReport[];
   readonly ok: boolean;
 };
 
@@ -75,6 +81,30 @@ const fieldOf = (path: readonly PropertyKey[]): string =>
 /** Error collector: a failed step records its problems and yields null, later steps skip. */
 class Collector {
   readonly problems: Problem[] = [];
+  readonly filled: FilledHash[] = [];
+  /**
+   * Binding hash fields (top level and `bindings`) of one raw file: a placeholder is replaced by the
+   * computed value, a concrete wrong value gets a hint with the expected one (the parser reports it).
+   */
+  bindHash(file: string, raw: unknown, key: string, value: string): void {
+    const holders: [Record<string, unknown>, string][] = [];
+    if (typeof raw === "object" && raw !== null) {
+      holders.push([raw as Record<string, unknown>, ""]);
+      const bindings = (raw as { bindings?: unknown }).bindings;
+      if (typeof bindings === "object" && bindings !== null) holders.push([bindings as Record<string, unknown>, "bindings."]);
+    }
+    for (const [holder, prefix] of holders) {
+      const given = holder[key];
+      if (typeof given !== "string") continue;
+      if (PLACEHOLDER.test(given)) {
+        holder[key] = value;
+        this.filled.push({ file, field: `${prefix}${key}`, value });
+      } else if (given !== value) {
+        this.warning(file, `${prefix}${key}`, `erwartet ${value}`);
+        this.filled.push({ file, field: `${prefix}${key}`, value, stale: true });
+      }
+    }
+  }
   readonly checked: string[] = [];
   error(file: string, field: string, message: string) {
     this.problems.push({ file, field, message, severity: "error" });
@@ -126,12 +156,14 @@ function npcNames(dir: string, c: Collector): string[] {
 
 export function checkCaseFolder(dir: string): CaseCheck {
   const c = new Collector();
-  const finish = (solvability: SolvabilityReport | null = null): CaseCheck => ({
+  const finish = (routes: readonly RouteReport[] = []): CaseCheck => ({
     dir,
     problems: c.problems,
+    filled: c.filled,
     checkedFiles: c.checked,
-    solvability,
-    ok: c.problems.every((p) => p.severity !== "error") && solvability?.status === "pass",
+    solvability: routes[0]?.report ?? null,
+    routes,
+    ok: c.problems.every((p) => p.severity !== "error") && routes.length > 0 && routes.every((r) => r.report.status === "pass"),
   });
   if (!existsSync(dir)) {
     c.error(dir, "(Ordner)", "Ordner nicht gefunden");
@@ -148,11 +180,19 @@ export function checkCaseFolder(dir: string): CaseCheck {
   for (const finding of validateCaseSemantics(truth).findings) {
     c.error(FILES.truth, finding.subjectIds.join(", ") || "(Fall)", `${finding.code}: ${finding.message}`);
   }
+  // Binding hashes are computed, never typed: fill placeholders in dependency order.
+  const bindAll = (key: string, value: string, keys: (keyof typeof FILES)[], npcPart: ("snapshot" | "profile")[]) => {
+    for (const k of keys) c.bindHash(FILES[k], raw[k], key, value);
+    for (const npc of npcs) for (const part of npcPart) c.bindHash(`${part === "snapshot" ? "npc" : "interrogation"}-${npc.name}.json`, npc[part], key, value);
+  };
+  bindAll("truthHash", hashCaseTruth(truth), ["solution", "access", "presentation", "catalogue", "challenge", "proofProfile"], ["snapshot", "profile"]);
   const solution = raw.solution === undefined ? null : c.parse(FILES.solution, () => parseCaseSolution(raw.solution, truth));
   const parseWith = <T>(key: keyof typeof FILES, parse: () => T) => (raw[key] === undefined ? null : c.parse(FILES[key], parse));
   const access = parseWith("access", () => parseEvidenceAccessMap(raw.access, truth));
   const presentation = parseWith("presentation", () => parseEvidencePresentation(raw.presentation, truth));
+  if (solution !== null) bindAll("solutionHash", hashCaseSolution(solution), ["challenge", "proofProfile"], ["snapshot"]);
   const catalogue = parseWith("catalogue", () => parseQuestionCatalogue(raw.catalogue, truth));
+  if (catalogue !== null) bindAll("catalogueHash", hashQuestionCatalogue(catalogue), [], ["profile"]);
   const challenge = solution === null ? null : parseWith("challenge", () => parseAccusationChallenge(raw.challenge, truth, solution));
   const parsedNpcs = npcs.map((npc) => ({
     name: npc.name,
@@ -215,17 +255,23 @@ export function checkCaseFolder(dir: string): CaseCheck {
     c.warning(FILES.publicContent, "epilogue", "kein Epilog: nach der gelösten Anklage erscheint keine erzählte Auflösung");
   }
 
-  // ---- 4. Solvability with a witness on the real session.
+  // ---- 4. Solvability of every certified route, each with its own witness replay on the real session.
   try {
-    const report = checkCaseSolvability(truth, solution!, profile, sessionWitness(resolved.package, manifest, releaseHash), { lies });
-    for (const f of report.findings) {
-      const message = `${f.code}${f.subjectIds.length > 0 ? ` (${f.subjectIds.join(", ")})` : ""}`;
-      (f.severity === "error" ? c.error : c.warning).call(c, FILES.proofProfile, fieldOf(f.path), message);
-    }
-    if (report.status !== "pass") {
-      c.error(FILES.proofProfile, "(Lösbarkeit)", `Status ${report.status}, ${report.survivingAnswerCount} Antwortvektoren bleiben möglich`);
-    }
-    return finish(report);
+    const { routes } = checkCaseRoutes(truth, solution!, profile, resolved.package.proof!.routes, sessionWitness(resolved.package, manifest, releaseHash), { lies });
+    routes.forEach(({ routeId, report }, i) => {
+      // The witness route is the profile's; further routes are the manifest's certificateData.routes.
+      const [file, at, prefix] = routeId === WITNESS_ROUTE
+        ? [FILES.proofProfile, "", ""]
+        : [FILES.releaseManifest, `certificateData.routes[${i - 1}] `, `Weg ${routeId}: `];
+      for (const f of report.findings) {
+        const message = `${prefix}${f.code}${f.subjectIds.length > 0 ? ` (${f.subjectIds.join(", ")})` : ""}`;
+        (f.severity === "error" ? c.error : c.warning).call(c, file, `${at}${fieldOf(f.path)}`.trim(), message);
+      }
+      if (report.status !== "pass") {
+        c.error(file, `${at}(Lösbarkeit)`.trim(), `${prefix}Status ${report.status}, ${report.survivingAnswerCount} Antwortvektoren bleiben möglich`);
+      }
+    });
+    return finish(routes);
   } catch (error) {
     c.error(FILES.proofProfile, "(Lösbarkeit)", `Prüfung abgebrochen: ${(error as Error).message}`);
     return finish();
@@ -256,6 +302,14 @@ const PACKAGE_CODES: Record<PackageFinding["code"], string> = {
   INSINCERE_LIE: "keine Lüge: der NPC weiß oder glaubt die Wahrheit nicht (das wäre ein Irrtum, keine Lüge)",
 };
 
+/** Sharper messages for findings whose bare code says too little to an author. */
+const PACKAGE_HINTS: Record<string, string> = {
+  "PROOF_BINDING certificateData.steps":
+    "die stepIds der Schritte müssen genau die Schritte der Wege sein (proof-profile.json › witnessStepIds, dann certificateData.routes), in der Reihenfolge ihres ersten Vorkommens",
+  "PROOF_BINDING certificateData.routes": "jeder Weg braucht eine eigene routeId, und „witness“ ist für witnessStepIds vergeben",
+  "PROOF_BINDING certificateData.observations": "jede Beobachtung des Profils braucht genau einen Eintrag im Manifest und umgekehrt",
+};
+
 function reportPackageFinding(finding: PackageFinding, npcNames: string[], c: Collector): void {
   const [root, index, part, ...rest] = finding.path;
   let file = PACKAGE_FILES[String(root)];
@@ -267,7 +321,7 @@ function reportPackageFinding(finding: PackageFinding, npcNames: string[], c: Co
     file = index === "profile" ? FILES.proofProfile : FILES.releaseManifest;
     field = finding.path.slice(2);
   }
-  c.error(file ?? "(Paket)", fieldOf(field), PACKAGE_CODES[finding.code]);
+  c.error(file ?? "(Paket)", fieldOf(field), PACKAGE_HINTS[`${finding.code} ${fieldOf(field)}`] ?? PACKAGE_CODES[finding.code]);
 }
 
 type Npc = { snapshot: unknown; profile: unknown };
@@ -348,9 +402,12 @@ function bindManifest(raw: unknown, contextHash: string, index: PlayerRefIndex, 
   const manifest = substitute(raw, []) as Manifest;
   const given = manifest.releaseContextHash;
   if (typeof given === "string" && !PLACEHOLDER.test(given) && given !== contextHash) {
-    c.error(FILES.releaseManifest, "releaseContextHash", `veraltet: das Paket hat ${contextHash}`);
-    ok = false;
+    // Stale after an edit of a component: an error, but checking goes on with the current value so
+    // that --fix can rewrite this and the dependent profile releaseHash in one pass.
+    c.error(FILES.releaseManifest, "releaseContextHash", `veraltet: das Paket hat ${contextHash} (--fix trägt ihn ein)`);
+    c.filled.push({ file: FILES.releaseManifest, field: "releaseContextHash", value: contextHash, stale: true });
   }
+  if (ok && typeof given === "string" && PLACEHOLDER.test(given)) c.filled.push({ file: FILES.releaseManifest, field: "releaseContextHash", value: contextHash });
   return ok ? { ...manifest, releaseContextHash: contextHash } : null;
 }
 
@@ -362,9 +419,10 @@ function bindProfile(raw: unknown, releaseHash: string, c: Collector): unknown {
   }
   const given = bindings.releaseHash;
   if (typeof given === "string" && !PLACEHOLDER.test(given) && given !== releaseHash) {
-    c.error(FILES.proofProfile, "bindings.releaseHash", `veraltet: das Release-Manifest hat ${releaseHash}`);
-    return null;
+    c.error(FILES.proofProfile, "bindings.releaseHash", `veraltet: das Release-Manifest hat ${releaseHash} (--fix trägt ihn ein)`);
+    c.filled.push({ file: FILES.proofProfile, field: "bindings.releaseHash", value: releaseHash, stale: true });
   }
+  if (typeof given === "string" && PLACEHOLDER.test(given)) c.filled.push({ file: FILES.proofProfile, field: "bindings.releaseHash", value: releaseHash });
   return { ...raw, bindings: { ...bindings, releaseHash } };
 }
 
@@ -432,10 +490,28 @@ export function formatCaseCheck(check: CaseCheck): string {
   const warnings = check.problems.filter((p) => p.severity === "warning");
   for (const p of errors) lines.push(`  FEHLER  ${p.file} › ${p.field}: ${p.message}`);
   for (const p of warnings) lines.push(`  Hinweis ${p.file} › ${p.field}: ${p.message}`);
-  if (check.solvability !== null) {
-    const s = check.solvability;
-    lines.push(`  Lösbarkeit: ${s.status.toUpperCase()} (${s.survivingAnswerCount} mögliche Antwort${s.survivingAnswerCount === 1 ? "" : "en"})`);
+  for (const f of check.filled.filter((f) => f.stale !== true)) lines.push(`  berechnet ${f.file} › ${f.field} = ${f.value}`);
+  for (const { routeId, report: s } of check.routes) {
+    const name = check.routes.length === 1 ? "" : ` Weg ${routeId}`;
+    lines.push(`  Lösbarkeit${name}: ${s.status.toUpperCase()} (${s.survivingAnswerCount} mögliche Antwort${s.survivingAnswerCount === 1 ? "" : "en"})`);
   }
   lines.push(check.ok ? `OK: ${check.checkedFiles.length} Dateien geprüft, Fall lösbar.` : `NICHT OK: ${errors.length} Fehler.`);
   return lines.join("\n");
+}
+
+/** `--fix`: writes the computed hashes into placeholder and stale fields; returns the files changed. */
+export function writeFilledHashes(check: CaseCheck): string[] {
+  const byFile = new Map<string, FilledHash[]>();
+  for (const f of check.filled) byFile.set(f.file, [...(byFile.get(f.file) ?? []), f]);
+  for (const [file, fills] of byFile) {
+    const path = join(check.dir, file);
+    const json = JSON.parse(readFileSync(path, "utf8"));
+    for (const { field, value } of fills) {
+      const keys = field.split(".");
+      const holder = keys.slice(0, -1).reduce((o, k) => o[k], json);
+      holder[keys.at(-1)!] = value;
+    }
+    writeFileSync(path, `${JSON.stringify(json, null, 2)}\n`);
+  }
+  return [...byFile.keys()];
 }

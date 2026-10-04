@@ -134,7 +134,13 @@ export type ResolvedCasePackage = {
   readonly initial: InitialSetup;
   readonly challenge: AccusationChallenge;
   readonly publicContent: PublicContent;
-  readonly proof: null | { readonly profile: CaseProofProfile; readonly releaseManifest: string; readonly releaseHash: string };
+  readonly proof: null | {
+    readonly profile: CaseProofProfile;
+    readonly releaseManifest: string;
+    readonly releaseHash: string;
+    /** Every certified solution route, first the profile's witness as "witness". */
+    readonly routes: readonly SolutionRoute[];
+  };
   readonly refs: {
     readonly caseId: string;
     readonly truthHash: string;
@@ -377,7 +383,7 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
     initial,
     challenge,
     publicContent,
-    proof: proof === null ? null : { profile: proof.profile, releaseManifest: proof.releaseManifest, releaseHash: proof.releaseHash },
+    proof: proof === null ? null : { profile: proof.profile, releaseManifest: proof.releaseManifest, releaseHash: proof.releaseHash, routes: proof.routes },
     refs,
     toJSON: notSerializable,
   });
@@ -390,6 +396,11 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
 
 const ADAPTER_VERSION = "forge-release-proof-v1";
 const MAX_EVENT_BYTES = 16 * 1024;
+const MAX_ROUTES = 7;
+/** Route ID of the proof profile's own witnessStepIds. */
+export const WITNESS_ROUTE = "witness";
+/** One certified solution route: an ordered walk over the manifest's steps. */
+export type SolutionRoute = { readonly routeId: string; readonly stepIds: readonly string[] };
 const LocalId = z.string().regex(/^[a-z][a-z0-9:_-]{0,63}$/);
 const Ref = PlayerRefSchema;
 const Affirmation = z.enum(["affirms", "denies"]);
@@ -444,6 +455,12 @@ const ManifestSchema = z.strictObject({
     schemaVersion: z.literal(1),
     steps: z.array(z.strictObject({ stepId: z.string().regex(/^[\x21-\x7e]{1,128}$/), event: SessionEventSchema })).max(256),
     observations: z.array(PremiseMapSchema).max(64),
+    // Further solution routes besides the profile's witnessStepIds (route "witness"). Each is an ordered
+    // walk over the certified steps; the solvability check replays and checks every route on its own.
+    routes: z
+      .array(z.strictObject({ routeId: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), stepIds: z.array(z.string().regex(/^[\x21-\x7e]{1,128}$/)).min(1).max(256) }))
+      .max(MAX_ROUTES)
+      .optional(),
   }),
 });
 type Certificate = z.output<typeof ManifestSchema>["certificateData"];
@@ -462,7 +479,7 @@ type ProofContext = {
   readonly resolve: (ref: string) => ResolvedEntity | null;
   readonly releaseContextHash: string;
 };
-type BoundProof = { profile: CaseProofProfile; releaseManifest: string; releaseHash: string; proofHash: string };
+type BoundProof = { profile: CaseProofProfile; releaseManifest: string; releaseHash: string; proofHash: string; routes: SolutionRoute[] };
 type Path = (string | number)[];
 
 const C = serializeSessionJson;
@@ -643,9 +660,18 @@ function expected(o: PremiseMap): unknown {
   return { id: o.id, kind: o.kind, rules: o.rules };
 }
 
+/** The profile's witness, then the manifest's further routes. */
+function routesOf(cert: Certificate, profile: CaseProofProfile): SolutionRoute[] {
+  return [{ routeId: WITNESS_ROUTE, stepIds: [...profile.witnessStepIds] }, ...(cert.routes ?? []).map((r) => ({ routeId: r.routeId, stepIds: [...r.stepIds] }))];
+}
+
 function checkCertificate(cert: Certificate, profile: CaseProofProfile, ctx: ProofContext): void {
   checkUnique(cert.steps.map((s) => s.stepId), [...CERT, "steps"]);
-  if (C(cert.steps.map((s) => s.stepId)) !== C(profile.witnessStepIds)) reject("PROOF_BINDING", [...CERT, "steps"]);
+  // Every certified step is used by a route: the steps are the routes' step IDs in order of first use.
+  const routes = routesOf(cert, profile);
+  checkUnique(routes.map((r) => r.routeId), [...CERT, "routes"]);
+  (cert.routes ?? []).forEach((r, i) => checkUnique(r.stepIds, [...CERT, "routes", i, "stepIds"]));
+  if (C(cert.steps.map((s) => s.stepId)) !== C([...new Set(routes.flatMap((r) => r.stepIds))])) reject("PROOF_BINDING", [...CERT, "steps"]);
   cert.steps.forEach((step, i) => checkEvent(step.event, ctx, [...CERT, "steps", i, "event"]));
 
   checkUnique(cert.observations.map((o) => o.id), [...CERT, "observations"]);
@@ -666,7 +692,7 @@ function bindProof(proof: { profile: unknown; releaseManifest: string }, ctx: Pr
   const releaseHash = hashReleaseManifest(proof.releaseManifest);
   if (profile.bindings.releaseHash !== releaseHash) reject("PROOF_BINDING", [...PROFILE, "bindings", "releaseHash"]);
   checkCertificate(manifest.certificateData, profile, ctx);
-  return { profile, releaseManifest: proof.releaseManifest, releaseHash, proofHash: hashProofProfile(profile) };
+  return { profile, releaseManifest: proof.releaseManifest, releaseHash, proofHash: hashProofProfile(profile), routes: routesOf(manifest.certificateData, profile) };
 }
 
 /** Verifies and binds one exact package. Atomic: findings and no package, or the package. */

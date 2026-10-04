@@ -1,71 +1,71 @@
 {
   "schemaVersion": 1,
-  "releaseContextHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+  "releaseContextHash": "ec96c3afda80cb0d96543a18abe2b7e49bdde8105dc8d4a7832c16b983459d6a",
   "adapterVersion": "forge-release-proof-v1",
   "certificateData": {
     "schemaVersion": 1,
     "steps": [
       {
-        "stepId": "search-hof",
+        "stepId": "search-foyer",
         "event": {
           "type": "investigate",
           "action": "search_location",
           "target": {
             "$playerRefOf": {
               "kind": "location",
-              "id": "location:hof"
+              "id": "location:foyer"
             }
           }
         }
       },
       {
-        "stepId": "ask-nora-photo",
+        "stepId": "ask-kurt-keller",
         "event": {
           "type": "interrogate",
           "npc": {
             "$playerRefOf": {
               "kind": "person",
-              "id": "person:nora"
+              "id": "person:kurt"
             }
           },
-          "questionId": "question:q08"
+          "questionId": "question:q07"
         }
       },
       {
-        "stepId": "read-camera",
+        "stepId": "read-schaltschrank",
         "event": {
           "type": "investigate",
           "action": "examine_item",
           "target": {
             "$playerRefOf": {
               "kind": "item",
-              "id": "item:kamera"
+              "id": "item:schaltschrank"
             }
           }
         }
       },
       {
-        "stepId": "ask-oskar-record",
+        "stepId": "search-loge",
         "event": {
-          "type": "interrogate",
-          "npc": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
             "$playerRefOf": {
-              "kind": "person",
-              "id": "person:oskar"
+              "kind": "location",
+              "id": "location:loge"
             }
-          },
-          "questionId": "question:q14"
+          }
         }
       },
       {
-        "stepId": "read-terminal",
+        "stepId": "search-keller",
         "event": {
           "type": "investigate",
-          "action": "examine_item",
+          "action": "search_location",
           "target": {
             "$playerRefOf": {
-              "kind": "item",
-              "id": "item:terminal"
+              "kind": "location",
+              "id": "location:keller"
             }
           }
         }
@@ -73,55 +73,16 @@
     ],
     "observations": [
       {
-        "id": "observed:hof-contact",
+        "id": "observed:paul",
         "kind": "OBSERVED",
         "literal": {
           "kind": "proposition",
-          "propositionId": "proposition:p18",
+          "propositionId": "proposition:paul-foyer",
           "value": true
         },
         "source": {
           "kind": "evidence",
-          "evidenceId": "evidence:d03"
-        },
-        "alternatives": [
-          {
-            "report": {
-              "claim": {
-                "kind": "eventHasParticipant",
-                "event": {
-                  "$playerRefOf": {
-                    "kind": "event",
-                    "id": "event:e05"
-                  }
-                },
-                "person": {
-                  "$playerRefOf": {
-                    "kind": "person",
-                    "id": "person:nora"
-                  }
-                }
-              },
-              "stance": "affirms",
-              "source": {
-                "kind": "observation"
-              }
-            },
-            "licenseRuleId": "rule:certified-sources"
-          }
-        ]
-      },
-      {
-        "id": "observed:max",
-        "kind": "OBSERVED",
-        "literal": {
-          "kind": "proposition",
-          "propositionId": "proposition:p03",
-          "value": true
-        },
-        "source": {
-          "kind": "evidence",
-          "evidenceId": "evidence:d04"
+          "evidenceId": "evidence:pausenfoto"
         },
         "alternatives": [
           {
@@ -131,16 +92,16 @@
                 "person": {
                   "$playerRefOf": {
                     "kind": "person",
-                    "id": "person:max"
+                    "id": "person:paul"
                   }
                 },
                 "location": {
                   "$playerRefOf": {
                     "kind": "location",
-                    "id": "location:hof"
+                    "id": "location:foyer"
                   }
                 },
-                "at": 240
+                "at": 2400
               },
               "stance": "affirms",
               "source": {
@@ -152,37 +113,37 @@
         ]
       },
       {
-        "id": "public-rule:max",
+        "id": "public-rule:paul",
         "kind": "PUBLIC_RULE",
-        "ruleId": "rule:manual-presence",
-        "afterObservations": [
-          "observed:max"
-        ],
         "rules": [
           {
-            "edgeId": "exclude:max",
+            "edgeId": "exclude:paul",
             "allOf": [
-              "observation:max"
+              "observation:paul"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-max",
+              "conclusionId": "conclusion:actor-paul",
               "value": false
             }
           }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:paul"
         ]
       },
       {
-        "id": "observed:nora",
+        "id": "observed:vera",
         "kind": "OBSERVED",
         "literal": {
           "kind": "proposition",
-          "propositionId": "proposition:p04",
+          "propositionId": "proposition:vera-foyer",
           "value": true
         },
         "source": {
           "kind": "evidence",
-          "evidenceId": "evidence:d04"
+          "evidenceId": "evidence:pausenfoto"
         },
         "alternatives": [
           {
@@ -192,16 +153,16 @@
                 "person": {
                   "$playerRefOf": {
                     "kind": "person",
-                    "id": "person:nora"
+                    "id": "person:vera"
                   }
                 },
                 "location": {
                   "$playerRefOf": {
                     "kind": "location",
-                    "id": "location:hof"
+                    "id": "location:foyer"
                   }
                 },
-                "at": 240
+                "at": 2400
               },
               "stance": "affirms",
               "source": {
@@ -213,37 +174,37 @@
         ]
       },
       {
-        "id": "public-rule:nora",
+        "id": "public-rule:vera",
         "kind": "PUBLIC_RULE",
-        "ruleId": "rule:manual-presence",
-        "afterObservations": [
-          "observed:nora"
-        ],
         "rules": [
           {
-            "edgeId": "exclude:nora",
+            "edgeId": "exclude:vera",
             "allOf": [
-              "observation:nora"
+              "observation:vera"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-nora",
+              "conclusionId": "conclusion:actor-vera",
               "value": false
             }
           }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:vera"
         ]
       },
       {
-        "id": "observed:oskar",
+        "id": "observed:kurt",
         "kind": "OBSERVED",
         "literal": {
           "kind": "proposition",
-          "propositionId": "proposition:p05",
+          "propositionId": "proposition:kurt-keller",
           "value": true
         },
         "source": {
           "kind": "evidence",
-          "evidenceId": "evidence:d05"
+          "evidenceId": "evidence:heizungsprotokoll"
         },
         "alternatives": [
           {
@@ -253,16 +214,16 @@
                 "person": {
                   "$playerRefOf": {
                     "kind": "person",
-                    "id": "person:oskar"
+                    "id": "person:kurt"
                   }
                 },
                 "location": {
                   "$playerRefOf": {
                     "kind": "location",
-                    "id": "location:archiv"
+                    "id": "location:keller"
                   }
                 },
-                "at": 240
+                "at": 2400
               },
               "stance": "affirms",
               "source": {
@@ -274,61 +235,123 @@
         ]
       },
       {
-        "id": "public-rule:oskar",
+        "id": "public-rule:kurt",
         "kind": "PUBLIC_RULE",
-        "ruleId": "rule:manual-presence",
-        "afterObservations": [
-          "observed:oskar"
-        ],
         "rules": [
           {
-            "edgeId": "exclude:oskar",
+            "edgeId": "exclude:kurt",
             "allOf": [
-              "observation:oskar"
+              "observation:kurt"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-oskar",
+              "conclusionId": "conclusion:actor-kurt",
               "value": false
             }
           }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:kurt"
+        ]
+      },
+      {
+        "id": "observed:henrik",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:henrik-loge",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:logenprotokoll"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:henrik"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:loge"
+                  }
+                },
+                "at": 2400
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:henrik",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:henrik",
+            "allOf": [
+              "observation:henrik"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-henrik",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:henrik"
         ]
       },
       {
         "id": "public-rule:remaining",
         "kind": "PUBLIC_RULE",
-        "ruleId": "rule:closed-roster",
-        "afterObservations": [
-          "observed:max",
-          "observed:nora",
-          "observed:oskar"
-        ],
         "rules": [
           {
-            "edgeId": "remaining:lina",
+            "edgeId": "remaining:ida",
             "allOf": [
-              "literal:max",
-              "literal:nora",
-              "literal:oskar"
+              "literal:paul",
+              "literal:vera",
+              "literal:kurt",
+              "literal:henrik"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-lina",
+              "conclusionId": "conclusion:actor-ida",
               "value": true
             }
           }
+        ],
+        "ruleId": "rule:roster",
+        "afterObservations": [
+          "observed:paul",
+          "observed:vera",
+          "observed:kurt",
+          "observed:henrik"
         ]
       }
     ],
     "routes": [
       {
-        "routeId": "terminal-zuerst",
+        "routeId": "kellerplan",
         "stepIds": [
-          "ask-oskar-record",
-          "read-terminal",
-          "search-hof",
-          "ask-nora-photo",
-          "read-camera"
+          "search-keller",
+          "read-schaltschrank",
+          "search-loge",
+          "search-foyer"
         ]
       }
     ]

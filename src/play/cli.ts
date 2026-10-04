@@ -4,7 +4,7 @@ import { command, intro, loadText, newGame, saveText, type Game } from "./game.t
 import { PLAY_CASES, loadPlayPackage, playCaseName } from "./cases.ts";
 
 // `npm run play [-- <fall>]`: a case in the terminal over the real session reducer.
-// Cases: vitrine (default), brieföffner.
+// Cases: vitrine (default), brieföffner, geige.
 
 async function main(): Promise<void> {
   const name = playCaseName(process.argv[2]);
