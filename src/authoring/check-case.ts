@@ -269,6 +269,10 @@ export function checkCaseFolder(dir: string): CaseCheck {
       }
       if (report.status !== "pass") {
         c.error(file, `${at}(Lösbarkeit)`.trim(), `${prefix}Status ${report.status}, ${report.survivingAnswerCount} Antwortvektoren bleiben möglich`);
+      } else {
+        // LATE-SUSPECT: the solving accusation must be possible at the end of this route too.
+        const accusation = witnessAccusation(resolved.package, manifest, resolved.package.proof!.routes[i]!.stepIds);
+        if (accusation !== null) c.error(file, routeId === WITNESS_ROUTE ? "witnessStepIds" : `${at}stepIds`.trim(), `${prefix}${accusation}`);
       }
     });
     return finish(routes);
@@ -491,6 +495,43 @@ export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, rel
     const bindings = { caseId: pkg.truth.caseId, truthHash: pkg.refs.truthHash, solutionHash: hashCaseSolution(pkg.solution), releaseHash };
     return { success: true, bindings, released: records };
   };
+}
+
+/**
+ * Late suspects: after the witness, the player must know every person the answer accuses, and the
+ * D8 accusation over the persons they know (unknown ones count as not accused) must be solved.
+ * Returns null when it is, otherwise a German message for the author.
+ */
+export function witnessAccusation(pkg: ResolvedCasePackage, manifest: Manifest, stepIds: readonly string[]): string | null {
+  let state = initialSession(pkg);
+  for (const stepId of stepIds) {
+    const step = manifest.certificateData.steps.find((s) => s.stepId === stepId);
+    const result = step === undefined ? null : reduceSession(pkg, state, step.event);
+    if (result === null || !result.ok) return `Lösungsweg bricht bei „${stepId}“ ab`;
+    state = result.state;
+  }
+  const claims = new Map(pkg.solution.conclusions.map((c) => [c.id, c.claim]));
+  const accused = new Set(
+    pkg.solution.requiredConclusions.flatMap((r) => {
+      const claim = claims.get(r.conclusionId)!;
+      return r.value && "personId" in claim ? [claim.personId as string] : [];
+    }),
+  );
+  const knownRef = new Set(state.knowledge.known.filter((k) => k.kind === "person").map((k) => k.ref));
+  const isKnown = (id: string) => knownRef.has(pkg.refs.refFor("person", id)!);
+  const unknown = [...accused].filter((id) => !isKnown(id));
+  if (unknown.length > 0) return `nach dem Lösungsweg ist ${unknown.join(", ")} dem Spieler noch unbekannt und kann nicht angeklagt werden`;
+  const ref = (kind: "person" | "event", id: string) => pkg.refs.refFor(kind, id)!;
+  const literals = pkg.challenge.allowedClaims
+    .filter((c) => c.kind === "personRoleForEvent" || c.kind === "personResponsibleForEvent")
+    .filter((c) => isKnown(c.personId))
+    .map((c) => {
+      const base = { kind: c.kind, person: ref("person", c.personId), event: ref("event", c.eventId) };
+      return { claim: c.kind === "personRoleForEvent" ? { ...base, role: c.role } : base, value: accused.has(c.personId) };
+    });
+  const result = reduceSession(pkg, state, { type: "accuse", literals });
+  if (!result.ok) return `die Anklage nach dem Lösungsweg wird abgelehnt (${result.code})`;
+  return result.output.type === "accuse" && result.output.verdict === "solved" ? null : "die Anklage nach dem Lösungsweg löst den Fall nicht";
 }
 
 /** Human-readable report; one line per problem with file and field. */

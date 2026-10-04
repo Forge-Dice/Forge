@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "Die Hüttenkasse",
-  "brief": "Sturm über dem Gletscher. Seit 22:00 Uhr ist die Hütte eingeschneit, die Tür lässt sich nicht mehr öffnen. Um 23:20 findet die Wirtin Rosa Egger den Kassenschrank in der Gaststube offen, die Hüttenkasse mit den Einnahmen der Saison ist verschwunden. Die Glocke am Schrank hat genau einmal geläutet: um 23:10 Uhr.\n\nBeim Abendessen saßen Lukas Brandl, Mira Hofer, Gerd Sailer und Johanna Pichler mit Rosa am Tisch. Dr. Pichler hat sich mit Migräne zurückgezogen und spricht heute mit niemandem. Der Skitourengeher Tobias Wenger hat am Morgen ausgecheckt und ist, so glaubt Rosa, vor dem Sturm ins Tal abgefahren. Finde heraus, wer die Kasse eigenhändig genommen hat, und prüfe genau, wer heute Nacht wirklich im Haus ist.",
+  "brief": "Sturm über dem Gletscher. Seit 22:00 Uhr ist die Hütte eingeschneit, die Tür lässt sich nicht mehr öffnen. Um 23:20 findet die Wirtin Rosa Egger den Kassenschrank in der Gaststube offen, die Hüttenkasse mit den Einnahmen der Saison ist verschwunden. Die Glocke am Schrank hat genau einmal geläutet: um 23:10 Uhr.\n\nBeim Abendessen saßen Lukas Brandl, Mira Hofer, Gerd Sailer und Johanna Pichler mit Rosa am Tisch. Dr. Pichler hat sich mit Migräne zurückgezogen und spricht heute mit niemandem. Finde heraus, wer die Kasse eigenhändig genommen hat, und prüfe genau, wer heute Nacht wirklich im Haus ist. Nicht jeder Gast sitzt beim Essen.",
   "challengeQuestion": "Wer hat die Hüttenkasse um 23:10 aus der Gaststube genommen?",
   "labels": [
     {
@@ -50,7 +50,7 @@
         "id": "person:tobias"
       },
       "label": "Tobias Wenger",
-      "role": "Skitourengeher, laut Rosa am Morgen abgereist"
+      "role": "Skitourengeher im Winterraum"
     },
     {
       "entity": {
@@ -303,5 +303,5 @@
       "text": "Seit 22:00 ist die Hütte eingeschneit, niemand kam hinein oder hinaus. In Frage kommt jede Person, die heute Abend in der Hütte war, auch wer nicht beim Essen saß. Sind alle anderen ausgeschlossen, bleibt die letzte Person."
     }
   ],
-  "epilogue": "Tobias Wenger öffnet die Tür des Winterraums ohne Widerstand. Er war am Morgen abgefahren, um 21:40 vor dem Sturm umgekehrt, hatte sich still eingetragen und keinen Platz am Tisch genommen, weil er die zweite Nacht nicht bezahlen konnte. Um 23:10, als alle anderen funkten oder fotografierten, holte er die Kasse aus dem Schrank. Seine Tourenstiefel tragen dasselbe grobe Profil wie die eines Bergführers.\n\nLukas Brandl stand die ganze Zeit am Funkgerät. Der Abdruck vor dem Schrank war eine falsche Spur, und Mira hat sich ehrlich geirrt, als sie ihn in der Stube vermutete. Die Kasse liegt unter Tobias' Schlafsack, vollständig."
+  "epilogue": "Tobias Wenger öffnet die Tür des Winterraums ohne Widerstand. Er war um 21:40 kurz vor dem Sturm angekommen, hatte sich still eingetragen und keinen Platz am Tisch genommen, weil er die Übernachtung nicht bezahlen konnte. Um 23:10, als alle anderen funkten oder fotografierten, holte er die Kasse aus dem Schrank. Seine Tourenstiefel tragen dasselbe grobe Profil wie die eines Bergführers.\n\nLukas Brandl stand die ganze Zeit am Funkgerät. Der Abdruck vor dem Schrank war eine falsche Spur, und Mira hat sich ehrlich geirrt, als sie ihn in der Stube vermutete. Die Kasse liegt unter Tobias' Schlafsack, vollständig."
 }
