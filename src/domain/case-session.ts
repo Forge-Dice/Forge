@@ -146,7 +146,7 @@ export function reduceSession(pkg: ResolvedCasePackage, state: SessionState, inp
 
     const rawBytes = jsonBytes(input);
     if (rawBytes === null || rawBytes > SESSION_LIMITS.maxEventBytes) return reject("ACTION_UNAVAILABLE");
-    const literals = (input as { literals?: unknown }).literals;
+    const literals = typeof input === "object" && input !== null ? (input as { literals?: unknown }).literals : undefined;
     if (Array.isArray(literals) && literals.length > SESSION_LIMITS.maxLiterals) return reject("ACTION_UNAVAILABLE");
     const parsed = SessionEventSchema.safeParse(input);
     if (!parsed.success) return reject("ACTION_UNAVAILABLE");
@@ -260,7 +260,8 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
       if (npc === undefined) throw unavailable();
       const result = interrogate({
         truth: pkg.truth,
-        solution: pkg.solution,
+        // The projection re-checks the snapshot binding: a snapshot bound without a solution gets none.
+        solution: npc.snapshot.solutionHash === null ? null : pkg.solution,
         snapshot: npc.snapshot,
         catalogue: pkg.catalogue,
         profile: npc.profile,
