@@ -9,6 +9,8 @@ import type { EpistemicStance, NpcKnowledgeSnapshot } from "./npc-knowledge.ts";
 // handles instead of raw IDs, an allowlist of nine claim shapes, and stances. Never: names,
 // descriptions, objective truth values, resolutions, provenance, acquisition times or any
 // entity that the NPC has not been explicitly given.
+// The bridge (MYST-0005B) is a trusted-only capability that hands out canonical IDs; it never
+// belongs in a context, a policy or any player-facing output.
 
 export type VisibleKind = "person" | "location" | "item" | "event" | "evidence" | "proposition" | "conclusion";
 
@@ -51,7 +53,16 @@ export type ProjectionResult =
   | { readonly success: true; readonly context: NpcVisibleContext }
   | { readonly success: false; readonly code: "CONTEXT_BINDING_MISMATCH" };
 
-type SourceClaim = CaseTruth["propositions"][number]["claim"] | CaseSolution["conclusions"][number]["claim"];
+export type NpcSourceClaim = CaseTruth["propositions"][number]["claim"] | CaseSolution["conclusions"][number]["claim"];
+export type NpcEntityRef = { readonly kind: AwarenessKind; readonly id: string };
+export type NpcProjectionBridge = {
+  readonly visibleClaimOf: (claim: NpcSourceClaim) => NpcVisibleClaim | null;
+  readonly entityOf: (ref: VisibleRef) => NpcEntityRef | null;
+  readonly toJSON: () => never;
+};
+export type BridgedProjectionResult =
+  | { readonly success: true; readonly context: NpcVisibleContext; readonly bridge: NpcProjectionBridge }
+  | { readonly success: false; readonly code: "CONTEXT_BINDING_MISMATCH" };
 type SourceStance = NpcKnowledgeSnapshot["attitudes"][number]["stance"];
 
 const KIND_ORDER: readonly VisibleKind[] = ["person", "location", "item", "event", "evidence", "proposition", "conclusion"];
@@ -86,7 +97,7 @@ function isBound(snapshot: NpcKnowledgeSnapshot, truth: CaseTruth, solution: Cas
 }
 
 /** Entity references inside a released claim, as [kind, rawId] pairs. */
-function claimReferences(claim: SourceClaim): [VisibleKind, string][] {
+function claimReferences(claim: NpcSourceClaim): [VisibleKind, string][] {
   switch (claim.kind) {
     case "personAt":
       return [["person", claim.personId], ["location", claim.locationId]];
@@ -110,7 +121,7 @@ type RefOf = <K extends VisibleKind>(kind: K, id: string) => VisibleRef<K>;
 
 // Explicit per-variant construction: no spreading of domain objects, no deny-listing.
 // Exhaustive over today's claim kinds; a new kind fails to compile instead of leaking.
-function visibleClaim(claim: SourceClaim, ref: RefOf): NpcVisibleClaim {
+function visibleClaim(claim: NpcSourceClaim, ref: RefOf): NpcVisibleClaim {
   switch (claim.kind) {
     case "personAt":
       return { kind: "personAt", person: ref("person", claim.personId), location: ref("location", claim.locationId), at: claim.at };
@@ -149,20 +160,22 @@ function visibleStance(stance: SourceStance): DeepReadonly<EpistemicStance> {
   }
 }
 
-export function projectNpcKnowledge(
+// Shared core. `emitted` (call-local, bridge only) records the entity behind each emitted ref object.
+function project(
   snapshot: NpcKnowledgeSnapshot,
   truth: CaseTruth,
   solution: CaseSolution | null,
-): ProjectionResult {
+  emitted: Map<object, NpcEntityRef> | null,
+): { readonly context: NpcVisibleContext; readonly indexOf: ReadonlyMap<string, number> } | null {
   // 1. Binding before any release.
-  if (!isBound(snapshot, truth, solution)) return mismatch();
+  if (!isBound(snapshot, truth, solution)) return null;
 
-  const propositionClaims = new Map<string, SourceClaim>(truth.propositions.map((p) => [p.id, p.claim]));
-  const conclusionClaims = new Map<string, SourceClaim>((solution?.conclusions ?? []).map((c) => [c.id, c.claim]));
-  const attitudes: { kind: "proposition" | "conclusion"; id: string; claim: SourceClaim; stance: SourceStance }[] = [];
+  const propositionClaims = new Map<string, NpcSourceClaim>(truth.propositions.map((p) => [p.id, p.claim]));
+  const conclusionClaims = new Map<string, NpcSourceClaim>((solution?.conclusions ?? []).map((c) => [c.id, c.claim]));
+  const attitudes: { kind: "proposition" | "conclusion"; id: string; claim: NpcSourceClaim; stance: SourceStance }[] = [];
   for (const { subject, stance } of snapshot.attitudes) {
     const claim = (subject.kind === "proposition" ? propositionClaims : conclusionClaims).get(subject.id);
-    if (claim === undefined) return mismatch(); // unreachable for correctly bound inputs
+    if (claim === undefined) return null; // unreachable for correctly bound inputs
     attitudes.push({ kind: subject.kind, id: subject.id, claim, stance });
   }
 
@@ -182,7 +195,11 @@ export function projectNpcKnowledge(
   for (const [kind, ids] of visible) {
     [...ids].sort(compareCodeUnits).forEach((id, i) => indexOf.set(`${kind}|${id}`, i + 1));
   }
-  const ref: RefOf = (kind, id) => ({ kind, index: indexOf.get(`${kind}|${id}`)! });
+  const ref: RefOf = (kind, id) => {
+    const visibleRef = { kind, index: indexOf.get(`${kind}|${id}`)! };
+    if (kind !== "proposition" && kind !== "conclusion") emitted?.set(visibleRef, { kind: kind as AwarenessKind, id });
+    return visibleRef;
+  };
   const byKindThenIndex = (a: VisibleRef, b: VisibleRef) =>
     KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind) || a.index - b.index;
 
@@ -203,5 +220,37 @@ export function projectNpcKnowledge(
     awareness,
     attitudes: visibleAttitudes,
   };
-  return deepFreeze({ success: true, context });
+  return { context, indexOf };
+}
+
+export function projectNpcKnowledge(
+  snapshot: NpcKnowledgeSnapshot,
+  truth: CaseTruth,
+  solution: CaseSolution | null,
+): ProjectionResult {
+  const core = project(snapshot, truth, solution, null);
+  return core === null ? mismatch() : deepFreeze({ success: true, context: core.context });
+}
+
+/** projectNpcKnowledge plus a trusted bridge back to canonical entities of this one projection. */
+export function projectNpcKnowledgeWithBridge(
+  snapshot: NpcKnowledgeSnapshot,
+  truth: CaseTruth,
+  solution: CaseSolution | null,
+): BridgedProjectionResult {
+  const emitted = new Map<object, NpcEntityRef>();
+  const core = project(snapshot, truth, solution, emitted);
+  if (core === null) return mismatch() as BridgedProjectionResult;
+  const indexOf = core.indexOf;
+  const plainRef: RefOf = (kind, id) => ({ kind, index: indexOf.get(`${kind}|${id}`)! });
+  const bridge: NpcProjectionBridge = Object.freeze({
+    visibleClaimOf: (claim: NpcSourceClaim) =>
+      claimReferences(claim).every(([k, id]) => indexOf.has(`${k}|${id}`)) ? deepFreeze(visibleClaim(claim, plainRef)) : null,
+    entityOf: (ref: VisibleRef) => {
+      const entity = emitted.get(ref);
+      return entity === undefined ? null : Object.freeze({ kind: entity.kind, id: entity.id });
+    },
+    toJSON: (): never => { throw new TypeError("NpcProjectionBridge is not serializable"); },
+  });
+  return deepFreeze({ success: true, context: core.context, bridge });
 }
