@@ -17,6 +17,7 @@ import { buildStandalone } from "../src/play/standalone/build.ts";
 
 type Loc = {
   click(): Promise<void>;
+  press(key: string): Promise<void>;
   first(): Loc;
   count(): Promise<number>;
   textContent(): Promise<string | null>;
@@ -87,6 +88,12 @@ describe.skipIf(playwright === null)("best score in the browser", () => {
   }
 
   async function accuse(ui: Root, name: string): Promise<void> {
+    // Like a player: close the open result sheet first (it can cover the suspect buttons).
+    const sheet = ui.locator("#notice");
+    if (await sheet.isVisible()) {
+      await sheet.press("Escape");
+      await sheet.waitFor({ state: "hidden" });
+    }
     await ui.getByRole("button", { name, exact: true }).click();
     await ui.locator("#confirm-ok").click();
   }
