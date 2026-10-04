@@ -82,6 +82,45 @@
             }
           }
         }
+      },
+      {
+        "stepId": "search-liegewagen",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:liegewagen"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "examine-janek",
+        "event": {
+          "type": "investigate",
+          "action": "examine_person",
+          "target": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:janek"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-dora",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:dora"
+            }
+          },
+          "questionId": "question:q04"
+        }
       }
     ],
     "observations": [
@@ -398,6 +437,19 @@
           "observed:felix",
           "observed:janek",
           "observed:dora"
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "routeId": "tuerzettel",
+        "stepIds": [
+          "search-speisewagen",
+          "search-liegewagen",
+          "examine-janek",
+          "examine-felix",
+          "ask-dora",
+          "read-terminal"
         ]
       }
     ]
