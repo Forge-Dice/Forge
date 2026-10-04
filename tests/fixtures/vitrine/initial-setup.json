@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "known": [
+    {
+      "kind": "event",
+      "id": "event:e04"
+    },
+    {
+      "kind": "item",
+      "id": "item:medaille"
+    },
+    {
+      "kind": "location",
+      "id": "location:archiv"
+    },
+    {
+      "kind": "location",
+      "id": "location:foyer"
+    },
+    {
+      "kind": "location",
+      "id": "location:galerie"
+    },
+    {
+      "kind": "location",
+      "id": "location:hof"
+    },
+    {
+      "kind": "location",
+      "id": "location:werkstatt"
+    },
+    {
+      "kind": "person",
+      "id": "person:lina"
+    },
+    {
+      "kind": "person",
+      "id": "person:max"
+    },
+    {
+      "kind": "person",
+      "id": "person:nora"
+    },
+    {
+      "kind": "person",
+      "id": "person:oskar"
+    }
+  ]
+}

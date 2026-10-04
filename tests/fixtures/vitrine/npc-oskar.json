@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
+  "npcId": "person:oskar",
+  "revision": 1,
+  "asOf": 480,
+  "awareness": [
+    {
+      "subject": {
+        "kind": "event",
+        "id": "event:e06"
+      },
+      "acquiredAt": 400,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    },
+    {
+      "subject": {
+        "kind": "item",
+        "id": "item:terminal"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:archiv"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:galerie"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:lina"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:max"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:oskar"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    }
+  ],
+  "attitudes": [
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:p01"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 120,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:e02"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:p02"
+      },
+      "stance": {
+        "kind": "belief",
+        "value": true
+      },
+      "acquiredAt": 400,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:p05"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 240,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:e06"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:p09"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 240,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:e06"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:p19"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 180,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:e03"
+      }
+    }
+  ]
+}

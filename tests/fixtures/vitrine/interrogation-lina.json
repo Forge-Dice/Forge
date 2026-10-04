@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "catalogueHash": "c039106c98bf55e0eddb3bc407269690e69bbdfa52dc9953f95516f3d1d871a8",
+  "npcId": "person:lina",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q16",
+      "act": "decline"
+    },
+    {
+      "questionId": "question:q17",
+      "act": "answer",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:max",
+        "eventId": "event:e04",
+        "role": "direct_actor"
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q18",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:lina",
+        "locationId": "location:werkstatt",
+        "at": 300
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q19",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:nora",
+        "locationId": "location:hof",
+        "at": 240
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q20",
+      "act": "decline"
+    }
+  ]
+}

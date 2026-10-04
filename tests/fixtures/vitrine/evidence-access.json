@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "entries": [
+    {
+      "evidenceId": "evidence:d01",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:galerie"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:d02",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:galerie"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:d03",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:hof"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:d04",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:kamera"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:d05",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:terminal"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:d06",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:werkstatt"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:d07",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:archiv"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:d08",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:foyer"
+          }
+        ]
+      }
+    }
+  ]
+}

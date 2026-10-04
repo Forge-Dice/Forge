@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
+  "npcId": "person:lina",
+  "revision": 1,
+  "asOf": 480,
+  "awareness": [
+    {
+      "subject": {
+        "kind": "event",
+        "id": "event:e04"
+      },
+      "acquiredAt": 400,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:hof"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:werkstatt"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:lina"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:max"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:nora"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    }
+  ],
+  "attitudes": [
+    {
+      "subject": {
+        "kind": "conclusion",
+        "id": "conclusion:actor-max"
+      },
+      "stance": {
+        "kind": "belief",
+        "value": false
+      },
+      "acquiredAt": 400,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:p20"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 300,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:e07"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:p06"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 240,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:e04"
+      }
+    }
+  ]
+}
