@@ -20,6 +20,8 @@ import {
 } from "./game.ts";
 import { renderCaseList, renderGame, renderHelp, type Feedback } from "./web-page.ts";
 import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./cases.ts";
+import { createEditorRoutes, type EditorOptions } from "./editor-web.ts";
+import { defaultWorkspaceDir } from "./editor.ts";
 
 // `npm run play:web`: the playable cases in the browser, one local player, same session logic as
 // the CLI. The server holds one game per case in memory; saves are the Session C text.
@@ -94,7 +96,8 @@ function unlocked(before: Game, after: Game): Set<string> {
 }
 
 /** Request handler over one in-memory game per case; exported for tests. */
-export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}) {
+export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, editor: EditorOptions = { workspaceDir: defaultWorkspaceDir() }) {
+  const editorRoutes = createEditorRoutes(editor);
   const slots = new Map<PlayCaseName, Slot>();
   const slot = (name: PlayCaseName): Slot => {
     let s = slots.get(name);
@@ -144,6 +147,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
       return html(res, renderCaseList(cards));
     }
     if (req.method === "GET" && url.pathname === "/hilfe") return html(res, renderHelp());
+    if (await editorRoutes(req, res, url)) return;
     const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
     const name = match === null ? null : playCaseName(match[1]);
     if (match === null || name === null) {

@@ -12,7 +12,7 @@ export type Feedback = {
 };
 export type CaseCard = { readonly slug: string; readonly title: string; readonly teaser: string; readonly progress: string | null };
 
-const escape = (text: string): string =>
+export const escape = (text: string): string =>
   text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 const GROUPS: [string, string][] = [
@@ -38,7 +38,8 @@ const paragraphs = (text: string) =>
     .map((p) => `<p>${escape(p.trim())}</p>`)
     .join("");
 
-function layout(title: string, body: string, bodyClass = ""): string {
+/** Page frame shared by game, help and the case editor; extraStyle is appended to the base sheet. */
+export function layout(title: string, body: string, bodyClass = "", extraStyle = ""): string {
   return `<!doctype html>
 <html lang="de">
 <head>
@@ -47,7 +48,7 @@ function layout(title: string, body: string, bodyClass = ""): string {
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1c1814">
 <title>${escape(title)}</title>
-<style>${STYLE}</style>
+<style>${STYLE}${extraStyle}</style>
 </head>
 <body${bodyClass === "" ? "" : ` class="${bodyClass}"`}>
 ${body}
@@ -71,7 +72,7 @@ export function renderCaseList(cases: readonly CaseCard[]): string {
   return layout(
     "Fälle",
     `<a class="skip" href="#faelle">Zu den Fällen springen</a>
-<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a></p></header>
+<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a> <a class="button ghost" href="/editor">Fall-Editor</a></p></header>
 <main id="faelle" class="shelf"><h2 class="visually-hidden">Offene Akten</h2><ul class="cases">${cards}</ul>
 <p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>`,
     "page-cases",
