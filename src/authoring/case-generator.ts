@@ -1,5 +1,5 @@
 import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { parseCaseTruth } from "../domain/case-truth.ts";
 import { hashCaseTruth } from "../domain/case-truth.identity.ts";
 import { parseCaseSolution } from "../domain/case-solution.ts";
@@ -8,7 +8,8 @@ import { parseQuestionCatalogue } from "../domain/interrogation-authoring.ts";
 import { hashQuestionCatalogue } from "../domain/interrogation-authoring.identity.ts";
 import { resolveCasePackage, type ResolvedCasePackage } from "../domain/case-package.ts";
 import { refSource } from "../play/cases.ts";
-import { bindCaseProof } from "./check-case.ts";
+import { bindCaseProof, textDigest } from "./check-case.ts";
+import * as EN from "./case-generator-en.ts";
 
 // Case generator behind `npm run generate-case -- --seed N`: picks a case schema and building
 // blocks (setting, persons, motive, weapon, clues, red herring, optionally a lie with its
@@ -969,6 +970,131 @@ export function generateCase(seed: number, schema?: CaseSchema, options: Generat
     witnessStepIds: steps.map((s) => s.stepId),
   };
 
+  // ---------- English variant: the same case, the English block at each drawn index ----------
+  // Its sentence variants come from a second PRNG, so the German draws stay untouched.
+  const enRandom = prng((seed ^ 0x2545f491) >>> 0);
+  const en1 = (...variants: string[]): string => variants[Math.floor(enRandom() * variants.length)]!;
+  const sx = SETTINGS.indexOf(setting);
+  const enSet = EN.EN_SETTINGS[sx]!;
+  const enPlace = (p: Place) => enSet.places[setting.places.indexOf(p)]!;
+  const enW = EN.EN_WEAPONS[WEAPONS.indexOf(weapon)]!;
+  const enClue = EN.EN_CLUES[CLUES.indexOf(clue)]!;
+  const enMotive = EN.EN_MOTIVES[MOTIVES.indexOf(motive)]!;
+  const enRole = (n: Name, table: readonly (readonly [string, string])[], enTable: readonly (readonly [string, string])[], r: readonly [string, string]) => {
+    const pair = enTable[table.indexOf(r)]!;
+    return n.f ? pair[0] : pair[1];
+  };
+  const enPers = (pers: Personality) => EN.EN_PERSONALITIES[PERSONALITIES.indexOf(pers)]!;
+  const enWeather = EN.EN_WEATHER[WEATHER.indexOf(weather)]!;
+  const enSide = (x: (typeof side)[number]) => {
+    const pair = EN.EN_SIDE_ROLES[SIDE_ROLES.findIndex((r) => r[0] === x.role || r[1] === x.role)]!;
+    return `the ${x.f ? pair[0] : pair[1]} ${x.f ? "Mrs" : "Mr"} ${x.name.split(" ")[1]}`;
+  };
+  const enRoom = (r: Room) => EN.EN_DECOY_ROOMS[DECOY_ROOMS.indexOf(r)]!;
+  const enDeath = `${EN.enGen(V)} death`;
+  const bare = (where: string) => where.replace(/^(in|on|at) /, "");
+  const enScene = enSet.scene;
+  const enSpot = enScene.spot;
+  const enLog = (p: Place, who: string, time: string, tail: string) =>
+    en1(`${enPlace(p).lead} there is an entry by ${who}: ${time}. ${tail}`, `${enPlace(p).lead} you find ${enGen2(who)} name, next to it the time ${time}. ${tail}`);
+  const enGen2 = EN.enGen;
+  const enEvidenceText: Record<string, string> = {
+    [EV.fingerprint]: en1(`There is a fingerprint of ${firstInnocent.name} on ${enW.the}. It does not show when it was made.`, `A clear fingerprint on ${enW.the}: ${firstInnocent.name}. How old it is cannot be told.`),
+    [EV.clue]: `${hidden ? `Among crumpled paper in the waste basket: ${enClue.what(C)}, with fresh blood of ${V} on it.` : en1(`${enSpot} lies ${enClue.what(C)}. Next to it: ${EN.enGen(V)} blood, not yet dry.`, `${enSpot}, half hidden, lies ${enClue.what(C)}, fresh blood of ${V} on it.`)} ${enClue.lost}${late ? ` Nobody had mentioned ${C} this evening so far.` : ""}`,
+    [EV.sleeve]: `There are fine, fresh blood spatters on ${EN.enGen(C)} sleeve. The quick test matches them to ${V}: ${C} was there when ${V} died.`,
+    [EV.culpritLog]: enLog(culpritPlace, C, clockOf(originHour, early), `Below it, in the same hand: "Left ${clockOf(originHour, leave)}." That was before the deed.`),
+    [EV_MARK]: `${enSpot} there are signs of a struggle, and ${enW.the} lies next to ${V}. A waste basket has been knocked over, its contents half scattered.`,
+  };
+  for (const i of innocents) enEvidenceText[logOf(i.place)] = enLog(i.place, i.name, clock, `That was exactly the time of the deed: ${i.name} ${enPlace(i.place).doing}.`);
+  for (const h of herrings) enEvidenceText[h.id] = EN.EN_HERRINGS[HERRINGS.findIndex((x) => x.slug === h.slug)]!.text(h.who.name, enRoom(h.room).in);
+  const enPresentation = { ...presentation, entries: presentationEntries.map((e) => ({ ...e, text: enEvidenceText[e.evidenceId as string]! })) };
+
+  const nameOf = (personId: string) => allPersons.find((p) => p.id === personId)!.name;
+  const enLabel: Record<string, { label: string; role: string | null }> = {
+    [`person|${P.c}`]: { label: C, role: late ? enRole(culprit, LATECOMER_ROLES, EN.EN_LATECOMER_ROLES, latecomerRole) : enRole(culprit, ROLES, EN.EN_ROLES, roles[0]!) },
+    [`person|${P.v}`]: { label: V, role: `${enRole(victim, VICTIM_ROLES, EN.EN_VICTIM_ROLES, victimRole)}, the victim` },
+    [`location|${L.scene}`]: { label: enScene.name, role: null },
+    [`item|${IT.weapon}`]: { label: enW.name, role: null },
+    [`item|${BASKET.id}`]: { label: "Waste basket", role: null },
+    [`event|${E.murder}`]: { label: `${enDeath} at ${clock}`, role: null },
+    [`event|${E.argument}`]: { label: enMotive.argument, role: null },
+    [`evidence|${EV.clue}`]: { label: enClue.label, role: null },
+    [`evidence|${EV.fingerprint}`]: { label: "Fingerprint", role: null },
+    [`evidence|${EV.culpritLog}`]: { label: enPlace(culpritPlace).log, role: null },
+    [`evidence|${EV.sleeve}`]: { label: "Blood spatter on the sleeve", role: null },
+    [`evidence|${EV_MARK}`]: { label: "Signs of a struggle", role: null },
+  };
+  for (const i of innocents) {
+    enLabel[`person|${pid(i)}`] = { label: i.name, role: enRole(i, ROLES, EN.EN_ROLES, i.role) };
+    enLabel[`event|${alibiEvent(i)}`] = { label: `${EN.enGen(i.name)} time ${enPlace(i.place).in}`, role: null };
+    enLabel[`evidence|${logOf(i.place)}`] = { label: enPlace(i.place).log, role: null };
+  }
+  for (const p of usedPlaces) enLabel[`location|${lid(p)}`] = { label: enPlace(p).name, role: null };
+  for (const r of decoys) enLabel[`location|${rid(r)}`] = { label: enRoom(r).name, role: null };
+  for (const h of herrings) enLabel[`evidence|${h.id}`] = { label: EN.EN_HERRINGS[HERRINGS.findIndex((x) => x.slug === h.slug)]!.label, role: null };
+
+  const enAsYou = enRandom() < 0.5 ? () => `Were you present at ${enDeath}?` : () => `Were you there when ${V} died?`;
+  const enAsOther = enRandom() < 0.5 ? (n: string) => `Was ${n} present at ${enDeath}?` : (n: string) => `Was ${n} there when ${V} died?`;
+  const enAsWhere = enRandom() < 0.5 ? (w: string) => `Were you ${w} at ${clock}?` : (w: string) => `Were you really ${w} at ${clock}?`;
+  const enQuestion = (npc: string, questionId: string): string => {
+    if (questionId === Q.weapon) return `Was ${V} killed with ${enW.the}?`;
+    const [, who, kindOf] = /^question:(.+)-(present|alibi|scene)$/.exec(questionId)!;
+    const person = allPersons.find((p) => slug(p.name) === who)!;
+    if (kindOf === "present") return npc === person.id ? enAsYou() : enAsOther(person.name);
+    if (kindOf === "scene") return enAsWhere(enScene.in);
+    return enAsWhere(person.id === P.c ? enPlace(culpritPlace).in : enPlace(innocents.find((i) => pid(i) === person.id)!.place).in);
+  };
+  const enNamed = named;
+  const enSearchable = [bare(enScene.in), ...usedPlaces.map((p) => bare(enPlace(p).in)), ...decoys.map((r) => bare(enRoom(r).in))];
+  const enCast = cast.map((c) => {
+    const person = allPersons.find((p) => p.name === c.name)!;
+    const pers = person.id === P.c ? culpritPersonality : innocents.find((i) => pid(i) === person.id)!.personality;
+    return `${c.name} (${enLabel[`person|${person.id}`]!.role}) ${enPers(pers).trait}`;
+  });
+  const enTails: Record<CaseSchema, string> = {
+    classic: presenceLie ? ` Only ${enClue.the} at the scene brought the truth to light.` : "",
+    crowd: ` Among so many suspects, only ${enClue.the} at the scene revealed who had been there.`,
+    timewindow: ` ${C} had indeed been ${enPlace(culpritPlace).in}, but left at ${clockOf(originHour, leave)}, in good time for the deed.${alibiLie ? " The claimed alibi did not survive the entry." : ""}`,
+    latecomer: ` Nobody had expected ${C} that evening; only ${enClue.the} at the scene gave the presence away.`,
+    twopaths: ` The ${enClue.label.toLowerCase()} at the scene and the blood on the sleeve told the same story.`,
+  };
+  const enLateNote = late ? ", or so they say" : "";
+  const enPublic = {
+    ...publicContent,
+    title: `The ${enW.name.replace(/\b\w/g, (ch) => ch.toUpperCase())} ${enSet.where}`,
+    brief: [
+      [
+        en1(`${enSet.occasion}. Around ${clock}, ${V} is found dead ${enScene.in}, killed with ${enW.the} ${enW.from}.`, `${enSet.occasion} ends abruptly. Around ${clock}, ${V} lies dead ${enScene.in}, killed with ${enW.the} ${enW.from}.`),
+        enWeather.brief,
+        `${EN.enCap(enSide(finder))}, who ${en1("only came in after the deed", "wanted to check on things shortly afterwards", "only meant to close the windows")}, found ${victim.f ? "her" : "him"}.`,
+        en1(`Apart from ${V}, only ${EN.enList(enNamed)} ${enNamed.length === 1 ? "was" : "were"} nearby at the time of the deed${enLateNote}.`, `At the time of the deed, only ${EN.enList(enNamed)} ${enNamed.length === 1 ? "was" : "were"} nearby${enLateNote}.`),
+      ].join(" "),
+      `${EN.enCap(enSide(caller))} called you in. ${en1(
+        `Your task: find out who is responsible for ${enDeath}. Search ${EN.enList(enSearchable)}, examine what you find and question ${EN.enList(enNamed)}.`,
+        `Find out who is responsible for ${enDeath}. Look closely at ${EN.enList(enSearchable)}, check every find and talk to ${EN.enList(enNamed)}.`,
+      )} ${kind === "timewindow" ? "Pay close attention to the times. " : ""}Not every trail leads to the culprit${withLie ? ", not every statement is true," : ","} and refusing to talk is no confession.`,
+      `${en1("A first impression of those involved:", "The people involved:")} ${enCast.join(" ")}`,
+    ].join("\n\n"),
+    challengeQuestion: `Who is responsible for ${enDeath}?`,
+    labels: publicContent.labels.map((l) => ({ ...l, ...enLabel[`${l.entity.kind}|${l.entity.id}`]! })),
+    questionTexts: publicContent.questionTexts.map((q) => ({ ...q, text: enQuestion(q.npc, q.questionId) })),
+    publicRules: [
+      { id: "rule:certified-sources", text: "What a find shows by itself counts as fact. Statements by people can be wrong." },
+      { id: "rule:alibi", text: `Anyone proven not to have been ${enScene.in} at ${clock} took no part in ${enDeath} and is not responsible.` },
+      { id: "rule:participation", text: `Apart from ${V}, exactly one of the suspects was present at ${enDeath}, and whoever was present is responsible.` },
+    ],
+    epilogue: [
+      `${enPers(culpritPersonality).confess(C)}${withLie ? " The lie cannot be kept up any longer." : ""} ${EN.enCap(enMotive.epilogue(C, V))}, and that evening ${enScene.in} it came to a ${enMotive.argument.toLowerCase()}. ${en1(`At ${clock}, ${C} reached for ${enW.the}.`, `When ${V} turned away, ${C} reached for ${enW.the}. It was ${clock}.`)}${enTails[kind]}`,
+      `${EN.enList(innocents.map((i) => i.name))} had nothing to do with ${enDeath}: ${EN.enList(innocents.map((i) => `${i.name} ${enPlace(i.place).did}`))}. ${en1(`The fingerprint on ${enW.the} was a false trail; it says nothing about when it was made.`, `And the fingerprint on ${enW.the}? A false trail, older than the deed.`)}`,
+      `${enWeather.close} ${en1(`${EN.enCap(enSide(finder))} will not forget the sight ${enScene.in} any time soon.`, `${EN.enCap(enSide(caller))} thanks you quietly and sees you out.`, `As ${C} is led away, nobody looks up.`)}`,
+    ].join("\n\n"),
+    voices: publicContent.voices.map((v) => {
+      const pers = v.npc === P.c ? culpritPersonality : innocents.find((i) => pid(i) === v.npc)!.personality;
+      return { npc: v.npc, lines: enPers(pers).lines };
+    }),
+  };
+  if (publicContent.publicRules.length !== enPublic.publicRules.length) throw new Error("English public rules out of step");
+
   const files: Record<string, unknown> = {
     "case.json": { refSalt: /^0+$/.test(salt) ? "1".padStart(32, "0") : salt, clockOrigin: originHour * 3600, seed, schema: kind, complexity },
     "truth.json": truth,
@@ -983,6 +1109,9 @@ export function generateCase(seed: number, schema?: CaseSchema, options: Generat
     "public-content.json": publicContent,
     "release-manifest.json": releaseManifest,
     "proof-profile.json": proofProfile,
+    "en/public-content.json": enPublic,
+    "en/evidence-presentation.json": enPresentation,
+    "en/source.json": { schemaVersion: 1, publicContent: textDigest(publicContent), presentation: textDigest(presentation) },
   };
   for (const i of innocents) {
     files[`interrogation-${slug(i.name)}.json`] = innocentProfile(i);
@@ -1003,7 +1132,10 @@ export function writeGeneratedCase(generated: GeneratedCase, dir: string, option
   if (existing.length > 0 && options.force !== true) throw new Error(`Ordner ${dir} ist nicht leer (--force überschreibt)`);
   for (const name of existing) if (/^(npc|interrogation)-.*\.json$/.test(name)) rmSync(join(dir, name));
   const names = Object.keys(generated.files).sort();
-  for (const name of names) writeFileSync(join(dir, name), `${JSON.stringify(generated.files[name], null, 2)}\n`);
+  for (const name of names) {
+    mkdirSync(dirname(join(dir, name)), { recursive: true });
+    writeFileSync(join(dir, name), `${JSON.stringify(generated.files[name], null, 2)}\n`);
+  }
   return names;
 }
 
@@ -1011,8 +1143,10 @@ export function writeGeneratedCase(generated: GeneratedCase, dir: string, option
  * The playable package of a generated case under ruleset v3, with its proof bound like the
  * built-in cases (so hints work).
  */
-export function generatedPackage(generated: GeneratedCase): ResolvedCasePackage {
-  const f = generated.files;
+export function generatedPackage(generated: GeneratedCase, lang: "de" | "en" = "de"): ResolvedCasePackage {
+  const all = generated.files;
+  // The English variant replaces only the two player text files (like a fixture's en/ folder).
+  const f = lang === "de" ? all : { ...all, "public-content.json": all["en/public-content.json"], "evidence-presentation.json": all["en/evidence-presentation.json"] };
   const config = f["case.json"] as { refSalt: string };
   const npcs = Object.keys(f)
     .filter((name) => name.startsWith("npc-"))

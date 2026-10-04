@@ -38,8 +38,8 @@ const MAX_IMPORTED = 20;
 const MAX_BODY = Math.max(1024 * 1024, MAX_SHARE_BYTES) + 4096; // one Session C save or case file plus slack
 
 // The language (de default, en) is the player's choice, remembered in a cookie; switching keeps
-// the game (its events replay on the other language's package). Generated cases exist only in
-// German: there the language changes the frame, not the case text.
+// the game (its events replay on the other language's package). Generated cases have both
+// languages too (the generator writes an en/ variant).
 const LANG_COOKIE = "sprache";
 
 /** The remembered language from a Cookie header: the cookie set by /sprache, else German. */
@@ -193,7 +193,7 @@ export function createWebHandler(
   // Generated cases ("Zufallsfall"): one slot per seed, created on first visit; the oldest is
   // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
   // zufall-<seed>, or zufall-<seed>-stufe-<1..5> for a wished difficulty (the playtest bot searches).
-  const generated = new Map<string, { slot: Slot; clockOrigin: number; seed: number }>();
+  const generated = new Map<string, { slot: Slot; clockOrigin: number; seed: number; pkgOf: (lang: Lang) => ResolvedCasePackage }>();
   const extras = new Map<string, { version: string; slot: Slot }>();
   // Imported cases ("Eigenen Fall laden"), keyed by eigen-<digest>; the oldest is dropped beyond MAX_IMPORTED.
   const imported = new Map<string, { slot: Slot; clockOrigin: number; title: string }>();
@@ -272,25 +272,38 @@ export function createWebHandler(
         wishedLevel === null ? null : generateCaseOfDifficulty(seed, wishedLevel, (k, max) => options.progress?.(MESSAGES[lang].web.levelProgress(k + 1, max, wishedLevel)));
       const generatedCase = wished?.generated ?? generateCase(seed);
       const clockOrigin = generatedClockOrigin(generatedCase);
-      const game = withLang(newGame(generatedPackage(generatedCase), clockOrigin), lang);
+      // Generated cases come in both languages (en/ variant); each package is built on first use.
+      const pkgs = new Map<Lang, ResolvedCasePackage>();
+      const pkgOf = (l: Lang): ResolvedCasePackage => {
+        let pkg = pkgs.get(l);
+        if (pkg === undefined) pkgs.set(l, (pkg = generatedPackage(generatedCase, l)));
+        return pkg;
+      };
+      const game = withLang(newGame(pkgOf(lang), clockOrigin), lang);
       const all = MESSAGES[lang];
       const level = wished === null ? [] : [all.web.levelWished(wished.wished, `${difficultyDots(wished.rating)} ${all.difficulty[wished.rating]}`)];
-      g = { slot: { game, feedback: { tone: "info", title: all.web.randomCase(seed), lines: [all.web.randomWelcome, ...level] }, fresh: new Set() }, clockOrigin, seed };
+      g = { slot: { game, feedback: { tone: "info", title: all.web.randomCase(seed), lines: [all.web.randomWelcome, ...level] }, fresh: new Set() }, clockOrigin, seed, pkgOf };
       generated.set(key, g);
       if (generated.size > MAX_GENERATED) generated.delete(generated.keys().next().value!);
     }
-    const { slot: s, clockOrigin } = g;
-    if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = withLang(s.game, lang);
+    const { slot: s, clockOrigin, pkgOf } = g;
+    // Other language: the player's events replay on that language's package, like a fixed case.
+    if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = switchLang(s.game, pkgOf(lang), lang) ?? withLang(newGame(pkgOf(lang), clockOrigin), lang);
     return {
       slot: s,
       slug: key,
       clockOrigin,
       seed,
       level: wishedLevel,
-      restart: () => withLang(newGame(s.game.pkg, clockOrigin), lang),
+      restart: () => withLang(newGame(pkgOf(lang), clockOrigin), lang),
       load: (text) => {
-        const loaded = loadText(s.game.pkg, text, clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
-        return loaded.ok ? loaded : { ok: false, text: MESSAGES[lang].loadFailed };
+        const asLang = (l: Lang) => loadText(pkgOf(l), text, clockOrigin, l === DEFAULT_LANG ? undefined : l);
+        const direct = asLang(lang);
+        if (direct.ok) return direct;
+        // A save from the other language: load it there, then replay in this one.
+        const other = asLang(lang === DEFAULT_LANG ? "en" : DEFAULT_LANG);
+        const moved = other.ok ? switchLang(other.game, pkgOf(lang), lang) : null;
+        return moved !== null ? { ok: true as const, game: moved } : { ok: false, text: MESSAGES[lang].loadFailed };
       },
     };
   };
