@@ -256,7 +256,10 @@ describe("verifier data files and main.py", () => {
       // exactly the files the Dockerfile copies into /opt/forge/bootstrap, so a missing module fails here
       const copy = /^COPY ((?:\S+\.py )+)\/opt\/forge\/bootstrap\/$/m.exec(readFileSync(join(TOOLS, "Dockerfile"), "utf8"));
       expect(copy).not.toBeNull();
-      for (const name of copy![1]!.trim().split(" ")) writeFileSync(join(dir, name), readFileSync(join(TOOLS, name)));
+      const kernel = copy![1]!.trim().split(" ");
+      const inputs = JSON.parse(readFileSync(join(ROOT, "forge", "verifier", "image-inputs.json"), "utf8")) as { kernel: { files: string[] } };
+      expect(inputs.kernel.files).toEqual(kernel.map((name) => `tools/forge_v01/${name}`)); // pins describe what the image copies
+      for (const name of kernel) writeFileSync(join(dir, name), readFileSync(join(TOOLS, name)));
       const run = spawnSync(PYTHON, ["-I", "-B", join(dir, "stage0.py")], { cwd: tmpdir(), encoding: "utf8" });
       expect(run.stderr).toBe("");
       expect(run.status).toBe(1); // bad argv, but no ModuleNotFoundError

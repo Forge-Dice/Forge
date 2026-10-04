@@ -62,9 +62,9 @@ def _subdir(workspace: str, name: str) -> str:
     return path
 
 
-def gate_checks(args: dict, event: bytes, facts: dict, ws: str) -> dict:
+def gate_checks(args: dict, event: bytes, facts: dict, ws: str, *, _seams=None) -> dict:
     """Bootstrap (A), policy/contract/scope (B), review snapshot (C). Same algorithm in both jobs."""
-    trusted = bootstrap.bootstrap_trusted_objects(event, facts, _subdir(ws, "bootstrap"))
+    trusted = bootstrap.bootstrap_trusted_objects(event, facts, _subdir(ws, "bootstrap"), _seams=_seams)
     if trusted.base != args["base"]:
         raise fail("PR_STALE", "gate")
     if trusted.live.state != "open" or trusted.live.draft is not False:
@@ -176,7 +176,8 @@ def run_verify(g: dict, facts: dict, ws: str) -> dict:
             "attestationId": bound["attestationId"], "executionIsolation": "not_established"}
 
 
-def main(argv: list) -> int:
+def main(argv: list, *, _seams=None) -> int:
+    """`_seams`: keyword-only and test-only (bootstrap.Seams, lower-only budgets); `__main__` passes none."""
     try:
         args = parse_argv(argv)
         event = _read(args["event"], bootstrap.EVENT_LIMIT)
@@ -185,7 +186,7 @@ def main(argv: list) -> int:
         if command is None:
             raise fail("PR_INPUT", "gate")
         ws = _subdir(args["workspace"], "verifier")
-        g = gate_checks(args, event, facts, ws)
+        g = gate_checks(args, event, facts, ws, _seams=_seams)
         record = run_gate(g) if command == "gate" else run_verify(g, facts, ws)
     except ForgeFail as failure:
         record = failure.record()

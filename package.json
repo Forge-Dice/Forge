@@ -8,7 +8,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "forge:drill": "bash tests/forge-v01/drill/drill.sh"
   },
   "dependencies": {
     "zod": "4.6.5"

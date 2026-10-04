@@ -440,8 +440,13 @@ def run_verifier(loaded: LoadedVerifier, workspace: str, extra: list[str], *, de
                                deadline_seconds=deadline_seconds, cwd=loaded.root, phase="stage0")
 
 
-def main(argv: list[str]) -> int:
-    """Image entry: stage0 --event <file> --facts <file> --workspace <dir>. Exec's the BASE verifier."""
+def main(argv: list[str], *, _seams=None, _exec=None) -> int:
+    """Image entry: stage0 --event <file> --facts <file> --workspace <dir>. Exec's the BASE verifier.
+
+    `_seams` and `_exec` are keyword-only and test-only (the image entry below passes neither):
+    `_seams` reaches bootstrap_base (bootstrap.Seams.checked(): budgets can only be lowered) and
+    `_exec(path, argv, env)` replaces os.execve with the same path, argv, env and cwd.
+    """
     if len(argv) != 6 or argv[0::2] != ["--event", "--facts", "--workspace"]:
         return 1
     try:
@@ -449,7 +454,7 @@ def main(argv: list[str]) -> int:
             event = handle.read(EVENT_READ_LIMIT)
         with open(argv[3], "rb") as handle:
             facts = json.loads(handle.read(64 * 1024))
-        loaded = load_base_verifier(event, facts, argv[5])
+        loaded = load_base_verifier(event, facts, argv[5], _seams=_seams)
     except ForgeFail as failure:
         sys.stdout.write(json.dumps(failure.record()) + "\n")
         return 1
@@ -459,7 +464,7 @@ def main(argv: list[str]) -> int:
     private = os.path.join(argv[5], "verifier-private")
     process.prepare_private(private)
     os.chdir(loaded.root)
-    os.execve(sys.executable, verifier_argv(loaded, argv), process.clean_env("python", private))
+    (_exec or os.execve)(sys.executable, verifier_argv(loaded, argv), process.clean_env("python", private))
     return 1  # not reached
 
 

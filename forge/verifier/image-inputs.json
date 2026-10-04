@@ -28,6 +28,7 @@
       "tools/forge_v01/paths.py",
       "tools/forge_v01/objects.py",
       "tools/forge_v01/materialize.py",
+      "tools/forge_v01/odb_layout.py",
       "tools/forge_v01/bootstrap.py"
     ],
     "target": "/opt/forge/bootstrap"

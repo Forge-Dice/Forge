@@ -3,7 +3,7 @@
   "files": [
     {
       "path": "tools/forge_v01/main.py",
-      "sha256": "b9afc9846e426cdee3caf83eaffc7a598481c2ef38641b93615dc31bb9fe54ac"
+      "sha256": "62d66a6b7f751363898f01e91e4e7e071b5e61d01156b4bfd69bfbcc582be47e"
     },
     {
       "path": "tools/forge_v01/bootstrap.py",
@@ -75,7 +75,7 @@
     },
     {
       "path": "tools/forge_v01/stage0.py",
-      "sha256": "19dd73ca80054b6004b34ff06f51a8303665084b18fff20a8263abe39ea8efbf"
+      "sha256": "f8c8319f48eeafc6523e20597b223fc9109bfaf3c44ffaee90c2211eb0e5586a"
     },
     {
       "path": "tools/forge_v01/vitest.config.mjs",
