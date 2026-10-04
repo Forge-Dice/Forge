@@ -15,7 +15,9 @@ import { hashQuestionCatalogue } from "./interrogation-authoring.identity.ts";
 // Runtime half of NPC interrogation V1 (MYST-0005B). One question in, one observation out:
 // the NPC's stance comes from exactly one structurally matching attitude of its projection;
 // every entity leaves only as a PlayerRef, and only if the question, the NPC itself or the
-// rule's explicit reveal authorized it. No lies, no conversation state, no free text.
+// rule's explicit reveal authorized it. No conversation state, no free text. A lie rule (V2) keeps
+// the claim object of the NPC's own attitude but states the authored stance; its observation is
+// indistinguishable from an answer.
 
 export const RESPONSE_STANCES = ["affirms", "denies", "leans_affirms", "leans_denies", "uncertain", "does_not_know"] as const;
 export type ResponseStance = (typeof RESPONSE_STANCES)[number];
@@ -192,7 +194,8 @@ export function interrogate(input: InterrogationInput): InterrogationResult {
   if (rule.act === "decline") return deepFreeze({ success: true, observation: { ...head, act: "decline" } });
 
   // 6.-7.
-  const decision = decideResponse(context, bridge.visibleClaimOf(rule.claim));
+  const sincere = decideResponse(context, bridge.visibleClaimOf(rule.claim));
+  const decision: ResponseDecision = rule.act === "lie" && sincere.claim !== null ? { stance: rule.stance, claim: sincere.claim } : sincere;
   if (decision.stance === "does_not_know") {
     return deepFreeze({ success: true, observation: { ...head, act: "answer", stance: "does_not_know" } });
   }

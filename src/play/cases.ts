@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { parseCaseTruth } from "../domain/case-truth.ts";
-import { resolveCasePackage, type PackageRefSource, type ResolvedCasePackage } from "../domain/case-package.ts";
+import { resolveCasePackage, type PackageRefSource, type ResolvedCasePackage, type RulesetVersion } from "../domain/case-package.ts";
 import { buildPlayerRefIndex, playerRefFor, resolvePlayerRef } from "../domain/player-ref.ts";
 
 // Trusted host side of the play CLI: loads a playable case from its fixture files and resolves it
@@ -15,14 +15,16 @@ export type PlayCase = {
   readonly salt: string;
   /** Display convention: wall-clock seconds of timeline second 0. */
   readonly clockOrigin: number;
+  /** v2 when an NPC of the case may lie. */
+  readonly rulesetVersion: RulesetVersion;
 };
 
 export const PLAY_CASES = {
-  vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600 },
-  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600 },
-  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600 },
-  "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600 },
-  nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0 },
+  vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v1" },
+  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v2" },
+  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v1" },
+  "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600, rulesetVersion: "mystery-session-v1" },
+  nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0, rulesetVersion: "mystery-session-v1" },
 } as const satisfies Record<string, PlayCase>;
 export type PlayCaseName = keyof typeof PLAY_CASES;
 
@@ -56,7 +58,7 @@ export function playPackageInput(c: PlayCase): Record<string, unknown> {
   const read = (name: string): unknown => JSON.parse(readFileSync(new URL(name, fixtureDir(c)), "utf8"));
   return {
     schemaVersion: 1,
-    rulesetVersion: "mystery-session-v1",
+    rulesetVersion: c.rulesetVersion,
     truth: read("truth.json"),
     solution: read("solution.json"),
     access: read("evidence-access.json"),
