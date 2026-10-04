@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:verstummte-geige",
+  "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
+  "entries": [
+    {
+      "evidenceId": "evidence:pausenfoto",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:foyer"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:heizungsprotokoll",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:schaltschrank"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:logenprotokoll",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:loge"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:kellerplan",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:keller"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:haar",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:garderobe"
+          }
+        ]
+      }
+    }
+  ]
+}

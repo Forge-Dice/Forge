@@ -37,7 +37,7 @@ function expectError(check: CaseCheck, file: string, field: string, message?: Re
 }
 
 describe("check-case on the real fixtures", () => {
-  it.each([["vitrine", VITRINE], ["brieföffner", BRIEF]])("%s is valid and solvable", (_name, dir) => {
+  it.each([["vitrine", VITRINE], ["brieföffner", BRIEF], ["geige", join(FIXTURES, "geige")]])("%s is valid and solvable", (_name, dir) => {
     const check = checkCaseFolder(dir);
     expect(check.problems.filter((p) => p.severity === "error")).toEqual([]);
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });
@@ -159,7 +159,7 @@ describe("check-case names file and field for broken cases", () => {
         m.certificateData.steps.push({ stepId: "read-gloves", event: { type: "investigate", action: "examine_item", target: { $playerRefOf: { kind: "item", id: "item:gloves" } } } }),
       "proof-profile.json": (p) => (p.witnessStepIds = ["read-gloves", "search-library", "search-garden"]),
     });
-    expectError(checkCaseFolder(early), "release-manifest.json", "certificateData.steps", /Beweis passt nicht/);
+    expectError(checkCaseFolder(early), "release-manifest.json", "certificateData.steps", /witnessStepIds/);
   });
 });
 

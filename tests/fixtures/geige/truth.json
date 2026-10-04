@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:verstummte-geige",
+  "revision": 1,
+  "title": "Die verstummte Geige",
+  "timeline": {
+    "unit": "second",
+    "originLabel": "20:00 Uhr, Konzertbeginn"
+  },
+  "persons": [
+    {
+      "id": "person:ida",
+      "name": "Ida Reiner"
+    },
+    {
+      "id": "person:paul",
+      "name": "Paul Adler"
+    },
+    {
+      "id": "person:kurt",
+      "name": "Kurt Mohn"
+    },
+    {
+      "id": "person:vera",
+      "name": "Vera Lind"
+    },
+    {
+      "id": "person:henrik",
+      "name": "Henrik Sand"
+    },
+    {
+      "id": "person:marta",
+      "name": "Marta Weil"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location:buehne",
+      "name": "Bühne"
+    },
+    {
+      "id": "location:foyer",
+      "name": "Foyer"
+    },
+    {
+      "id": "location:garderobe",
+      "name": "Solistengarderobe"
+    },
+    {
+      "id": "location:keller",
+      "name": "Heizungskeller"
+    },
+    {
+      "id": "location:loge",
+      "name": "Ehrenloge"
+    }
+  ],
+  "items": [
+    {
+      "id": "item:geige",
+      "name": "Martas Geige"
+    },
+    {
+      "id": "item:schaltschrank",
+      "name": "Schaltschrank"
+    }
+  ],
+  "relationships": [],
+  "events": [
+    {
+      "id": "event:pause",
+      "description": "Konzertpause im Foyer",
+      "time": {
+        "kind": "interval",
+        "start": 1800,
+        "end": 3000
+      },
+      "locationId": "location:foyer",
+      "participantIds": [
+        "person:paul",
+        "person:vera"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:wartung",
+      "description": "Kurt wartet die Heizung",
+      "time": {
+        "kind": "interval",
+        "start": 2300,
+        "end": 2500
+      },
+      "locationId": "location:keller",
+      "participantIds": [
+        "person:kurt"
+      ],
+      "itemIds": [
+        "item:schaltschrank"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:telefonat",
+      "description": "Henrik telefoniert in der Loge",
+      "time": {
+        "kind": "interval",
+        "start": 2350,
+        "end": 2450
+      },
+      "locationId": "location:loge",
+      "participantIds": [
+        "person:henrik"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:diebstahl",
+      "description": "Ida nimmt die Geige aus der Garderobe",
+      "time": {
+        "kind": "instant",
+        "at": 2400
+      },
+      "locationId": "location:garderobe",
+      "participantIds": [
+        "person:ida"
+      ],
+      "itemIds": [
+        "item:geige"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:entdeckung",
+      "description": "Marta findet den leeren Geigenkasten",
+      "time": {
+        "kind": "instant",
+        "at": 3000
+      },
+      "locationId": "location:garderobe",
+      "participantIds": [
+        "person:marta"
+      ],
+      "itemIds": [],
+      "causedByEventIds": [
+        "event:diebstahl"
+      ]
+    }
+  ],
+  "motives": [
+    {
+      "id": "motive:solo",
+      "personId": "person:ida",
+      "eventIds": [
+        "event:diebstahl"
+      ],
+      "description": "Ida will Martas Solo übernehmen"
+    }
+  ],
+  "propositions": [
+    {
+      "id": "proposition:paul-foyer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:paul",
+        "locationId": "location:foyer",
+        "at": 2400
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:vera-foyer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:vera",
+        "locationId": "location:foyer",
+        "at": 2400
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:kurt-keller",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:kurt",
+        "locationId": "location:keller",
+        "at": 2400
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:henrik-loge",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:henrik",
+        "locationId": "location:loge",
+        "at": 2400
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:ida-garderobe",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ida",
+        "locationId": "location:garderobe",
+        "at": 2400
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:ida-buehne",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ida",
+        "locationId": "location:buehne",
+        "at": 2400
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:paul-garderobe",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:paul",
+        "locationId": "location:garderobe",
+        "at": 2400
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:wartung-schaltschrank",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:wartung",
+        "itemId": "item:schaltschrank"
+      },
+      "truth": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence:pausenfoto",
+      "description": "Pressefoto aus dem Foyer mit Zeitstempel",
+      "source": {
+        "kind": "location",
+        "id": "location:foyer"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:paul-foyer",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:vera-foyer",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:heizungsprotokoll",
+      "description": "Anmeldung am Schaltschrank",
+      "source": {
+        "kind": "item",
+        "id": "item:schaltschrank"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:kurt-keller",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:logenprotokoll",
+      "description": "Schlossprotokoll der Ehrenloge",
+      "source": {
+        "kind": "location",
+        "id": "location:loge"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:henrik-loge",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:kellerplan",
+      "description": "Wartungsplan an der Kellertür",
+      "source": {
+        "kind": "location",
+        "id": "location:keller"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:kurt-keller",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:haar",
+      "description": "Graues Haar am Geigenkasten",
+      "source": {
+        "kind": "location",
+        "id": "location:garderobe"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:paul-garderobe",
+          "direction": "supports"
+        }
+      ]
+    }
+  ],
+  "secrets": [
+    {
+      "id": "secret:solo",
+      "propositionIds": [
+        "proposition:ida-garderobe"
+      ]
+    }
+  ],
+  "redHerrings": [
+    {
+      "id": "red-herring:haar",
+      "evidenceIds": [
+        "evidence:haar"
+      ],
+      "misleadingPropositionId": "proposition:paul-garderobe"
+    }
+  ]
+}
