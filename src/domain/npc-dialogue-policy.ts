@@ -220,7 +220,8 @@ function checkDataForm(value: unknown, path: Path, ancestors: object[], issue: (
     } else if (!descriptor.enumerable) {
       issue("Non-enumerable properties are not allowed", [...path, key]);
       ok = false;
-    } else if (isArray && !/^(0|[1-9][0-9]*)$/.test(key)) {
+    } else if (isArray && !(/^(0|[1-9][0-9]*)$/.test(key) && Number(key) < (value as unknown[]).length)) {
+      // An index is below length; "4294967295" (2**32 - 1) looks like one but is a plain property.
       issue("Extra array properties are not allowed", [...path, key]);
       ok = false;
     } else {
