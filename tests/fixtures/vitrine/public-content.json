@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "title": "Die leere Vitrine",
+  "brief": "Es ist 18:08 Uhr. Die Goldmedaille „Morgenstern“ fehlt. Der authentifizierte Sensor setzt die eigenhändige Entnahme auf 18:04:00 in der Galerie. Prüfe die vier verbliebenen Personen. Unabhängige Nachweise helfen dir, den Fall zu lösen.\n\nDein Auftrag: Wähle genau eine der vier Personen als eigenhändigen Entnehmer. Die Nachweise helfen dir beim Deduzieren. Eine vollständige richtige Antwort löst den Fall auch ohne gesammelte oder zitierte Belege. not_solved bedeutet, dass die eingereichte Antwort den Fallauftrag noch nicht erfüllt; es nennt keine falschen Einzelaussagen.\n\nOrte: Galerie – die leere Vitrine und die Besuchsaufzeichnungen. Innenhof – der Bereich des Fototermins. Archiv – Aufsicht, Arbeitsaufzeichnungen und Schlüsselverwaltung. Werkstatt – Restaurierung und Transportmaterial. Foyer – Schließung und Anwesenheitsliste.\n\nDeine Aktionen: Orte durchsuchen, verfügbare strukturierte Fragen an Personen stellen, freigegebene Gerätenachweise auslesen und eine vollständige Antwort abgeben. Neue bekannte Entitäten können weitere Fragen oder Nachweise verfügbar machen. Fragen und Untersuchungen sind wiederholbar; sie verbrauchen in diesem ersten Fall keine Zeit und keine Punkte.\n\nAussagen von Personen gehören ins Berichtsjournal. Unabhängige Beobachtungen bleiben getrennt. Eine Gesprächsverweigerung und ein bloßer früherer Besuch sind keine Schuldbeweise.",
+  "challengeQuestion": "Wer entnahm die Medaille eigenhändig?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:e01"
+      },
+      "label": "Schließrunde",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:e02"
+      },
+      "label": "Galeriebesuch um 18:02",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:e03"
+      },
+      "label": "Schlüsselübergabe um 18:03",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:e04"
+      },
+      "label": "Entnahme um 18:04",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:e05"
+      },
+      "label": "Hoffototermin",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:e06"
+      },
+      "label": "Archivarbeit",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:e07"
+      },
+      "label": "Werkstattaufnahme um 18:05",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:e08"
+      },
+      "label": "Entdeckung der leeren Vitrine",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:d01"
+      },
+      "label": "Besucherstempel",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:d02"
+      },
+      "label": "Entnahmeprotokoll",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:d03"
+      },
+      "label": "Kontaktbogen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:d04"
+      },
+      "label": "Vollständiger Hoffilm",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:d05"
+      },
+      "label": "Archivaufnahme",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:d06"
+      },
+      "label": "Werkstattaufnahme",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:d07"
+      },
+      "label": "Schlüsselquittung",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:d08"
+      },
+      "label": "Schließliste",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "label": "Noras Kamera",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kassette"
+      },
+      "label": "Transportkassette",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:medaille"
+      },
+      "label": "Goldmedaille „Morgenstern“",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:schluessel"
+      },
+      "label": "Vitrinenschlüssel",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:terminal"
+      },
+      "label": "Archivterminal",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:archiv"
+      },
+      "label": "Archiv",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:foyer"
+      },
+      "label": "Foyer",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:galerie"
+      },
+      "label": "Galerie",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:hof"
+      },
+      "label": "Innenhof",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:werkstatt"
+      },
+      "label": "Werkstatt",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:lina"
+      },
+      "label": "Lina Kern",
+      "role": "Restauratorin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:max"
+      },
+      "label": "Max Brandt",
+      "role": "Historiker und Vertreter der ehemaligen Eigentümerfamilie"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:nora"
+      },
+      "label": "Nora Weiss",
+      "role": "Museumsfotografin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:oskar"
+      },
+      "label": "Oskar Falk",
+      "role": "Aufsicht und Schlüsselverwalter"
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:lina",
+      "questionId": "question:q16",
+      "text": "Waren Sie um 18:04 in der Galerie?"
+    },
+    {
+      "npc": "person:lina",
+      "questionId": "question:q17",
+      "text": "Hat Max die Medaille eigenhändig entnommen?"
+    },
+    {
+      "npc": "person:lina",
+      "questionId": "question:q18",
+      "text": "Waren Sie um 18:05 in der Werkstatt?"
+    },
+    {
+      "npc": "person:lina",
+      "questionId": "question:q19",
+      "text": "War Nora um 18:04 im Hof?"
+    },
+    {
+      "npc": "person:lina",
+      "questionId": "question:q20",
+      "text": "Möchten Sie zur Entnahme Stellung nehmen?"
+    },
+    {
+      "npc": "person:max",
+      "questionId": "question:q01",
+      "text": "Waren Sie um 18:02 in der Galerie?"
+    },
+    {
+      "npc": "person:max",
+      "questionId": "question:q02",
+      "text": "Waren Sie um 18:04 in der Galerie?"
+    },
+    {
+      "npc": "person:max",
+      "questionId": "question:q03",
+      "text": "Waren Sie um 18:04 im Hof?"
+    },
+    {
+      "npc": "person:max",
+      "questionId": "question:q04",
+      "text": "War Lina um 18:04 in der Galerie?"
+    },
+    {
+      "npc": "person:max",
+      "questionId": "question:q05",
+      "text": "Wo ist der vollständige Fotonachweis?"
+    },
+    {
+      "npc": "person:nora",
+      "questionId": "question:q06",
+      "text": "War Max um 18:04 im Hof?"
+    },
+    {
+      "npc": "person:nora",
+      "questionId": "question:q07",
+      "text": "Waren Sie um 18:04 im Hof?"
+    },
+    {
+      "npc": "person:nora",
+      "questionId": "question:q08",
+      "text": "Kann ich den vollständigen Film dieses Hoffototermins sehen?"
+    },
+    {
+      "npc": "person:nora",
+      "questionId": "question:q09",
+      "text": "War Max um 18:04 in der Galerie?"
+    },
+    {
+      "npc": "person:nora",
+      "questionId": "question:q10",
+      "text": "War Lina um 18:04 in der Galerie?"
+    },
+    {
+      "npc": "person:oskar",
+      "questionId": "question:q11",
+      "text": "War Max um 18:02 in der Galerie?"
+    },
+    {
+      "npc": "person:oskar",
+      "questionId": "question:q12",
+      "text": "War Max um 18:04 in der Galerie?"
+    },
+    {
+      "npc": "person:oskar",
+      "questionId": "question:q13",
+      "text": "Waren Sie um 18:04 im Archiv?"
+    },
+    {
+      "npc": "person:oskar",
+      "questionId": "question:q14",
+      "text": "Wo ist der unabhängige Archivnachweis?"
+    },
+    {
+      "npc": "person:oskar",
+      "questionId": "question:q15",
+      "text": "War Lina um 18:03 bei Ihnen im Archiv?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Die als Beobachtung freigegebenen Bildnachweise sind in diesem Fall unverfälscht und mit dem Entnahmesensor synchronisiert. Zeugenaussagen können irren. Ein Besuch zu einer anderen Uhrzeit und eine Gesprächsverweigerung beweisen keine eigenhändige Entnahme."
+    },
+    {
+      "id": "rule:closed-roster",
+      "text": "Nur Max, Lina, Nora und Oskar kommen als direkte Entnehmer in Betracht. Es gab genau einen direkten Entnehmer. Sind drei ausgeschlossen, bleibt die vierte Person."
+    },
+    {
+      "id": "rule:manual-presence",
+      "text": "Die Medaille wurde um 18:04:00 in der Galerie von einer einzelnen Person eigenhändig entnommen. Wer nachweislich zu genau diesem Zeitpunkt an einem anderen Ort war, scheidet als direkter Entnehmer aus."
+    }
+  ]
+}

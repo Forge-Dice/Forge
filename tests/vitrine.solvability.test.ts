@@ -1,9 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { checkCaseSolvability, type WitnessReplay } from "../src/domain/case-solvability.ts";
-import { loadVitrine, loadVitrineProofProfile, vitrineReleaseHash, vitrineWitness } from "./vitrine.fixture.ts";
+import {
+  loadVitrine,
+  loadVitrineProofProfile,
+  resolveVitrinePackage,
+  vitrineReleaseContextHash,
+  vitrineReleaseHash,
+  vitrineReleaseManifest,
+  vitrineWitness,
+} from "./vitrine.fixture.ts";
 
 // "Die leere Vitrine" against MYST-SOLVABILITY-0001 with a witness port that replays the steps on the
-// real investigation, release and interrogation functions (no stub). releaseHash is test-only.
+// real investigation, release and interrogation functions (no stub). releaseHash and releaseContextHash
+// are the real forge-release-proof-v1 bindings computed by MYST-SESSION-0001A.
 
 const v = loadVitrine();
 const profile = loadVitrineProofProfile(v);
@@ -18,6 +27,14 @@ describe("Die leere Vitrine: solvability with the real witness", () => {
     expect(profile.bindings.releaseHash).toBe(vitrineReleaseHash(v));
     expect(profile.witnessStepIds).toEqual(ROUTE_A);
     expect(profile.answerScope).toHaveLength(4);
+  });
+
+  it("the proof binds to the real release manifest and release context of the resolved package", () => {
+    expect(vitrineReleaseManifest(v).releaseContextHash).toBe(vitrineReleaseContextHash());
+    const resolution = resolveVitrinePackage(v);
+    if (!resolution.ok) throw new Error(JSON.stringify(resolution.findings));
+    expect(resolution.package.proof!.releaseHash).toBe(vitrineReleaseHash(v));
+    expect(resolution.package.proof!.profile.bindings.releaseHash).toBe(profile.bindings.releaseHash);
   });
 
   it("Route A replays d03, d04, d05 and releases exactly the eight authored records", () => {

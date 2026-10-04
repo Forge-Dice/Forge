@@ -23,7 +23,9 @@ import {
   type WitnessReplay,
   type WitnessReplayResult,
 } from "../src/domain/case-solvability.ts";
-import { createHash } from "node:crypto";
+import { resolveCasePackage, type PackageResolution } from "../src/domain/case-package.ts";
+import { hashReleaseManifest, serializeSessionJson } from "../src/domain/case-package.identity.ts";
+import { refSource, releaseContextOf } from "./case-package.fixture.ts";
 
 // "Die leere Vitrine" (case:leere-vitrine-v1), loaded from tests/fixtures/vitrine with the real parsers.
 // truth.json and solution.json are byte-identical to the case pack originals; challenge, presentation
@@ -186,14 +188,49 @@ function sortedJson(value: unknown): string {
   return `{${keys.map((k) => `${JSON.stringify(k)}:${sortedJson((value as Record<string, unknown>)[k])}`).join(",")}}`;
 }
 
-/** The release manifest with real PlayerRefs; releaseContextHash stays a marker (no profile exists yet). */
-export const vitrineReleaseManifest = (v: Vitrine): ReleaseManifest => substituteRefs(vitrineRaw("release-manifest.json"), v) as ReleaseManifest;
+/** Session A package input (MYST-SESSION-0001A §2) from the fixture files; proof as given. */
+export function vitrinePackageInput(proof: { profile: unknown; releaseManifest: string } | null = null): any {
+  const setup = vitrineRaw("initial-setup.json");
+  return {
+    schemaVersion: 1,
+    rulesetVersion: "mystery-session-v1",
+    truth: vitrineRaw("truth.json"),
+    solution: vitrineRaw("solution.json"),
+    access: vitrineRaw("evidence-access.json"),
+    presentation: vitrineRaw("evidence-presentation.json"),
+    catalogue: vitrineRaw("questions.json"),
+    npcs: VITRINE_NPCS.map((npc) => ({ snapshot: vitrineRaw(`npc-${npc}.json`), profile: vitrineRaw(`interrogation-${npc}.json`) })),
+    initial: setup,
+    challenge: vitrineRaw("challenge.json"),
+    publicContent: vitrineRaw("public-content.json"),
+    proof,
+  };
+}
 
-/**
- * TEST-ONLY release hash: sha256 over the sorted-key JSON of the substituted manifest. Not the
- * forge-release-proof-v1 profile, which the release adapter will define.
- */
-export const vitrineReleaseHash = (v: Vitrine): string => createHash("sha256").update(sortedJson(vitrineReleaseManifest(v))).digest("hex");
+/** Real releaseContextHash of the Vitrine package (Session A component hashes, test salt refs). */
+export const vitrineReleaseContextHash = (): string => releaseContextOf(vitrinePackageInput(), VITRINE_TEST_SALT);
+
+/** The release manifest with real PlayerRefs, bound to the real releaseContextHash. */
+export const vitrineReleaseManifest = (v: Vitrine): ReleaseManifest => ({
+  ...(substituteRefs(vitrineRaw("release-manifest.json"), v) as ReleaseManifest),
+  releaseContextHash: vitrineReleaseContextHash(),
+});
+
+/** The manifest as canonical C text: exactly the bytes forge-release-proof-v1 hashes. */
+export const vitrineReleaseManifestText = (v: Vitrine): string => serializeSessionJson(vitrineReleaseManifest(v));
+
+/** releaseHash = SHA-256("forge-session-release-v1\n" + manifest bytes), via Session A. */
+export const vitrineReleaseHash = (v: Vitrine): string => hashReleaseManifest(vitrineReleaseManifestText(v));
+
+/** Resolves the complete Vitrine package with its bound proof through resolveCasePackage. */
+export function resolveVitrinePackage(v: Vitrine): PackageResolution {
+  const profile = vitrineRaw("proof-profile.json") as { bindings: Record<string, string> };
+  const input = vitrinePackageInput({
+    profile: { ...profile, bindings: { ...profile.bindings, releaseHash: vitrineReleaseHash(v) } },
+    releaseManifest: vitrineReleaseManifestText(v),
+  });
+  return resolveCasePackage(input, refSource(v.truth, VITRINE_TEST_SALT));
+}
 
 export function loadVitrineProofProfile(v: Vitrine, overrides: object = {}): CaseProofProfile {
   const input = vitrineRaw("proof-profile.json") as { bindings: Record<string, string> };
