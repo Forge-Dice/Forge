@@ -70,7 +70,7 @@ export function renderCaseList(cases: readonly CaseCard[]): string {
   return layout(
     "Fälle",
     `<a class="skip" href="#faelle">Zu den Fällen springen</a>
-<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p></header>
+<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a></p></header>
 <main id="faelle" class="shelf"><h2 class="visually-hidden">Offene Akten</h2><ul class="cases">${cards}</ul>
 <p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>`,
     "page-cases",
@@ -244,7 +244,7 @@ export function renderGame(game: Game, slug: string, feedback: Feedback | null, 
     : [["akte", "Akte", "F"], ["untersuchen", "Untersuchen", "U"], ["verhoeren", "Verhören", "V"], ["journal", "Journal", "J"], ["anklage", "Anklage", "A"], ["bekannt", "Bekannt", "B"]];
   const accuse = accusations(game);
   const body = `<a class="skip" href="#spiel">Zum Spiel springen</a>
-<header class="topbar"><a class="home" href="/"><span aria-hidden="true">←</span> Alle Fälle</a><div class="case-title"><p class="kicker">Fallakte</p><h1>${escape(publicContent.title)}</h1></div><span class="badge${
+<header class="topbar"><a class="home" href="/"><span aria-hidden="true">←</span> Alle Fälle</a><div class="case-title"><p class="kicker">Fallakte</p><h1>${escape(publicContent.title)}</h1></div><a class="help-link" href="/hilfe" aria-keyshortcuts="?"><span aria-hidden="true">?</span><span class="help-text"> Hilfe</span></a><span class="badge${
     solved ? " solved" : ""
   }">${solved ? "Gelöst" : `${steps} Aktionen<span class="badge-more"> · ${known(game, "evidence").length} Nachweise</span>`}</span></header>
 <nav class="tabs" aria-label="Bereiche des Falls"><ul>${nav.map(([id, label, key]) => `<li><a href="#${id}" data-key="${key}" aria-keyshortcuts="${key}">${label}<kbd aria-hidden="true">${key}</kbd></a></li>`).join("")}</ul></nav>
@@ -283,10 +283,86 @@ ${
 <form method="post" action="/fall/${slug}/new" data-confirm-new><button type="submit">Neu beginnen</button></form></div></section>
 </aside>
 </main>
-<footer class="keys"><p><span class="visually-hidden">Tastenkürzel: </span>${nav.map(([, label, key]) => `<kbd>${key}</kbd> ${label}`).join(" · ")} · <kbd>Esc</kbd> Meldung schließen</p></footer>
+<footer class="keys"><p class="key-list"><span class="visually-hidden">Tastenkürzel: </span>${nav.map(([, label, key]) => `<kbd>${key}</kbd> ${label}`).join(" · ")} · <kbd>Esc</kbd> Meldung schließen · <kbd>?</kbd> Hilfe</p><p><button type="button" class="ghost" data-intro>Einführung ansehen</button> <a class="button ghost" href="/hilfe">Hilfe</a></p></footer>
+${intro()}
 <dialog id="confirm" aria-labelledby="confirm-title"><form method="dialog"><h2 id="confirm-title"></h2><p id="confirm-text"></p><div class="actions"><button value="cancel" class="secondary">Abbrechen</button><button value="ok" class="danger" id="confirm-ok">Anklagen</button></div></form></dialog>
 <script>${script(slug, solved, feedback !== null)}</script>`;
   return layout(publicContent.title, body);
+}
+
+// ---------- Introduction and help ----------
+
+const ICON = (paths: string) =>
+  `<svg class="icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+
+/** The four steps of the introduction; the help page reuses them as its overview. */
+const INTRO_STEPS: readonly { icon: string; title: string; text: string }[] = [
+  {
+    icon: ICON(`<path d="M10 6h20l8 8v28H10z"/><path d="M30 6v8h8"/><path d="M16 22h16M16 28h16M16 34h10"/>`),
+    title: "Lies die Fallakte",
+    text: "In der Akte stehen der Auftrag, der Hintergrund und die Regeln des Falls. Der Auftrag ist die Frage, die du am Ende beantworten musst.",
+  },
+  {
+    icon: ICON(`<circle cx="20" cy="20" r="11"/><path d="M28 28l12 12"/>`),
+    title: "Sichere Spuren",
+    text: "Unter „Untersuchen“ durchsuchst du Orte und prüfst Gegenstände und Personen. Unter „Verhören“ stellst du den Beteiligten Fragen. Jede Spur kann neue öffnen: Ein roter Punkt markiert sie, ein Haken zeigt, was du schon getan hast.",
+  },
+  {
+    icon: ICON(`<path d="M12 8h22a4 4 0 0 1 4 4v28H16a4 4 0 0 1-4-4z"/><path d="M12 36a4 4 0 0 1 4-4h22"/><path d="M19 15h12M19 21h8"/>`),
+    title: "Führe das Journal",
+    text: "Jeder Fund und jede Aussage landet im Journal, das Neueste oben und gelb markiert. Unter „Bekannt“ siehst du alle Personen, Orte und Nachweise. Funde sind belastbar, Menschen dagegen können sich irren oder lügen.",
+  },
+  {
+    icon: ICON(`<path d="M8 40h20"/><path d="M14 34h8"/><path d="M22 10l12 12"/><path d="M17 15l12 12"/><path d="M20 12l-6 6 6 6 6-6z"/><path d="M28 20l12 12"/>`),
+    title: "Erhebe Anklage",
+    text: "Wenn deine Nachweise tragen, klagst du unter „Anklage“ an. Eine falsche Anklage beendet den Fall nicht, wird aber vermerkt. Nach der richtigen liest du die Auflösung.",
+  },
+];
+
+function intro(): string {
+  const steps = INTRO_STEPS.map(
+    (st, i) => `<section data-step${i === 0 ? "" : " hidden"}>${st.icon}<h3>${escape(st.title)}</h3><p>${escape(st.text)}</p></section>`,
+  ).join("");
+  return `<dialog id="intro" class="intro" aria-labelledby="intro-title"><form method="dialog"><div class="intro-head"><h2 id="intro-title" class="kicker">Einführung</h2><span class="intro-count">Schritt <span data-count>1</span> von ${INTRO_STEPS.length}</span><button value="skip" class="ghost skip-intro">Überspringen</button></div>
+<div class="intro-steps" aria-live="polite">${steps}</div>
+<div class="intro-foot"><div class="dots" aria-hidden="true">${INTRO_STEPS.map((_, i) => `<span${i === 0 ? ` class="on"` : ""}></span>`).join("")}</div><button type="button" data-prev disabled>Zurück</button><button type="button" data-next class="primary">Weiter</button></div></form></dialog>`;
+}
+
+/** The manual: same look as the cases, no case content, so nothing of any case can leak here. */
+export function renderHelp(): string {
+  const overview = INTRO_STEPS.map((st, i) => `<li><span class="step-no" aria-hidden="true">${i + 1}</span>${st.icon}<div><h3>${escape(st.title)}</h3><p>${escape(st.text)}</p></div></li>`).join("");
+  const legend: [string, string][] = [
+    [`<span class="tag">neu</span>`, "Gerade hinzugekommen: ein Fund, eine Person, ein Ort oder ein Nachweis."],
+    [`<span class="legend-dot"></span>`, "Eine neu geöffnete Spur, die du noch nicht verfolgt hast."],
+    [`<span class="legend-done">✓</span>`, "Schon getan. Du kannst es wiederholen, es kostet nichts."],
+    [`<span class="legend-marker">Gelb</span>`, "Der neueste Eintrag im Journal und neu Bekanntes."],
+  ];
+  const keys: [string, string][] = [
+    ["F", "Fallakte"],
+    ["U", "Untersuchen"],
+    ["V", "Verhören"],
+    ["J", "Journal"],
+    ["A", "Anklage"],
+    ["B", "Bekannt"],
+    ["E", "Auflösung (nach dem Fall)"],
+    ["Esc", "Meldung oder Dialog schließen"],
+    ["Tab", "Zum nächsten Knopf"],
+    ["?", "Diese Hilfe"],
+  ];
+  return layout(
+    "Hilfe",
+    `<a class="skip" href="#hilfe">Zur Hilfe springen</a>
+<header class="topbar"><a class="home" href="/"><span aria-hidden="true">←</span> Alle Fälle</a><div class="case-title"><p class="kicker">Handbuch</p><h1>So ermittelst du</h1></div></header>
+<main id="hilfe" class="manual">
+<section class="card"><h2>Worum es geht</h2><p class="lead-ink">Jeder Fall stellt dir eine Frage, meist: Wer war es? Du beantwortest sie mit einer Anklage. Dafür sammelst du Funde und Aussagen, bis nur noch eine Antwort zu allen Nachweisen passt.</p></section>
+<section class="card"><h2>Ein Fall in vier Schritten</h2><ol class="overview">${overview}</ol></section>
+<section class="card"><h2>Aussagen richtig lesen</h2><p>Funde aus Kameras, Sensoren und Akten gelten als belastbar. Was Menschen sagen, ist ihre Sicht: Sie können sich irren, etwas nicht wissen, schweigen oder lügen. Vergleiche Aussagen mit den Funden. Ein Schweigen oder ein Besuch zu anderer Zeit ist noch kein Beweis.</p><p>Die Regeln in der Fallakte sagen dir, was in diesem Fall als sicher gilt.</p></section>
+<section class="card"><h2>Zeichen auf einen Blick</h2><dl class="legend">${legend.map(([sign, text]) => `<div><dt>${sign}</dt><dd>${escape(text)}</dd></div>`).join("")}</dl></section>
+<section class="card"><h2>Spielstand</h2><p>Jeder Fall merkt sich seinen Stand, solange der Server läuft. Mit „Speichern“ lädst du eine Datei herunter, mit „Laden“ setzt du genau dort wieder an. „Neu beginnen“ startet den Fall von vorn.</p></section>
+<section class="card"><h2>Tastatur</h2><dl class="keymap">${keys.map(([k, t]) => `<div><dt><kbd>${escape(k)}</kbd></dt><dd>${escape(t)}</dd></div>`).join("")}</dl><p class="muted">Alle Knöpfe funktionieren auch ohne Maus und mit Screenreader.</p></section>
+<p class="manual-foot"><a class="button primary-link" href="/">Zu den Fällen</a></p>
+</main>`,
+  );
 }
 
 // Progressive enhancement only: every action is a plain form post without it. Loading reads the
@@ -321,7 +397,7 @@ if (sheet) {
 
 // Accusations ask first, in a dialog; new game asks with the browser's own prompt.
 const dialog = document.getElementById("confirm");
-document.querySelectorAll("form").forEach((f) => f.addEventListener("submit", (e) => {
+document.querySelectorAll("form:not([method=dialog])").forEach((f) => f.addEventListener("submit", (e) => {
   const section = f.closest("section[id]");
   if (f.dataset.confirmNew !== undefined && !confirm("Neues Spiel beginnen? Ein nicht gespeicherter Stand geht verloren.")) return e.preventDefault();
   if (f.dataset.confirm !== undefined && !f.dataset.ok) {
@@ -360,9 +436,32 @@ const go = (id) => {
   target.focus({ preventScroll: true });
 };
 document.querySelectorAll("[data-key]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); go(a.getAttribute("href").slice(1)); history.replaceState(null, "", a.getAttribute("href")); }));
+// First visit: a short, skippable introduction; it remembers that it was seen.
+const intro = document.getElementById("intro"), steps = [...intro.querySelectorAll("[data-step]")];
+const prev = intro.querySelector("[data-prev]"), next = intro.querySelector("[data-next]"), dots = [...intro.querySelectorAll(".dots span")];
+let step = 0;
+const show = (i) => {
+  step = Math.max(0, Math.min(steps.length - 1, i));
+  steps.forEach((el, j) => (el.hidden = j !== step));
+  dots.forEach((d, j) => d.classList.toggle("on", j === step));
+  intro.querySelector("[data-count]").textContent = step + 1;
+  prev.disabled = step === 0;
+  next.textContent = step === steps.length - 1 ? "Los geht’s" : "Weiter";
+};
+const openIntro = () => { if (typeof intro.showModal !== "function") return; show(0); intro.showModal(); next.focus(); };
+prev.addEventListener("click", () => show(step - 1));
+next.addEventListener("click", () => (step === steps.length - 1 ? intro.close() : show(step + 1)));
+intro.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") show(step + 1); if (e.key === "ArrowLeft") show(step - 1); });
+intro.addEventListener("close", () => { try { localStorage.setItem("kriminalfaelle.intro", "gesehen"); } catch {} });
+document.querySelectorAll("[data-intro]").forEach((b) => b.addEventListener("click", openIntro));
+let seen = true;
+try { seen = localStorage.getItem("kriminalfaelle.intro") !== null; } catch {}
+if (!seen && !${solved}) { if (sheet) sheet.hidden = true; openIntro(); }
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") return closeSheet();
-  if (e.ctrlKey || e.metaKey || e.altKey || dialog.open || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  if (e.ctrlKey || e.metaKey || e.altKey || dialog.open || intro.open || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  if (e.key === "?") { e.preventDefault(); location.href = "/hilfe"; return; }
   const id = keys[e.key.toLowerCase()];
   if (id) { e.preventDefault(); go(id); }
 });
@@ -537,8 +636,8 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .case-card:hover { transform: translateY(-3px) rotate(-.4deg); box-shadow: 0 18px 30px -12px rgba(0,0,0,.8); }
 .case-no { font: 700 12px var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--blood); }
 .case-card h2 { margin: 6px 0 10px; font-size: 26px; }
-.case-card p { flex: 1; color: #4a3d2e; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.case-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.case-card p { color: #4a3d2e; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.case-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 8px; }
 .case-card .badge { background: rgba(42,33,25,.12); color: var(--ink); border-color: rgba(42,33,25,.25); }
 .case-card .badge.solved { background: var(--ok); color: #fff; }
 .open-file { font: 600 14px var(--sans); }
@@ -548,6 +647,54 @@ dialog { border: 0; border-radius: 6px; padding: 24px 26px; max-width: min(440px
 dialog::backdrop { background: rgba(10,8,6,.7); }
 dialog h2 { margin: 0 0 8px; font-size: 22px; }
 dialog .actions { justify-content: flex-end; margin-top: 18px; }
+
+/* Help link, ghost buttons */
+.help-link { display: inline-flex; align-items: center; gap: 4px; font: 600 14px var(--sans); color: #e9dcc3; text-decoration: none; padding: 5px 12px; border: 1px solid #5a4a39; border-radius: 999px; white-space: nowrap; }
+.help-link:hover { color: #fff; border-color: var(--brass); }
+.help-link > span[aria-hidden] { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--brass); color: var(--desk); font-weight: 800; font-size: 12px; }
+.ghost, a.ghost { background: transparent; color: #e9dcc3; border-color: #5a4a39; box-shadow: none; }
+.ghost:hover, a.ghost:hover { background: rgba(255,255,255,.06); color: #fff; border-color: var(--brass); box-shadow: none; }
+.keys p { margin: 0 0 10px; }
+
+/* Introduction */
+.intro { width: min(560px, calc(100vw - 24px)); max-width: none; padding: 0; border-top: 6px solid var(--brass); }
+.intro form { display: flex; flex-direction: column; }
+.intro-head { display: flex; align-items: center; gap: 12px; padding: 16px 20px 0; }
+.intro-head .kicker { margin: 0; font-size: 12px; color: var(--blood); }
+.intro-count { flex: 1; font: 13px var(--sans); color: var(--ink-soft); white-space: nowrap; }
+.intro .ghost { color: var(--ink-soft); border-color: transparent; padding: 6px 10px; min-height: 0; }
+.intro .ghost:hover { color: var(--ink); background: rgba(0,0,0,.05); }
+.intro-steps { padding: 10px 28px 6px; min-height: 250px; }
+.intro-steps section { text-align: center; }
+.intro-steps .icon { width: 64px; height: 64px; color: var(--blood); margin: 6px auto 4px; display: block; }
+.intro-steps h3 { margin: 6px 0 10px; font: 700 26px var(--serif); letter-spacing: 0; text-transform: none; color: var(--ink); }
+.intro-steps p { font-size: 18px; line-height: 1.6; margin: 0 auto; max-width: 440px; }
+@media (prefers-reduced-motion: no-preference) { .intro-steps section:not([hidden]) { animation: rise .3s ease-out; } }
+.intro-foot { display: flex; align-items: center; gap: 10px; padding: 14px 20px 18px; border-top: 1px solid var(--line); margin-top: 12px; }
+.dots { flex: 1; display: flex; gap: 6px; }
+.dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: background .2s, width .2s; }
+.dots span.on { background: var(--blood); width: 22px; border-radius: 4px; }
+button:disabled { opacity: .45; cursor: default; transform: none; box-shadow: none; }
+
+/* Manual */
+.manual { max-width: 860px; margin: 0 auto; padding: 24px 28px 48px; display: flex; flex-direction: column; gap: 20px; }
+.lead-ink { font-size: 19px; }
+.overview { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.overview li { display: grid; grid-template-columns: 28px 52px 1fr; gap: 12px; align-items: start; }
+.overview .icon { width: 48px; height: 48px; color: var(--blood); }
+.overview h3 { margin: 4px 0 4px; font: 700 20px var(--serif); text-transform: none; letter-spacing: 0; color: var(--ink); }
+.step-no { font: 700 22px var(--type); color: var(--ink-soft); padding-top: 10px; }
+.legend, .keymap { margin: 0; display: grid; gap: 10px; }
+.legend div, .keymap div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; align-items: baseline; }
+.legend dd, .keymap dd { margin: 0; }
+.keymap { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.keymap div { grid-template-columns: 48px 1fr; }
+.keymap kbd { font-size: 13px; padding: 2px 7px; opacity: 1; }
+.legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--blood); box-shadow: 0 0 0 3px rgba(143,45,31,.18); }
+.legend-done { color: var(--ok); font-weight: 700; }
+.legend-marker { background: var(--marker); padding: 1px 8px; border-radius: 3px; font: 14px var(--sans); }
+.manual-foot { text-align: center; }
+a.primary-link { background: var(--paper); font-weight: 600; }
 
 @media (max-width: 1000px) {
   .desk { grid-template-columns: 1fr; }
@@ -573,7 +720,10 @@ dialog .actions { justify-content: flex-end; margin-top: 18px; }
   .closing .big { max-width: none; margin-top: 44px; }
   .stamp { font-size: 20px; top: 18px; }
   .notice { left: 8px; right: 8px; bottom: 8px; width: auto; max-height: 55vh; }
-  .keys { display: none; }
+  .keys { padding: 0 16px 28px; } .key-list { display: none; }
+  .help-text { display: none; } .help-link { padding: 5px 7px; }
+  .intro-steps { padding: 8px 18px 4px; min-height: 300px; } .intro-steps h3 { font-size: 22px; } .intro-steps p { font-size: 17px; }
+  .manual { padding: 16px 12px 36px; } .overview li { grid-template-columns: 40px 1fr; } .overview .step-no { display: none; }
   .masthead { padding: 40px 16px 16px; } .shelf { padding: 8px 16px 40px; }
 }
 @media (forced-colors: active) { .tag, .badge, .stamp { border: 1px solid; } }
