@@ -1,0 +1,512 @@
+[
+  {
+    "id": "P01",
+    "input": "ASCII path src/a-b_1.test.ts",
+    "oracle": "Accept; preserve bytes and case."
+  },
+  {
+    "id": "P02",
+    "input": "Empty path",
+    "oracle": "Reject."
+  },
+  {
+    "id": "P03",
+    "input": "Absolute /src/x.ts",
+    "oracle": "Reject."
+  },
+  {
+    "id": "P04",
+    "input": "Windows drive C:/x.ts",
+    "oracle": "Reject."
+  },
+  {
+    "id": "P05",
+    "input": "Backslash src\\x.ts",
+    "oracle": "Reject; never translate separators."
+  },
+  {
+    "id": "P06",
+    "input": "Parent traversal src/../x.ts",
+    "oracle": "Reject."
+  },
+  {
+    "id": "P07",
+    "input": "Dot segment src/./x.ts",
+    "oracle": "Reject."
+  },
+  {
+    "id": "P08",
+    "input": "Repeated separator src//x.ts",
+    "oracle": "Reject."
+  },
+  {
+    "id": "P09",
+    "input": "Trailing separator src/",
+    "oracle": "Reject."
+  },
+  {
+    "id": "P10",
+    "input": "Non-ASCII café.ts / decomposed equivalent",
+    "oracle": "Reject both; no Unicode normalization."
+  },
+  {
+    "id": "P11",
+    "input": "Invalid UTF-8 byte in path",
+    "oracle": "Reject bytes before replacement decoding can hide it."
+  },
+  {
+    "id": "P12",
+    "input": "TAB, LF, CR or embedded NUL in a path",
+    "oracle": "Reject; do not split path into accepted fragments."
+  },
+  {
+    "id": "P13",
+    "input": "Space anywhere, including final space",
+    "oracle": "Reject under RepoPath grammar."
+  },
+  {
+    "id": "P14",
+    "input": "Trailing dot in any segment",
+    "oracle": "Reject, including dir./x.ts."
+  },
+  {
+    "id": "P15",
+    "input": "CON, con.txt, aux, NUL.data, PRN",
+    "oracle": "Reject case-insensitively in any segment."
+  },
+  {
+    "id": "P16",
+    "input": "COM1…COM9 and LPT1…LPT9, with extensions",
+    "oracle": "Reject in every directory component."
+  },
+  {
+    "id": "P17",
+    "input": "COM10.txt and console.ts",
+    "oracle": "Accept if otherwise valid; no overbroad device prefix match."
+  },
+  {
+    "id": "P18",
+    "input": ".git/config and mixed-case .GiT/config",
+    "oracle": "Reject; pure path rule must protect materialization boundary."
+  },
+  {
+    "id": "P19",
+    "input": "255 ASCII bytes / 256 ASCII bytes",
+    "oracle": "Accept / reject subject to other rules; path limit inherited from current RepoPath."
+  },
+  {
+    "id": "P20",
+    "input": "Colon, asterisk, question mark, pipe, quote, angle brackets",
+    "oracle": "Reject, never sanitize."
+  },
+  {
+    "id": "C01",
+    "input": "Head contains A.ts and a.ts",
+    "oracle": "Reject full-path casefold collision."
+  },
+  {
+    "id": "C02",
+    "input": "Head contains A/x.ts and a/y.ts",
+    "oracle": "Reject directory-prefix collision even though full paths differ."
+  },
+  {
+    "id": "C03",
+    "input": "Head contains a and a/x.ts",
+    "oracle": "Reject file/directory conflict in fabricated input."
+  },
+  {
+    "id": "C04",
+    "input": "Two byte-identical listing records for one path",
+    "oracle": "Reject duplicate rather than Map overwrite."
+  },
+  {
+    "id": "C05",
+    "input": "Common prefix src/abc.ts and src/abcd.ts",
+    "oracle": "Accept; not a directory collision."
+  },
+  {
+    "id": "C06",
+    "input": "Only head path changes Foo.ts → foo.ts",
+    "oracle": "Derive delete+add; reject run due to deletion, independently of head collision."
+  },
+  {
+    "id": "C07",
+    "input": "Unchanged invalid path in head outside diff",
+    "oracle": "Reject; tree validation is not diff-only."
+  },
+  {
+    "id": "C08",
+    "input": "Permutation of equivalent valid listing entries",
+    "oracle": "Same semantic outcome and deterministic output; input-order grammar must be explicit."
+  },
+  {
+    "id": "L01",
+    "input": "Empty byte listing from a successful empty-tree observation",
+    "oracle": "Parse as empty listing; this does not prove Git command success."
+  },
+  {
+    "id": "L02",
+    "input": "Nonempty listing lacks last NUL",
+    "oracle": "Reject truncated input."
+  },
+  {
+    "id": "L03",
+    "input": "Extra NUL produces empty record",
+    "oracle": "Reject; no trim/rstrip forgiveness."
+  },
+  {
+    "id": "L04",
+    "input": "Incomplete header / missing TAB",
+    "oracle": "Reject whole input, no partial result."
+  },
+  {
+    "id": "L05",
+    "input": "Injected second TAB or line ending in pathname",
+    "oracle": "Reject."
+  },
+  {
+    "id": "L06",
+    "input": "Unknown object type",
+    "oracle": "Reject."
+  },
+  {
+    "id": "L07",
+    "input": "OID short, nonhex or uppercase",
+    "oracle": "Reject against exact selected Git object-ID grammar."
+  },
+  {
+    "id": "L08",
+    "input": "100644 blob, known nonnegative decimal size",
+    "oracle": "Parse without converting invalid numbers to zero."
+  },
+  {
+    "id": "L09",
+    "input": "Size NaN, negative, exponent, unsafe integer or missing",
+    "oracle": "Reject."
+  },
+  {
+    "id": "L10",
+    "input": "Git -l padded decimal size",
+    "oracle": "Accept valid Git padding; exact grammar needs recovered draft."
+  },
+  {
+    "id": "L11",
+    "input": "Blob/header mode/type mismatch",
+    "oracle": "Reject, e.g. 100644 commit."
+  },
+  {
+    "id": "L12",
+    "input": "Raw diff record :100644 ... supplied as listing",
+    "oracle": "Reject wrong protocol; no auto-detection."
+  },
+  {
+    "id": "L13",
+    "input": "Bytes appended after final complete record",
+    "oracle": "Reject if not another complete valid record."
+  },
+  {
+    "id": "L14",
+    "input": "Listing exactly at byte/record limit",
+    "oracle": "Accept if otherwise valid; numeric limits must be recovered/finalized."
+  },
+  {
+    "id": "L15",
+    "input": "Listing exceeds byte or record limit by one",
+    "oracle": "Reject deterministically before unbounded allocation; do not return prefix."
+  },
+  {
+    "id": "L16",
+    "input": "Very long header/size token",
+    "oracle": "Reject within bounded work; parsing must not allocate by attacker-declared size."
+  },
+  {
+    "id": "T01",
+    "input": "Whole head has only ordinary 100644 blob entries",
+    "oracle": "Pass mode/type rules."
+  },
+  {
+    "id": "T02",
+    "input": "100755 executable, including unchanged file",
+    "oracle": "Reject."
+  },
+  {
+    "id": "T03",
+    "input": "120000 symlink, including unchanged file",
+    "oracle": "Reject."
+  },
+  {
+    "id": "T04",
+    "input": "160000 gitlink/submodule",
+    "oracle": "Reject."
+  },
+  {
+    "id": "T05",
+    "input": "040000 tree record in recursive leaf listing",
+    "oracle": "Reject wrong listing shape."
+  },
+  {
+    "id": "T06",
+    "input": "Blob size 1,048,576 bytes",
+    "oracle": "Accept size boundary if all other rules pass."
+  },
+  {
+    "id": "T07",
+    "input": "Blob size 1,048,577 bytes",
+    "oracle": "Reject."
+  },
+  {
+    "id": "T08",
+    "input": "Empty blob",
+    "oracle": "Accept size boundary."
+  },
+  {
+    "id": "T09",
+    "input": "Snapshot suffix x.snap, mixed-case X.SNAP",
+    "oracle": "Reject tree rule and classify always."
+  },
+  {
+    "id": "T10",
+    "input": "x/__snapshots__/ordinary.txt",
+    "oracle": "Reject even without .snap suffix."
+  },
+  {
+    "id": "T11",
+    "input": "Huge aggregate of individually small files",
+    "oracle": "Apply explicitly bounded listing/entry capacity; per-file size alone is insufficient."
+  },
+  {
+    "id": "T12",
+    "input": "100644 ASCII-named binary blob",
+    "oracle": "Listing checks cannot establish textness; never claim binary content was verified."
+  },
+  {
+    "id": "S01",
+    "input": "Nested foo/package.json or PACKAGE-LOCK.JSON",
+    "oracle": "always; reject any run change including FORGE task."
+  },
+  {
+    "id": "S02",
+    "input": "Nested tsconfig.extra.json, VITEST.CONFIG.TS, vite.config.js",
+    "oracle": "always with case-insensitive basename matching."
+  },
+  {
+    "id": "S03",
+    "input": "Nested .npmrc, .gitattributes, .gitmodules",
+    "oracle": "always."
+  },
+  {
+    "id": "S04",
+    "input": ".nvmrc",
+    "oracle": "always according to Freeze §3.2; reconcile complete historical list."
+  },
+  {
+    "id": "S05",
+    "input": "forge/contracts/OTHER.md explicitly scoped by FORGE task",
+    "oracle": "always wins over enclosing forge class; reject."
+  },
+  {
+    "id": "S06",
+    "input": "forge/approvals/x.json and forge/reviews/x.md",
+    "oracle": "always; reject even if exact scope allows."
+  },
+  {
+    "id": "S07",
+    "input": "Forge/coordination/x.test.ts by product task",
+    "oracle": "Reject forge class; no coordination exception."
+  },
+  {
+    "id": "S08",
+    "input": "src/forge-verifier/x.ts by FORGE task, exact create scope",
+    "oracle": "Allow only when actually added and tree-valid."
+  },
+  {
+    "id": "S09",
+    "input": "Same protected forge file by TASK-0006",
+    "oracle": "Reject even if declared in scope."
+  },
+  {
+    "id": "S10",
+    "input": "Forge-class file by FORGE task but absent from exact scope",
+    "oracle": "Reject."
+  },
+  {
+    "id": "S11",
+    "input": "src/forge-platform/x.ts and tests/forge-red-team/x.test.ts",
+    "oracle": "forge class."
+  },
+  {
+    "id": "S12",
+    "input": "scripts/x.ts and .github/x.yml",
+    "oracle": "forge class, exact scope plus FORGE task required."
+  },
+  {
+    "id": "S13",
+    "input": "x/forge/readme.md",
+    "oracle": "Root-prefix rules do not match arbitrary nested forge directory; basename rules still apply."
+  },
+  {
+    "id": "S14",
+    "input": "FORGERY-0001 or XFORGE-0001 task ID",
+    "oracle": "Does not qualify as FORGE- prefix."
+  },
+  {
+    "id": "S15",
+    "input": "Protected path differing only in letter case",
+    "oracle": "Protection still applies; exact scope remains case-sensitive."
+  },
+  {
+    "id": "S16",
+    "input": "src/forgery/x.ts versus src/forge/x.ts",
+    "oracle": "Freeze src/forge* shorthand needs exact boundary reconciliation; never silently choose glob semantics."
+  },
+  {
+    "id": "D01",
+    "input": "Identical base/head entries",
+    "oracle": "No change."
+  },
+  {
+    "id": "D02",
+    "input": "New path only in head",
+    "oracle": "added."
+  },
+  {
+    "id": "D03",
+    "input": "Path only in base",
+    "oracle": "deleted; run scope verdict rejects."
+  },
+  {
+    "id": "D04",
+    "input": "Same path, different blob OID",
+    "oracle": "modified."
+  },
+  {
+    "id": "D05",
+    "input": "Same path, same blob, changed mode",
+    "oracle": "Retain difference; forbidden mode cannot disappear."
+  },
+  {
+    "id": "D06",
+    "input": "Same blob at a removed path and a new path",
+    "oracle": "deleted + added, never renamed."
+  },
+  {
+    "id": "D07",
+    "input": "Rename with edited content",
+    "oracle": "deleted + added; no similarity threshold."
+  },
+  {
+    "id": "D08",
+    "input": "New copy while source remains",
+    "oracle": "added only; no copy inference."
+  },
+  {
+    "id": "D09",
+    "input": "Several deleted and added files share OID",
+    "oracle": "No pairing; one elementary result per changed path."
+  },
+  {
+    "id": "D10",
+    "input": "Addition declared only in modify",
+    "oracle": "Reject."
+  },
+  {
+    "id": "D11",
+    "input": "Modification declared only in create",
+    "oracle": "Reject."
+  },
+  {
+    "id": "D12",
+    "input": "Deletion declared in modify",
+    "oracle": "Reject; modify does not authorize deletion."
+  },
+  {
+    "id": "D13",
+    "input": "Unscoped added/modified path",
+    "oracle": "Reject."
+  },
+  {
+    "id": "D14",
+    "input": "Scoped create remains absent and unused",
+    "oracle": "No scope violation merely because optional permission unused; acceptance requirements decide required work."
+  },
+  {
+    "id": "D15",
+    "input": "Two listings have same OID/mode but disagree on size",
+    "oracle": "Reject inconsistent observation; same immutable blob cannot have two sizes."
+  },
+  {
+    "id": "D16",
+    "input": "Input listing or returned result mutated between calls",
+    "oracle": "No hidden shared state; verdict deterministic, inputs unchanged."
+  },
+  {
+    "id": "D17",
+    "input": "Kernel would forgive unscoped coordination addition",
+    "oracle": "Verifier protection/exact scope must still reject."
+  },
+  {
+    "id": "D18",
+    "input": "Caller supplies forged renamed event instead of listings",
+    "oracle": "No rename or developer-claim ingress as canonical diff authority."
+  },
+  {
+    "id": "B01",
+    "input": "Add Format-2 reads/limits/supersedes metadata to V1",
+    "oracle": "Actual current parser rejects; keep those fields out."
+  },
+  {
+    "id": "B02",
+    "input": "BOM or CRLF in contract",
+    "oracle": "Actual current parser rejects; no silent rewrite."
+  },
+  {
+    "id": "B03",
+    "input": "Truncated V1 body after complete frontmatter",
+    "oracle": "Current parser accepts; compare exact approved hash, not parser success alone."
+  },
+  {
+    "id": "B04",
+    "input": "Changed body with old approval hash",
+    "oracle": "Require new review for new content; old approval cannot transfer."
+  },
+  {
+    "id": "B05",
+    "input": "Null acceptedCommit dependency",
+    "oracle": "Current parser accepts; bootstrap registration must reject unresolved dependency."
+  },
+  {
+    "id": "B06",
+    "input": "Developer self-reports killed mutant",
+    "oracle": "Insufficient; assigned independent reviewer reproduces at reviewed H."
+  },
+  {
+    "id": "B07",
+    "input": "Required mutant survived or was not applied",
+    "oracle": "Blocking; not equivalent by self-declaration."
+  },
+  {
+    "id": "B08",
+    "input": "401 non-test added lines or 21 changed files",
+    "oracle": "Reject bootstrap limit; do not omit comments/imports/blank added lines from numstat."
+  },
+  {
+    "id": "B09",
+    "input": "Attempt to start run at C instead of current main/runBase",
+    "oracle": "Bootstrap protocol rejects old start convention; no V-01 kernel change."
+  },
+  {
+    "id": "B10",
+    "input": "Import child_process/fs/net, GitHub client or workflow into V-01",
+    "oracle": "Reject scope/purity review; no hidden adapters."
+  },
+  {
+    "id": "B11",
+    "input": "Old approval JSON created for new contract",
+    "oracle": "Reject process; frozen directory."
+  },
+  {
+    "id": "B12",
+    "input": "Changed exact test selector selects zero tests during mutation",
+    "oracle": "Not killed; record zero execution and block."
+  }
+]
