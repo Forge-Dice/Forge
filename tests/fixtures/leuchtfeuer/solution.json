@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "revision": 1,
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "resolutions": [
+    {
+      "eventId": "event:sabotage",
+      "targets": [
+        {
+          "kind": "item",
+          "id": "item:schalter"
+        }
+      ],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": [
+          {
+            "personId": "person:knut",
+            "roles": [
+              "direct_actor"
+            ]
+          }
+        ]
+      },
+      "intent": "intended",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "conclusion:actor-hinrich",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:hinrich",
+        "eventId": "event:sabotage",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-frauke",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:frauke",
+        "eventId": "event:sabotage",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-ole",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:ole",
+        "eventId": "event:sabotage",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-marlene",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:marlene",
+        "eventId": "event:sabotage",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-jasper",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:jasper",
+        "eventId": "event:sabotage",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-knut",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:knut",
+        "eventId": "event:sabotage",
+        "role": "direct_actor"
+      }
+    }
+  ],
+  "requiredConclusions": [
+    {
+      "conclusionId": "conclusion:actor-hinrich",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-frauke",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-ole",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-marlene",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-jasper",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-knut",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "catalogueHash": "6fcc3631c42e0ddab2c97f46200552037afd12245d4184c277c98a563cded1a5",
+  "npcId": "person:ole",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q01",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:knut",
+        "locationId": "location:strand",
+        "at": 2400
+      },
+      "reveal": [
+        {
+          "kind": "person",
+          "id": "person:knut"
+        },
+        {
+          "kind": "location",
+          "id": "location:strand"
+        }
+      ]
+    },
+    {
+      "questionId": "question:q02",
+      "act": "lie",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ole",
+        "locationId": "location:oleshaus",
+        "at": 7200
+      },
+      "stance": "affirms",
+      "reveal": []
+    }
+  ],
+  "confrontations": [
+    {
+      "questionId": "question:q02",
+      "evidenceId": "evidence:pegelfoto",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ole",
+        "locationId": "location:oleshaus",
+        "at": 7200
+      },
+      "reveal": []
+    }
+  ]
+}
