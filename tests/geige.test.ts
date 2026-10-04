@@ -16,7 +16,7 @@ const scratch = mkdtempSync(join(tmpdir(), "geige-"));
 afterAll(() => rmSync(scratch, { recursive: true, force: true }));
 const PLACEHOLDER = "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT";
 
-/** Copy of the case whose certified witness is exactly `steps` (manifest steps and profile). */
+/** Copy of the case whose only certified route is exactly `steps` (manifest steps and profile). */
 function withWitness(steps: string[]): string {
   const dir = join(scratch, steps.join("+") || "empty");
   cpSync(DIR, dir, { recursive: true });
@@ -28,6 +28,7 @@ function withWitness(steps: string[]): string {
   edit("release-manifest.json", (m) => {
     m.releaseContextHash = PLACEHOLDER;
     m.certificateData.steps = steps.map((id) => m.certificateData.steps.find((s: any) => s.stepId === id));
+    delete m.certificateData.routes;
   });
   edit("proof-profile.json", (p) => {
     p.bindings.releaseHash = PLACEHOLDER;
@@ -44,15 +45,32 @@ describe("Die verstummte Geige: authored against check-case", () => {
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });
   });
 
-  it("route A (Kurt reveals the cabinet) and route B (cellar plan) each solve it alone", () => {
+  it("certifies route A (Kurt reveals the cabinet) and route B (cellar plan); each solves it alone", () => {
+    const check = checkCaseFolder(DIR);
+    expect(check.routes.map((r) => [r.routeId, r.report.status, r.report.survivingAnswerCount])).toEqual([
+      ["witness", "pass", 1],
+      ["kellerplan", "pass", 1],
+    ]);
     for (const route of [
       ["search-foyer", "ask-kurt-keller", "read-schaltschrank", "search-loge"],
       ["search-keller", "read-schaltschrank", "search-loge", "search-foyer"],
     ]) {
-      const check = checkCaseFolder(withWitness(route));
-      expect(check.problems.filter((p) => p.severity === "error"), route.join(",")).toEqual([]);
-      expect(check.solvability?.status).toBe("pass");
+      expect(checkCaseFolder(withWitness(route)).ok, route.join(",")).toBe(true);
     }
+  });
+
+  it("a certified route that does not solve the case fails the check and is named", () => {
+    const dir = withWitness(["search-foyer", "ask-kurt-keller", "read-schaltschrank", "search-loge"]);
+    const file = join(dir, "release-manifest.json");
+    const m = JSON.parse(readFileSync(file, "utf8"));
+    m.certificateData.routes = [{ routeId: "ohne-loge", stepIds: ["search-foyer", "ask-kurt-keller", "read-schaltschrank"] }];
+    writeFileSync(file, JSON.stringify(m));
+    const check = checkCaseFolder(dir);
+    expect(check.ok).toBe(false);
+    expect(check.routes.map((r) => [r.routeId, r.report.status])).toEqual([["witness", "pass"], ["ohne-loge", "fail"]]);
+    expect(check.problems).toContainEqual(
+      expect.objectContaining({ file: "release-manifest.json", field: "certificateData.routes[0] (Lösbarkeit)", severity: "error", message: expect.stringMatching(/^Weg ohne-loge: Status fail/) }),
+    );
   });
 
   it("without the cabinet Kurt is not excluded: Ida and Kurt stay open (4 vectors over their two literals)", () => {

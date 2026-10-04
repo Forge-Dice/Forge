@@ -319,6 +319,18 @@
           }
         ]
       }
+    ],
+    "routes": [
+      {
+        "routeId": "terminal-zuerst",
+        "stepIds": [
+          "ask-oskar-record",
+          "read-terminal",
+          "search-hof",
+          "ask-nora-photo",
+          "read-camera"
+        ]
+      }
     ]
   }
 }

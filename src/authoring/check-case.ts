@@ -26,10 +26,10 @@ import {
   hashReleaseManifest,
   serializeSessionJson,
 } from "../domain/case-package.identity.ts";
-import { resolveCasePackage, type PackageFinding, type ResolvedCasePackage } from "../domain/case-package.ts";
+import { resolveCasePackage, WITNESS_ROUTE, type PackageFinding, type ResolvedCasePackage } from "../domain/case-package.ts";
+import { checkCaseRoutes, type RouteReport } from "../domain/case-routes.ts";
 import { initialSession, reduceSession } from "../domain/case-session.ts";
 import {
-  checkCaseSolvability,
   parseCaseProofProfile,
   type ReleasedObservation,
   type SolvabilityReport,
@@ -50,7 +50,10 @@ export type CaseCheck = {
   readonly problems: readonly Problem[];
   readonly filled: readonly FilledHash[];
   readonly checkedFiles: readonly string[];
+  /** Report of the profile's witness route. */
   readonly solvability: SolvabilityReport | null;
+  /** Every certified route, the witness first; each replayed and checked on its own. */
+  readonly routes: readonly RouteReport[];
   readonly ok: boolean;
 };
 
@@ -153,13 +156,14 @@ function npcNames(dir: string, c: Collector): string[] {
 
 export function checkCaseFolder(dir: string): CaseCheck {
   const c = new Collector();
-  const finish = (solvability: SolvabilityReport | null = null): CaseCheck => ({
+  const finish = (routes: readonly RouteReport[] = []): CaseCheck => ({
     dir,
     problems: c.problems,
     filled: c.filled,
     checkedFiles: c.checked,
-    solvability,
-    ok: c.problems.every((p) => p.severity !== "error") && solvability?.status === "pass",
+    solvability: routes[0]?.report ?? null,
+    routes,
+    ok: c.problems.every((p) => p.severity !== "error") && routes.length > 0 && routes.every((r) => r.report.status === "pass"),
   });
   if (!existsSync(dir)) {
     c.error(dir, "(Ordner)", "Ordner nicht gefunden");
@@ -248,17 +252,23 @@ export function checkCaseFolder(dir: string): CaseCheck {
     c.warning(FILES.publicContent, "epilogue", "kein Epilog: nach der gelösten Anklage erscheint keine erzählte Auflösung");
   }
 
-  // ---- 4. Solvability with a witness on the real session.
+  // ---- 4. Solvability of every certified route, each with its own witness replay on the real session.
   try {
-    const report = checkCaseSolvability(truth, solution!, profile, sessionWitness(resolved.package, manifest, releaseHash));
-    for (const f of report.findings) {
-      const message = `${f.code}${f.subjectIds.length > 0 ? ` (${f.subjectIds.join(", ")})` : ""}`;
-      (f.severity === "error" ? c.error : c.warning).call(c, FILES.proofProfile, fieldOf(f.path), message);
-    }
-    if (report.status !== "pass") {
-      c.error(FILES.proofProfile, "(Lösbarkeit)", `Status ${report.status}, ${report.survivingAnswerCount} Antwortvektoren bleiben möglich`);
-    }
-    return finish(report);
+    const { routes } = checkCaseRoutes(truth, solution!, profile, resolved.package.proof!.routes, sessionWitness(resolved.package, manifest, releaseHash));
+    routes.forEach(({ routeId, report }, i) => {
+      // The witness route is the profile's; further routes are the manifest's certificateData.routes.
+      const [file, at, prefix] = routeId === WITNESS_ROUTE
+        ? [FILES.proofProfile, "", ""]
+        : [FILES.releaseManifest, `certificateData.routes[${i - 1}] `, `Weg ${routeId}: `];
+      for (const f of report.findings) {
+        const message = `${prefix}${f.code}${f.subjectIds.length > 0 ? ` (${f.subjectIds.join(", ")})` : ""}`;
+        (f.severity === "error" ? c.error : c.warning).call(c, file, `${at}${fieldOf(f.path)}`.trim(), message);
+      }
+      if (report.status !== "pass") {
+        c.error(file, `${at}(Lösbarkeit)`.trim(), `${prefix}Status ${report.status}, ${report.survivingAnswerCount} Antwortvektoren bleiben möglich`);
+      }
+    });
+    return finish(routes);
   } catch (error) {
     c.error(FILES.proofProfile, "(Lösbarkeit)", `Prüfung abgebrochen: ${(error as Error).message}`);
     return finish();
@@ -289,7 +299,9 @@ const PACKAGE_CODES: Record<PackageFinding["code"], string> = {
 
 /** Sharper messages for findings whose bare code says too little to an author. */
 const PACKAGE_HINTS: Record<string, string> = {
-  "PROOF_BINDING certificateData.steps": "die stepIds der Schritte müssen genau proof-profile.json › witnessStepIds entsprechen, in derselben Reihenfolge",
+  "PROOF_BINDING certificateData.steps":
+    "die stepIds der Schritte müssen genau die Schritte der Wege sein (proof-profile.json › witnessStepIds, dann certificateData.routes), in der Reihenfolge ihres ersten Vorkommens",
+  "PROOF_BINDING certificateData.routes": "jeder Weg braucht eine eigene routeId, und „witness“ ist für witnessStepIds vergeben",
   "PROOF_BINDING certificateData.observations": "jede Beobachtung des Profils braucht genau einen Eintrag im Manifest und umgekehrt",
 };
 
@@ -460,9 +472,9 @@ export function formatCaseCheck(check: CaseCheck): string {
   for (const p of errors) lines.push(`  FEHLER  ${p.file} › ${p.field}: ${p.message}`);
   for (const p of warnings) lines.push(`  Hinweis ${p.file} › ${p.field}: ${p.message}`);
   for (const f of check.filled.filter((f) => f.stale !== true)) lines.push(`  berechnet ${f.file} › ${f.field} = ${f.value}`);
-  if (check.solvability !== null) {
-    const s = check.solvability;
-    lines.push(`  Lösbarkeit: ${s.status.toUpperCase()} (${s.survivingAnswerCount} mögliche Antwort${s.survivingAnswerCount === 1 ? "" : "en"})`);
+  for (const { routeId, report: s } of check.routes) {
+    const name = check.routes.length === 1 ? "" : ` Weg ${routeId}`;
+    lines.push(`  Lösbarkeit${name}: ${s.status.toUpperCase()} (${s.survivingAnswerCount} mögliche Antwort${s.survivingAnswerCount === 1 ? "" : "en"})`);
   }
   lines.push(check.ok ? `OK: ${check.checkedFiles.length} Dateien geprüft, Fall lösbar.` : `NICHT OK: ${errors.length} Fehler.`);
   return lines.join("\n");

@@ -32,19 +32,6 @@
         }
       },
       {
-        "stepId": "search-keller",
-        "event": {
-          "type": "investigate",
-          "action": "search_location",
-          "target": {
-            "$playerRefOf": {
-              "kind": "location",
-              "id": "location:keller"
-            }
-          }
-        }
-      },
-      {
         "stepId": "read-schaltschrank",
         "event": {
           "type": "investigate",
@@ -66,6 +53,19 @@
             "$playerRefOf": {
               "kind": "location",
               "id": "location:loge"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-keller",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:keller"
             }
           }
         }
@@ -341,6 +341,17 @@
           "observed:vera",
           "observed:kurt",
           "observed:henrik"
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "routeId": "kellerplan",
+        "stepIds": [
+          "search-keller",
+          "read-schaltschrank",
+          "search-loge",
+          "search-foyer"
         ]
       }
     ]

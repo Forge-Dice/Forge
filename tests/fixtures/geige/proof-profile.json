@@ -4,7 +4,7 @@
     "caseId": "case:verstummte-geige",
     "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
     "solutionHash": "12e84c6b14ee0ca7b8ebd0c8674d703a9fca1f8122bf7be55bd1a9d1244cb501",
-    "releaseHash": "125ab0694f72e63b64639eae1ebfc514f042c6ac7f9c9196e0f225f8c4462dbe"
+    "releaseHash": "5cf2f37033e90890cc2be8a1f658aea78db223a9d870afb8313acf5ddb4d8cad"
   },
   "answerScope": [
     "conclusion:actor-ida",
@@ -304,7 +304,6 @@
   "witnessStepIds": [
     "search-foyer",
     "ask-kurt-keller",
-    "search-keller",
     "read-schaltschrank",
     "search-loge"
   ]
