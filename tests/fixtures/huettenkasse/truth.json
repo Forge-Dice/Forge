@@ -408,6 +408,20 @@
           "direction": "supports"
         }
       ]
+    },
+    {
+      "id": "evidence:banderole",
+      "description": "Banderole der Hüttenkasse unter dem Schlafsack",
+      "source": {
+        "kind": "location",
+        "id": "location:winterraum"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:tobias-stube",
+          "direction": "supports"
+        }
+      ]
     }
   ],
   "secrets": [
