@@ -73,3 +73,11 @@ def docker_runner_for_test(docker: str, workspace: str, image: str, deadline: fl
                        ((worker.CASE, workspace, True),), deadline)
     seen = runner.run(spec)
     return {"exitCode": seen.exit_code, "timedOut": seen.timed_out, "overflow": seen.overflow}
+
+
+def materialize_rows_for_test(store, rows: list, destination: str) -> str:
+    """Driver entry: materialize a Snapshot built from raw [path, mode, oid] rows (no A-side validation)."""
+    from materialize import materialize
+    from objects import Leaf, Snapshot
+
+    return materialize(store, Snapshot("", tuple(Leaf(p, m, o) for p, m, o in rows)), destination)

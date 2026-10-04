@@ -1,5 +1,7 @@
-import { describe, expect, it } from "vitest";
-import { outcome, py, type Call } from "./helpers.ts";
+import { mkdirSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { afterAll, describe, expect, it } from "vitest";
+import { FixtureRepo, outcome, py, removeTree, tempRoot, type Call } from "./helpers.ts";
 
 // Hardening: path and symlink tricks against scope, materialization and inventory.
 
@@ -24,5 +26,25 @@ describe("scope: module-resolution shadowing through a nested node_modules", () 
       args: [base, [[...base, ["src/lib/x/index.ts", "100644", OID2]]], plan(), { create: ["src/lib/x/index.ts"], modify: [] }, "DEV", CONTRACT],
     });
     expect(py(calls).map(outcome)).toEqual([...paths.map(() => "SCOPE_PROTECTED"), "PASS"]);
+  });
+});
+
+describe("materialize: API precondition on raw snapshot paths", () => {
+  const root = tempRoot("hardening-paths");
+  afterAll(() => removeTree(root));
+
+  it("a non-ASCII leaf path is GIT_PATH (a ForgeFail), never a raw exception, and nothing is created", () => {
+    const repo = new FixtureRepo(join(root, "repo"));
+    const oid = repo.blob("x\n");
+    const dest = join(root, "dest");
+    mkdirSync(dest, { mode: 0o700 });
+    const rs = py(
+      ["src/café.ts", "src/Kelvin.ts", "src/a\udcff.ts"].map((p): Call => ({
+        fn: "seams.materialize_rows_for_test",
+        args: [repo.store(), [["src/a.ts", "100644", oid], [p, "100644", oid]], dest],
+      })),
+    );
+    expect(rs.map(outcome)).toEqual(["GIT_PATH", "GIT_PATH", "GIT_PATH"]);
+    expect(readdirSync(dest)).toEqual([]);
   });
 });
