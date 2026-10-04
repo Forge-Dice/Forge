@@ -1,0 +1,195 @@
+{
+  "scope": "AUTHORING ONLY — independent reference model; NOT a runtime witness",
+  "progressStates": 192,
+  "transitions": 6128,
+  "pass": 31,
+  "total": 31,
+  "results": [
+    {
+      "id": "A01",
+      "check": "Initial known equals the 11 authored entities; no Evidence initially known",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A02",
+      "check": "Only q08 is unavailable at S0 (needs event:e05)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A03",
+      "check": "All 8 evidence pieces reachable from S0",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A04",
+      "check": "No inaccessible evidence authored (all discoverable)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A05",
+      "check": "Every reachable progress state can still reach a complete proof (no softlock in this model)",
+      "pass": true,
+      "detail": "192 distinct known/found states, 6128 transitions explored"
+    },
+    {
+      "id": "A06",
+      "check": "Camera (D04) needs D03 → q08; terminal (D05) needs q14; no location search yields D04/D05",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A07",
+      "check": "q05 (Max) is does_not_know → no camera reveal",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A08",
+      "check": "20 deterministic responses: 14 affirms/denies, 1 uncertain, 3 does_not_know, 2 decline",
+      "pass": true,
+      "detail": "{\"question:q01\": \"affirms\", \"question:q02\": \"denies\", \"question:q03\": \"affirms\", \"question:q04\": \"does_not_know\", \"question:q05\": \"does_not_know\", \"question:q06\": \"affirms\", \"question:q07\": \"affirms\", \"question:q08\": \"affirms\", \"question:q09\": \"denies\", \"question:q10\": \"uncertain\", \"question:q11\": \"affirms\", \"question:q12\": \"affirms\", \"question:q13\": \"affirms\", \"question:q14\": \"affirms\", \"question:q15\": \"affirms\", \"question:q16\": \"decline\", \"question:q17\": \"denies\", \"question:q18\": \"affirms\", \"question:q19\": \"does_not_know\", \"question:q20\": \"decline\"}"
+    },
+    {
+      "id": "A09",
+      "check": "Empty evidence set proves nothing; 16 vectors open",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A10",
+      "check": "D04 only → 4 vectors; D05 only → 8 vectors; D04+D05 → exactly 1",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A11",
+      "check": "Derived literals equal CaseSolution.requiredConclusions (canonical consistency)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A12",
+      "check": "Unique minimal evidence proof set = {D04, D05}",
+      "pass": true,
+      "detail": "64/256 subsets prove"
+    },
+    {
+      "id": "A13",
+      "check": "NPC reports never seed proof roots (roots only from OBSERVED+license)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A14",
+      "check": "Every OBSERVED premise maps to a literally authored release report of its source evidence",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A15",
+      "check": "Every PUBLIC_RULE gate cites a public rule and only non-rule observations",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "A16",
+      "check": "Every OBSERVED premise literal is canonically true in CaseTruth",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "C01",
+      "check": "Challenge binds truthHash/solutionHash; 4 allowedClaims, no polarity, no duplicates",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "C02",
+      "check": "Every required conclusion is in scope; scope = public roster × direct_actor (answer-independent)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "C03",
+      "check": "Scope contains canonically false members (not a required-true whitelist)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "C04",
+      "check": "Exactly 1 of 16 complete vectors is accepted; one-hot UI expansion yields exactly one accepted candidate",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "C05",
+      "check": "D8: acceptance does not depend on evidence/citations (verdict function has no evidence input)",
+      "pass": true,
+      "detail": "structural: Challenge has no evidence field; certificate/proof data is never an input to accuse"
+    },
+    {
+      "id": "P01",
+      "check": "No canonical ID prefixes inside any public text field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P02",
+      "check": "No canonical ID prefixes in the Player Brief public section",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P03",
+      "check": "No solution/motive/private-event spoiler phrases in public text or Player Brief",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P04",
+      "check": "Player Brief has no citation/evidence-gate wording (D8)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P05",
+      "check": "questionTexts exactly one per (profile npc, rule question) pair: 20",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P06",
+      "check": "Labels unique per entity, all entities exist in Truth",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P07",
+      "check": "Text limits (≤1000 UTF-16 per text, brief ≤4000)",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P09",
+      "check": "MYST-0004 PlayerText T2–T6 (non-blank, no forbidden control/bidi chars, no canonical ID, no PlayerRef) on every public text",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P10",
+      "check": "publicRules IDs match [a-z][a-z0-9:_-]{0,63} and are unique",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "P08",
+      "check": "Proof profile stores no second answer key (no requiredConclusions copy)",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

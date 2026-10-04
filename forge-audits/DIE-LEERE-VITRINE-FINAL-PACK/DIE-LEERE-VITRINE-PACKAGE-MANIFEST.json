@@ -1,0 +1,226 @@
+{
+  "_status": "PACKAGE MANIFEST CANDIDATE — not a resolved package, not a registered artifact. No hash value invented: every hash that requires the final assembled artifact is marked TO_BE_COMPUTED_FROM_FINAL_ARTIFACT. Only truthHash/solutionHash are real values of unchanged originals.",
+  "_visibility": "PRIVATE (references private Truth/Solution/NPC/proof components).",
+  "caseId": "case:leere-vitrine-v1",
+  "descriptor": {
+    "schemaVersion": 1,
+    "packageHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+    "rulesetVersion": "mystery-session-v1"
+  },
+  "packageHashProfile": "forge-case-package-v1",
+  "hashOrder": "components + PublicContent → releaseContextHash → releaseManifest/releaseHash → proofProfile/proofHash → packageHash → descriptor → Save checksum (no back-edge; MYSTERY-PACKAGE-REPLAY-BINDING-CLOSURE R04 + hash-profile-registry.json sha256 91d077d8…)",
+  "components": [
+    {
+      "component": "CaseTruth",
+      "owner": "TASK-0001 (existing domain, main)",
+      "hashProfile": "forge-case-c14n-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/truth.json",
+      "sourceFileSha256": "61ee45520d9673b04913e7d44caa3afa3270876f63dc59fc5e879273d749650d",
+      "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+      "status": "FINAL — unchanged original",
+      "notes": "truthHash re-computed in this task with unmodified main src/domain/case-truth.identity.ts on the raw fixture JSON; Zod parse not re-run here (historical parser run: case pack current-parser-validation.json)."
+    },
+    {
+      "component": "CaseSolution",
+      "owner": "TASK-0003 (existing domain, main)",
+      "hashProfile": "forge-solution-c14n-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/solution.json",
+      "sourceFileSha256": "27242715e0306931589ecd21e06acb381f1352cb89e7d8290bb1ecd6fe6f0b03",
+      "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
+      "status": "FINAL — unchanged original (PRIVATE answer key)",
+      "notes": "solutionHash re-computed with unmodified main case-solution.identity.ts on raw fixture JSON."
+    },
+    {
+      "component": "EvidenceAccess",
+      "owner": "MYST-0003",
+      "hashProfile": "forge-evidence-access-c14n-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/evidence-access.design.json",
+      "sourceFileSha256": "3fd85e854cf4a8a3ef2181f7954b8a6cfb62b1ca3e9068fc4797d5bc17a39d9f",
+      "accessHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged original content (MYST-0003 shape)"
+    },
+    {
+      "component": "EvidencePresentation",
+      "owner": "MYST-0004",
+      "hashProfile": "forge-evidence-presentation-c14n-v1",
+      "source": "this pack: DIE-LEERE-VITRINE-FINAL-EVIDENCE-PRESENTATION.json (.presentation)",
+      "sourceFileSha256": null,
+      "presentationHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL CANDIDATE — migrated from legacy presentation{title,text,observed}; texts unchanged"
+    },
+    {
+      "component": "QuestionCatalogue",
+      "owner": "MYST-0005A",
+      "hashProfile": "forge-interrogation-catalogue-c14n-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/questions.design.json",
+      "sourceFileSha256": "3d68c01eb18c499681686ea6956f535ac6425a87b882aab739f496e95e85b735",
+      "catalogueHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged original content",
+      "notes": "Historical scratch catalogueHash c039106c… in the profiles must be recomputed under the final profile; profiles re-bound if it differs."
+    },
+    {
+      "component": "InterrogationProfile person:lina",
+      "owner": "MYST-0005A",
+      "hashProfile": "forge-interrogation-profile-c14n-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/interrogation-lina.design.json",
+      "sourceFileSha256": "99302719c8bc3487f7f98ad767600910abe94a0537067eabb5f22dbddd457b16",
+      "profileHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged rules; catalogueHash binding to be refreshed"
+    },
+    {
+      "component": "NpcSnapshot person:lina",
+      "owner": "Session A §2 (parser TASK-0004 on main)",
+      "hashProfile": "forge-npc-snapshot-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/npc-lina.json",
+      "sourceFileSha256": "573075f99db2a125991627192376d9445f6a87dfd24a88de964e40dd7a76dac7",
+      "snapshotHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged original (PRIVATE: stance, provenance, acquiredAt)"
+    },
+    {
+      "component": "InterrogationProfile person:max",
+      "owner": "MYST-0005A",
+      "hashProfile": "forge-interrogation-profile-c14n-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/interrogation-max.design.json",
+      "sourceFileSha256": "cf97f76bae13695a7126f31f10c0dd1d8ae0be3debba73aa44b2e445cb0caff4",
+      "profileHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged rules; catalogueHash binding to be refreshed"
+    },
+    {
+      "component": "NpcSnapshot person:max",
+      "owner": "Session A §2 (parser TASK-0004 on main)",
+      "hashProfile": "forge-npc-snapshot-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/npc-max.json",
+      "sourceFileSha256": "2d3cb3330f69ead56c49718cb0f7484e449ae359909ceb268f9d211cfe05fa38",
+      "snapshotHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged original (PRIVATE: stance, provenance, acquiredAt)"
+    },
+    {
+      "component": "InterrogationProfile person:nora",
+      "owner": "MYST-0005A",
+      "hashProfile": "forge-interrogation-profile-c14n-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/interrogation-nora.design.json",
+      "sourceFileSha256": "167a9a3d01df0bb9bc53efd7cdb532a0d19a48cd4fb76847338cd2de121c07cb",
+      "profileHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged rules; catalogueHash binding to be refreshed"
+    },
+    {
+      "component": "NpcSnapshot person:nora",
+      "owner": "Session A §2 (parser TASK-0004 on main)",
+      "hashProfile": "forge-npc-snapshot-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/npc-nora.json",
+      "sourceFileSha256": "d7af3890f01a709871c150a9d64c1d8735ed74fed05834fd4a99e502f43de6c2",
+      "snapshotHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged original (PRIVATE: stance, provenance, acquiredAt)"
+    },
+    {
+      "component": "InterrogationProfile person:oskar",
+      "owner": "MYST-0005A",
+      "hashProfile": "forge-interrogation-profile-c14n-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/interrogation-oskar.design.json",
+      "sourceFileSha256": "b425a1084cf45411b2df407ac21a4f48de07cc6ba0126a3c7493e8cd2081c9dc",
+      "profileHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged rules; catalogueHash binding to be refreshed"
+    },
+    {
+      "component": "NpcSnapshot person:oskar",
+      "owner": "Session A §2 (parser TASK-0004 on main)",
+      "hashProfile": "forge-npc-snapshot-v1",
+      "source": "forge/owner/audits/DIE-LEERE-VITRINE@fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2 forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-CASE-PACK.zip :: DIE-LEERE-VITRINE-CASE-PACK/case-pack/npc-oskar.json",
+      "sourceFileSha256": "083f834b310f2af557126457feb782ddc1f3e0776dbc3623d7f3b8f253051800",
+      "snapshotHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL — unchanged original (PRIVATE: stance, provenance, acquiredAt)"
+    },
+    {
+      "component": "NpcBundle",
+      "owner": "Session A §2",
+      "hashProfile": "forge-session-npcs-v1",
+      "source": "derived from the four snapshot/profile pairs",
+      "sourceFileSha256": null,
+      "npcBundleHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "DERIVED"
+    },
+    {
+      "component": "InitialSetup",
+      "owner": "Session A §2",
+      "hashProfile": "forge-session-initial-v1",
+      "source": "this pack: DIE-LEERE-VITRINE-FINAL-PLAYER-SETUP.json (.initialSetup)",
+      "sourceFileSha256": null,
+      "initialHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL CANDIDATE — equals original host.initialKnown (11 entities)"
+    },
+    {
+      "component": "AccusationChallenge",
+      "owner": "Session A §2; parser MYST-CHALLENGE-0001",
+      "hashProfile": "forge-session-challenge-v1",
+      "source": "this pack: DIE-LEERE-VITRINE-FINAL-CHALLENGE.json (.challenge)",
+      "sourceFileSha256": null,
+      "challengeHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL CANDIDATE"
+    },
+    {
+      "component": "PublicContent",
+      "owner": "Session A §2 (D9/D10, Master B.5)",
+      "hashProfile": "forge-session-public-content-v1",
+      "source": "this pack: DIE-LEERE-VITRINE-FINAL-PUBLIC-CONTENT.json (.publicContent)",
+      "sourceFileSha256": null,
+      "publicContentHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL CANDIDATE"
+    },
+    {
+      "component": "PlayerRefConfig+Mapping",
+      "owner": "Session A §2 / MYST-0001 D2–D5",
+      "hashProfile": "forge-session-refs-v1 / forge-mystery-playerref-v1",
+      "source": "generated at package build: buildPlayerRefIndex(truth, refSalt)",
+      "sourceFileSha256": null,
+      "refsHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "NOT YET GENERATED",
+      "notes": "refSalt: 32 lowercase hex, nonzero, CSPRNG, generated ONCE at package build and stored only in the private package. Historical constant salt 00112233… and namespace case-scratch-playerref-v1 are FORBIDDEN for production."
+    },
+    {
+      "component": "ReleaseContext",
+      "owner": "Session A §2",
+      "hashProfile": "forge-session-release-context-v1",
+      "source": "derived",
+      "sourceFileSha256": null,
+      "releaseContextHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "DERIVED",
+      "notes": "Inputs: rulesetVersion,truthHash,solutionHash,accessHash,presentationHash,catalogueHash,npcBundleHash,initialHash,refsHash,challengeHash,publicContentHash"
+    },
+    {
+      "component": "ReleaseManifest (forge-release-proof-v1)",
+      "owner": "Session A §2 annex (D9)",
+      "hashProfile": "forge-session-release-v1",
+      "source": "this pack: DIE-LEERE-VITRINE-FINAL-PROOF-PROFILE.json (.releaseManifestCandidate, after PlayerRef substitution)",
+      "sourceFileSha256": null,
+      "releaseHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL CANDIDATE TEMPLATE",
+      "notes": "Historical scratch releaseHash 2eaf25cc… invalid."
+    },
+    {
+      "component": "CaseProofProfile",
+      "owner": "Session A §2; schema MYST-SOLVABILITY-0001",
+      "hashProfile": "forge-session-proof-v1",
+      "source": "this pack: DIE-LEERE-VITRINE-FINAL-PROOF-PROFILE.json (.proofProfile)",
+      "sourceFileSha256": null,
+      "proofHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+      "status": "FINAL CANDIDATE — graph unchanged, releaseHash re-bound"
+    }
+  ],
+  "ownership": {
+    "publicPlayerText": "PublicContent only (title, brief, challengeQuestion, labels/roles, questionTexts, publicRules)",
+    "evidenceCardText": "EvidencePresentation only",
+    "npcResponseWording": "ruleset templates of mystery-session-v1 (host code, not package text) — selected stance + claim + PublicContent labels",
+    "answerKey": "CaseSolution only",
+    "proofGraph": "CaseProofProfile only (private)",
+    "runtimeVictory": "AccusationChallenge via MYST-0002 core (D8)"
+  },
+  "forbiddenLegacyInputs": [
+    "case-host.design.json (scratch host incl. requireReleasedProof, saltHex, presentation{observed})",
+    "public-initial.json (scratch refs + Truth-iterated roster, INFO F01)",
+    "package-manifest.design.json (case-lab-package-v1, packageHash ff1ed10f…)",
+    "release-manifest.PRIVATE.design.json (releaseHash 2eaf25cc…)",
+    "projection-*.PRIVATE.json (trusted NPC context, never package/player output)",
+    "*.input.json (TO_BE_BOUND generator inputs)"
+  ],
+  "saveInvalidation": "Any byte change of any component, refSalt, selector, rule text, label or brief → new packageHash; old exact-package saves incompatible (D10, SA §9)."
+}

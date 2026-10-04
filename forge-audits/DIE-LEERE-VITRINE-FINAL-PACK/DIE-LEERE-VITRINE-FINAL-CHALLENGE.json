@@ -1,0 +1,60 @@
+{
+  "_status": "FINAL AUTHORING CANDIDATE — MYST-CHALLENGE-0001 §4 AccusationChallenge (bytes identical in content to certification repair candidate challenge.REPAIR-CANDIDATE.json, sha256 42654b44…). Not registered.",
+  "_visibility": "PRIVATE PACKAGE INPUT. Contains no polarity and no winner. The canonical solution remains exclusively in CaseSolution.requiredConclusions.",
+  "_hash": {
+    "profile": "forge-session-challenge-v1",
+    "challengeHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT"
+  },
+  "challenge": {
+    "schemaVersion": 1,
+    "caseId": "case:leere-vitrine-v1",
+    "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+    "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
+    "allowedClaims": [
+      {
+        "kind": "personRoleForEvent",
+        "personId": "person:max",
+        "eventId": "event:e04",
+        "role": "direct_actor"
+      },
+      {
+        "kind": "personRoleForEvent",
+        "personId": "person:lina",
+        "eventId": "event:e04",
+        "role": "direct_actor"
+      },
+      {
+        "kind": "personRoleForEvent",
+        "personId": "person:nora",
+        "eventId": "event:e04",
+        "role": "direct_actor"
+      },
+      {
+        "kind": "personRoleForEvent",
+        "personId": "person:oskar",
+        "eventId": "event:e04",
+        "role": "direct_actor"
+      }
+    ]
+  },
+  "classification": {
+    "questionType": "required_literals (Closure P10 / CH §6): vorab öffentlich festgelegte einzelne Rolle direct_actor für alle vier öffentlichen Kandidaten",
+    "finitePublicScope": "4 Claims = 4 öffentliche Kandidaten × 1 öffentlich festgelegte Rolle; antwortunabhängig, aus dem öffentlichen Roster abgeleitet, nicht aus geheimen Assignments",
+    "scopeEqualsRequiredKeys": "zulässig nach P09 (M2 §15 Repair): Dimensionen sind vor der Antwortwahl öffentlich festgelegt; keine geheime Required-only-Whitelist",
+    "allowedClaimsCanonicalStatus": "enthält kanonisch true- UND false-Mitglieder (eins true, drei false); false/undetermined-Mitglieder sind zulässig (CH §4 Z.96/P18, D10/OD-6). In diesem Fall ist keiner undetermined, weil responsibility complete mit festgelegter Rolle.",
+    "exactness": "solved ⇔ Core solved ∧ jedes Literal im Scope ∧ status(literal) === literal.value (CH §5). Undetermined erfüllt nie.",
+    "noEvidenceGate": "D8: kein Evidence-possession-, Citation- oder Proof-Receipt-Gate. requireReleasedProof ist entfernt (P15) und kein Challenge-Feld."
+  },
+  "presentation": {
+    "question": "PublicContent.challengeQuestion",
+    "answerOptions": "die vier initial bekannten Personen in PublicContent-Labelform; Reihenfolge = feste authored Displayordnung Max, Lina, Nora, Oskar (antwortunabhängig, Brieforder) — keine Sortierung nach Canonical-ID oder Solution",
+    "uiExpansion": "Auswahl X → accuse.literals = [{claim:personRoleForEvent(X,e04,direct_actor),value:true}] + für jede andere Person Y {claim:personRoleForEvent(Y,e04,direct_actor),value:false}; alle Refs als PlayerRefs; genau vier Literale (Closure P08). UI-Konvention, keine neue Session-Aktion.",
+    "verdictsVisibleToPlayer": [
+      "solved",
+      "not_solved"
+    ],
+    "notSolvedSemantics": "gültige Antwort, erfüllt den Auftrag nicht; keine Begründung, keine Einzelbewertung, kein Alternativ-Täter; Session bleibt aktiv",
+    "afterSolved": "Session terminal; jede weitere Aktion SESSION_CLOSED",
+    "technicalFaults": "nie not_solved; HOST_FAILURE / ACTION_UNAVAILABLE getrennt"
+  }
+}

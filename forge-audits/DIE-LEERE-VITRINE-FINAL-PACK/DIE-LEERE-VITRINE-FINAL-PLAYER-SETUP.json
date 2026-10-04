@@ -1,0 +1,267 @@
+{
+  "_status": "FINAL AUTHORING CANDIDATE — Session-A InitialSetup (exact component) plus a DERIVED, non-normative S0 view for review. Only `initialSetup` is package input.",
+  "_hash": {
+    "profile": "forge-session-initial-v1",
+    "initialHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT"
+  },
+  "initialSetup": {
+    "schemaVersion": 1,
+    "known": [
+      {
+        "kind": "event",
+        "id": "event:e04"
+      },
+      {
+        "kind": "item",
+        "id": "item:medaille"
+      },
+      {
+        "kind": "location",
+        "id": "location:archiv"
+      },
+      {
+        "kind": "location",
+        "id": "location:foyer"
+      },
+      {
+        "kind": "location",
+        "id": "location:galerie"
+      },
+      {
+        "kind": "location",
+        "id": "location:hof"
+      },
+      {
+        "kind": "location",
+        "id": "location:werkstatt"
+      },
+      {
+        "kind": "person",
+        "id": "person:lina"
+      },
+      {
+        "kind": "person",
+        "id": "person:max"
+      },
+      {
+        "kind": "person",
+        "id": "person:nora"
+      },
+      {
+        "kind": "person",
+        "id": "person:oskar"
+      }
+    ]
+  },
+  "derivedInitialView_NON_NORMATIVE": {
+    "derivationRule": "Known = initialSetup.known only. Nothing is known because it exists in CaseTruth. No initial Evidence discovery, no initial ObservationRecord, no initial proof closure.",
+    "initialKnownPersons": [
+      "person:lina",
+      "person:max",
+      "person:nora",
+      "person:oskar"
+    ],
+    "initialKnownLocations": [
+      "location:archiv",
+      "location:foyer",
+      "location:galerie",
+      "location:hof",
+      "location:werkstatt"
+    ],
+    "initialKnownItems": [
+      "item:medaille"
+    ],
+    "initialKnownEvents": [
+      "event:e04"
+    ],
+    "initialKnownEvidence": [],
+    "initialDiscoveries": [],
+    "initialObservations": [],
+    "initiallyUnknownButExistingInTruth_PRIVATE": [
+      "event:e01",
+      "event:e02",
+      "event:e03",
+      "event:e05",
+      "event:e06",
+      "event:e07",
+      "event:e08",
+      "evidence:d01",
+      "evidence:d02",
+      "evidence:d03",
+      "evidence:d04",
+      "evidence:d05",
+      "evidence:d06",
+      "evidence:d07",
+      "evidence:d08",
+      "item:kamera",
+      "item:kassette",
+      "item:schluessel",
+      "item:terminal"
+    ],
+    "interrogableNpcs": [
+      "person:lina",
+      "person:max",
+      "person:nora",
+      "person:oskar"
+    ],
+    "initialAvailableActions": {
+      "investigate.search_location": [
+        "location:archiv",
+        "location:foyer",
+        "location:galerie",
+        "location:hof",
+        "location:werkstatt"
+      ],
+      "investigate.examine_item": {
+        "legalTargets": [
+          "item:medaille"
+        ],
+        "note": "item:medaille ist bekannt, hat aber keinen Access-Pfad: Aktion ist zulässig und liefert found:[] (MYST-0003 §6). Kein Gerätenachweis vor Reveal."
+      },
+      "investigate.examine_person": {
+        "legalTargets": [
+          "person:lina",
+          "person:max",
+          "person:nora",
+          "person:oskar"
+        ],
+        "note": "kein Access-Pfad authored; found:[]"
+      },
+      "interrogate": {
+        "availableQuestionCount": 19,
+        "unavailable": [
+          "question:q08"
+        ]
+      },
+      "accuse": "verfügbar ab S0 (Session B §6, D8): Auswahl einer der vier bekannten Personen, UI-expandiert zu vier direct_actor-Literalen"
+    },
+    "questionAvailability": [
+      {
+        "questionId": "question:q01",
+        "npc": "person:max",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q02",
+        "npc": "person:max",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q03",
+        "npc": "person:max",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q04",
+        "npc": "person:max",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q05",
+        "npc": "person:max",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q06",
+        "npc": "person:nora",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q07",
+        "npc": "person:nora",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q08",
+        "npc": "person:nora",
+        "availableAtStart": false,
+        "missingMentions": [
+          {
+            "kind": "event",
+            "id": "event:e05"
+          }
+        ]
+      },
+      {
+        "questionId": "question:q09",
+        "npc": "person:nora",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q10",
+        "npc": "person:nora",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q11",
+        "npc": "person:oskar",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q12",
+        "npc": "person:oskar",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q13",
+        "npc": "person:oskar",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q14",
+        "npc": "person:oskar",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q15",
+        "npc": "person:oskar",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q16",
+        "npc": "person:lina",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q17",
+        "npc": "person:lina",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q18",
+        "npc": "person:lina",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q19",
+        "npc": "person:lina",
+        "availableAtStart": true,
+        "missingMentions": []
+      },
+      {
+        "questionId": "question:q20",
+        "npc": "person:lina",
+        "availableAtStart": true,
+        "missingMentions": []
+      }
+    ],
+    "initialPublicBriefing": "PublicContent.title + brief + challengeQuestion + publicRules (alle drei statisch, ab S0 angezeigt) + Labels/Rollen der initial bekannten Entitäten"
+  }
+}
