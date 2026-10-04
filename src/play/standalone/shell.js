@@ -91,9 +91,15 @@
       const saved = store.get(KEY + slug);
       if (saved === null) continue;
       const loaded = await app.handle("POST", `/fall/${slug}/load`, async () => saved);
-      if (loaded.status === 303) await app.handle("GET", `/fall/${slug}`, none);
+      if (loaded.headers["x-load-failed"]) {
+        // A save this file cannot load (e.g. written by an older version of it): keep a copy before
+        // the next autosave replaces it, and leave the warning for the player on the case page.
+        store.set(KEY + slug + ".alt", saved);
+      } else if (loaded.status === 303) await app.handle("GET", `/fall/${slug}`, none);
     }
-    const start = /^#(\/[^#]*)$/.exec(location.hash)?.[1] ?? "/";
+    // A download address (…/save) renders no page, so the shell would never leave its boot screen.
+    const hashed = /^#(\/[^#]*)$/.exec(location.hash)?.[1] ?? "/";
+    const start = /^\/fall\/[^/?]+\/save(\?|$)/.test(hashed) ? "/" : hashed;
     await go("GET", start);
   })().catch((err) => {
     boot.textContent = `Die Fälle konnten nicht geladen werden: ${err && err.message ? err.message : err}`;

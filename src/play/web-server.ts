@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { pathToFileURL } from "node:url";
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import type { PlayCaseName } from "./cases.ts";
 import { createEditorRoutes, type EditorOptions } from "./editor-web.ts";
@@ -13,7 +14,7 @@ export function createWebServerApp(packages: Partial<Record<PlayCaseName, Resolv
   return createWebApp(packages, { routes, editorLink: true, extraCase: probeCase });
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const port = Number(process.env.PORT ?? 4173);
   const app = createWebServerApp();
   // Local only: bound to the loopback interface.
