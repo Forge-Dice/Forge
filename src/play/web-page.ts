@@ -137,8 +137,7 @@ function investigationList(game: Game, slug: string, fresh: ReadonlySet<string>)
 }
 
 /** V2: hold a found evidence against an earlier statement; shown only when something can be held up. */
-function confrontationSection(game: Game, slug: string): string {
-  const actions = confrontations(game);
+function confrontationSection(game: Game, slug: string, actions: readonly Action[]): string {
   if (actions.length === 0) return "";
   const done = doneKeys(game);
   const forms = actions.map((a, i) => actionForm(game, slug, "v", i, a.label, { cls: ["act", done.has(actionKey(a)) ? "done" : ""].filter(Boolean).join(" ") }));
@@ -270,13 +269,14 @@ export function renderGame(game: Game, slug: string, feedback: Feedback | null, 
   const { publicContent } = game.pkg;
   const solved = game.state.phase === "solved";
   const steps = game.state.events.length;
+  const confront = solved ? [] : confrontations(game);
   const nav: [string, string, string][] = solved
     ? [["ende", "Auflösung", "E"], ["akte", "Akte", "F"], ["journal", "Journal", "J"]]
     : [
         ["akte", "Akte", "F"],
         ["untersuchen", "Untersuchen", "U"],
         ["verhoeren", "Verhören", "V"],
-        ...(confrontations(game).length > 0 ? [["vorhalten", "Vorhalten", "H"] as [string, string, string]] : []),
+        ...(confront.length > 0 ? [["vorhalten", "Vorhalten", "H"] as [string, string, string]] : []),
         ["journal", "Journal", "J"],
         ["anklage", "Anklage", "A"],
         ["bekannt", "Bekannt", "B"],
@@ -301,7 +301,7 @@ ${
   solved
     ? ""
     : `<section id="untersuchen" class="card" tabindex="-1"><h2>Untersuchen</h2>${investigationList(game, slug, fresh)}</section>
-<section id="verhoeren" class="card" tabindex="-1"><h2>Verhören</h2>${questionList(game, slug, fresh)}</section>${confrontationSection(game, slug)}`
+<section id="verhoeren" class="card" tabindex="-1"><h2>Verhören</h2>${questionList(game, slug, fresh)}</section>${confrontationSection(game, slug, confront)}`
 }
 <section id="journal" class="card" tabindex="-1"><h2>${solved ? "Dein Ermittlungsweg" : "Journal"}</h2>${journal(game)}</section>
 ${
