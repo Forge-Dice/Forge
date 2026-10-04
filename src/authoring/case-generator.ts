@@ -31,6 +31,7 @@ export type GeneratedCase = {
   readonly schema: CaseSchema;
   readonly title: string;
   readonly withLie: boolean;
+  readonly complexity: number;
   /** File name -> JSON value, exactly as written into the folder. */
   readonly files: Readonly<Record<string, unknown>>;
 };
@@ -279,6 +280,26 @@ const MOTIVES: readonly Motive[] = [
   { slug: "secret", relation: "fürchtet", argument: "Streit über ein gehütetes Geheimnis", motive: (c, v) => `${v} droht, ein Geheimnis von ${c} öffentlich zu machen`, epilogue: (c, v) => `${v} hatte gedroht, ein Geheimnis von ${c} öffentlich zu machen` },
 ];
 
+/** Rooms without an alibi: searchable dead ends that may hide a red herring (complexity >= 1). */
+type Room = { readonly slug: string; readonly name: string; readonly acc: string; readonly in: string };
+const DECOY_ROOMS: readonly Room[] = [
+  { slug: "storeroom", name: "Abstellraum", acc: "den Abstellraum", in: "im Abstellraum" },
+  { slug: "washroom", name: "Waschraum", acc: "den Waschraum", in: "im Waschraum" },
+  { slug: "forecourt", name: "Vorplatz", acc: "den Vorplatz", in: "auf dem Vorplatz" },
+  { slug: "car-park", name: "Parkplatz", acc: "den Parkplatz", in: "auf dem Parkplatz" },
+  { slug: "cloakroom", name: "Garderobenraum", acc: "den Garderobenraum", in: "im Garderobenraum" },
+  { slug: "back-stairs", name: "Hintertreppe", acc: "die Hintertreppe", in: "auf der Hintertreppe" },
+];
+const cap = (text: string) => text[0]!.toUpperCase() + text.slice(1);
+const lower = (text: string) => text[0]!.toLowerCase() + text.slice(1);
+/** Red herrings beyond the fingerprint: they name an innocent and prove nothing. */
+const HERRINGS: readonly { readonly slug: string; readonly label: string; readonly text: (who: string, room: Room) => string }[] = [
+  { slug: "handkerchief", label: "Taschentuch", text: (who, room) => `${cap(room.in)} liegt ein Taschentuch mit ${gen(who)} Monogramm. Wann es dort hingefallen ist, verrät es nicht.` },
+  { slug: "cigarette", label: "Zigarettenstummel", text: (who, room) => `${cap(room.in)} liegt ein Zigarettenstummel der Marke, die ${who} raucht. Er ist kalt, wie alt er ist, bleibt offen.` },
+  { slug: "note", label: "Notizzettel", text: (who, room) => `${cap(room.in)} findest du einen Zettel in ${gen(who)} Handschrift: „Wir müssen reden.“ Ein Datum steht nicht darauf.` },
+  { slug: "glass", label: "Weinglas", text: (who, room) => `${cap(room.in)} steht ein halb leeres Glas, darauf ${gen(who)} Fingerabdrücke. Es kann seit Stunden dort stehen.` },
+];
+
 /** The evening's weather: one line for the brief, one for the end of the epilogue. */
 const WEATHER: readonly { readonly brief: string; readonly close: string }[] = [
   { brief: "Draußen prasselt Regen gegen die Fenster.", close: "Draußen hatte der Regen endlich aufgehört." },
@@ -407,8 +428,17 @@ const PLACEHOLDER = "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT";
 export const MAX_SEED = 0xffffffff;
 type Json = Record<string, unknown>;
 
+/**
+ * Generator knobs. complexity 0..5: c decoy rooms (all six at 5), c-1 red herrings in them (at
+ * most four), from 3 the largest cast and a clue hidden in a container, from 4 vaguer witnesses.
+ */
+export type GenerateOptions = { readonly complexity?: number };
+export const MAX_COMPLEXITY = 5;
+
 /** Generates the case of a seed; `schema` forces one schema (the rest still follows the seed). */
-export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
+export function generateCase(seed: number, schema?: CaseSchema, options: GenerateOptions = {}): GeneratedCase {
+  const complexity = options.complexity ?? 0;
+  if (!Number.isInteger(complexity) || complexity < 0 || complexity > MAX_COMPLEXITY) throw new RangeError(`complexity must be 0..${MAX_COMPLEXITY}`);
   // The PRNG state is 32 bits: larger seeds would silently repeat another seed's case.
   if (!Number.isSafeInteger(seed) || seed < 0 || seed > MAX_SEED) throw new RangeError(`seed must be an integer from 0 to ${MAX_SEED}`);
   const random = prng(seed);
@@ -421,7 +451,8 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   const drawn = pick(CASE_SCHEMAS);
   const kind = schema ?? drawn;
   const extra = random();
-  const innocentCount = kind === "crowd" ? 3 + Math.floor(extra * 2) : kind === "classic" || kind === "twopaths" ? 1 + Math.floor(extra * 2) : 2;
+  const innocentCount =
+    kind === "crowd" ? (complexity >= 3 ? 4 : 3 + Math.floor(extra * 2)) : kind === "classic" || kind === "twopaths" ? (complexity >= 3 ? 2 : 1 + Math.floor(extra * 2)) : 2;
   const setting = pick(SETTINGS);
   const weapon = pick(WEAPONS);
   const clue = pick(CLUES);
@@ -443,6 +474,8 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
     return { f, role: f ? r[0] : r[1], name: `${f ? "Frau" : "Herr"} ${surnames[k]}` };
   });
   const [finder, caller] = side as [(typeof side)[number], (typeof side)[number]];
+  const decoys = complexity === 0 ? [] : draw(DECOY_ROOMS, complexity === MAX_COMPLEXITY ? DECOY_ROOMS.length : complexity);
+  const herringKinds = complexity < 2 ? [] : draw(HERRINGS, Math.min(complexity - 1, HERRINGS.length));
   /** Text variants: one of several sentence patterns, chosen by the seed. */
   const oneOf = (...variants: string[]): string => pick(variants);
 
@@ -460,7 +493,7 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   const { scene } = setting;
   const hasClue = kind !== "timewindow";
   const late = kind === "latecomer";
-  const caseId = `case:gen-${seed}${schema === undefined ? "" : `-${kind}`}`;
+  const caseId = `case:gen-${seed}${schema === undefined ? "" : `-${kind}`}${complexity === 0 ? "" : `-c${complexity}`}`;
   const deathOf = `${gen(V)} Tod`;
 
   const pid = (n: Name) => `person:${slug(n.name)}`;
@@ -488,11 +521,22 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
 
   // ---------- Truth ----------
   const usedPlaces = [...innocents.map((i) => i.place), ...(kind === "timewindow" ? [culpritPlace] : [])];
+  // Complexity: decoy rooms, red herrings in them, and from 3 on a clue hidden in a container
+  // that only a mark at the scene points to.
+  const hidden = hasClue && complexity >= 3;
+  const BASKET = { id: "item:waste-basket", name: "Papierkorb" };
+  const EV_MARK = "evidence:struggle";
+  const rid = (r: Room) => `location:${r.slug}`;
+  const herrings = herringKinds.map((h, k) => ({ ...h, id: `evidence:${h.slug}`, who: innocents[(k + 1) % innocents.length]!, room: decoys[k % decoys.length]! }));
   const evidence: Json[] = [
     { id: EV.fingerprint, description: `${gen(firstInnocent.name)} Fingerabdruck auf ${weapon.dat} (älter)`, source: ref("item", IT.weapon), links: [{ propositionId: propPresent(firstInnocent), direction: "supports" }, { propositionId: PR.weaponUsed, direction: "supports" }] },
     ...innocents.map((i) => ({ id: logOf(i.place), description: `${i.place.log}: ${i.name} zur Tatzeit`, source: ref("location", lid(i.place)), links: [{ propositionId: propAlibi(i), direction: "supports" }] })),
   ];
-  if (hasClue) evidence.push({ id: EV.clue, description: `${clue.label} von ${C} am Tatort`, source: ref("location", L.scene), links: [{ propositionId: propPresent(culprit), direction: "supports" }] });
+  for (const h of herrings) {
+    evidence.push({ id: h.id, description: `${h.label} von ${h.who.name} ${h.room.in} (ohne Zeitbezug)`, source: ref("location", rid(h.room)), links: [{ propositionId: propScene(h.who), direction: "supports" }] });
+  }
+  if (hidden) evidence.push({ id: EV_MARK, description: "Kampfspuren am Tatort, umgestoßener Papierkorb", source: ref("location", L.scene), links: [{ propositionId: PR.weaponUsed, direction: "supports" }] });
+  if (hasClue) evidence.push({ id: EV.clue, description: `${clue.label} von ${C} am Tatort`, source: hidden ? ref("item", BASKET.id) : ref("location", L.scene), links: [{ propositionId: propPresent(culprit), direction: "supports" }] });
   if (kind === "twopaths") evidence.push({ id: EV.sleeve, description: `Blutspritzer an ${gen(C)} Ärmel`, source: ref("person", P.c), links: [{ propositionId: propPresent(culprit), direction: "supports" }] });
   if (kind === "timewindow") {
     evidence.push({ id: EV.culpritLog, description: `${culpritPlace.log}: ${C} vor der Tat, gegangen um ${clockOf(originHour, leave)}`, source: ref("location", lid(culpritPlace)), links: [{ propositionId: PR.cEarly, direction: "supports" }, { propositionId: PR.cAlibi, direction: "refutes" }] });
@@ -505,8 +549,8 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
     title: `${weapon.nom} ${setting.where}`,
     timeline: { unit: "second", originLabel: `${originHour}:00 Uhr am Abend` },
     persons: allPersons,
-    locations: [{ id: L.scene, name: scene.name }, ...usedPlaces.map((p) => ({ id: lid(p), name: p.name }))],
-    items: [{ id: IT.weapon, name: weapon.name }],
+    locations: [{ id: L.scene, name: scene.name }, ...usedPlaces.map((p) => ({ id: lid(p), name: p.name })), ...decoys.map((r) => ({ id: rid(r), name: r.name }))],
+    items: [{ id: IT.weapon, name: weapon.name }, ...(hidden ? [BASKET] : [])],
     relationships: [{ id: `relationship:${motive.slug}`, fromPersonId: P.c, toPersonId: P.v, kind: motive.relation, time: { kind: "interval", start: 0, end: 3600 } }],
     events: [
       { id: E.argument, description: motive.argument, time: { kind: "interval", start: argumentStart, end: at - 300 }, locationId: L.scene, participantIds: [P.c, P.v], itemIds: [], causedByEventIds: [] },
@@ -532,7 +576,10 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
     ],
     evidence,
     secrets: [{ id: `secret:${motive.slug}`, propositionIds: [PR.cAtArgument] }],
-    redHerrings: [{ id: "red-herring:fingerprint", evidenceIds: [EV.fingerprint], misleadingPropositionId: propPresent(firstInnocent) }],
+    redHerrings: [
+      { id: "red-herring:fingerprint", evidenceIds: [EV.fingerprint], misleadingPropositionId: propPresent(firstInnocent) },
+      ...herrings.map((h) => ({ id: `red-herring:${h.slug}`, evidenceIds: [h.id], misleadingPropositionId: propScene(h.who) })),
+    ],
   };
   const parsedTruth = parseCaseTruth(truth);
   const truthHash = hashCaseTruth(parsedTruth);
@@ -561,7 +608,9 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
     schemaVersion: 1,
     ...bound,
     entries: [
-      ...(hasClue ? [{ evidenceId: EV.clue, access: search(L.scene) }] : []),
+      ...(hasClue ? [{ evidenceId: EV.clue, access: hidden ? { kind: "discoverable", paths: [{ kind: "examine_item", itemId: BASKET.id }] } : search(L.scene) }] : []),
+      ...(hidden ? [{ evidenceId: EV_MARK, access: search(L.scene) }] : []),
+      ...herrings.map((h) => ({ evidenceId: h.id, access: search(rid(h.room)) })),
       { evidenceId: EV.fingerprint, access: { kind: "discoverable", paths: [{ kind: "examine_item", itemId: IT.weapon }] } },
       ...innocents.map((i) => ({ evidenceId: logOf(i.place), access: search(lid(i.place)) })),
       ...(kind === "timewindow" ? [{ evidenceId: EV.culpritLog, access: search(lid(culpritPlace)) }] : []),
@@ -587,7 +636,7 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   if (hasClue) {
     presentationEntries.unshift({
       evidenceId: EV.clue,
-      text: `${oneOf(
+      text: `${hidden ? `Zwischen zerknülltem Papier im Papierkorb: ${clue.what(C)}, daran frisches Blut von ${V}.` : oneOf(
         `${scene.spot} liegt ${clue.what(C)}. Daneben: ${gen(V)} Blut, noch nicht getrocknet.`,
         `${scene.spot}, halb verborgen, liegt ${clue.what(C)}. Am Rand klebt ${gen(V)} Blut, noch feucht.`,
         `Erst auf den zweiten Blick: ${scene.spot} liegt ${clue.what(C)}, daran frisches Blut von ${V}.`,
@@ -615,6 +664,15 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
       reports: [{ claim: personAt(P.c, lid(culpritPlace), early), stance: "affirms", source: observation }],
     });
   }
+  for (const h of herrings) presentationEntries.push({ evidenceId: h.id, text: h.text(h.who.name, h.room), mentions: [ref("person", pid(h.who)), ref("location", rid(h.room))], reports: [] });
+  if (hidden) {
+    presentationEntries.push({
+      evidenceId: EV_MARK,
+      text: `${scene.spot} sind Kampfspuren, ${lower(weapon.nom)} liegt neben ${V}. Ein Papierkorb ist umgestoßen, der Inhalt halb verstreut.`,
+      mentions: [ref("item", BASKET.id), ref("item", IT.weapon), ref("event", E.murder)],
+      reports: [],
+    });
+  }
   const presentation = { schemaVersion: 1, ...bound, entries: presentationEntries };
   const initial = {
     schemaVersion: 1,
@@ -622,6 +680,7 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
       ...allPersons.filter((p) => !(late && p.id === P.c)).map((p) => ref("person", p.id)),
       ref("location", L.scene),
       ...usedPlaces.map((p) => ref("location", lid(p))),
+      ...decoys.map((r) => ref("location", rid(r))),
       ref("item", IT.weapon),
       ref("event", E.murder),
     ],
@@ -701,7 +760,8 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
         attitude(propAlibi(i), knows(true), at, witnessed(alibiEvent(i))),
         attitude(propScene(i), knows(false), at, witnessed(alibiEvent(i))),
         attitude(propPresent(i), knows(false), at, witnessed(alibiEvent(i))),
-        ...(late ? [] : [attitude(propPresent(culprit), { kind: "uncertain", leaning: true }, at + 100, { kind: "author_modeled_inference" })]),
+        // From complexity 4 the witnesses no longer lean towards the culprit.
+        ...(late ? [] : [attitude(propPresent(culprit), { kind: "uncertain", leaning: complexity >= 4 ? null : true }, at + 100, { kind: "author_modeled_inference" })]),
       ],
     );
 
@@ -709,7 +769,7 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   const label = (k: string, id: string, text: string, role: string | null = null) => ({ entity: ref(k, id), label: text, role });
   const roleOf = (n: Name, r: readonly [string, string]) => (n.f ? r[0] : r[1]);
   const named = suspects.filter((s) => !(late && s === C));
-  const searchable = [scene.acc, ...usedPlaces.map((p) => p.acc)];
+  const searchable = [scene.acc, ...usedPlaces.map((p) => p.acc), ...decoys.map((r) => r.acc)];
   // One phrasing per case, so the same question reads the same for every NPC.
   const asYou = pick([() => `Waren Sie bei ${deathOf} dabei?`, () => `Waren Sie dabei, als ${V} starb?`]);
   const asOther = pick([(n: string) => `War ${n} bei ${deathOf} dabei?`, (n: string) => `War ${n} dabei, als ${V} starb?`]);
@@ -737,8 +797,6 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   const art = (f: boolean) => (f ? "die" : "der");
   const finderFull = `${art(finder.f)} ${finder.role} ${finder.name}`;
   const callerFull = `${art(caller.f)} ${caller.role} ${caller.name}`;
-  const cap = (text: string) => text[0]!.toUpperCase() + text.slice(1);
-  const lower = (text: string) => text[0]!.toLowerCase() + text.slice(1);
   const culpritPersonality = personalities[0]!;
   const cast = [
     ...(late ? [] : [{ name: C, role: roleOf(culprit, roles[0]!), trait: culpritPersonality.trait }]),
@@ -777,6 +835,9 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
       label("location", L.scene, scene.name),
       ...usedPlaces.map((p) => label("location", lid(p), p.name)),
       label("item", IT.weapon, weapon.name),
+      ...(hidden ? [label("item", BASKET.id, BASKET.name), label("evidence", EV_MARK, "Kampfspuren")] : []),
+      ...decoys.map((r) => label("location", rid(r), r.name)),
+      ...herrings.map((h) => label("evidence", h.id, h.label)),
       label("event", E.murder, `${deathOf} um ${clock}`),
       label("event", E.argument, motive.argument),
       ...innocents.map((i) => label("event", alibiEvent(i), `${gen(i.name)} Zeit ${i.place.in}`)),
@@ -833,6 +894,7 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   const observationNode = (id: string, observationId: string) => nodes.push({ id, kind: "observation", observationId });
   const searchStep = (p: { slug: string }, locationId: string) => ({ stepId: `search-${p.slug}`, event: { type: "investigate", action: "search_location", target: playerRef("location", locationId) } });
   if (hasClue) steps.push(searchStep(scene, L.scene));
+  if (hidden) steps.push({ stepId: "examine-waste-basket", event: { type: "investigate", action: "examine_item", target: playerRef("item", BASKET.id) } });
 
   // Each innocent: the log at their place clears them.
   innocents.forEach((i) => {
@@ -908,7 +970,7 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   };
 
   const files: Record<string, unknown> = {
-    "case.json": { refSalt: /^0+$/.test(salt) ? "1".padStart(32, "0") : salt, clockOrigin: originHour * 3600, seed, schema: kind },
+    "case.json": { refSalt: /^0+$/.test(salt) ? "1".padStart(32, "0") : salt, clockOrigin: originHour * 3600, seed, schema: kind, complexity },
     "truth.json": truth,
     "solution.json": solution,
     "challenge.json": challenge,
@@ -926,7 +988,7 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
     files[`interrogation-${slug(i.name)}.json`] = innocentProfile(i);
     files[`npc-${slug(i.name)}.json`] = innocentNpc(i);
   }
-  return { seed, schema: kind, title: truth.title, withLie: presenceLie || alibiLie, files };
+  return { seed, schema: kind, complexity, title: truth.title, withLie: presenceLie || alibiLie, files };
 }
 
 /**

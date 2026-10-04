@@ -84,7 +84,7 @@
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const slug = (localStorage.key(i) || "").slice(KEY.length);
-        if (localStorage.key(i).startsWith(KEY) && /^zufall-(0|[1-9][0-9]{0,8})$/.test(slug)) generated.push(slug);
+        if (localStorage.key(i).startsWith(KEY) && /^zufall-(0|[1-9][0-9]{0,8})(-stufe-[1-5])?$/.test(slug)) generated.push(slug);
       }
     } catch {}
     for (const slug of [...app.slugs, ...generated.sort()]) {

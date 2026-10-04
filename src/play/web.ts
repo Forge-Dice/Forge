@@ -21,6 +21,8 @@ import {
 import { renderCaseList, renderGame, renderHelp, type Feedback } from "./web-page.ts";
 import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./cases.ts";
 import { generateCase, generatedClockOrigin, generatedPackage } from "../authoring/case-generator.ts";
+import { generateCaseOfDifficulty } from "../authoring/case-difficulty.ts";
+import { difficultyText, type Difficulty } from "./difficulty.ts";
 
 // `npm run play:web`: the playable cases in the browser, one local player, same session logic as
 // the CLI. The server holds one game per case in memory; saves are the Session C text.
@@ -118,24 +120,28 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
   const slugOf = (name: PlayCaseName) => PLAY_CASES[name].dir;
   // Generated cases ("Zufallsfall"): one slot per seed, created on first visit; the oldest is
   // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
-  const generated = new Map<number, { slot: Slot; clockOrigin: number }>();
+  // zufall-<seed>, or zufall-<seed>-stufe-<1..5> for a wished difficulty (the playtest bot searches).
+  const generated = new Map<string, { slot: Slot; clockOrigin: number }>();
   type Target = { readonly slot: Slot; readonly slug: string; readonly clockOrigin: number };
   const target = (slug: string | undefined): Target | null => {
     const name = playCaseName(slug);
     if (name !== null) return { slot: slot(name), slug: slugOf(name), clockOrigin: PLAY_CASES[name].clockOrigin };
-    const m = /^zufall-(0|[1-9][0-9]{0,8})$/.exec(slug ?? "");
+    const m = /^zufall-(0|[1-9][0-9]{0,8})(?:-stufe-([1-5]))?$/.exec(slug ?? "");
     if (m === null) return null;
     const seed = Number(m[1]);
-    let g = generated.get(seed);
+    const key = m[0];
+    let g = generated.get(key);
     if (g === undefined) {
-      const generatedCase = generateCase(seed);
+      const wished = m[2] === undefined ? null : generateCaseOfDifficulty(seed, Number(m[2]) as Difficulty);
+      const generatedCase = wished?.generated ?? generateCase(seed);
       const clockOrigin = generatedClockOrigin(generatedCase);
       const game = newGame(generatedPackage(generatedCase), clockOrigin);
-      g = { slot: { game, feedback: { tone: "info", title: `Zufallsfall ${seed}`, lines: ["Ein erzeugter Fall. Lies die Fallakte und beginne zu ermitteln."] }, fresh: new Set() }, clockOrigin };
-      generated.set(seed, g);
+      const level = wished === null ? [] : [`Gewünscht: Stufe ${wished.wished}. Gemessen vom Spieltest: ${difficultyText(wished.rating)}.`];
+      g = { slot: { game, feedback: { tone: "info", title: `Zufallsfall ${seed}`, lines: ["Ein erzeugter Fall. Lies die Fallakte und beginne zu ermitteln.", ...level] }, fresh: new Set() }, clockOrigin };
+      generated.set(key, g);
       if (generated.size > MAX_GENERATED) generated.delete(generated.keys().next().value!);
     }
-    return { slot: g.slot, slug: `zufall-${seed}`, clockOrigin: g.clockOrigin };
+    return { slot: g.slot, slug: key, clockOrigin: g.clockOrigin };
   };
   const redirect = (to: string): WebResponse => ({ status: 303, headers: { location: to }, body: "" });
   const html = (body: string): WebResponse => ({ status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }, body });
@@ -182,9 +188,14 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
     if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp());
     if (method === "POST" && url.pathname === "/zufall") {
       // An empty seed picks one; anything else must be a whole number up to nine digits.
-      const raw = (new URLSearchParams((await readBody()) ?? "").get("seed") ?? "").trim();
+      // The difficulty is optional: empty means any, otherwise a level 1..5.
+      const form = new URLSearchParams((await readBody()) ?? "");
+      const raw = (form.get("seed") ?? "").trim();
+      const level = (form.get("stufe") ?? "").trim();
       const seed = raw === "" ? Math.floor(Math.random() * 1_000_000) : /^[0-9]{1,9}$/.test(raw) ? Number(raw) : null;
-      return seed === null ? text(400, "Der Seed muss eine ganze Zahl sein.") : redirect(`/fall/zufall-${seed}`);
+      if (seed === null) return text(400, "Der Seed muss eine ganze Zahl sein.");
+      if (level !== "" && !/^[1-5]$/.test(level)) return text(400, "Die Schwierigkeit muss eine Stufe von 1 bis 5 sein.");
+      return redirect(`/fall/zufall-${seed}${level === "" ? "" : `-stufe-${level}`}`);
     }
     const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
     const t = match === null ? null : target(match[1]);
