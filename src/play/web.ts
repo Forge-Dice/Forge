@@ -168,7 +168,7 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
         const { publicContent } = s.game.pkg;
         const steps = s.game.state.events.length;
         const progress = s.game.state.phase === "solved" ? "Gelöst" : steps === 0 ? null : `${steps} Aktionen`;
-        return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress };
+        return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress, difficulty: PLAY_CASES[name].difficulty };
       });
       return html(renderCaseList(cards, options.editorLink === true));
     }

@@ -55,6 +55,8 @@ export type CaseCheck = {
   /** Every certified route, the witness first; each replayed and checked on its own. */
   readonly routes: readonly RouteReport[];
   readonly ok: boolean;
+  /** NPC file names and ref salt of the folder, for loading it as a playable package (playtest). */
+  readonly play?: { readonly npcs: readonly string[]; readonly salt: string };
 };
 
 /** Placeholder authors leave for hashes the tool computes ("TO_BE_COMPUTED_FROM_FINAL_ARTIFACT"). */
@@ -156,7 +158,9 @@ function npcNames(dir: string, c: Collector): string[] {
 
 export function checkCaseFolder(dir: string): CaseCheck {
   const c = new Collector();
+  let play: CaseCheck["play"];
   const finish = (routes: readonly RouteReport[] = []): CaseCheck => ({
+    ...(play === undefined ? {} : { play }),
     dir,
     problems: c.problems,
     filled: c.filled,
@@ -173,6 +177,7 @@ export function checkCaseFolder(dir: string): CaseCheck {
   const npcs = npcNames(dir, c).map((name) => ({ name, snapshot: readJson(dir, `npc-${name}.json`, c), profile: readJson(dir, `interrogation-${name}.json`, c) }));
   const caseConfig = existsSync(join(dir, "case.json")) ? readJson(dir, "case.json", c) : {};
   const salt = (caseConfig as { refSalt?: unknown }).refSalt ?? DEFAULT_CHECK_SALT;
+  if (typeof salt === "string") play = { npcs: npcs.map((n) => n.name), salt };
 
   // ---- 1. Components, each with its real parser, in dependency order.
   const truth = raw.truth === undefined ? null : c.parse(FILES.truth, () => parseCaseTruth(raw.truth));
@@ -374,7 +379,7 @@ function releaseContextHash(
 type ManifestStep = { stepId: string; event: unknown };
 type ManifestAlternative = { report?: unknown; kind?: string; questionId?: string; evidenceId?: string; claim?: unknown; stance?: string };
 type ManifestObservation = ReleasedObservation & { alternatives?: ManifestAlternative[]; ruleId?: string; afterObservations?: string[] };
-type Manifest = {
+export type Manifest = {
   schemaVersion: 1;
   releaseContextHash: string;
   adapterVersion: string;
@@ -445,13 +450,27 @@ function sortedJson(value: unknown): string {
  */
 export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, releaseHash: string): WitnessReplay {
   return (stepIds) => {
-    let state = initialSession(pkg);
-    const cards = new Map<string, EvidenceObservation>();
-    const said = new Set<string>();
+    const events: unknown[] = [];
     for (const stepId of stepIds) {
       const step = manifest.certificateData.steps.find((s) => s.stepId === stepId);
       if (step === undefined) return { success: false, code: "INVALID_WITNESS" };
-      const result = reduceSession(pkg, state, step.event);
+      events.push(step.event);
+    }
+    return eventWitness(pkg, manifest, releaseHash)(events);
+  };
+}
+
+/**
+ * The same release rules over any player event log instead of the manifest's steps (used by the
+ * playtest bot to ask whether a player's knowledge already proves the answer).
+ */
+export function eventWitness(pkg: ResolvedCasePackage, manifest: Manifest, releaseHash: string): (events: readonly unknown[]) => ReturnType<WitnessReplay> {
+  return (events) => {
+    let state = initialSession(pkg);
+    const cards = new Map<string, EvidenceObservation>();
+    const said = new Set<string>();
+    for (const event of events) {
+      const result = reduceSession(pkg, state, event);
       if (!result.ok) return { success: false, code: "INVALID_WITNESS" };
       state = result.state;
       if (result.output.type === "investigate") {
