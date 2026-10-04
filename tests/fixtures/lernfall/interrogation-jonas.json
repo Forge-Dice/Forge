@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+  "catalogueHash": "d3d9115745ebe96e7a320af4ac1872e827d211432012e2ead2af8503c40071de",
+  "npcId": "person:jonas",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q01",
+      "act": "lie",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:jonas",
+        "locationId": "location:clubhouse",
+        "at": 3600
+      },
+      "stance": "denies",
+      "reveal": []
+    }
+  ],
+  "confrontations": [
+    {
+      "questionId": "question:q01",
+      "evidenceId": "evidence:shoeprint",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:jonas",
+        "locationId": "location:clubhouse",
+        "at": 3600
+      },
+      "reveal": []
+    }
+  ]
+}
