@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CaseCheck, Problem } from "../authoring/check-case.ts";
-import type { CaseSource } from "./editor.ts";
+import { fileDigest, type CaseSource } from "./editor.ts";
 import { escape, layout, type Feedback } from "./web-page.ts";
 
 // HTML views of the case editor. Every form control names its file and field in check-case notation
@@ -149,7 +149,7 @@ function rawSection(dir: string, check: CaseCheck): string {
     .map((file) => {
       const text = readFileSync(join(dir, file), "utf8");
       const n = check.problems.filter((p) => p.severity === "error" && p.file === file).length;
-      return `<details class="raw"><summary>${escape(file)}${n > 0 ? ` <strong class="bad">${n} Fehler</strong>` : ""}</summary><textarea name="raw:${escape(file)}" data-file="${escape(file)}" data-field="(JSON)" rows="18" spellcheck="false">${escape(text)}</textarea>${errorsFor(check, file, "(JSON)")}</details>`;
+      return `<details class="raw"><summary>${escape(file)}${n > 0 ? ` <strong class="bad">${n} Fehler</strong>` : ""}</summary><input type="hidden" name="base:${escape(file)}" value="${fileDigest(text)}"><textarea name="raw:${escape(file)}" data-file="${escape(file)}" data-field="(JSON)" rows="18" spellcheck="false">${escape(text)}</textarea>${errorsFor(check, file, "(JSON)")}</details>`;
     })
     .join("");
 }
@@ -196,19 +196,32 @@ export function renderEditorHome(cards: readonly WorkspaceCard[], sources: reado
   );
 }
 
+/**
+ * A form section from files of possibly the wrong shape (valid JSON can be saved with check-case
+ * errors): if it cannot be rendered, the page says so and the file stays editable as JSON below.
+ */
+function section(render: () => string): string {
+  try {
+    return render();
+  } catch {
+    return `<p class="muted">Die Dateien haben hier nicht die erwartete Form. Korrigiere sie unten unter „Dateien (JSON)“.</p>`;
+  }
+}
+
 export function renderEditor(name: string, dir: string, check: CaseCheck, origin: number, feedback: Feedback | null): string {
   const pc = read(dir, "public-content.json");
-  const labels: Labels = new Map((pc?.labels ?? []).map((l: Json) => [l.entity?.id, l.label]));
+  const title = typeof pc?.title === "string" ? pc.title : name;
+  const labels: Labels = new Map(Array.isArray(pc?.labels) ? pc.labels.map((l: Json) => [l?.entity?.id, l?.label]) : []);
   return layout(
-    `Editor: ${pc?.title ?? name}`,
-    `<header class="topbar"><a class="home" href="/editor"><span aria-hidden="true">←</span> Werkstatt</a><div class="case-title"><p class="kicker">Fall-Editor · ${escape(name)}</p><h1>${escape(pc?.title ?? name)}</h1></div><span class="badge" id="status-badge">${check.ok ? "gültig" : "ungültig"}</span></header>
+    `Editor: ${title}`,
+    `<header class="topbar"><a class="home" href="/editor"><span aria-hidden="true">←</span> Werkstatt</a><div class="case-title"><p class="kicker">Fall-Editor · ${escape(name)}</p><h1>${escape(title)}</h1></div><span class="badge" id="status-badge">${check.ok ? "gültig" : "ungültig"}</span></header>
 <form id="editor" method="post" action="/editor/${escape(name)}/save" class="desk editor">
 <aside class="dossier side-check"><section class="card check" aria-live="polite"><h2>check-case</h2><div id="check">${checkPanel(check)}</div>
 <div class="actions"><button type="submit" class="primary">Speichern</button><a class="button" href="/editor/${escape(name)}">Verwerfen</a></div>${noticeHtml(feedback)}</section></aside>
 <div class="play">
-<section class="card" id="texte"><h2>Spielertexte</h2>${textsSection(check, pc)}</section>
-<section class="card" id="verhoere"><h2>Verhöre</h2>${interrogationSection(check, dir, pc, labels, origin)}</section>
-<section class="card" id="spuren"><h2>Spuren</h2>${evidenceSection(check, dir, labels)}</section>
+<section class="card" id="texte"><h2>Spielertexte</h2>${section(() => textsSection(check, pc))}</section>
+<section class="card" id="verhoere"><h2>Verhöre</h2>${section(() => interrogationSection(check, dir, pc, labels, origin))}</section>
+<section class="card" id="spuren"><h2>Spuren</h2>${section(() => evidenceSection(check, dir, labels))}</section>
 <section class="card" id="dateien"><h2>Dateien (JSON)</h2><p class="muted">Für alles, was die Formulare nicht abdecken. Hashes rechnet der Editor selbst nach.</p>${rawSection(dir, check)}</section>
 </div></form>
 <script>${SCRIPT(name)}</script>`,

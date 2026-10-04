@@ -7,6 +7,7 @@ import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { checkCaseFolder } from "../src/authoring/check-case.ts";
 import { applyEdits, caseSources, CaseWorkspace, editsFromForm, getAt } from "../src/play/editor.ts";
+import { renderEditor } from "../src/play/editor-page.ts";
 import { createWebServerApp } from "../src/play/web-server.ts";
 
 // Case editor (/editor in play:web): working copies only, live check-case on a scratch copy, save
@@ -157,5 +158,50 @@ describe("editor over HTTP", () => {
 
   it("the repository's fixtures are untouched", () => {
     for (const d of readdirSync(FIXTURES)) expect(digest(join(FIXTURES, d)), d).toBe(fixtureDigests[d]);
+  });
+});
+
+describe("review fixes", () => {
+  const fresh = (name: string) => {
+    const ws = new CaseWorkspace(join(scratch, `review-${name}`));
+    return join(ws.root, ws.open(geige));
+  };
+
+  it("a whole-file edit wins over the unchanged form fields of that file", () => {
+    const dir = fresh("raw-wins");
+    const pc = json(dir, "public-content.json");
+    const oldTitle = pc.title;
+    const edited = { ...pc, title: "Neuer Titel", labels: pc.labels.slice(1) };
+    const result = applyEdits(
+      dir,
+      editsFromForm(new URLSearchParams([["raw:public-content.json", JSON.stringify(edited, null, 2)], ["f:public-content.json:title", oldTitle], ["f:public-content.json:labels[0].label", pc.labels[0].label]])),
+    );
+    expect(result.errors).toEqual([]);
+    expect(json(dir, "public-content.json").title).toBe("Neuer Titel");
+    expect(json(dir, "public-content.json").labels).toEqual(pc.labels.slice(1));
+  });
+
+  it("a save from a page rendered before the file changed on disk is refused for that file", () => {
+    const dir = fresh("stale");
+    const page = renderEditor("geige", dir, checkCaseFolder(dir), 0, null);
+    const base = /name="base:public-content.json" value="([0-9a-f]+)"/.exec(page)?.[1];
+    expect(base).toBeDefined();
+    applyEdits(dir, editsFromForm(new URLSearchParams([["f:public-content.json:title", "Von Tab A"]])));
+    const result = applyEdits(dir, editsFromForm(new URLSearchParams([["base:public-content.json", base!], ["f:public-content.json:title", "Von Tab B"]])));
+    expect(result.errors.map((e) => e.file)).toEqual(["public-content.json"]);
+    expect(json(dir, "public-content.json").title).toBe("Von Tab A");
+  });
+
+  it("valid JSON of the wrong shape does not lock the editor page", () => {
+    const dir = fresh("shape");
+    applyEdits(dir, editsFromForm(new URLSearchParams([["raw:public-content.json", JSON.stringify({ title: 5, labels: {} })]])));
+    expect(() => renderEditor("geige", dir, checkCaseFolder(dir), 0, null)).not.toThrow();
+    expect(renderEditor("geige", dir, checkCaseFolder(dir), 0, null)).toContain('name="raw:public-content.json"');
+  });
+
+  it("generating a seed that already has a working copy opens that copy", () => {
+    const ws = new CaseWorkspace(join(scratch, "review-generate"));
+    expect(ws.generate(7)).toBe("fall-7");
+    expect(ws.generate(7)).toBe("fall-7");
   });
 });
