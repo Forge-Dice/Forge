@@ -19,6 +19,7 @@ sys.dont_write_bytecode = True  # never leave __pycache__ in the checkout
 
 TOOLS = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "tools", "forge_v01")
 sys.path.insert(0, TOOLS)
+sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)))
 
 from errors import ForgeFail  # noqa: E402
 

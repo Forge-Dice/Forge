@@ -60,7 +60,7 @@ function answers(o: { main?: string | string[]; head?: string; headRepo?: number
 }
 
 function boot(o: { event?: string; facts?: Record<string, unknown>; answers?: Record<string, unknown>; budgets?: Record<string, unknown>; head?: boolean; remote?: string } = {}) {
-  return py1("bootstrap.bootstrap_for_test", [
+  return py1("seams.bootstrap_for_test", [
     b(o.event ?? event()), o.facts ?? facts(), workspace(),
     { remote: o.remote ?? remote.odb, answers: o.answers ?? answers(), budgets: o.budgets ?? {} },
   ], { head: o.head ?? true });
@@ -93,7 +93,7 @@ function remoteWithBase(spec: TreeSpec): { repo: FixtureRepo; base: string } {
 function stage0(repo: FixtureRepo, baseSha: string) {
   const ans = answers({ main: baseSha });
   (ans[`${REPO}/pulls/${PR}`] as { base: { sha: string } }).base.sha = baseSha;
-  return py1("stage0.run_for_test", [b(event({ base: baseSha })), facts({ githubSha: baseSha }), workspace(), { remote: repo.odb, answers: ans }]);
+  return py1("seams.run_for_test", [b(event({ base: baseSha })), facts({ githubSha: baseSha }), workspace(), { remote: repo.odb, answers: ans }]);
 }
 
 beforeAll(() => {
@@ -169,7 +169,7 @@ describe("event and runner facts", () => {
   });
 
   test("AV-009 production defaults: fixed remote, HTTPS transport, no redirects, no file protocol", () => {
-    const r = py1("bootstrap.default_seams_report");
+    const r = py1("seams.default_seams_report");
     const report = r.ok as { remote: string; transport: string; fetch_deadline: number; extra_config: unknown[]; fetch_argv: string[] };
     expect(report.remote).toBe("https://github.com/Forge-Dice/Forge.git");
     expect(report.transport).toBe("HttpsTransport");
@@ -244,7 +244,7 @@ describe("live GETs and fetch", () => {
       HTTPS_PROXY: "http://127.0.0.1:9",
       SSH_ASKPASS: `/bin/sh -c 'touch ${marker}'`,
     };
-    const [r] = py([{ fn: "bootstrap.bootstrap_for_test", args: [b(event()), facts(), workspace(), { remote: remote.odb, answers: answers() }] }], env);
+    const [r] = py([{ fn: "seams.bootstrap_for_test", args: [b(event()), facts(), workspace(), { remote: remote.odb, answers: answers() }] }], env);
     expect(outcome(r!)).toBe("PASS");
     expect(existsSync(marker)).toBe(false);
     const clean = py1("process.clean_env", ["git", "/private"]).ok as Record<string, string>;

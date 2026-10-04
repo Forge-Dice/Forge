@@ -150,16 +150,6 @@ def run_verifier(loaded: LoadedVerifier, workspace: str, extra: list[str], *, de
                                deadline_seconds=deadline_seconds, cwd=loaded.root, phase="stage0")
 
 
-def run_for_test(event_bytes: bytes, runner_facts: dict, workspace: str, seams: dict) -> dict:
-    """Driver entry: load the BASE verifier with test seams, run it, return plain facts."""
-    from bootstrap import seams_for_test
-
-    built = seams_for_test(seams["remote"], seams["answers"], **seams.get("budgets", {}))
-    loaded = load_base_verifier(event_bytes, runner_facts, workspace, _seams=built)
-    result = run_verifier(loaded, workspace, [], deadline_seconds=30.0)
-    return {"loaded": loaded, "returncode": result.returncode, "stdout": result.stdout.decode("utf-8", "replace")}
-
-
 def main(argv: list[str]) -> int:
     """Image entry: stage0 --event <file> --facts <file> --workspace <dir>. Exec's the BASE verifier."""
     if len(argv) != 6 or argv[0::2] != ["--event", "--facts", "--workspace"]:

@@ -16,7 +16,7 @@ import ssl
 from dataclasses import dataclass, field
 
 import process
-from errors import ForgeFail, fail
+from errors import fail
 from objects import OBJECT_BUDGET_BYTES, OBJECT_BUDGET_COUNT, ObjectStore
 
 REPO_ID = 1401864629
@@ -360,7 +360,6 @@ def fetch(odb: str, private: str, seams: Seams, source_ref: str, target_ref: str
 
 @dataclass(frozen=True)
 class TrustedBase:
-    repo_id: int
     event: EventFacts
     live: LiveFacts
     base: str
@@ -382,7 +381,7 @@ def bootstrap_base(event_bytes: bytes, runner_facts: dict, workspace: str, *, _s
     compare_live(event, live)
     odb, private = init_odb(workspace)
     fetch(odb, private, seams, "refs/heads/main", MAIN_REF, event.base, frozenset({MAIN_REF}))
-    return TrustedBase(REPO_ID, event, live, event.base, event.head, odb, private, seams)
+    return TrustedBase(event, live, event.base, event.head, odb, private, seams)
 
 
 def fetch_head(base: TrustedBase) -> TrustedBase:
@@ -395,50 +394,5 @@ def fetch_head(base: TrustedBase) -> TrustedBase:
     return base
 
 
-def bootstrap_trusted_objects(event_bytes: bytes, runner_facts: dict, workspace: str, *,
-                              _seams: Seams | None = None) -> TrustedBase:
+def bootstrap_trusted_objects(event_bytes: bytes, runner_facts: dict, workspace: str, *, _seams=None) -> TrustedBase:
     return fetch_head(bootstrap_base(event_bytes, runner_facts, workspace, _seams=_seams))
-
-
-# -- test seam construction (driver only) ----------------------------------------------------
-
-
-class FixedTransport:
-    """Test transport: answers from a fixed {path: body} map; a list value yields successive bodies."""
-
-    def __init__(self, answers: dict):
-        self.answers = {path: list(body) if isinstance(body, list) else [body] for path, body in answers.items()}
-        self.requests: list[str] = []
-
-    def get(self, path: str) -> bytes:
-        self.requests.append(path)
-        queue = self.answers.get(path)
-        if not queue:
-            raise fail("EXECUTION_API", "bootstrap")
-        body = queue.pop(0) if len(queue) > 1 else queue[0]
-        return json.dumps(body).encode() if not isinstance(body, (bytes, str)) else (body.encode() if isinstance(body, str) else body)
-
-
-def seams_for_test(remote: str, answers: dict, **budgets) -> Seams:
-    return Seams(remote=remote, transport=FixedTransport(answers), **budgets)
-
-
-def bootstrap_for_test(event_bytes: bytes, runner_facts: dict, workspace: str, seams: dict, *, head: bool = True) -> dict:
-    """Driver entry: runs the bootstrap with test seams and returns plain facts."""
-    built = seams_for_test(seams["remote"], seams["answers"], **seams.get("budgets", {}))
-    result = bootstrap_base(event_bytes, runner_facts, workspace, _seams=built)
-    if head:
-        result = fetch_head(result)
-    refs = list_refs(result.odb, result.private)
-    return {"base": result.base, "head": result.head, "refs": refs, "requests": built.transport.requests,
-            "live": result.live}
-
-
-def default_seams_report() -> dict:
-    seams = Seams()
-    return {"remote": seams.remote, "transport": type(seams.transport).__name__,
-            "fetch_deadline": seams.fetch_deadline, "disk_budget": seams.disk_budget,
-            "extra_config": list(seams.extra_git_config()), "fetch_argv": process.git_argv("ODB", "fetch")}
-
-
-__all__ = ["bootstrap_trusted_objects", "bootstrap_base", "fetch_head", "check_layout", "parse_event", "ForgeFail"]
