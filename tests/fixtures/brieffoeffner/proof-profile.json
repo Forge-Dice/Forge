@@ -16,6 +16,16 @@
   },
   "observations": [
     {
+      "id": "reported:ben-denies",
+      "kind": "REPORTED_BY_NPC",
+      "npcId": "person:ben",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:ben-at-murder",
+        "value": false
+      }
+    },
+    {
       "id": "observed:cuff",
       "kind": "OBSERVED",
       "literal": {
@@ -138,6 +148,7 @@
   ],
   "witnessStepIds": [
     "search-library",
-    "search-garden"
+    "search-garden",
+    "ask-ben-presence"
   ]
 }

@@ -10,7 +10,7 @@ import { parseEvidenceAccessMap } from "../domain/evidence-access.ts";
 import { hashEvidenceAccessMap } from "../domain/evidence-access.identity.ts";
 import { parseEvidencePresentation, type EvidenceObservation } from "../domain/evidence-presentation.ts";
 import { hashEvidencePresentation } from "../domain/evidence-presentation.identity.ts";
-import { parseInterrogationProfile, parseQuestionCatalogue, type QuestionCatalogue } from "../domain/interrogation-authoring.ts";
+import { parseInterrogationProfile, parseQuestionCatalogue, profileLies, type QuestionCatalogue } from "../domain/interrogation-authoring.ts";
 import { hashInterrogationProfile, hashQuestionCatalogue } from "../domain/interrogation-authoring.identity.ts";
 import { parseNpcKnowledge } from "../domain/npc-knowledge.ts";
 import { parseAccusationChallenge } from "../domain/accusation-challenge.ts";
@@ -26,7 +26,7 @@ import {
   hashReleaseManifest,
   serializeSessionJson,
 } from "../domain/case-package.identity.ts";
-import { resolveCasePackage, type PackageFinding, type ResolvedCasePackage } from "../domain/case-package.ts";
+import { resolveCasePackage, type PackageFinding, type ResolvedCasePackage, type RulesetVersion } from "../domain/case-package.ts";
 import { initialSession, reduceSession } from "../domain/case-session.ts";
 import {
   checkCaseSolvability,
@@ -177,9 +177,12 @@ export function checkCaseFolder(dir: string): CaseCheck {
   if (c.problems.some((p) => p.severity === "error")) return finish();
 
   // ---- 2. Proof: compute the release context and hashes, fill placeholders, check given values.
+  // A case with lies runs under ruleset v2; one without stays v1 with unchanged hashes.
+  const lies = parsedNpcs.flatMap((npc) => (npc.profile === null ? [] : profileLies(npc.profile, truth)));
+  const rulesetVersion: RulesetVersion = lies.length > 0 ? "mystery-session-v2" : "mystery-session-v1";
   const packageInput = {
     schemaVersion: 1,
-    rulesetVersion: "mystery-session-v1",
+    rulesetVersion,
     truth: raw.truth,
     solution: raw.solution,
     access: raw.access,
@@ -214,7 +217,7 @@ export function checkCaseFolder(dir: string): CaseCheck {
 
   // ---- 4. Solvability with a witness on the real session.
   try {
-    const report = checkCaseSolvability(truth, solution!, profile, sessionWitness(resolved.package, manifest, releaseHash));
+    const report = checkCaseSolvability(truth, solution!, profile, sessionWitness(resolved.package, manifest, releaseHash), { lies });
     for (const f of report.findings) {
       const message = `${f.code}${f.subjectIds.length > 0 ? ` (${f.subjectIds.join(", ")})` : ""}`;
       (f.severity === "error" ? c.error : c.warning).call(c, FILES.proofProfile, fieldOf(f.path), message);
@@ -249,6 +252,8 @@ const PACKAGE_CODES: Record<PackageFinding["code"], string> = {
   REF_MAPPING: "PlayerRef-Zuordnung ungültig",
   LIMIT: "Grenze überschritten",
   PROOF_BINDING: "Beweis passt nicht zum Paket",
+  RULESET: "Lügen gibt es erst ab Regelwerk mystery-session-v2",
+  INSINCERE_LIE: "keine Lüge: der NPC weiß oder glaubt die Wahrheit nicht (das wäre ein Irrtum, keine Lüge)",
 };
 
 function reportPackageFinding(finding: PackageFinding, npcNames: string[], c: Collector): void {
@@ -267,7 +272,7 @@ function reportPackageFinding(finding: PackageFinding, npcNames: string[], c: Co
 
 type Npc = { snapshot: unknown; profile: unknown };
 function releaseContextHash(
-  input: { initial: unknown; npcs: Npc[]; access: unknown; presentation: unknown; challenge: unknown; publicContent: unknown },
+  input: { rulesetVersion: RulesetVersion; initial: unknown; npcs: Npc[]; access: unknown; presentation: unknown; challenge: unknown; publicContent: unknown },
   truth: CaseTruth,
   solution: CaseSolution,
   catalogue: QuestionCatalogue,
@@ -278,7 +283,7 @@ function releaseContextHash(
   try {
     const truthHash = hashCaseTruth(truth);
     return hashReleaseContext({
-      rulesetVersion: "mystery-session-v1",
+      rulesetVersion: input.rulesetVersion,
       truthHash,
       solutionHash: hashCaseSolution(solution),
       accessHash: hashEvidenceAccessMap(parseEvidenceAccessMap(input.access, truth)),
@@ -309,7 +314,8 @@ function releaseContextHash(
 }
 
 type ManifestStep = { stepId: string; event: unknown };
-type ManifestObservation = ReleasedObservation & { alternatives?: { report: unknown }[]; ruleId?: string; afterObservations?: string[] };
+type ManifestAlternative = { report?: unknown; kind?: string; questionId?: string; claim?: unknown; stance?: string };
+type ManifestObservation = ReleasedObservation & { alternatives?: ManifestAlternative[]; ruleId?: string; afterObservations?: string[] };
 type Manifest = {
   schemaVersion: 1;
   releaseContextHash: string;
@@ -371,12 +377,14 @@ function sortedJson(value: unknown): string {
 /**
  * Witness port on the real session: replays the steps with reduceSession. An OBSERVED record is
  * released only if its evidence card was released with one of its alternative reports; a
- * PUBLIC_RULE once all of its afterObservations are released.
+ * REPORTED_BY_NPC once that NPC gave one of its "npc" alternatives (question, stance, statement);
+ * a PUBLIC_RULE once all of its afterObservations are released.
  */
 export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, releaseHash: string): WitnessReplay {
   return (stepIds) => {
     let state = initialSession(pkg);
     const cards = new Map<string, EvidenceObservation>();
+    const said = new Set<string>();
     for (const stepId of stepIds) {
       const step = manifest.certificateData.steps.find((s) => s.stepId === stepId);
       if (step === undefined) return { success: false, code: "INVALID_WITNESS" };
@@ -386,11 +394,22 @@ export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, rel
       if (result.output.type === "investigate") {
         for (const card of result.output.observations) cards.set(pkg.refs.resolve(card.evidence)!.id, card);
       }
+      const answer = result.output.type === "interrogate" ? result.output.observation : null;
+      if (answer !== null && answer.act === "answer" && answer.stance !== "does_not_know") {
+        said.add(sortedJson([pkg.refs.resolve(answer.npc)!.id, answer.questionId, answer.stance, answer.statement]));
+      }
     }
     const released = new Set<string>();
     const records: ReleasedObservation[] = [];
     const payload = ({ alternatives, ruleId, afterObservations, ...rest }: ManifestObservation) => rest as ReleasedObservation;
     for (const o of manifest.certificateData.observations) {
+      if (o.kind === "REPORTED_BY_NPC") {
+        if (o.alternatives?.some((alt) => alt.kind === "npc" && said.has(sortedJson([o.npcId, alt.questionId, alt.stance, alt.claim])))) {
+          released.add(o.id);
+          records.push(payload(o));
+        }
+        continue;
+      }
       if (o.kind !== "OBSERVED" || o.source.kind !== "evidence") continue;
       const reports = new Set(cards.get(o.source.evidenceId)?.reports.map(sortedJson) ?? []);
       if (o.alternatives?.some((alt) => reports.has(sortedJson(alt.report)))) {

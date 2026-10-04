@@ -140,14 +140,20 @@ describe("Der Brieföffner: played through the real session", () => {
     expect(["anna", "ben", "clara"].map((p) => verdict(play([event.accuse(p)])))).toEqual(["not_solved", "solved", "not_solved"]);
   });
 
-  it("Ben does not lie: every stated answer of his agrees with the truth", () => {
+  it("Ben lies on q01 and q02 (as in the roadmap), answers q04 truthfully, and the cards refute him", () => {
     const state = play([event.search("library"), event.search("garden"), ...["q01", "q02", "q03", "q04"].map((q) => event.ask("ben", q))]);
     const answers = state.knowledge.observations.filter((o) => o.source.kind === "npc").map((o) => o.observation as any);
-    expect(answers.map((a) => a.act === "decline" ? "decline" : a.stance)).toEqual(["decline", "denies", "decline", "affirms"]);
+    expect(answers.map((a) => a.act === "decline" ? "decline" : a.stance)).toEqual(["denies", "affirms", "decline", "affirms"]);
     const truthOf = (q: string) => truth.propositions.find((p) => JSON.stringify(Object.entries(p.claim).sort()) === JSON.stringify(Object.entries(claimOf(q)).sort()))?.truth;
     const claimOf = (q: string) => (briefRaw("interrogation-ben.json") as any).rules.find((x: any) => x.questionId === `question:${q}`).claim;
-    expect(truthOf("q02")).toBe(false);
-    expect(truthOf("q04")).toBe(true);
+    expect([truthOf("q01"), truthOf("q02"), truthOf("q04")]).toEqual([true, false, true]);
+    // The lie is a plain answer to the player: same fields as any sincere answer, no marker.
+    expect(Object.keys(answers[0]).sort()).toEqual(Object.keys(answers[3]).sort());
+    expect(JSON.stringify(answers)).not.toMatch(/lie|Lüge/i);
+    // Refuted by evidence: the cuff button puts Ben at the murder, the garden trail Anna outside.
+    const cards = JSON.stringify(state.knowledge.observations.filter((o) => o.source.kind !== "npc"));
+    expect(cards).toContain(`"stance":"affirms"`);
+    expect(pkg.identity.rulesetVersion).toBe("mystery-session-v2");
   });
 
   it("the full walkthrough replays to the same state", () => {

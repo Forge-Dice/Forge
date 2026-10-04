@@ -11,6 +11,7 @@ import { hashEvidencePresentation } from "./evidence-presentation.identity.ts";
 import {
   QuestionIdSchema,
   StatementClaimSchema,
+  lieProposition,
   parseInterrogationProfile,
   parseQuestionCatalogue,
   type InterrogationProfile,
@@ -59,14 +60,17 @@ export const PACKAGE_LIMITS = Object.freeze({
   releaseManifestBytes: 256 * 1024,
 });
 
-const RULESET_VERSION = "mystery-session-v1";
+// v1: every NPC statement is sincere. v2 adds authored lies (interrogation rule act "lie"); a v1
+// package with a lie rule is rejected, so v1 packages and their identities stay exactly as they were.
+export const RULESET_VERSIONS = ["mystery-session-v1", "mystery-session-v2"] as const;
+export type RulesetVersion = (typeof RULESET_VERSIONS)[number];
 const KINDS = PLAYER_REF_KINDS;
 
 export type EntityRef = { readonly kind: (typeof KINDS)[number]; readonly id: string };
 export type CasePackageIdentity = {
   readonly schemaVersion: 1;
   readonly packageHash: string;
-  readonly rulesetVersion: typeof RULESET_VERSION;
+  readonly rulesetVersion: RulesetVersion;
 };
 export type InitialSetup = { readonly schemaVersion: 1; readonly known: readonly EntityRef[] };
 export type PackageRefSource = {
@@ -106,7 +110,7 @@ export type PublicContent = DeepReadonly<z.output<typeof PublicContentSchema>>;
 
 const PackageInputSchema = z.strictObject({
   schemaVersion: z.literal(1),
-  rulesetVersion: z.literal(RULESET_VERSION),
+  rulesetVersion: z.enum(RULESET_VERSIONS),
   truth: z.unknown(),
   solution: z.unknown(),
   access: z.unknown(),
@@ -141,7 +145,7 @@ export type ResolvedCasePackage = {
 };
 
 export type PackageFinding = {
-  readonly code: "SHAPE" | "BINDING" | "REFERENCE" | "REF_MAPPING" | "LIMIT" | "PROOF_BINDING";
+  readonly code: "SHAPE" | "BINDING" | "REFERENCE" | "REF_MAPPING" | "LIMIT" | "PROOF_BINDING" | "RULESET" | "INSINCERE_LIE";
   readonly path: readonly (string | number)[];
 };
 export type PackageResolution =
@@ -300,6 +304,16 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
     const snapshot = component(["npcs", i, "snapshot"], () => parseNpcKnowledge(rawSnapshot, truth, boundSolution));
     const profile = component(["npcs", i, "profile"], () => parseInterrogationProfile(rawProfile, truth, catalogue));
     if (profile.npcId !== snapshot.npcId) reject("BINDING", ["npcs", i, "profile", "npcId"]);
+    profile.rules.forEach((rule, j) => {
+      if (rule.act !== "lie") return;
+      const path = ["npcs", i, "profile", "rules", j];
+      if (input.rulesetVersion === "mystery-session-v1") reject("RULESET", [...path, "act"]);
+      // A lie is knowingly false: the NPC must hold the true stance as knowledge or belief.
+      const proposition = lieProposition(truth, rule.claim)!;
+      const own = snapshot.attitudes.find((a) => a.subject.kind === "proposition" && a.subject.id === proposition.id);
+      const held = own !== undefined && own.stance.kind !== "uncertain" && own.stance.value === proposition.truth;
+      if (!held) reject("INSINCERE_LIE", [...path, "claim"]);
+    });
     if (npcIds.has(snapshot.npcId)) reject("REFERENCE", ["npcs", i]);
     npcIds.add(snapshot.npcId);
     return { snapshot, profile };
@@ -316,7 +330,7 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
   const config = { profile: source.config.profile, saltHex: source.config.saltHex };
 
   const releaseContextHash = hashReleaseContext({
-    rulesetVersion: RULESET_VERSION,
+    rulesetVersion: input.rulesetVersion,
     truthHash,
     solutionHash: hashCaseSolution(solution),
     accessHash: hashEvidenceAccessMap(access),
@@ -346,14 +360,14 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
   const context = { truth, solution, presentation, catalogue, npcs, initial, publicContent, resolve: refs.resolve, releaseContextHash };
   const proof = input.proof === null ? null : bindProof(input.proof, context);
   const packageHash = hashPackage({
-    rulesetVersion: RULESET_VERSION,
+    rulesetVersion: input.rulesetVersion,
     releaseContextHash,
     releaseHash: proof?.releaseHash ?? null,
     proofHash: proof?.proofHash ?? null,
   });
 
   return deepFreeze({
-    identity: { schemaVersion: 1, packageHash, rulesetVersion: RULESET_VERSION },
+    identity: { schemaVersion: 1, packageHash, rulesetVersion: input.rulesetVersion },
     truth,
     solution,
     access,
@@ -551,7 +565,7 @@ function awarenessReach(ctx: ProofContext): Set<string> {
   ctx.presentation.entries.forEach((entry) => entry.mentions.forEach((m) => reach.add(entityKey(m.kind, m.id))));
   for (const { profile } of ctx.npcs) {
     for (const rule of profile.rules) {
-      if (rule.act !== "answer") continue;
+      if (rule.act === "decline") continue;
       const question = ctx.catalogue.questions.find((q) => q.id === rule.questionId);
       [...(question?.mentions ?? []), ...rule.reveal, { kind: "person" as const, id: profile.npcId }].forEach((e) => reach.add(entityKey(e.kind, e.id)));
     }
@@ -580,9 +594,10 @@ function checkPremise(o: PremiseMap, i: number, ctx: ProofContext, kinds: Readon
       const at = [...path, "alternatives", j];
       if (alt.kind === "npc") {
         const rule = ctx.npcs.find((n) => n.profile.npcId === o.npcId)?.profile.rules.find((r) => r.questionId === alt.questionId);
-        if (rule === undefined || rule.act !== "answer") return reject("REFERENCE", [...at, "questionId"]);
+        if (rule === undefined || rule.act === "decline") return reject("REFERENCE", [...at, "questionId"]);
         const claim = claimOf(alt.claim, StatementClaimSchema, ctx.resolve, [...at, "claim"]);
         if (C(claim) !== C(rule.claim)) reject("PROOF_BINDING", [...at, "claim"]);
+        if (rule.act === "lie" && alt.stance !== rule.stance) reject("PROOF_BINDING", [...at, "stance"]);
         if ((alt.stance === "affirms") !== o.literal.value) reject("PROOF_BINDING", [...at, "stance"]);
         return bindLiteral(o.literal, claim, ctx, at);
       }

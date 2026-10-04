@@ -8,16 +8,24 @@
   "rules": [
     {
       "questionId": "question:q01",
-      "act": "decline"
+      "act": "lie",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:murder",
+        "personId": "person:ben"
+      },
+      "stance": "denies",
+      "reveal": []
     },
     {
       "questionId": "question:q02",
-      "act": "answer",
+      "act": "lie",
       "claim": {
         "kind": "eventHasParticipant",
         "eventId": "event:murder",
         "personId": "person:anna"
       },
+      "stance": "affirms",
       "reveal": []
     },
     {

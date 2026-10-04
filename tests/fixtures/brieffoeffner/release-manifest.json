@@ -30,9 +30,54 @@
             }
           }
         }
+      },
+      {
+        "stepId": "ask-ben-presence",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ben"
+            }
+          },
+          "questionId": "question:q01"
+        }
       }
     ],
     "observations": [
+      {
+        "id": "reported:ben-denies",
+        "kind": "REPORTED_BY_NPC",
+        "npcId": "person:ben",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:ben-at-murder",
+          "value": false
+        },
+        "alternatives": [
+          {
+            "kind": "npc",
+            "questionId": "question:q01",
+            "claim": {
+              "kind": "eventHasParticipant",
+              "event": {
+                "$playerRefOf": {
+                  "kind": "event",
+                  "id": "event:murder"
+                }
+              },
+              "person": {
+                "$playerRefOf": {
+                  "kind": "person",
+                  "id": "person:ben"
+                }
+              }
+            },
+            "stance": "denies"
+          }
+        ]
+      },
       {
         "id": "observed:cuff",
         "kind": "OBSERVED",

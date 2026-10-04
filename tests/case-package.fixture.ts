@@ -203,7 +203,7 @@ export function releaseContextOf(input: any, salt: string = SALT): string {
   const index = buildPlayerRefIndex(truth, salt);
   if (!index.success) throw new Error(index.code);
   return hashReleaseContext({
-    rulesetVersion: "mystery-session-v1",
+    rulesetVersion: input.rulesetVersion ?? "mystery-session-v1",
     truthHash,
     solutionHash: hashCaseSolution(solution),
     accessHash: hashEvidenceAccessMap(parseEvidenceAccessMap(input.access, truth)),

@@ -8,6 +8,8 @@ import { hashQuestionCatalogue } from "./interrogation-authoring.identity.ts";
 // Author-side half of NPC interrogation V1 (MYST-0005A): a QuestionCatalogue (questions = mentioned
 // entities) and per-NPC profiles with one answer/decline rule per question, both bound to one CaseTruth.
 // Release rules R1-R4: an answer never shows an entity the author did not release. No runtime answering.
+// Lies (ruleset mystery-session-v2): a "lie" rule states a fixed stance on a proposition that
+// contradicts the truth. The player sees it exactly like an answer; only the author file marks it.
 
 const Sha256Schema = z.string().regex(/^[0-9a-f]{64}$/, "Expected a lowercase SHA-256 hex digest");
 
@@ -71,6 +73,16 @@ function deepFreeze<T>(value: T): T {
   return Object.freeze(value);
 }
 
+const sameJson = (a: unknown, b: unknown): boolean =>
+  typeof a !== "object" || a === null || typeof b !== "object" || b === null
+    ? a === b
+    : Object.keys(a).length === Object.keys(b).length && Object.entries(a).every(([k, v]) => sameJson(v, (b as Record<string, unknown>)[k]));
+
+/** The truth proposition whose claim structurally equals claim, if any. */
+export function lieProposition(truth: CaseTruth, claim: DeepReadonly<StatementClaim>) {
+  return truth.propositions.find((p) => sameJson(p.claim, claim));
+}
+
 // ---------- QuestionCatalogue ----------
 
 const QuestionCatalogueShapeSchema = z.strictObject({
@@ -131,6 +143,13 @@ const RuleSchema = z.discriminatedUnion("act", [
     claim: StatementClaimSchema,
     reveal: z.array(AwarenessSubjectSchema),
   }),
+  z.strictObject({
+    questionId: QuestionIdSchema,
+    act: z.literal("lie"),
+    claim: ClaimSchema,
+    stance: z.enum(["affirms", "denies"]),
+    reveal: z.array(AwarenessSubjectSchema),
+  }),
   z.strictObject({ questionId: QuestionIdSchema, act: z.literal("decline") }),
 ]);
 
@@ -175,6 +194,11 @@ function checkProfile(p: InterrogationProfileShape, truth: CaseTruth, catalogue:
       if (!known[kind].has(id)) referencesOk = failed(issue, `Unknown ${kind} "${id}"`, ["rules", i, "reveal", j, "id"]);
     });
     if (!referencesOk) return;
+    if (rule.act === "lie") {
+      const proposition = lieProposition(truth, rule.claim);
+      if (proposition === undefined) issue("A lie must state a proposition of the truth", ["rules", i, "claim"]);
+      else if ((rule.stance === "affirms") === proposition.truth) issue("A lie must contradict the truth", ["rules", i, "stance"]);
+    }
 
     const mentionKeys = new Set(question.mentions.map(refKey));
     const revealKeys = rule.reveal.map(refKey);
@@ -206,4 +230,20 @@ export type InterrogationProfile = z.output<ReturnType<typeof createInterrogatio
 
 export function parseInterrogationProfile(input: unknown, truth: CaseTruth, catalogue: QuestionCatalogue): InterrogationProfile {
   return createInterrogationProfileSchema(truth, catalogue).parse(input);
+}
+
+export type LiedLiteral = {
+  readonly npcId: string;
+  readonly questionId: string;
+  readonly literal: { readonly kind: "proposition"; readonly propositionId: string; readonly value: boolean };
+};
+
+/** Trusted author side: every lie of a parsed profile as the proof literal it falsely states. */
+export function profileLies(profile: InterrogationProfile, truth: CaseTruth): readonly LiedLiteral[] {
+  return profile.rules.flatMap((rule) => {
+    const proposition = rule.act === "lie" ? lieProposition(truth, rule.claim) : undefined;
+    if (rule.act !== "lie" || proposition === undefined) return [];
+    const literal = { kind: "proposition", propositionId: proposition.id, value: rule.stance === "affirms" } as const;
+    return [{ npcId: profile.npcId, questionId: rule.questionId, literal }];
+  });
 }

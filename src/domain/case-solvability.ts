@@ -17,6 +17,8 @@ import { hashCaseSolution } from "./case-solution.identity.ts";
 // Minimum solvability V1 (MYST-SOLVABILITY-0001), author-side only: AND implications over replayed,
 // released observations plus all 2^n answer vectors over a small scope. PASS means derivable under
 // published case rules. Truth/solution only validate released facts and consequences, never seed them.
+// Lies (V2): a released NPC report the host names as a lie is never a premise; if the required
+// answer is derivable only through such reports, LIE_ONLY_PATH fails the case.
 
 const Hash = z.string().regex(/^[0-9a-f]{64}$/);
 const LocalId = z.string().regex(/^[a-z][a-z0-9:_-]{0,63}$/);
@@ -221,7 +223,8 @@ export type ProofFindingCode =
   | "BINDING_MISMATCH" | "REPLAY_UNAVAILABLE" | "INVALID_WITNESS" | "INVALID_REPLAY_RESULT" | "RELEASE_RECORD_MISMATCH"
   | "FALSE_OBSERVATION" | "REQUIRED_NOT_DERIVED" | "PREMISE_NOT_REACHED" | "NONCANONICAL_INFERENCE" | "UNPUBLISHED_RULE"
   | "PROOF_CYCLE" | "NO_SURVIVING_HYPOTHESIS" | "REQUIRED_AMBIGUOUS" | "AMBIGUITY_POLICY_VIOLATION"
-  | "ANSWER_SCOPE_INVALID_FOR_QUESTION" | "FULL_ANSWER_INCOMPLETE" | "POSITIVE_ANSWER_NOT_REQUIRED";
+  | "ANSWER_SCOPE_INVALID_FOR_QUESTION" | "FULL_ANSWER_INCOMPLETE" | "POSITIVE_ANSWER_NOT_REQUIRED"
+  | "LIE_ONLY_PATH" | "LIED_REPORT_IGNORED";
 
 export type ProofFinding = {
   readonly code: ProofFindingCode;
@@ -238,7 +241,11 @@ export type SolvabilityReport = {
   readonly competingAnswerSamples: readonly HypothesisVector[];
 };
 
-const WARNINGS = new Set<ProofFindingCode>(["PROOF_CYCLE", "PREMISE_NOT_REACHED", "UNPUBLISHED_RULE"]);
+const WARNINGS = new Set<ProofFindingCode>(["PROOF_CYCLE", "PREMISE_NOT_REACHED", "UNPUBLISHED_RULE", "LIED_REPORT_IGNORED"]);
+
+/** A statement the trusted host knows to be a lie: this NPC falsely reports this literal. */
+export type KnownLie = { readonly npcId: string; readonly literal: { readonly kind: "proposition"; readonly propositionId: string; readonly value: boolean } };
+export type SolvabilityOptions = { readonly lies?: readonly KnownLie[] };
 
 function report(status: SolvabilityReport["status"], findings: ProofFinding[], count = 0, samples: HypothesisVector[] = []): SolvabilityReport {
   const key = (f: ProofFinding) => JSON.stringify([f.code, f.path, f.subjectIds, f.relatedIds]);
@@ -252,6 +259,7 @@ export function checkCaseSolvability(
   solution: CaseSolution,
   profile: CaseProofProfile,
   replayWitness: WitnessReplay,
+  options: SolvabilityOptions = {},
 ): SolvabilityReport {
   const findings: ProofFinding[] = [];
   const add = (code: ProofFindingCode, subjectIds: string[], path: Path = [], relatedIds: string[] = []) =>
@@ -301,15 +309,23 @@ export function checkCaseSolvability(
     if (canonicalValue(o.literal, truth, solution) === o.literal.value) observedLiterals.add(canonical(o.literal));
     else add("FALSE_OBSERVATION", [o.id], ["observations"], [o.literal.propositionId]);
   }
+  const lies = new Set((options.lies ?? []).map((l) => canonical([l.npcId, l.literal])));
+  const lied = (o: ReleasedObservation | undefined) => o?.kind === "REPORTED_BY_NPC" && lies.has(canonical([o.npcId, o.literal]));
   const established = new Set<string>();
+  const liedNodes = new Set<string>();
   for (const n of profile.nodes) {
     const o = n.kind === "observation" ? released.get(n.observationId) : undefined;
+    if (lied(o)) {
+      liedNodes.add(n.id);
+      if (profile.edges.some((e) => e.allOf.includes(n.id))) add("LIED_REPORT_IGNORED", [n.id], ["nodes", n.id], [(o as { id: string }).id]);
+      continue;
+    }
     if (o !== undefined && (o.kind !== "OBSERVED" || observedLiterals.has(canonical(o.literal)))) established.add(n.id);
     if (n.kind === "literal" && observedLiterals.has(canonical(n.literal))) established.add(n.id);
   }
   // Unestablished root premises (never an edge consequence). Paths use IDs: reordering changes nothing.
   for (const n of profile.nodes) {
-    if (established.has(n.id) || !profile.edges.some((e) => e.allOf.includes(n.id)) || profile.edges.some((e) => e.to === n.id)) continue;
+    if (established.has(n.id) || liedNodes.has(n.id) || !profile.edges.some((e) => e.allOf.includes(n.id)) || profile.edges.some((e) => e.to === n.id)) continue;
     const sources = n.kind === "observation" ? [n.observationId] : profile.observations.filter((o) => o.kind === "OBSERVED" && canonical(o.literal) === canonical(n.literal)).map((o) => o.id);
     add("PREMISE_NOT_REACHED", [n.id], ["nodes", n.id], sources);
   }
@@ -327,14 +343,20 @@ export function checkCaseSolvability(
     if (!consistent) add("NONCANONICAL_INFERENCE", [e.id], ["edges", e.id], [e.to]);
     return published && consistent;
   });
-  for (let changed = true; changed; ) {
-    changed = false;
-    for (const e of usable) {
-      if (established.has(e.to) || !e.allOf.every((n) => established.has(n))) continue;
-      established.add(e.to);
-      changed = true;
+  const fixedPoint = (set: Set<string>) => {
+    for (let changed = true; changed; ) {
+      changed = false;
+      for (const e of usable) {
+        if (set.has(e.to) || !e.allOf.every((n) => set.has(n))) continue;
+        set.add(e.to);
+        changed = true;
+      }
     }
-  }
+    return set;
+  };
+  fixedPoint(established);
+  // Same closure with the lies believed: what it adds is reachable only through a lie.
+  const withLies = liedNodes.size === 0 ? established : fixedPoint(new Set([...established, ...liedNodes]));
 
   // 5. Cycles: nodes that reach themselves; report each non-productive strongly connected group.
   const next = new Map<string, string[]>();
@@ -356,8 +378,11 @@ export function checkCaseSolvability(
   // 6. Required literals must be derived with their exact polarity.
   const derived = new Set(profile.nodes.flatMap((n) => (n.kind === "literal" && established.has(n.id) ? [canonical(n.literal)] : [])));
   const proven = (conclusionId: string, value: boolean) => derived.has(canonical({ kind: "conclusion", conclusionId, value }));
+  const viaLie = new Set(profile.nodes.flatMap((n) => (n.kind === "literal" && withLies.has(n.id) ? [canonical(n.literal)] : [])));
   solution.requiredConclusions.forEach((literal, i) => {
-    if (!proven(literal.conclusionId, literal.value)) add("REQUIRED_NOT_DERIVED", [literal.conclusionId], ["requiredConclusions", i]);
+    if (proven(literal.conclusionId, literal.value)) return;
+    const onlyLie = viaLie.has(canonical({ kind: "conclusion", conclusionId: literal.conclusionId, value: literal.value }));
+    add(onlyLie ? "LIE_ONLY_PATH" : "REQUIRED_NOT_DERIVED", [literal.conclusionId], ["requiredConclusions", i]);
   });
 
   // 7. All 2^n answer vectors; only proven opposite polarity eliminates a vector.
