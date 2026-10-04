@@ -1,0 +1,198 @@
+# TASK-0004 DEPENDENCY HANDOFF
+# role: dependency_api_auditor (read-only; no files changed in repo, nothing committed)
+# audited_at: 2026-10-03
+dependency_commit:
+  repo: Wuerfelduell/Forge
+  commit: 5bfa5a47562282548cf7c916c2328f8e03fcc473
+  subject: "TASK-0003: immutable case solution answer key"
+  ancestry: [27075fe TASK-0001, de5feb9 TASK-0001a, 3169529 TASK-0002, 5bfa5a4 TASK-0003]
+  files_audited:
+    - src/domain/case-truth.ts
+    - src/domain/case-truth.identity.ts
+    - src/domain/case-semantics.ts
+    - src/domain/case-solution.ts
+    - src/domain/case-solution.identity.ts
+  toolchain: {zod: 4.6.5, typescript: 7.0.2, vitest: 5.0.3, node: ">=22"}
+  tsconfig_flags_relevant: [strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes, verbatimModuleSyntax, allowImportingTsExtensions]
+  import_style: 'relative with ".ts" extension, e.g. "./case-solution.ts"'
+
+verified_exports:
+  src/domain/case-solution.ts:
+    values:
+      - ConclusionIdSchema        # z.string().regex(/^conclusion:[a-z0-9][a-z0-9_-]{0,63}$/).brand<"ConclusionId">()
+      - ResponsibilityRoleSchema  # enum direct_actor | planner | facilitator
+      - IntentSchema              # enum intended | unintended | not_applicable
+      - MechanismSchema           # enum ordinary | supernatural | mixed
+      - TargetRefSchema
+      - ResponsibilityAssignmentSchema
+      - EventResolutionSchema
+      - ConclusionClaimSchema     # z.discriminatedUnion("kind", 6 variants)
+      - ConclusionSchema          # strictObject {id: ConclusionId, claim: ConclusionClaim}
+      - ConclusionLiteralSchema   # strictObject {conclusionId: ConclusionId, value: boolean}
+      - createCaseSolutionSchema  # (truth: CaseTruth) => bound schema; only producer of CaseSolution
+      - parseCaseSolution         # (input: unknown, truth: CaseTruth) => CaseSolution; throws ZodError
+    types:
+      - ConclusionId              # z.output<typeof ConclusionIdSchema> = string & brand "ConclusionId"
+      - ResponsibilityRole
+      - Intent
+      - Mechanism
+      - TargetRef
+      - ResponsibilityAssignment
+      - EventResolution
+      - ConclusionClaim
+      - Conclusion
+      - ConclusionLiteral
+      - CaseSolutionInput         # z.input<...>, plain mutable
+      - CaseSolution              # z.output<ReturnType<typeof createCaseSolutionSchema>>
+  src/domain/case-solution.identity.ts:
+    values:
+      - SOLUTION_CANONICALIZATION_PROFILE  # "forge-solution-c14n-v1"
+      - serializeCaseSolution              # (CaseSolution) => string
+      - hashCaseSolution                   # (CaseSolution) => sha256 hex of PROFILE + "\n" + canonical JSON
+  src/domain/case-truth.ts (relevant to 0004):
+    values: [CaseIdSchema, PersonIdSchema, LocationIdSchema, ItemIdSchema, EventIdSchema, PropositionIdSchema, EvidenceIdSchema, TickSchema, TimeSpanSchema, ClaimSchema, SourceRefSchema, parseCaseTruth, CaseTruthSchema]
+    types: [CaseTruth, DeepReadonly, CaseId, PersonId, EventId, PropositionId, EvidenceId, Claim, Proposition, Evidence, SourceRef]
+  src/domain/case-truth.identity.ts:
+    values: [CANONICALIZATION_PROFILE, serializeCaseTruth, hashCaseTruth]   # "forge-case-c14n-v1"
+  NOT_exported:
+    - TruthHashSchema             # private; 0004 must define its own sha256-hex schema if needed
+    - CaseSolutionShapeSchema / CaseSolutionShape
+    - resolveConclusion
+    - claimKey
+    - checkSolution
+    - uniqueBy, deepFreeze, canonicalize
+    - DeepReadonly is NOT re-exported from case-solution.ts (import it from case-truth.ts)
+  case_solution_root_fields: [schemaVersion(1), caseId(CaseId), revision(positive int), truthHash(sha256 hex), resolutions(min 1), conclusions(min 1), requiredConclusions(min 1)]
+  case_solution_has_no_field: [solutionHash, truth, title, names, descriptions]
+
+conclusion_claim_variants:
+  # every variant carries eventId; all strictObject; discriminator "kind"
+  variants:
+  - {kind: personResponsibleForEvent, fields: {personId: PersonId, eventId: EventId}}
+  - {kind: personRoleForEvent, fields: {personId: PersonId, eventId: EventId, role: ResponsibilityRole}}
+  - {kind: noPersonResponsibleForEvent, fields: {eventId: EventId}}
+  - {kind: eventCausedEvent, fields: {causeEventId: EventId, eventId: EventId}, refine: "causeEventId !== eventId"}
+  - {kind: eventIntent, fields: {eventId: EventId, value: Intent}}
+  - {kind: eventMechanism, fields: {eventId: EventId, value: Mechanism}}
+  conclusion_object: {id: ConclusionId, claim: ConclusionClaim}   # exactly two fields
+  public_truth_field_on_conclusion: false
+
+binding_guarantees:
+  enforced_at: parse time only (createCaseSolutionSchema(truth) / parseCaseSolution)
+  checks:
+    - solution.caseId === truth.caseId
+    - solution.truthHash === hashCaseTruth(truth)   # hash covers whole truth incl. revision
+  on_binding_failure: no further reference/answer checks run (early return)
+  solution_revision_independent_of_truth_revision: true
+  solution_holds_reference_to_truth_object: false   # test "embeds no copy of the CaseTruth"
+  after_binding_also_guaranteed:
+    - every resolution.eventId exists in truth; at most one resolution per event
+    - targets / assignment personIds exist in truth
+    - every conclusion.claim.eventId exists AND has a resolution
+    - claim.personId exists; eventCausedEvent.causeEventId exists (needs no own resolution)
+    - requiredConclusions reference existing conclusions, each conclusionId at most once
+    - every required literal value equals the private resolver result (true/false; never "undetermined")
+  runtime_proof_of_binding_after_parse: none
+    # brand is compile-time only; a later consumer can only re-check
+    # (solution.caseId === truth.caseId && solution.truthHash === hashCaseTruth(truth))
+    # or re-run parseCaseSolution(solution, truth), which returns a fresh frozen clone.
+
+immutability_guarantees:
+  case_solution:
+    runtime: structuredClone(input) then recursive deepFreeze (Object.values walk + Object.freeze) -> recursively frozen
+    type: DeepReadonly<CaseSolutionShape> & brand "CaseSolution"
+    input_decoupled: true   # authoring input stays mutable
+  case_truth: same pattern, brand "CaseTruth"
+  nominal_brand_is_runtime: false
+    # zod .brand() is type-only. `obj as CaseSolution` compiles and hashCaseSolution/serializeCaseSolution
+    # perform no runtime brand/frozen check. Nominal safety holds only for code that does not cast.
+  id_brands: ConclusionId, EventId, PersonId, PropositionId ... mutually non-assignable at type level (typecheck tests)
+
+private_api_boundaries:
+  conclusion_truth_resolver:
+    symbol: resolveConclusion (module-private function in case-solution.ts)
+    verified_private: true   # not exported, not reachable via any exported object or schema property
+    result_domain: true | false | "undetermined"
+    forbidden_for_0004:
+      - exporting it or changing case-solution.ts
+      - copying/reimplementing the TASK-0003 §6 truth table (incl. reading resolutions.responsibility/intent/mechanism/causesComplete to derive conclusion truth)
+      - reaching it via cast / module internals
+      - ORACLE PROBE: building a modified CaseSolutionInput (e.g. adding/changing a requiredConclusions literal) and calling parseCaseSolution/createCaseSolutionSchema to see whether it parses. This is reachable through PUBLIC API and leaks the resolver result; contract must forbid it explicitly.
+      - using requiredConclusions[].value as a truth source for knowledge
+  claim_uniqueness_key: claimKey is private; 0004 needs its own structural key for its own uniqueness rules
+  truth_hash_schema: private; define own
+
+spoiler_risks:
+  channels:
+  - {channel: raw_domain_ids, severity: high, finding: "IDs are author slugs and speaking: fixtures use event:murder, event:poisoning, proposition:ben-at-murder, relationship:ben-owes-clara, motive:debt, secret:debt, red-herring:fingerprint, conclusion:<slug>. Slug regex allows any [a-z0-9_-]{1,64}."}
+  - {channel: id_prefix_category, severity: high, finding: "Prefix itself leaks hidden role: secret:, red-herring:, motive:. A handle that encodes the source collection (e.g. rh1, s1) leaks the same."}
+  - {channel: names, severity: medium, finding: "Person/Location/Item names are free text; item names can spoil (\"Giftfläschchen\"). Names of entities the NPC is not aware of must never appear."}
+  - {channel: descriptions, severity: high, finding: "Event/Motive/Evidence descriptions are author prose with spoilers (\"Clara wird mit dem Brieföffner getötet\", \"(vom Vortag)\" on red-herring evidence)."}
+  - {channel: proposition_truth, severity: high, finding: "Proposition.truth is objective. Indirect leak: if knowledge is factive, the label knowledge vs belief on a proposition reveals truth=true to the consumer."}
+  - {channel: truthHash / solutionHash, severity: medium, finding: "Not invertible, but they confirm guessed truths/solutions, correlate NPCs and reveal any truth/solution edit. Not needed by a dialogue consumer."}
+  - {channel: revision, severity: low, finding: "Author revision counters; no value for the NPC, reveals edit history."}
+  - {channel: responsibility / targets / intent / mechanism / causesComplete, severity: critical, finding: "These are the answer key (resolutions). Any projection of them is a full spoiler."}
+  - {channel: requiredConclusions, severity: critical, finding: "Public field; value is the literal answer (true/false) for each required conclusion; membership alone reveals which questions solve the case."}
+  - {channel: conclusion_existence, severity: medium, finding: "Conclusions are the author's question list. An NPC attitude can only target an existing ConclusionId, so a projected conclusion attitude reveals that the solution asks this exact question (e.g. personRoleForEvent planner). Claim kinds of conclusions are disjoint from proposition claim kinds, so the category is recoverable from shape."}
+  - {channel: conclusion_references, severity: high, finding: "claim.personId/eventId/causeEventId may point to entities the NPC is unaware of; projecting them reveals existence (or identity) of hidden events/persons."}
+  - {channel: provenance, severity: high, finding: "Sources point to evidence/person/event IDs (red-herring evidence, hidden events)."}
+  - {channel: acquiredAt, severity: medium, finding: "Ticks align with event times (e.g. acquired at tick of death); reconstructs timeline."}
+  - {channel: event_fields, severity: high, finding: "event.time, locationId, participantIds, itemIds, causedByEventIds are objective facts; not to be attached to event handles."}
+  - {channel: collection_order, severity: medium, finding: "Parsed snapshots preserve author array order (hashes treat arrays as sets, the objects do not). Authors tend to list culprit/chronology first. Output order must not follow truth/solution array order."}
+  - {channel: handle_numbering, severity: medium, finding: "Numbering by index in truth collections or over all entities leaves gaps (p1,p3) revealing hidden entities and their position. Global per-case handles stable across NPCs allow cross-NPC correlation of hidden sets."}
+  - {channel: sort_by_raw_id, severity: low, finding: "Sorting visible entities by raw ID is deterministic and independent of hidden entities, but leaks relative slug order. Acceptable only if documented."}
+  - {channel: cardinalities, severity: low, finding: "Counts of handles/attitudes reveal only NPC-local scope; acceptable."}
+  verdict_local_handles: >
+    CORRECT and necessary. Raw domain IDs must not appear in NpcVisibleContext. Handles must be
+    projection-local, dense, assigned only over entities actually emitted, carry an entity-kind tag at
+    most for person/location/item/event (never secret/motive/red-herring/evidence/proposition/conclusion
+    origin), and be ordered by a key independent of hidden entities and of author array order.
+
+projection_constraints:
+  conclusion_fields_needed_for_projection:
+    read: [claim.kind, claim.personId, claim.eventId, claim.causeEventId, claim.role, claim.value]
+    map_ids_to_handles: [personId, eventId, causeEventId]
+    do_not_emit: [conclusion.id]
+    do_not_read: [solution.resolutions, solution.requiredConclusions, solution.revision, solution.truthHash]
+    note: "Lookup of the Conclusion by its id in solution.conclusions is the only read of the solution needed."
+  rules:
+    - emit no raw domain IDs, names, descriptions, truth values, hashes, revisions, provenance, acquiredAt
+    - emit nothing from resolutions or requiredConclusions
+    - drop (or reject at parse) any attitude whose claim references an entity the NPC is not aware of
+    - handles: local, dense, deterministic, numbered only over emitted entities, no origin-collection encoding
+    - output ordering: deterministic key not derived from author array order or hidden entities
+    - re-check binding at projection time (caseId + hashCaseTruth; solution.caseId/truthHash) since brand is not runtime
+    - stance payload rebuilt from allowlisted fields only (no object spread of snapshot entries)
+    - consider collapsing knowledge/belief into one subjective label in the visible context, or document the accepted truth leak of factive knowledge
+
+draft_conflicts:
+  - id: C1
+    severity: blocking_process
+    finding: >
+      TASK-0004 is NOT only a draft in Git. forge/contracts/TASK-0004.md (contract_version 1, status approved,
+      base_commit 5bfa5a4, architecture_review pending_chatgpt_final_check) exists at commit 6a8c0c5
+      (branch codex/task-0004-contract, also in claude/forge-architecture-review-hjdq89), and an implementation
+      exists at e9cb8e2 (src/domain/npc-knowledge.ts, npc-knowledge.projection.ts + 4 test files) on
+      claude/forge-architecture-review-hjdq89 (HEAD be40a68).
+  - id: C2
+    severity: blocking_process
+    finding: "Target path forge/contracts/TASK-0004.md is occupied by v1; a new FINAL contract must be an explicit v2 that supersedes v1, not a silent overwrite."
+  - id: C3
+    severity: info
+    finding: "v1 already states: conclusion knowledge impossible, resolver private and not to be copied, no requiredConclusions oracle, local handles, binding re-check. The new draft's stated principles match v1; deltas vs v1 were not available to this audit (Codex draft text not provided)."
+  - id: C4
+    severity: medium
+    finding: "If the draft attaches solutionHash to the NPC snapshot: no solutionHash field exists on CaseSolution; it must be computed via hashCaseSolution(solution) and never projected."
+  - id: C5
+    severity: medium
+    finding: "Draft says Conclusion may be belief/uncertain: consistent with API (no truth field; resolver private; status can be undetermined). Knowledge-for-conclusions would require resolver access or requiredConclusions oracle -> both forbidden. Boundary is sound."
+
+reconciliation_required:
+  - Seb decides status of existing v1 contract (6a8c0c5) and implementation (e9cb8e2): supersede, keep, or revert. Developer must not implement until decided.
+  - New contract must be versioned (contract_version 2, supersedes 6a8c0c5 blob) and name its base_commit explicitly (5bfa5a4 vs current branch HEAD be40a68).
+  - Contract must explicitly forbid the public parseCaseSolution probe-oracle and requiredConclusions as truth source.
+  - Contract must require runtime binding re-check (brand is type-only).
+  - Contract must specify handle numbering/order rules (dense, emitted-only, author-order-independent, no origin encoding).
+  - Contract must decide whether knowledge vs belief is distinguishable in NpcVisibleContext (factive-knowledge truth leak).
+  - Contract must require awareness of every entity referenced by a conclusion/proposition claim before projecting it.
+  - Import DeepReadonly from case-truth.ts; define own sha256-hex schema (TruthHashSchema is private).
