@@ -105,3 +105,19 @@ describe("live API answers: bool where an ID is compared", () => {
     expect(outcome(pullNumberTrue!)).toBe("EXECUTION_API");
   });
 });
+
+describe("stage0 manifest: bool where the format integer is compared", () => {
+  const files = [{ path: "tools/forge_v01/main.py", sha256: "0".repeat(64) }];
+  const [ok, formatTrue] = py([
+    { fn: "stage0.parse_manifest", args: [b(JSON.stringify({ format: 1, files }))] },
+    { fn: "stage0.parse_manifest", args: [b(JSON.stringify({ format: true, files }))] },
+  ]);
+
+  test("control: format 1 parses", () => {
+    expect(outcome(ok!)).toBe("PASS");
+  });
+
+  test("format: true → POLICY_INVALID", () => {
+    expect(outcome(formatTrue!)).toBe("POLICY_INVALID");
+  });
+});

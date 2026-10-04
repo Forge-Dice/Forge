@@ -49,7 +49,7 @@ def _allowed(path: str) -> bool:
 
 def parse_manifest(raw: bytes) -> tuple[tuple[str, str], ...]:
     manifest = strict_json(raw, MANIFEST_LIMIT, "POLICY_INVALID", "stage0")
-    if not isinstance(manifest, dict) or set(manifest) != {"format", "files"} or manifest["format"] != 1:
+    if not isinstance(manifest, dict) or set(manifest) != {"format", "files"} or type(manifest["format"]) is not int or manifest["format"] != 1:
         raise fail("POLICY_INVALID", "stage0")
     files = manifest["files"]
     if not isinstance(files, list) or not 0 < len(files) <= MANIFEST_FILES:
