@@ -1,15 +1,19 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { command, intro, loadText, newGame, saveText, type Game } from "./game.ts";
-import { PLAY_CASES, loadPlayPackage, playCaseName } from "./cases.ts";
+import { PLAY_CASES, caseListText, loadPlayPackage, playCaseName } from "./cases.ts";
 
 // `npm run play [-- <fall>]`: a case in the terminal over the real session reducer.
-// Cases: see PLAY_CASES in cases.ts (vitrine is the default).
+// Cases: see PLAY_CASES in cases.ts (vitrine is the default); `npm run play -- liste` lists them.
 
 async function main(): Promise<void> {
+  if (process.argv[2] === "liste" || process.argv[2] === "fälle") {
+    console.log(caseListText());
+    return;
+  }
   const name = playCaseName(process.argv[2]);
   if (name === null) {
-    console.log(`Unbekannter Fall „${process.argv[2]}“. Verfügbar: ${Object.keys(PLAY_CASES).join(", ")}.`);
+    console.log(`Unbekannter Fall „${process.argv[2]}“.\n${caseListText()}`);
     process.exitCode = 1;
     return;
   }

@@ -1,4 +1,5 @@
 import { rulesetAllows } from "../domain/case-package.ts";
+import { DIFFICULTY_NAMES, difficultyDots, type Difficulty } from "./difficulty.ts";
 import { accusations, confrontations, hintsUsed, investigations, known, questions, recordText, type Action, type Game } from "./game.ts";
 
 // HTML views of the local browser front end. Pure: (game, feedback) -> page. Every label comes from
@@ -10,9 +11,9 @@ export type Feedback = {
   readonly title: string;
   readonly lines: readonly string[];
 };
-export type CaseCard = { readonly slug: string; readonly title: string; readonly teaser: string; readonly progress: string | null };
+export type CaseCard = { readonly slug: string; readonly title: string; readonly teaser: string; readonly progress: string | null; readonly difficulty?: Difficulty };
 
-const escape = (text: string): string =>
+export const escape = (text: string): string =>
   text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 const GROUPS: [string, string][] = [
@@ -38,7 +39,8 @@ const paragraphs = (text: string) =>
     .map((p) => `<p>${escape(p.trim())}</p>`)
     .join("");
 
-function layout(title: string, body: string, bodyClass = ""): string {
+/** Page frame shared by game, help and the case editor; extraStyle is appended to the base sheet. */
+export function layout(title: string, body: string, bodyClass = "", extraStyle = ""): string {
   return `<!doctype html>
 <html lang="de">
 <head>
@@ -47,7 +49,7 @@ function layout(title: string, body: string, bodyClass = ""): string {
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1c1814">
 <title>${escape(title)}</title>
-<style>${STYLE}</style>
+<style>${STYLE}${extraStyle}</style>
 </head>
 <body${bodyClass === "" ? "" : ` class="${bodyClass}"`}>
 ${body}
@@ -58,12 +60,16 @@ ${body}
 
 // ---------- Case selection ----------
 
-export function renderCaseList(cases: readonly CaseCard[]): string {
+/** Measured by the playtest bot; dots for the eye, the word for everyone. */
+const difficultyTag = (d: Difficulty | undefined): string =>
+  d === undefined ? "" : `<span class="difficulty" title="Schwierigkeit ${d} von 5"><span class="visually-hidden">Schwierigkeit: </span><span class="dots" aria-hidden="true">${difficultyDots(d)}</span> ${DIFFICULTY_NAMES[d]}</span>`;
+
+export function renderCaseList(cases: readonly CaseCard[], editorLink = false): string {
   const cards = cases
     .map((c, i) => {
       const solved = c.progress === "Gelöst";
       const badge = c.progress === null ? `<span class="badge">Neu</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
-      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">Akte Nr. ${String(i + 1).padStart(3, "0")}</span><h2>${escape(c.title)}</h2><p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">Akte öffnen →</span></span>${
+      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">Akte Nr. ${String(i + 1).padStart(3, "0")}</span><h2>${escape(c.title)}</h2>${difficultyTag(c.difficulty)}<p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">Akte öffnen →</span></span>${
         solved ? `<span class="stamp small" aria-hidden="true">Gelöst</span>` : ""
       }</a></li>`;
     })
@@ -71,7 +77,7 @@ export function renderCaseList(cases: readonly CaseCard[]): string {
   return layout(
     "Fälle",
     `<a class="skip" href="#faelle">Zu den Fällen springen</a>
-<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a></p></header>
+<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a>${editorLink ? ` <a class="button ghost" href="/editor">Fall-Editor</a>` : ""}</p></header>
 <main id="faelle" class="shelf"><h2 class="visually-hidden">Offene Akten</h2><ul class="cases">${cards}</ul>
 <section class="random-case" aria-labelledby="zufall"><h2 id="zufall">Zufallsfall</h2><p>Ein erzeugter Fall, jedes Mal ein anderes Schema. Gleicher Seed, gleicher Fall; leer lassen für einen zufälligen.</p><form method="post" action="/zufall"><label for="seed">Seed</label> <input id="seed" name="seed" inputmode="numeric" pattern="[0-9]{0,9}" maxlength="9" placeholder="z. B. 42"> <button type="submit">Zufallsfall öffnen</button></form></section>
 <p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>`,
@@ -659,6 +665,8 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .case-no { font: 700 12px var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--blood); }
 .case-card h2 { margin: 6px 0 10px; font-size: 26px; }
 .case-card p { color: #4a3d2e; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.case-card .difficulty { display: block; font: 600 13px var(--sans); margin: -4px 0 8px; color: var(--ink-soft); }
+.case-card .difficulty .dots { letter-spacing: 2px; color: var(--blood); }
 .case-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 8px; }
 .case-card .badge { background: rgba(42,33,25,.12); color: var(--ink); border-color: rgba(42,33,25,.25); }
 .case-card .badge.solved { background: var(--ok); color: #fff; }
