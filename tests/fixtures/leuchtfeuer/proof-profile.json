@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "bindings": {
+    "caseId": "case:leuchtfeuer",
+    "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+    "solutionHash": "1eaa66b623fc61fa801b954e9bda99ceb0bf8e66dcd4c6f6e491a9c69208aed1",
+    "releaseHash": "0baa09945bc5cd1661a5bc498909a5207abadb4b1d8dea9d1e0d55295088d065"
+  },
+  "answerScope": [
+    "conclusion:actor-hinrich",
+    "conclusion:actor-frauke",
+    "conclusion:actor-ole",
+    "conclusion:actor-marlene",
+    "conclusion:actor-jasper",
+    "conclusion:actor-knut"
+  ],
+  "ambiguityPolicy": "must_disambiguate",
+  "question": {
+    "kind": "required_literals"
+  },
+  "observations": [
+    {
+      "id": "observed:hinrich",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:hinrich-grog",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:kassenbuch"
+      }
+    },
+    {
+      "id": "public-rule:hinrich",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:hinrich",
+          "allOf": [
+            "observation:hinrich"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-hinrich",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:jasper",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:jasper-notruf",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:anrufliste"
+      }
+    },
+    {
+      "id": "public-rule:jasper",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:jasper",
+          "allOf": [
+            "observation:jasper"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-jasper",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:frauke",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:frauke-anruf",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:anrufliste"
+      }
+    },
+    {
+      "id": "public-rule:frauke",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:frauke",
+          "allOf": [
+            "observation:frauke"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-frauke",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:ole",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:ole-hafen",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:pegelfoto"
+      }
+    },
+    {
+      "id": "public-rule:ole",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:ole",
+          "allOf": [
+            "observation:ole"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-ole",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:marlene",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:marlene-warte",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:nachtkamera"
+      }
+    },
+    {
+      "id": "public-rule:marlene",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:marlene",
+          "allOf": [
+            "observation:marlene"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-marlene",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:knut",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:knut-landung",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:schlauchboot"
+      }
+    },
+    {
+      "id": "public-rule:knut",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "remaining:knut",
+          "allOf": [
+            "literal:hinrich",
+            "literal:jasper",
+            "literal:frauke",
+            "literal:ole",
+            "literal:marlene",
+            "observation:knut"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-knut",
+            "value": true
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "observation:hinrich",
+      "kind": "observation",
+      "observationId": "observed:hinrich"
+    },
+    {
+      "id": "license:hinrich",
+      "kind": "observation",
+      "observationId": "public-rule:hinrich"
+    },
+    {
+      "id": "literal:hinrich",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-hinrich",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:jasper",
+      "kind": "observation",
+      "observationId": "observed:jasper"
+    },
+    {
+      "id": "license:jasper",
+      "kind": "observation",
+      "observationId": "public-rule:jasper"
+    },
+    {
+      "id": "literal:jasper",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-jasper",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:frauke",
+      "kind": "observation",
+      "observationId": "observed:frauke"
+    },
+    {
+      "id": "license:frauke",
+      "kind": "observation",
+      "observationId": "public-rule:frauke"
+    },
+    {
+      "id": "literal:frauke",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-frauke",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:ole",
+      "kind": "observation",
+      "observationId": "observed:ole"
+    },
+    {
+      "id": "license:ole",
+      "kind": "observation",
+      "observationId": "public-rule:ole"
+    },
+    {
+      "id": "literal:ole",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-ole",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:marlene",
+      "kind": "observation",
+      "observationId": "observed:marlene"
+    },
+    {
+      "id": "license:marlene",
+      "kind": "observation",
+      "observationId": "public-rule:marlene"
+    },
+    {
+      "id": "literal:marlene",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-marlene",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:knut",
+      "kind": "observation",
+      "observationId": "observed:knut"
+    },
+    {
+      "id": "license:knut",
+      "kind": "observation",
+      "observationId": "public-rule:knut"
+    },
+    {
+      "id": "literal:knut",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-knut",
+        "value": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "exclude:hinrich",
+      "allOf": [
+        "observation:hinrich",
+        "license:hinrich"
+      ],
+      "to": "literal:hinrich",
+      "license": "license:hinrich"
+    },
+    {
+      "id": "exclude:jasper",
+      "allOf": [
+        "observation:jasper",
+        "license:jasper"
+      ],
+      "to": "literal:jasper",
+      "license": "license:jasper"
+    },
+    {
+      "id": "exclude:frauke",
+      "allOf": [
+        "observation:frauke",
+        "license:frauke"
+      ],
+      "to": "literal:frauke",
+      "license": "license:frauke"
+    },
+    {
+      "id": "exclude:ole",
+      "allOf": [
+        "observation:ole",
+        "license:ole"
+      ],
+      "to": "literal:ole",
+      "license": "license:ole"
+    },
+    {
+      "id": "exclude:marlene",
+      "allOf": [
+        "observation:marlene",
+        "license:marlene"
+      ],
+      "to": "literal:marlene",
+      "license": "license:marlene"
+    },
+    {
+      "id": "remaining:knut",
+      "allOf": [
+        "literal:hinrich",
+        "literal:jasper",
+        "literal:frauke",
+        "literal:ole",
+        "literal:marlene",
+        "observation:knut",
+        "license:knut"
+      ],
+      "to": "literal:knut",
+      "license": "license:knut"
+    }
+  ],
+  "witnessStepIds": [
+    "search-laterne",
+    "search-strand",
+    "search-faehrhaus",
+    "read-telefon",
+    "search-hafen",
+    "read-pegel",
+    "search-vogelwarte"
+  ]
+}
