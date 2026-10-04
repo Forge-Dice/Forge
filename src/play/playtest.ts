@@ -170,7 +170,18 @@ export function playRun(pkg: ResolvedCasePackage, style: Style, seed: number, pr
   };
   const fresh = (actions: Action[]) => actions.filter((a) => !done.has(JSON.stringify(a.event)));
   // Menus in the order the CLI shows them; a random player first picks a menu, then an entry.
-  const menus = (): Action[][] => [fresh(investigations(game)), fresh(questions(game)), fresh(confrontations(game))].filter((m) => m.length > 0);
+  const menus = (): Action[][] => [fresh(investigations(game)), fresh(questions(game)), pointed(fresh(confrontations(game)))].filter((m) => m.length > 0);
+  // Like a person would: first hold against someone the finds whose text names them.
+  const pointed = (actions: Action[]): Action[] => {
+    const names = (a: Action) => {
+      const { npc, evidence } = a.event as { npc: string; evidence: string };
+      const card = game.state.knowledge.observations.find((r) => r.source.kind === "evidence" && r.source.evidence === evidence)?.observation as { text?: string } | undefined;
+      const npcId = pkg.refs.resolve(npc)?.id;
+      const label = pkg.publicContent.labels.find((l) => l.entity.kind === "person" && l.entity.id === npcId)?.label;
+      return label !== undefined && (card?.text ?? "").includes(label.split(" ")[0]!);
+    };
+    return [...actions.filter(names), ...actions.filter((a) => !names(a))];
+  };
   const accuseRight = (): boolean => {
     const right = accusations(game).find((a) => solves(game, a));
     if (right === undefined) return false;
@@ -219,8 +230,13 @@ export function playRun(pkg: ResolvedCasePackage, style: Style, seed: number, pr
         const hint = result.output.hint;
         if (hint.kind === "accuse") {
           if (accuseRight()) break;
-        } else if (hint.target !== null && (hint.kind !== "interrogate" || hint.questionId !== null)) {
-          const event = hint.kind === "interrogate" ? { type: "interrogate", npc: hint.target, questionId: hint.questionId } : { type: "investigate", action: hint.kind, target: hint.target };
+        } else if (hint.target !== null && (hint.kind !== "interrogate" || hint.questionId !== null) && (hint.kind !== "confront" || hint.evidence !== null)) {
+          const event =
+            hint.kind === "interrogate"
+              ? { type: "interrogate", npc: hint.target, questionId: hint.questionId }
+              : hint.kind === "confront"
+                ? { type: "confront", npc: hint.target, questionId: hint.questionId, evidence: hint.evidence }
+                : { type: "investigate", action: hint.kind, target: hint.target };
           explore({ label: "", event });
           continue;
         } else if (hint.level < 3 && hint.target !== null) {
@@ -302,9 +318,15 @@ export function playtestCase(pkg: ResolvedCasePackage, seeds = DEFAULT_SEEDS): C
   const herrings = suspects.filter((id) => !answerIds.has(id));
   const wrongTotal = of("voreilig").reduce((sum, r) => sum + r.wrongAccusations, 0);
   const pull = Object.fromEntries(herrings.map((id) => [id, wrongTotal === 0 ? 0 : round2(of("voreilig").reduce((s, r) => s + (r.accused[id] ?? 0), 0) / wrongTotal)]));
-  const proofFinds = new Set<string>(
-    (pkg.proof?.profile.observations ?? []).flatMap((o) => ("source" in o && o.source.kind === "evidence" ? [o.source.evidenceId] : [])),
-  );
+  // Finds the proof stands on: evidence cards it cites, and evidence that forces an admission it uses.
+  const onNodes = new Set((pkg.proof?.profile.nodes ?? []).flatMap((n) => (n.kind === "observation" ? [n.observationId] : [])));
+  const manifest = pkg.proof === null ? null : (JSON.parse(pkg.proof.releaseManifest) as Manifest);
+  const proofFinds = new Set<string>([
+    ...(pkg.proof?.profile.observations ?? []).flatMap((o) => ("source" in o && o.source.kind === "evidence" ? [o.source.evidenceId] : [])),
+    ...(manifest?.certificateData.observations ?? [])
+      .filter((o) => onNodes.has(o.id))
+      .flatMap((o) => (o.alternatives ?? []).flatMap((alt) => (alt.kind === "admission" && typeof alt.evidenceId === "string" ? [alt.evidenceId] : []))),
+  ]);
   const hasty = of("voreilig");
 
   const metrics = {

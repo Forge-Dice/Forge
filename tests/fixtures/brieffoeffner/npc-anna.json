@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "caseId": "case:letter-opener",
-  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
-  "solutionHash": "043fe945472d7cec41b7faeea39c07fea6d0f572f25e29f8002fc69f85089010",
+  "truthHash": "24accd1071c10c9b3539b46ab1034c22293f64d0b84fcf3fc861d7bca2610f96",
+  "solutionHash": "29db5127ca231cf4edc1f1d98ae20a848662361163c1c0ec0177e5196d99bfd9",
   "npcId": "person:anna",
   "revision": 1,
   "asOf": 3600,

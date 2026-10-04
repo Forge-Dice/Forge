@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "Der Brieföffner",
-  "brief": "Ein Abendessen im Landhaus der Familie, Regen an den Scheiben. Kurz nach 20:25 Uhr wird Clara in der Bibliothek tot aufgefunden, getötet mit dem Brieföffner von ihrem eigenen Schreibtisch. Außer ihr waren an diesem Abend nur zwei Menschen im Haus: ihre Nichte Anna und ihr Geschäftspartner Ben.\n\nFinde heraus, wer für Claras Tod verantwortlich ist. Durchsuche Bibliothek und Garten, untersuche, was du findest, und befrage Anna und Ben. Nicht jede Spur führt zum Täter, und wer schweigt, hat damit noch nichts gestanden.",
+  "brief": "Ein Abendessen im Landhaus der Familie, Regen an den Scheiben. Kurz nach 20:25 Uhr wird Clara in der Bibliothek tot aufgefunden, getötet mit dem Brieföffner von ihrem eigenen Schreibtisch. Außer ihr waren an diesem Abend nur drei Menschen im Haus: ihre Nichte Anna, ihr Geschäftspartner Ben und der Butler Dorian.\n\nFinde heraus, wer für Claras Tod verantwortlich ist. Durchsuche Bibliothek, Garten und Küche, untersuche, was du findest, und befrage Anna und Ben. Wenn du glaubst, dass jemand lügt, halte ihm einen Fund vor. Nicht jede Spur führt zum Täter, und wer schweigt, hat damit noch nichts gestanden.",
   "challengeQuestion": "Wer ist für Claras Tod verantwortlich?",
   "labels": [
     {
@@ -110,10 +110,50 @@
     },
     {
       "entity": {
-        "kind": "evidence",
-        "id": "evidence:gloves-dirty"
+        "kind": "person",
+        "id": "person:dorian"
       },
-      "label": "Erdige Handschuhe",
+      "label": "Dorian",
+      "role": "Butler"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:kitchen"
+      },
+      "label": "Küche",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:tray"
+      },
+      "label": "Silbertablett",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:tea"
+      },
+      "label": "Tee in der Bibliothek",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:tray"
+      },
+      "label": "Teetablett",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kitchen-log"
+      },
+      "label": "Silberbuch",
       "role": null
     }
   ],
@@ -162,16 +202,16 @@
   "publicRules": [
     {
       "id": "rule:certified-sources",
-      "text": "Was ein Fundstück selbst zeigt, gilt als Tatsache. Aussagen von Personen können irren."
+      "text": "Was ein Fundstück selbst zeigt, gilt als Tatsache. Aussagen von Personen können irren oder gelogen sein."
     },
     {
       "id": "rule:alibi",
-      "text": "Wer um 20:25 im Garten war, war an Claras Tod nicht beteiligt und ist nicht verantwortlich."
+      "text": "Wer um 20:25 im Garten oder in der Küche war, war an Claras Tod nicht beteiligt und ist nicht verantwortlich."
     },
     {
       "id": "rule:participation",
-      "text": "Außer Clara war genau eine Person bei ihrem Tod dabei. Wer dabei war, ist verantwortlich."
+      "text": "Wer, mit einem Fundstück konfrontiert, zugibt, bei Claras Tod dabei gewesen zu sein, ist verantwortlich."
     }
   ],
-  "epilogue": "Ben bricht zusammen. „Sie wollte mich ruinieren“, sagt er, und seine Stimme versagt. Er schuldete Clara Geld, das er nicht zurückzahlen konnte, und am Abend stritten die beiden in der Bibliothek über das Testament. Um 20:25 griff er nach dem Brieföffner auf dem Schreibtisch. Im Verhör log er: Er sei nicht dabei gewesen, Anna sei es gewesen.\n\nAnna hatte mit Claras Tod nichts zu tun. Sie arbeitete zu dieser Zeit im Garten, ihre Handschuhe voller frischer Erde. Ihr Fingerabdruck auf dem Griff des Brieföffners war eine falsche Spur: Sie hatte am Nachmittag damit Briefe geöffnet."
+  "epilogue": "Ben bricht zusammen, als du ihm den Manschettenknopf vorhältst. „Sie wollte mich ruinieren“, sagt er, und seine Stimme versagt. Er schuldete Clara Geld, das er nicht zurückzahlen konnte, und am Abend stritten die beiden in der Bibliothek über das Testament. Um 20:25 griff er nach dem Brieföffner auf dem Schreibtisch. Im Verhör log er: Er sei nicht dabei gewesen, Anna sei es gewesen.\n\nAnna hatte mit Claras Tod nichts zu tun. Sie arbeitete zu dieser Zeit im Garten, die Wildkamera hat sie aufgenommen. Ihr Fingerabdruck auf dem Griff des Brieföffners war eine falsche Spur: Sie hatte am Nachmittag damit Briefe geöffnet. Auch Dorian war unschuldig. Er hatte den beiden um 20:20 Tee gebracht und zählte zur Tatzeit in der Küche das Silber."
 }
