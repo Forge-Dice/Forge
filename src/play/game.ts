@@ -1,4 +1,4 @@
-import { rulesetAllows, type ResolvedCasePackage } from "../domain/case-package.ts";
+import { rulesetAllows, type PublicContent, type ResolvedCasePackage } from "../domain/case-package.ts";
 import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
 import { hintCount, hintsExhausted, type Hint } from "../domain/case-hints.ts";
 import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
@@ -225,13 +225,29 @@ export function evidenceText(game: Game, o: EvidenceObservation): string {
   return lines.join("\n");
 }
 
+/**
+ * The NPC's wording of one reply kind: their authored voice if the case has one (picked per
+ * question, so repeated questions read the same), otherwise the neutral default of the language.
+ */
+function voiced(game: Game, npc: string, key: string, questionId: string): string | null {
+  const npcId = game.pkg.refs.resolve(npc)?.id;
+  const lines = game.pkg.publicContent.voices?.find((v) => v.npc === npcId)?.lines[key as keyof NonNullable<PublicContent["voices"]>[number]["lines"]];
+  if (lines === undefined || lines.length === 0) {
+    const m = msg(game);
+    return key === "decline" ? m.declines : key === "stands_by" ? m.standsBy : (m.stances[key] ?? null);
+  }
+  let h = 0;
+  for (const ch of questionId) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return lines[h % lines.length]!;
+}
+
 export function answerText(game: Game, o: InterrogationObservation): string {
   const npcId = game.pkg.refs.resolve(o.npc)?.id;
   const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === o.questionId);
   const m = msg(game);
   const head = m.answerHead(labelOf(game, o.npc), question?.text ?? o.questionId);
-  if (o.act === "decline") return `${head}: ${m.declines}`;
-  const said = `${head}: ${m.q(m.stances[o.stance]!)}`;
+  if (o.act === "decline") return `${head}: ${m.q(voiced(game, o.npc, "decline", o.questionId) ?? "")}`;
+  const said = `${head}: ${m.q(voiced(game, o.npc, o.stance, o.questionId) ?? "")}`;
   return "statement" in o ? `${said}\n  ${m.aboutClaim(claimText(game, o.statement))}` : said;
 }
 
@@ -276,8 +292,9 @@ export function hintText(game: Game, hint: Hint): string {
 export function confrontationText(game: Game, o: ConfrontationObservation): string {
   const m = msg(game);
   const head = m.confrontHead(labelOf(game, o.npc), labelOf(game, o.evidence));
-  if (o.act === "stands_by") return `${head}: ${m.standsBy}`;
-  return `${head}, ${m.givesIn}: ${m.q(m.stances[o.stance]!)}\n  ${m.aboutClaim(claimText(game, o.statement))}`;
+  if (o.act === "stands_by") return `${head}: ${m.q(voiced(game, o.npc, "stands_by", o.questionId) ?? "")}`;
+  const givesIn = voiced(game, o.npc, "gives_in", o.questionId);
+  return `${head}, ${m.givesIn}: ${m.q(`${givesIn === null ? "" : `${givesIn} `}${voiced(game, o.npc, o.stance, o.questionId) ?? ""}`)}\n  ${m.aboutClaim(claimText(game, o.statement))}`;
 }
 
 function outputText(game: Game, output: SessionOutput): string {

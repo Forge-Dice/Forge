@@ -87,8 +87,16 @@
   });
 
   (async () => {
-    // Restore every saved case silently, then open the page the address names.
-    for (const slug of app.slugs) {
+    // Restore every saved case silently, then open the page the address names. A Zufallsfall's
+    // seed is part of its slug (zufall-<seed>), so its save key alone recreates the case.
+    const generated = [];
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const slug = (localStorage.key(i) || "").slice(KEY.length);
+        if (localStorage.key(i).startsWith(KEY) && /^zufall-(0|[1-9][0-9]{0,8})$/.test(slug)) generated.push(slug);
+      }
+    } catch {}
+    for (const slug of [...app.slugs, ...generated.sort()]) {
       const saved = store.get(KEY + slug);
       if (saved === null) continue;
       const loaded = await handle("POST", `/fall/${slug}/load`, async () => saved);

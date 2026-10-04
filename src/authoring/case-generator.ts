@@ -57,6 +57,8 @@ const NAMES: readonly Name[] = (
     ["Hanna", true], ["Ida", true], ["Jakob", false], ["Karl", false], ["Lena", true], ["Marta", true], ["Nils", false],
     ["Olga", true], ["Paul", false], ["Rosa", true], ["Simon", false], ["Theo", false], ["Vera", true], ["Wilma", true],
     ["Felix", false], ["Lotte", true], ["Moritz", false], ["Pia", true], ["Leo", false], ["Erik", false], ["Mia", true],
+    ["Agnes", true], ["Bruno", false], ["Edith", true], ["Gustav", false], ["Helene", true], ["Johann", false], ["Luise", true],
+    ["Oskar", false], ["Martha", true], ["Rudolf", false], ["Sophie", true], ["Viktor", false],
   ] as const
 ).map(([name, f]) => ({ name, f }));
 
@@ -69,11 +71,19 @@ const ROLES: readonly (readonly [female: string, male: string])[] = [
   ["Sekretärin", "Sekretär"],
   ["Jugendfreundin", "Jugendfreund"],
   ["Verlegerin", "Verleger"],
+  ["Anwältin", "Anwalt"],
+  ["Schwägerin", "Schwager"],
+  ["Malerin", "Maler"],
+  ["Stieftochter", "Stiefsohn"],
+  ["Buchhalterin", "Buchhalter"],
 ];
 const VICTIM_ROLES: readonly (readonly [string, string])[] = [
   ["die Gastgeberin", "der Gastgeber"],
   ["die Hausherrin", "der Hausherr"],
   ["die Erbin des Hauses", "der Erbe des Hauses"],
+  ["die Mäzenin", "der Mäzen"],
+  ["die Direktorin", "der Direktor"],
+  ["die Jubilarin", "der Jubilar"],
 ];
 const LATECOMER_ROLES: readonly (readonly [string, string])[] = [
   ["eine Unbekannte", "ein Unbekannter"],
@@ -175,6 +185,54 @@ const SETTINGS: readonly Setting[] = [
       place("sail-loft", "Segelboden", "den Segelboden", "auf dem Segelboden", "flickt Segel auf dem Segelboden", "flickte Segel auf dem Segelboden", "Reparaturliste", "Auf der Reparaturliste am Segelboden"),
     ],
   },
+  {
+    occasion: "Eine Abendauktion im Auktionshaus",
+    where: "im Auktionshaus",
+    scene: { slug: "vault", name: "Tresorraum", acc: "den Tresorraum", in: "im Tresorraum", spot: "Vor dem offenen Tresor" },
+    places: [
+      place("saleroom", "Saal", "den Saal", "im Saal", "führt im Saal die Bieterliste", "führte im Saal die Bieterliste", "Bieterliste", "Auf der Bieterliste im Saal"),
+      place("restoration", "Restaurierwerkstatt", "die Restaurierwerkstatt", "in der Restaurierwerkstatt", "retuschiert in der Werkstatt ein Gemälde", "retuschierte in der Werkstatt ein Gemälde", "Arbeitsbuch der Restaurierung", "Im Arbeitsbuch der Restaurierung"),
+      place("catalogue-office", "Katalogbüro", "das Katalogbüro", "im Katalogbüro", "tippt im Katalogbüro Losbeschreibungen", "tippte im Katalogbüro Losbeschreibungen", "Postbuch", "Im Postbuch des Katalogbüros"),
+      place("loading-bay", "Laderampe", "die Laderampe", "an der Laderampe", "verlädt an der Rampe Kisten", "verlud an der Rampe Kisten", "Frachtliste", "Auf der Frachtliste an der Rampe"),
+      place("cafe", "Café", "das Café", "im Café", "serviert im Café Kaffee", "servierte im Café Kaffee", "Bonbuch des Cafés", "Im Bonbuch des Cafés"),
+    ],
+  },
+  {
+    occasion: "Ein Herbstball auf dem Gutshof",
+    where: "auf dem Gutshof",
+    scene: { slug: "hunting-room", name: "Jagdzimmer", acc: "das Jagdzimmer", in: "im Jagdzimmer", spot: "Unter dem Gewehrschrank" },
+    places: [
+      place("ballroom", "Ballsaal", "den Ballsaal", "im Ballsaal", "tanzt im Ballsaal", "tanzte im Ballsaal", "Tanzkarte", "Auf der Tanzkarte des Ballsaals"),
+      place("dairy", "Molkerei", "die Molkerei", "in der Molkerei", "buttert in der Molkerei", "butterte in der Molkerei", "Milchbuch", "Im Milchbuch der Molkerei"),
+      place("orchard", "Obstgarten", "den Obstgarten", "im Obstgarten", "pflückt im Obstgarten Äpfel", "pflückte im Obstgarten Äpfel", "Erntebuch", "Im Erntebuch des Obstgartens"),
+      place("smithy", "Schmiede", "die Schmiede", "in der Schmiede", "beschlägt in der Schmiede ein Pferd", "beschlug in der Schmiede ein Pferd", "Hufbuch", "Im Hufbuch der Schmiede"),
+      place("chapel", "Kapelle", "die Kapelle", "in der Kapelle", "spielt in der Kapelle Orgel", "spielte in der Kapelle Orgel", "Orgelbuch", "Im Orgelbuch der Kapelle"),
+    ],
+  },
+  {
+    occasion: "Eine Galavorstellung im Zirkus",
+    where: "im Zirkus",
+    scene: { slug: "director-wagon", name: "Direktionswagen", acc: "den Direktionswagen", in: "im Direktionswagen", spot: "Neben der Geldkassette" },
+    places: [
+      place("ring", "Manege", "die Manege", "in der Manege", "probt in der Manege", "probte in der Manege", "Probenbuch der Manege", "Im Probenbuch der Manege"),
+      place("menagerie", "Tierzelt", "das Tierzelt", "im Tierzelt", "füttert im Tierzelt die Pferde", "fütterte im Tierzelt die Pferde", "Fütterungsplan", "Auf dem Fütterungsplan im Tierzelt"),
+      place("ticket-wagon", "Kassenwagen", "den Kassenwagen", "im Kassenwagen", "verkauft im Kassenwagen Karten", "verkaufte im Kassenwagen Karten", "Kartenbuch", "Im Kartenbuch des Kassenwagens"),
+      place("costume-wagon", "Kostümwagen", "den Kostümwagen", "im Kostümwagen", "näht im Kostümwagen Pailletten an", "nähte im Kostümwagen Pailletten an", "Nähliste", "Auf der Nähliste im Kostümwagen"),
+      place("canteen", "Kantine", "die Kantine", "in der Kantine", "kocht in der Kantine Suppe", "kochte in der Kantine Suppe", "Kantinenbuch", "Im Kantinenbuch"),
+    ],
+  },
+  {
+    occasion: "Ein Festabend im Stadtmuseum",
+    where: "im Museum",
+    scene: { slug: "depot", name: "Depot", acc: "das Depot", in: "im Depot", spot: "Zwischen den Regalen" },
+    places: [
+      place("exhibition-hall", "Ausstellungssaal", "den Ausstellungssaal", "im Ausstellungssaal", "führt Gäste durch den Ausstellungssaal", "führte Gäste durch den Ausstellungssaal", "Führungsliste", "Auf der Führungsliste im Ausstellungssaal"),
+      place("lab", "Labor", "das Labor", "im Labor", "prüft im Labor eine Farbprobe", "prüfte im Labor eine Farbprobe", "Laborjournal", "Im Laborjournal"),
+      place("museum-shop", "Museumsladen", "den Museumsladen", "im Museumsladen", "kassiert im Museumsladen", "kassierte im Museumsladen", "Ladenkasse", "Im Kassenstreifen des Museumsladens"),
+      place("gate", "Pförtnerloge", "die Pförtnerloge", "in der Pförtnerloge", "hält in der Pförtnerloge Wache", "hielt in der Pförtnerloge Wache", "Wachbuch", "Im Wachbuch der Pförtnerloge"),
+      place("director-office", "Direktionsbüro", "das Direktionsbüro", "im Direktionsbüro", "telefoniert im Direktionsbüro", "telefonierte im Direktionsbüro", "Anrufliste", "Auf der Anrufliste im Direktionsbüro"),
+    ],
+  },
 ];
 
 type Weapon = { readonly slug: string; readonly nom: string; readonly dat: string; readonly name: string; readonly from: string };
@@ -186,6 +244,9 @@ const WEAPONS: readonly Weapon[] = [
   { slug: "bronze-figure", name: "Bronzefigur", nom: "Die Bronzefigur", dat: "der Bronzefigur", from: "aus dem Regal" },
   { slug: "walking-stick", name: "Spazierstock", nom: "Der Spazierstock", dat: "dem Spazierstock", from: "mit Silberknauf" },
   { slug: "wine-bottle", name: "Weinflasche", nom: "Die Weinflasche", dat: "der Weinflasche", from: "vom Büfett" },
+  { slug: "hammer", name: "Hammer", nom: "Der Hammer", dat: "dem Hammer", from: "aus der Werkzeugkiste" },
+  { slug: "marble-bust", name: "Marmorbüste", nom: "Die Marmorbüste", dat: "der Marmorbüste", from: "vom Kaminsims" },
+  { slug: "trophy", name: "Pokal", nom: "Der Pokal", dat: "dem Pokal", from: "aus der Vitrine" },
 ];
 
 type Clue = { readonly slug: string; readonly label: string; readonly the: string; readonly what: (c: string) => string; readonly lost: string };
@@ -195,6 +256,9 @@ const CLUES: readonly Clue[] = [
   { slug: "reading-glasses", label: "Lesebrille", the: "die Lesebrille", what: (c) => `${gen(c)} Lesebrille, ein Glas gesprungen`, lost: "Die Brille fiel bei der Tat zu Boden." },
   { slug: "key-ring", label: "Schlüsselbund", the: "der Schlüsselbund", what: (c) => `${gen(c)} Schlüsselbund mit dem Namensanhänger`, lost: "Der Bund glitt bei der Tat aus der Tasche." },
   { slug: "watch-strap", label: "Uhrarmband", the: "das Uhrarmband", what: (c) => `das gerissene Armband von ${gen(c)} Uhr`, lost: "Das Armband riss bei der Tat." },
+  { slug: "glove", label: "Handschuh", the: "der Handschuh", what: (c) => `${gen(c)} Lederhandschuh, am Finger eingerissen`, lost: "Der Handschuh blieb bei der Tat zurück." },
+  { slug: "brooch", label: "Brosche", the: "die Brosche", what: (c) => `${gen(c)} Brosche, die Nadel abgebrochen`, lost: "Die Brosche löste sich bei der Tat." },
+  { slug: "fountain-pen", label: "Füllfederhalter", the: "der Füllfederhalter", what: (c) => `${gen(c)} Füllfederhalter mit eingravierten Initialen`, lost: "Der Füller rutschte bei der Tat aus der Brusttasche." },
 ];
 
 type Motive = {
@@ -210,6 +274,118 @@ const MOTIVES: readonly Motive[] = [
   { slug: "blackmail", relation: "wird erpresst von", argument: "Streit über einen alten Brief", motive: (c, v) => `${v} erpresst ${c} mit einem alten Brief`, epilogue: (c, v) => `${v} erpresste ${c} seit Monaten mit einem alten Brief` },
   { slug: "jealousy", relation: "ist eifersüchtig auf", argument: "Streit über eine Liebschaft", motive: (c, v) => `${c} glaubt, ${v} habe eine Liebschaft zerstört`, epilogue: (c, v) => `${c} gab ${v} die Schuld an einer zerbrochenen Liebschaft` },
   { slug: "business", relation: "ist Teilhaber bei", argument: "Streit über den Firmenverkauf", motive: (c, v) => `${v} will die gemeinsame Firma hinter dem Rücken von ${c} verkaufen`, epilogue: (c, v) => `${v} wollte die gemeinsame Firma hinter dem Rücken von ${c} verkaufen` },
+  { slug: "revenge", relation: "hasst", argument: "Streit über eine alte Kränkung", motive: (c, v) => `${v} hat ${c} vor Jahren öffentlich gedemütigt`, epilogue: (c, v) => `${v} hatte ${c} vor Jahren öffentlich gedemütigt, und ${c} hatte es nie vergessen` },
+  { slug: "plagiarism", relation: "arbeitet für", argument: "Streit über ein gestohlenes Werk", motive: (c, v) => `${v} gibt eine Arbeit von ${c} als eigene aus`, epilogue: (c, v) => `${v} hatte eine Arbeit von ${c} als eigene ausgegeben und damit Ruhm geerntet` },
+  { slug: "secret", relation: "fürchtet", argument: "Streit über ein gehütetes Geheimnis", motive: (c, v) => `${v} droht, ein Geheimnis von ${c} öffentlich zu machen`, epilogue: (c, v) => `${v} hatte gedroht, ein Geheimnis von ${c} öffentlich zu machen` },
+];
+
+/** The evening's weather: one line for the brief, one for the end of the epilogue. */
+const WEATHER: readonly { readonly brief: string; readonly close: string }[] = [
+  { brief: "Draußen prasselt Regen gegen die Fenster.", close: "Draußen hatte der Regen endlich aufgehört." },
+  { brief: "Ein Gewitter zieht über das Land, bei jedem Blitz flackert das Licht.", close: "Das Gewitter war längst weitergezogen." },
+  { brief: "Dichter Nebel liegt über allem, man sieht kaum zehn Schritte weit.", close: "Der Nebel hatte sich gelichtet." },
+  { brief: "Es ist ein schwüler Sommerabend, alle Fenster stehen offen.", close: "Endlich kam kühlere Luft durch die offenen Fenster." },
+  { brief: "Seit dem Nachmittag fällt Schnee, die Zufahrt ist längst zugeweht.", close: "Draußen schneite es noch immer." },
+  { brief: "Ein kalter Wind pfeift durch jede Ritze.", close: "Der Wind hatte sich gelegt." },
+  { brief: "Der Vollmond steht hell über dem Abend, es ist still und klar.", close: "Der Mond war hinter den Dächern verschwunden." },
+];
+
+/** Side figures: never suspects, they only found the body or called the detective. */
+const SIDE_ROLES: readonly (readonly [female: string, male: string])[] = [
+  ["Kellnerin", "Kellner"],
+  ["Fahrerin", "Fahrer"],
+  ["Fotografin", "Fotograf"],
+  ["Nachtwächterin", "Nachtwächter"],
+  ["Pförtnerin", "Pförtner"],
+  ["Hausdame", "Hausdiener"],
+];
+const SURNAMES = ["Brandt", "Kessler", "Lorenz", "Albrecht", "Seidel", "Hoffmann", "Winter", "Krüger", "Vogt", "Engel"] as const;
+
+/**
+ * How an NPC speaks: their voice lines (public content "voices"), a line for the brief and how
+ * they confess in the epilogue. Wording only: a lie reads exactly like a sincere answer.
+ */
+type Personality = {
+  readonly trait: string; // "spricht nur das Nötigste."
+  readonly confess: (c: string) => string;
+  readonly lines: Readonly<Record<string, readonly string[]>>;
+};
+const PERSONALITIES: readonly Personality[] = [
+  {
+    trait: "spricht nur das Nötigste.",
+    confess: (c) => `${c} sagt am Ende nur einen Satz: „Ich war es.“`,
+    lines: {
+      affirms: ["Ja.", "Ja. Und?"],
+      denies: ["Nein.", "Nein. Weiter."],
+      leans_affirms: ["Vermutlich."],
+      leans_denies: ["Eher nicht."],
+      uncertain: ["Weiß nicht genau."],
+      does_not_know: ["Keine Ahnung."],
+      decline: ["Kein Kommentar.", "Dazu nichts."],
+      stands_by: ["Ich bleibe dabei."],
+      gives_in: ["Gut."],
+    },
+  },
+  {
+    trait: "redet gern um den heißen Brei herum.",
+    confess: (c) => `${c} windet sich lange, sucht nach Ausflüchten und gibt dann doch auf.`,
+    lines: {
+      affirms: ["Nun ja, wenn Sie so wollen: ja.", "Im Großen und Ganzen würde ich sagen, ja."],
+      denies: ["Wie kommen Sie darauf? Nein.", "Nein, eigentlich nicht, nein."],
+      leans_affirms: ["Könnte schon sein, ich habe nicht so darauf geachtet."],
+      leans_denies: ["Ich glaube nicht, aber festlegen möchte ich mich nicht."],
+      uncertain: ["Schwer zu sagen, wirklich."],
+      does_not_know: ["Da kann ich Ihnen leider nicht helfen."],
+      decline: ["Muss ich darauf antworten?", "Das tut doch nichts zur Sache."],
+      stands_by: ["Ich habe Ihnen gesagt, was ich weiß. Mehr nicht."],
+      gives_in: ["Na schön, Sie lassen ja nicht locker."],
+    },
+  },
+  {
+    trait: "erzählt gern und ausführlich.",
+    confess: (c) => `Dann bricht es aus ${c} heraus, ein ganzer Wortschwall, als hätte es nur auf diesen Moment gewartet.`,
+    lines: {
+      affirms: ["Ja, natürlich! Das habe ich vorhin schon der halben Gesellschaft erzählt.", "Aber ja! Fragen Sie ruhig die anderen, die waren ja auch da."],
+      denies: ["Nein, ganz bestimmt nicht! Ich weiß noch genau, wie der Abend lief.", "Nein, nein, nein. Wo denken Sie hin?"],
+      leans_affirms: ["Ich glaube schon, ja, so wie ich das von drüben gehört habe."],
+      leans_denies: ["Hm, eher nicht. Aber an so einem Abend geht ja viel durcheinander."],
+      uncertain: ["Ach, wenn ich das wüsste! Ich war ja mit meinen eigenen Sachen beschäftigt."],
+      does_not_know: ["Das weiß ich nun wirklich nicht, so leid es mir tut."],
+      decline: ["Oh, darüber möchte ich lieber nicht reden, wirklich nicht.", "Ach, das ist eine lange Geschichte, die gehört nicht hierher."],
+      stands_by: ["Ich sage Ihnen doch, so war es! Das Ding da beweist gar nichts."],
+      gives_in: ["Ach Gott, also gut, ich erzähle es Ihnen ja."],
+    },
+  },
+  {
+    trait: "achtet sehr auf Form und Anstand.",
+    confess: (c) => `${c} richtet sich auf, legt die Hände auf den Tisch und legt ein förmliches Geständnis ab.`,
+    lines: {
+      affirms: ["Das ist korrekt.", "Jawohl, so verhält es sich."],
+      denies: ["Das trifft nicht zu.", "Keineswegs."],
+      leans_affirms: ["Ich nehme es an."],
+      leans_denies: ["Ich halte das für unwahrscheinlich."],
+      uncertain: ["Das vermag ich nicht zu sagen."],
+      does_not_know: ["Darüber ist mir nichts bekannt."],
+      decline: ["Dazu möchte ich mich nicht äußern.", "Ich bitte um Verständnis, dass ich dazu schweige."],
+      stands_by: ["Meine Aussage bleibt unverändert."],
+      gives_in: ["Ich sehe ein, dass Leugnen zwecklos ist."],
+    },
+  },
+  {
+    trait: "wirkt an diesem Abend fahrig und nervös.",
+    confess: (c) => `${c} zittert, ringt um Worte und gesteht schließlich unter Tränen.`,
+    lines: {
+      affirms: ["J-ja. Ja, schon.", "Ja … ist das schlimm?"],
+      denies: ["Nein! Nein, wirklich nicht.", "N-nein. Warum fragen Sie das?"],
+      leans_affirms: ["Ich … glaube schon?"],
+      leans_denies: ["Eher nicht, glaube ich. Oder?"],
+      uncertain: ["Ich weiß es nicht mehr, ich bin ganz durcheinander."],
+      does_not_know: ["Ich weiß es nicht, ehrlich!"],
+      decline: ["Ich … dazu kann ich nichts sagen.", "Bitte, fragen Sie mich das nicht."],
+      stands_by: ["Das ist doch kein Beweis! Ich bleibe dabei."],
+      gives_in: ["Schon gut, schon gut."],
+    },
+  },
 ];
 
 // ---------- Text helpers ----------
@@ -259,10 +435,20 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   const at = 900 + 300 * Math.floor(random() * 7); // 15 to 45 minutes after the origin
   const salt = Array.from({ length: 4 }, () => Math.floor(random() * 2 ** 32).toString(16).padStart(8, "0")).join("");
   const places = draw(setting.places, innocentCount + 1); // the last one is the culprit's (timewindow)
+  const personalities = draw(PERSONALITIES, innocentCount + 1); // the culprit's first
+  const weather = pick(WEATHER);
+  const surnames = draw(SURNAMES, 2);
+  const side = draw(SIDE_ROLES, 2).map((r, k) => {
+    const f = random() < 0.5;
+    return { f, role: f ? r[0] : r[1], name: `${f ? "Frau" : "Herr"} ${surnames[k]}` };
+  });
+  const [finder, caller] = side as [(typeof side)[number], (typeof side)[number]];
+  /** Text variants: one of several sentence patterns, chosen by the seed. */
+  const oneOf = (...variants: string[]): string => pick(variants);
 
   const culprit = people[0]!;
   const victim = people[1]!;
-  const innocents = people.slice(2).map((n, k) => ({ ...n, place: places[k]!, role: roles[k + 1]! }));
+  const innocents = people.slice(2).map((n, k) => ({ ...n, place: places[k]!, role: roles[k + 1]!, personality: personalities[k + 1]! }));
   const culpritPlace = places[innocentCount]!;
   const C = culprit.name;
   const V = victim.name;
@@ -383,12 +569,17 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
     ],
   };
   const observation = { kind: "observation" };
-  const logText = (p: Place, who: string, time: string, tail: string) => `${p.lead} steht ein Eintrag von ${who}: ${time} Uhr. ${tail}`;
+  const logText = (p: Place, who: string, time: string, tail: string) =>
+    oneOf(
+      `${p.lead} steht ein Eintrag von ${who}: ${time} Uhr. ${tail}`,
+      `${p.lead} findet sich ${gen(who)} Name, daneben die Uhrzeit ${time}. ${tail}`,
+      `${p.lead}, in sauberer Handschrift: ${who}, ${time} Uhr. ${tail}`,
+    );
   const presentationEntries: Json[] = [
-    { evidenceId: EV.fingerprint, text: `Auf ${weapon.dat} ist ein Fingerabdruck von ${firstInnocent.name}. Wann er entstand, zeigt er nicht.`, mentions: [ref("person", pid(firstInnocent)), ref("item", IT.weapon)], reports: [] },
+    { evidenceId: EV.fingerprint, text: oneOf(`Auf ${weapon.dat} ist ein Fingerabdruck von ${firstInnocent.name}. Wann er entstand, zeigt er nicht.`, `Ein deutlicher Fingerabdruck auf ${weapon.dat}: ${firstInnocent.name}. Wie alt er ist, lässt sich nicht sagen.`), mentions: [ref("person", pid(firstInnocent)), ref("item", IT.weapon)], reports: [] },
     ...innocents.map((i) => ({
       evidenceId: logOf(i.place),
-      text: logText(i.place, i.name, clock, `Das war genau zur Tatzeit, ${i.name} ${i.place.doing}.`),
+      text: logText(i.place, i.name, clock, oneOf(`Das war genau zur Tatzeit, ${i.name} ${i.place.doing}.`, `Genau zur Tatzeit also: ${i.name} ${i.place.doing}.`, `${i.name} ${i.place.doing}, und zwar genau zur Tatzeit.`)),
       mentions: [ref("person", pid(i)), ref("location", lid(i.place))],
       reports: [{ claim: personAt(pid(i), lid(i.place)), stance: "affirms", source: observation }],
     })),
@@ -396,7 +587,11 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   if (hasClue) {
     presentationEntries.unshift({
       evidenceId: EV.clue,
-      text: `${scene.spot} liegt ${clue.what(C)}. Daneben: ${gen(V)} Blut, noch nicht getrocknet. ${clue.lost}${late ? ` Von ${C} war an diesem Abend bisher keine Rede.` : ""}`,
+      text: `${oneOf(
+        `${scene.spot} liegt ${clue.what(C)}. Daneben: ${gen(V)} Blut, noch nicht getrocknet.`,
+        `${scene.spot}, halb verborgen, liegt ${clue.what(C)}. Am Rand klebt ${gen(V)} Blut, noch feucht.`,
+        `Erst auf den zweiten Blick: ${scene.spot} liegt ${clue.what(C)}, daran frisches Blut von ${V}.`,
+      )} ${clue.lost}${late ? ` Von ${C} war an diesem Abend bisher keine Rede.` : ""}`,
       mentions: [ref("person", P.c), ref("event", E.murder)],
       reports: [{ claim: participates(E.murder, P.c), stance: "affirms", source: observation }],
     });
@@ -404,7 +599,10 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   if (kind === "twopaths") {
     presentationEntries.push({
       evidenceId: EV.sleeve,
-      text: `An ${gen(C)} Ärmel sind feine, frische Blutspritzer. Der Schnelltest ordnet sie ${V} zu: ${C} stand dabei, als ${V} starb.`,
+      text: oneOf(
+        `An ${gen(C)} Ärmel sind feine, frische Blutspritzer. Der Schnelltest ordnet sie ${V} zu: ${C} stand dabei, als ${V} starb.`,
+        `${C} hat den Ärmel umgeschlagen, doch darunter sind frische Blutspritzer. Der Schnelltest sagt: ${gen(V)} Blut. ${C} stand dabei, als ${V} starb.`,
+      ),
       mentions: [ref("person", P.c), ref("event", E.murder)],
       reports: [{ claim: participates(E.murder, P.c), stance: "affirms", source: observation }],
     });
@@ -512,33 +710,64 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   const roleOf = (n: Name, r: readonly [string, string]) => (n.f ? r[0] : r[1]);
   const named = suspects.filter((s) => !(late && s === C));
   const searchable = [scene.acc, ...usedPlaces.map((p) => p.acc)];
+  // One phrasing per case, so the same question reads the same for every NPC.
+  const asYou = pick([() => `Waren Sie bei ${deathOf} dabei?`, () => `Waren Sie dabei, als ${V} starb?`]);
+  const asOther = pick([(n: string) => `War ${n} bei ${deathOf} dabei?`, (n: string) => `War ${n} dabei, als ${V} starb?`]);
+  const asWhere = pick([(where: string) => `Waren Sie um ${clock} ${where}?`, (where: string) => `Waren Sie um ${clock} Uhr wirklich ${where}?`]);
+  const asWeapon = oneOf(`Wurde ${V} mit ${weapon.dat} getötet?`, `Ist ${weapon.nom.replace(/^D/, "d")} ${weapon.from} die Tatwaffe?`);
   const questionTexts = [
-    { npc: P.c, questionId: Q.present(culprit), text: `Waren Sie bei ${deathOf} dabei?` },
-    { npc: P.c, questionId: Q.weapon, text: `Wurde ${V} mit ${weapon.dat} getötet?` },
-    ...(kind === "timewindow" ? [{ npc: P.c, questionId: Q.alibi(culprit), text: `Waren Sie um ${clock} ${culpritPlace.in}?` }] : []),
+    { npc: P.c, questionId: Q.present(culprit), text: asYou() },
+    { npc: P.c, questionId: Q.weapon, text: asWeapon },
+    ...(kind === "timewindow" ? [{ npc: P.c, questionId: Q.alibi(culprit), text: asWhere(culpritPlace.in) }] : []),
     ...innocents.flatMap((i) => [
-      { npc: P.c, questionId: Q.present(i), text: `War ${i.name} bei ${deathOf} dabei?` },
-      ...(late ? [] : [{ npc: pid(i), questionId: Q.present(culprit), text: `War ${C} bei ${deathOf} dabei?` }]),
-      { npc: pid(i), questionId: Q.present(i), text: `Waren Sie bei ${deathOf} dabei?` },
-      { npc: pid(i), questionId: Q.alibi(i), text: `Waren Sie um ${clock} ${i.place.in}?` },
-      { npc: pid(i), questionId: Q.scene(i), text: `Waren Sie um ${clock} ${scene.in}?` },
+      { npc: P.c, questionId: Q.present(i), text: asOther(i.name) },
+      ...(late ? [] : [{ npc: pid(i), questionId: Q.present(culprit), text: asOther(C) }]),
+      { npc: pid(i), questionId: Q.present(i), text: asYou() },
+      { npc: pid(i), questionId: Q.alibi(i), text: asWhere(i.place.in) },
+      { npc: pid(i), questionId: Q.scene(i), text: asWhere(scene.in) },
     ]),
   ];
   const schemaTail: Record<CaseSchema, string> = {
     classic: presenceLie ? ` Erst ${clue.the} am Tatort brachte die Wahrheit ans Licht.` : "",
-    crowd: ` Unter so vielen Verdächtigen verriet erst ${clue.the} am Tatort, wer dabei gewesen war.`,
+    crowd: oneOf(` Unter so vielen Verdächtigen verriet erst ${clue.the} am Tatort, wer dabei gewesen war.`, ` So viele Verdächtige, und doch genügte ${clue.the} am Tatort.`),
     timewindow: ` ${C} war zwar ${culpritPlace.in} gewesen, ging aber schon um ${clockOf(originHour, leave)} wieder, rechtzeitig für die Tat.${alibiLie ? " Das angebliche Alibi hielt dem Eintrag nicht stand." : ""}`,
-    latecomer: ` Niemand hatte ${C} an diesem Abend erwartet, erst ${clue.the} am Tatort verriet die Anwesenheit.`,
+    latecomer: oneOf(` Niemand hatte ${C} an diesem Abend erwartet, erst ${clue.the} am Tatort verriet die Anwesenheit.`, ` Auf keiner Gästeliste stand ${C}, und doch war ${clue.the} am Tatort nicht zu übersehen.`),
     twopaths: ` ${clue.label} am Tatort und Blutspritzer am Ärmel erzählten dieselbe Geschichte.`,
   };
+  const art = (f: boolean) => (f ? "die" : "der");
+  const finderFull = `${art(finder.f)} ${finder.role} ${finder.name}`;
+  const callerFull = `${art(caller.f)} ${caller.role} ${caller.name}`;
+  const cap = (text: string) => text[0]!.toUpperCase() + text.slice(1);
+  const lower = (text: string) => text[0]!.toLowerCase() + text.slice(1);
+  const culpritPersonality = personalities[0]!;
+  const cast = [
+    ...(late ? [] : [{ name: C, role: roleOf(culprit, roles[0]!), trait: culpritPersonality.trait }]),
+    ...innocents.map((i) => ({ name: i.name, role: roleOf(i, i.role), trait: i.personality.trait })),
+  ].sort((a, b) => (a.name < b.name ? -1 : 1));
+  const lateNote = late ? ", so heißt es jedenfalls" : "";
   const publicContent = {
     schemaVersion: 1,
     title: truth.title,
     brief: [
-      `${setting.occasion}. Gegen ${clock} Uhr wird ${V} ${scene.in} tot aufgefunden, getötet mit ${weapon.dat} ${weapon.from}. Außer ${V} waren zur Tatzeit nur ${list(named)} in der Nähe${late ? ", so heißt es jedenfalls" : ""}.`,
-      `Dein Auftrag: Finde heraus, wer für ${deathOf} verantwortlich ist. Durchsuche ${list(searchable)}, untersuche, was du findest, und befrage ${list(named)}. ${
-        kind === "timewindow" ? "Achte genau auf die Uhrzeiten. " : ""
-      }Nicht jede Spur führt zum Täter${withLie ? ", nicht jede Aussage ist wahr," : ","} und eine Gesprächsverweigerung ist kein Geständnis.`,
+      [
+        oneOf(
+          `${setting.occasion}. Gegen ${clock} Uhr wird ${V} ${scene.in} tot aufgefunden, getötet mit ${weapon.dat} ${weapon.from}.`,
+          `${setting.occasion}, und dann das: Gegen ${clock} Uhr liegt ${V} tot ${scene.in}, getötet mit ${weapon.dat} ${weapon.from}.`,
+          `${setting.occasion} endet jäh. Gegen ${clock} Uhr findet man ${V} ${scene.in}, getötet mit ${weapon.dat} ${weapon.from}.`,
+        ),
+        weather.brief,
+        `Gefunden hat ${victim.f ? "sie" : "ihn"} ${finderFull}, ${art(finder.f)} ${oneOf("erst nach der Tat dazukam", "kurz darauf nach dem Rechten sehen wollte", "nur rasch die Fenster schließen wollte")}.`,
+        oneOf(
+          `Außer ${V} waren zur Tatzeit nur ${list(named)} in der Nähe${lateNote}.`,
+          `Zur Tatzeit hielten sich nur ${list(named)} in der Nähe auf${lateNote}.`,
+          `In der Nähe waren zur Tatzeit nur ${list(named)}${lateNote}.`,
+        ),
+      ].join(" "),
+      `${cap(callerFull)} hat dich gerufen. ${oneOf(
+        `Dein Auftrag: Finde heraus, wer für ${deathOf} verantwortlich ist. Durchsuche ${list(searchable)}, untersuche, was du findest, und befrage ${list(named)}.`,
+        `Finde heraus, wer für ${deathOf} verantwortlich ist. Sieh dir ${list(searchable)} genau an, prüfe jeden Fund und sprich mit ${list(named)}.`,
+      )} ${kind === "timewindow" ? "Achte genau auf die Uhrzeiten. " : ""}Nicht jede Spur führt zum Täter${withLie ? ", nicht jede Aussage ist wahr," : ","} und eine Gesprächsverweigerung ist kein Geständnis.`,
+      `${oneOf("Ein erster Eindruck von den Beteiligten:", "Zu den Beteiligten:")} ${cast.map((p) => `${p.name} (${p.role}) ${p.trait}`).join(" ")}`,
     ].join("\n\n"),
     challengeQuestion: `Wer ist für ${deathOf} verantwortlich?`,
     labels: [
@@ -564,9 +793,28 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
       { id: "rule:participation", text: `Außer ${V} war genau eine der verdächtigen Personen bei ${deathOf} dabei, und wer dabei war, ist verantwortlich.` },
     ],
     epilogue: [
-      `${C} ${withLie ? "gibt die Lüge auf" : "bricht das Schweigen"}. ${motive.epilogue(C, V)}, und am Abend kam es ${scene.in} zum ${motive.argument}. Um ${clock} griff ${C} nach ${weapon.dat}.${schemaTail[kind]}`,
-      `${list(innocents.map((i) => i.name))} ${innocents.length === 1 ? "hatte" : "hatten"} mit ${deathOf} nichts zu tun: ${list(innocents.map((i) => `${i.name} ${i.place.did}`))}. Der Fingerabdruck auf ${weapon.dat} war eine falsche Spur, er sagt nichts darüber, wann er entstand.`,
+      `${culpritPersonality.confess(C)}${withLie ? " Die Lüge ist nicht mehr zu halten." : ""} ${motive.epilogue(C, V)}, und am Abend kam es ${scene.in} zum ${motive.argument}. ${oneOf(
+        `Um ${clock} Uhr griff ${C} nach ${weapon.dat}.`,
+        `Als ${V} sich abwandte, griff ${C} nach ${weapon.dat}. Es war ${clock} Uhr.`,
+        `Um ${clock} Uhr war es vorbei, und ${lower(weapon.nom)} ${weapon.from} lag neben ${V}.`,
+      )}${schemaTail[kind]}`,
+      `${oneOf(
+        `${list(innocents.map((i) => i.name))} ${innocents.length === 1 ? "hatte" : "hatten"} mit ${deathOf} nichts zu tun: ${list(innocents.map((i) => `${i.name} ${i.place.did}`))}.`,
+        `Die anderen waren es nicht: ${list(innocents.map((i) => `${i.name} ${i.place.did}`))}, genau wie es die Aufzeichnungen sagten.`,
+      )} ${oneOf(
+        `Der Fingerabdruck auf ${weapon.dat} war eine falsche Spur, er sagt nichts darüber, wann er entstand.`,
+        `Und der Fingerabdruck auf ${weapon.dat}? Eine falsche Spur, älter als die Tat.`,
+      )}`,
+      `${weather.close} ${oneOf(
+        `${cap(finderFull)} wird den Anblick ${scene.in} so schnell nicht vergessen.`,
+        `${cap(callerFull)} dankt dir leise und begleitet dich hinaus.`,
+        `Als ${C} hinausgeführt wird, sieht niemand auf.`,
+      )}`,
     ].join("\n\n"),
+    voices: [
+      { npc: P.c, lines: culpritPersonality.lines },
+      ...innocents.map((i) => ({ npc: pid(i), lines: i.personality.lines })),
+    ],
   };
 
   // ---------- Proof: release manifest and proof profile ----------
