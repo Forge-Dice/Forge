@@ -123,7 +123,7 @@ type TruthEvent = CaseTruth["events"][number];
 type Status = true | false | "undetermined";
 
 // Truth table of TASK-0003 §6. Inputs are fully reference-checked before this is called.
-function resolveConclusion(claim: ConclusionClaim, resolution: EventResolution, event: TruthEvent): Status {
+function resolveConclusion(claim: ConclusionClaim, resolution: DeepReadonly<EventResolution>, event: TruthEvent): Status {
   const { completeness, assignments } = resolution.responsibility;
   const openOrFalse: Status = completeness === "complete" ? false : "undetermined";
 
@@ -151,7 +151,7 @@ function resolveConclusion(claim: ConclusionClaim, resolution: EventResolution, 
   }
 }
 
-function claimKey(claim: ConclusionClaim): string {
+export function claimKey(claim: ConclusionClaim): string {
   // Discriminator plus every defined field; independent of property order.
   const entries = Object.entries(claim).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
   return JSON.stringify(entries);
@@ -265,6 +265,37 @@ function checkSolution(solution: CaseSolutionShape, truth: CaseTruth, truthHash:
       }
     });
   }
+}
+
+// ---------- Single-claim evaluation (MYST-0002) ----------
+
+export type ConclusionStatus = Status;
+
+export type ConclusionEvaluation =
+  | { readonly success: true; readonly status: ConclusionStatus }
+  | { readonly success: false; readonly code: "SOLUTION_BINDING_MISMATCH" | "INVALID_CLAIM" | "UNKNOWN_REFERENCE" };
+
+/**
+ * Status of one structured claim against a bound answer key, via the TASK-0003 truth table.
+ * This is an answer-key oracle: domain/host API only, it must never be passed through to players.
+ * No resolution for the claimed event means "undetermined". Never throws for plain JSON claims.
+ */
+export function evaluateConclusionClaim(truth: CaseTruth, solution: CaseSolution, claim: unknown): ConclusionEvaluation {
+  if (solution.caseId !== truth.caseId || solution.truthHash !== hashCaseTruth(truth)) {
+    return Object.freeze({ success: false, code: "SOLUTION_BINDING_MISMATCH" });
+  }
+  const parsed = ConclusionClaimSchema.safeParse(claim);
+  if (!parsed.success) return Object.freeze({ success: false, code: "INVALID_CLAIM" });
+  const c = parsed.data;
+
+  const event = truth.events.find((e) => e.id === c.eventId);
+  const personKnown = !("personId" in c) || truth.persons.some((p) => p.id === c.personId);
+  const causeKnown = c.kind !== "eventCausedEvent" || truth.events.some((e) => e.id === c.causeEventId);
+  if (event === undefined || !personKnown || !causeKnown) return Object.freeze({ success: false, code: "UNKNOWN_REFERENCE" });
+
+  const resolution = solution.resolutions.find((r) => r.eventId === c.eventId);
+  if (resolution === undefined) return Object.freeze({ success: true, status: "undetermined" });
+  return Object.freeze({ success: true, status: resolveConclusion(c, resolution, event) });
 }
 
 // ---------- Immutability ----------
