@@ -1,0 +1,87 @@
+[
+  {
+    "id": "P01-replace-third-barrier",
+    "observed": {
+      "requested": "0ee48e9dd23abe6953a9877eaa1ccf44519a2c8b",
+      "returnedHeader": "0ee48e9dd23abe6953a9877eaa1ccf44519a2c8b",
+      "rawRehashed": "39e73a8a77355e32cb848e2c52b32797efed4937",
+      "hashMismatch": true,
+      "protectedOriginal": true
+    },
+    "interpretation": "Removing env and layout checks does not remove normative raw hash verification; A1 cannot be assumed an end-to-end security kill."
+  },
+  {
+    "id": "P02-parent-open",
+    "observed": {
+      "False": "opened outside directory",
+      "True": {
+        "errno": 20
+      }
+    },
+    "interpretation": "A2 is a meaningful isolated filesystem mutant when other barriers are held fixed."
+  },
+  {
+    "id": "P03-blob-output-budget",
+    "observed": {
+      "blob": 8388608,
+      "framedOutput": 8388663,
+      "perProcessLimit": 8388608,
+      "overBy": 55
+    },
+    "interpretation": "An allowed exact-max blob exceeds the general output limit solely through required framing."
+  },
+  {
+    "id": "P04-review-gap",
+    "observed": {
+      "distinctGateReviews": true,
+      "identicalReceipts": true,
+      "stage2Stable": true
+    },
+    "interpretation": "Stage 2 cannot distinguish a before-Gate edit from an after-Gate/before-Stage-2 edit. AV-154 and AV-155 need a defined observation boundary."
+  },
+  {
+    "id": "P05-dependency-substitution",
+    "observed": {
+      "acceptedCommitNonNull": true,
+      "commitIsBaseAncestor": true,
+      "commitImplementsNamedDependency": false,
+      "documentedMechanicalPredicatesPass": true
+    },
+    "interpretation": "Policy v1 provides no task-to-accepted-commit record; trust is currently manual Owner publication."
+  },
+  {
+    "id": "P06-receipt-other-barrier",
+    "observed": {
+      "removeReceiptAttemptCheck": true,
+      "currentAttemptJobs": [
+        "forge-verify"
+      ],
+      "requiredAttemptJobs": [
+        "forge-gate",
+        "forge-verify"
+      ],
+      "jobSetStillRejects": true
+    },
+    "interpretation": "C3 is not necessarily a security kill in the full final recheck."
+  },
+  {
+    "id": "P07-duplicate-bodies",
+    "observed": {
+      "identitySetEqual": true,
+      "bodiesSwapped": true
+    },
+    "interpretation": "Frozen bytes and review are necessary: tuple/occurrence identifies collected positions, not semantic test bodies."
+  },
+  {
+    "id": "P08-schema-counterexample",
+    "observed": {
+      "declaredExternalResultEnum": [
+        "approve",
+        "request_changes"
+      ],
+      "AV150Value": "reject",
+      "enumAccepts": false
+    },
+    "interpretation": "AV-150's exact error code is not consistent with the declared external result enum without additional precedence rules."
+  }
+]

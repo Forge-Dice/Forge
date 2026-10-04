@@ -1,0 +1,82 @@
+[
+  {
+    "id": "F01",
+    "severity": "BLOCKING CONTRACT DEFECT",
+    "owner": "A/B",
+    "source": "§2 output=8MiB; §3/§6 framed data",
+    "finding": "Bounded Datenstrom und Prozesslogbudget sind nicht getrennt. Ein Blob von genau 8MiB benötigt 8.388.663 Bytes im cat-file-Frame; P03. Ein langlebiger Batch über mehrere erlaubte Objekte scheitert ebenfalls am pauschalen Lebenszeitbudget.",
+    "requiredClosure": "Für framed Objekt-/Inventardaten verbindliche gesonderte Streamingbudgets und Fehlerpriorität festlegen, oder veröffentlichte Limits inklusive Framing konsistent reduzieren. Kein Schutz lockern."
+  },
+  {
+    "id": "F02",
+    "severity": "BLOCKING CONTRACT DEFECT",
+    "owner": "C",
+    "source": "§9–10; AV154/155; P04",
+    "finding": "Stage1 beobachtet Review R0; gültige Bearbeitung vor Stage2 ergibt R1. Das feste Receipt enthält keinen Reviewdigest; Stage2Start und beide Finalrunden sehen nur R1. Gleiches Receipt bei zwei unterschiedlichen Gate-Beobachtungen beweist fehlende Information.",
+    "requiredClosure": "Beobachtungsgrenze normativ entscheiden: verlangten Gate-Snapshotdigest im trusted Receipt binden oder explizit Stage2-only-Frische ausweisen und AV154 ändern. Zwei gleiche Finalrunden lösen den Zwischenjobverlust nicht."
+  },
+  {
+    "id": "F03",
+    "severity": "BLOCKING ACCEPTANCE DEFECT",
+    "owner": "A/B/C geteilt",
+    "source": "§4/§11/§13; AV004/071/115/150/123–125",
+    "finding": "Einige Sollcodes/Inputformen sind nicht geschlossen. reject ist kein gültiger external result. Gleicher fullName ist bei unterschiedlichen Tupeln erlaubt, bei Ersatz nicht. 129 Historycommits heißen in Tabelle GIT_LIMIT, in §11 auch GIT_HISTORY. Ein OS-denied Workerzugriff ist Isolationserfolg, kein automatisch sichtbares Supervisorereignis.",
+    "requiredClosure": "Feste Layer/konkrete Eingaben/Präzedenz ergänzen; gültige request_changes von schema-invalid reject trennen; denied-probe mit gemessenem Isolationresultat statt erfundenem Supervisor-Sensor abnehmen."
+  },
+  {
+    "id": "F04",
+    "severity": "BLOCKING SCHEMA DEFECT",
+    "owner": "C",
+    "source": "§9 external findings + supersedes",
+    "finding": "StrictObject wird verlangt, aber Severityenum, Blockingprädikat und Supersedesclosure sind nicht geschlossen. Ein approve mit critical/fatal-Findings hat je Implementationsinterpretation anderes Resultat; bereits supersedete Blocker sind unklar.",
+    "requiredClosure": "Exakte Review-/Finding-/Supersedes-Typen und deterministisches Blockingprädikat festlegen. DEV-Providerregel bewahren; weitergehende OWNER_OPS-Unabhängigkeit nur als bewusst benannte Produktentscheidung aufnehmen."
+  },
+  {
+    "id": "F05",
+    "severity": "NONBLOCKING INTEGRATION NOTE",
+    "owner": "A/B/C",
+    "source": "§2/§12; A Stub; B Worker; C Image",
+    "finding": "A besitzt Live-GET-Bootstrap, github.py kommt C; B fordert Dockerabnahme, Rezept kommt C. Kein zwingender logischer Zyklus, wenn A einen eigenen festen Minimaltransport und B ein extern gepinntes Acceptanceimage verwendet. Diese Harnessinputs sind noch nicht explizit typisiert.",
+    "requiredClosure": "Ownership und externe Acceptanceinputs vor Implementierungsausführung kurz fixieren. A-Stub darf keine B/C-Produktionssemantik implementieren; spätere Wrapper aus C müssen A unverändert benutzen können."
+  },
+  {
+    "id": "F06",
+    "severity": "NONBLOCKING TRUST/RESPONSIBILITY NOTE",
+    "owner": "B/Owner",
+    "source": "§4 dependencies; P05",
+    "finding": "Nichtnull+Commit-Ancestry beweisen keine Taskannahme. Policy v1 hat keine acceptedDependencies-Map. Die Drafts verlangen echte unabhängige Abnahme und trusted Ownerpublikation; diese bleibt die Autorität. Kein Developer kann den BASE-Contract frei umbeschriften.",
+    "requiredClosure": "Verantwortung externem Owner-Acceptanceprozess ausdrücklich zuweisen und Proofgrenze nennen; nicht aus Ancestry eine maschinell authentifizierte historische Taskannahme ableiten. Ohne echte Annahme B/C sperren."
+  },
+  {
+    "id": "F07",
+    "severity": "NONBLOCKING SOURCE/REVISION NOTE",
+    "owner": "A/B/C",
+    "source": "Draft Bindung; historische Quelle",
+    "finding": "Alle Bytes vorhanden und Hashbindung stimmt. reads und harte Tasklimits existieren nicht in Format1. B/C null ist gewollt blockierend. B erwähnt Rehash/Reparse, C auch Revisionserhöhung. Historischer 341ec983-Draft nicht verfügbar.",
+    "requiredClosure": "A/B/C unverändert zitieren; B/C vor Ausführung reale Accepted-SHAs/aktuelle Base/neue Revision reviewen. Historischen Vergleich nur nach Bytefund schließen; kein Text aus Erinnerung ersetzen."
+  },
+  {
+    "id": "F08",
+    "severity": "BLOCKING MUTANT EVIDENCE DEFECT",
+    "owner": "A/B/C Acceptance",
+    "source": "A1/A4/B1/B2/B3/C1/C3/C4; P01/P06",
+    "finding": "Guardmutanten sind keine aktuell anwendbaren bytegebundenen Patches. Deferral bis Implementation ist legitim, aber garantierte Securitykills sind mehrfach maskierbar. A1 lässt Rawhash aktiv; C3 lässt Attemptjobset aktiv. Codewechsel zwischen zwei sicheren Rejects beweist keine gebrochene Schutzwirkung.",
+    "requiredClosure": "Jeden Mutanten auf eine konkrete normativ zugesagte Schutzwirkung und einen isolierten Assertiontest binden. Nach Implementation exact bytes einfrieren; masking erklären. Kein geänderter Fehlercode oder Compilercrash als Securitykill zählen."
+  },
+  {
+    "id": "F09",
+    "severity": "BLOCKING C RESPONSIBILITY/OUTCOME DEFECT",
+    "owner": "C/Owner",
+    "source": "§10; AV170/172/173",
+    "finding": "Fester Current-Run/Attempt-Jobread beweist keine Abwesenheit eines fremden gleichnamigen Checks. Receipt+Jobs beweisen frische vollständige Ausführung, nicht welches Re-run-Menü benutzt wurde; gleichwertiger graph rerun kann dieselben beobachteten Fakten liefern.",
+    "requiredClosure": "Runtimegarantie auf nachweisbare frische vollständige Attemptjobs binden; fremde native Check-Assoziation als genau definierte Deploymentabnahme ausweisen oder passende feste GETs normativ hinzufügen. Keine stillen alternativen Publisher/Token einführen."
+  },
+  {
+    "id": "F10",
+    "severity": "NONBLOCKING EXECUTION BOUNDARY",
+    "owner": "A/B/C/Owner",
+    "source": "§2/§6/§10",
+    "finding": "Keine Docker-/cgroup-/GitHub-Livedrills in dieser Zertifizierung. Processgroup allein stoppt nicht jeden setsid-Nachfahren; Container/cgroup-Lifecycle muss das abnehmen. Reporterfälschung und Review-ABA/after-final-race sind ausdrücklich zugestandene Grenzen.",
+    "requiredClosure": "Bestehende NO-GO-Deploymentgates erhalten. Keine stärkere Isolation-/Atomizitäts-/Reportehrlichkeitsgarantie aus Unitproben ableiten."
+  }
+]

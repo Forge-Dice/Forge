@@ -1,0 +1,190 @@
+[
+  {
+    "contract": "A",
+    "file": "sources/FORGE-BOOTSTRAP-0001A.contract.DRAFT.md",
+    "bytes": 5878,
+    "sha256": "db206a9834a9ff460fade6e8ee88d2dd099873e84bb1b2a779879d94c88d0084",
+    "gitBlobId": "672f2e521d50998c0de51c620a38c4722a2fb52e",
+    "result": {
+      "ok": true,
+      "document": {
+        "ref": {
+          "taskId": "FORGE-BOOTSTRAP-0001A",
+          "contractVersion": 1,
+          "contentHash": "3eb4a887f47cc5b4219fba39c24f48c8c6822a86e6e426def1d9af3b9de22c11"
+        },
+        "metadata": {
+          "forgeContractFormat": 1,
+          "taskId": "FORGE-BOOTSTRAP-0001A",
+          "contractVersion": 1,
+          "baseCommit": "3d7545d843883418348004e68717399a64da7a7d",
+          "dependencies": [],
+          "scope": {
+            "create": [
+              "tools/forge_v01/errors.py",
+              "tools/forge_v01/process.py",
+              "tools/forge_v01/paths.py",
+              "tools/forge_v01/objects.py",
+              "tools/forge_v01/history.py",
+              "tools/forge_v01/materialize.py",
+              "tools/forge_v01/bootstrap.py",
+              "tools/forge_v01/stage0.py",
+              "tests/forge-v01/git-objects.test.ts",
+              "tests/forge-v01/paths.test.ts",
+              "tests/forge-v01/materialize.test.ts",
+              "tests/forge-v01/bootstrap.test.ts",
+              "tests/forge-v01/properties-a.test.ts"
+            ],
+            "modify": []
+          },
+          "requiredChecks": [
+            {
+              "name": "baseline",
+              "command": "forge-v01:baseline"
+            },
+            {
+              "name": "acceptance",
+              "command": "forge-v01:acceptance-a"
+            },
+            {
+              "name": "mutations",
+              "command": "forge-v01:mutations-a"
+            }
+          ],
+          "mutationSmoke": "required"
+        },
+        "text": "---json\n{\n  \"forgeContractFormat\": 1,\n  \"taskId\": \"FORGE-BOOTSTRAP-0001A\",\n  \"contractVersion\": 1,\n  \"baseCommit\": \"3d7545d843883418348004e68717399a64da7a7d\",\n  \"dependencies\": [],\n  \"scope\": {\n    \"create\": [\n      \"tools/forge_v01/errors.py\",\n      \"tools/forge_v01/process.py\",\n      \"tools/forge_v01/paths.py\",\n      \"tools/forge_v01/objects.py\",\n      \"tools/forge_v01/history.py\",\n      \"tools/forge_v01/materialize.py\",\n      \"tools/forge_v01/bootstrap.py\",\n      \"tools/forge_v01/stage0.py\",\n      \"tests/forge-v01/git-objects.test.ts\",\n      \"tests/forge-v01/paths.test.ts\",\n      \"tests/forge-v01/materialize.test.ts\",\n      \"tests/forge-v01/bootstrap.test.ts\",\n      \"tests/forge-v01/properties-a.test.ts\"\n    ],\n    \"modify\": []\n  },\n  \"requiredChecks\": [\n    {\n      \"name\": \"baseline\",\n      \"command\": \"forge-v01:baseline\"\n    },\n    {\n      \"name\": \"acceptance\",\n      \"command\": \"forge-v01:acceptance-a\"\n    },\n    {\n      \"name\": \"mutations\",\n      \"command\": \"forge-v01:mutations-a\"\n    }\n  ],\n  \"mutationSmoke\": \"required\"\n}\n---\n\n# FORGE-BOOTSTRAP-0001A — Implementation Contract Draft\n\n## Status und bindende Auslegung\n\nDRAFT, nicht registriert und nicht zur Ausführung dieses Auftrags freigegeben. Dieses Dokument verwendet exakt Forge Contract Format 1 des angegebenen aktuellen main. Kein neuer Frontmatter-Key. Normative Details stehen im mitgelieferten FORGE-MINIMUM-VERIFIER-IMPLEMENTATION-PACKAGE.html, Abschnitte 1–18, und im nachstehenden Task-Scope. Die Implementierung ist eine spätere gesonderte Aufgabe.\n\nDie Task-Dateien enthalten keine Architekturwahl mehr: Python-Stdlib für IO, vorhandener TypeScript-Contractparser unverändert, Vitest-Reporter in JavaScript; keine neue Dependency. Keine Änderung bestehender src/forge- oder Domain-Module, package.json, package-lock.json, tsconfig.json oder bestehender Tests. Nur scope.create-Pfade anlegen. Keine GitHub-Settings, Registrierung, Pushes, Reviews oder Deployments durch diese Drafts autorisiert.\n\nrequiredChecks.command ist ein Registry-Schlüssel, kein Shellkommando. \"forge-v01:baseline\" bedeutet bestehende BASE-Typecheck-/Vitest-Suite in isolierter Umgebung; \"forge-v01:acceptance-a/b/c\" bedeutet vollständige ausgewiesene Acceptance-Suite mit exaktem Testinventar; \"forge-v01:mutations-a/b/c\" bedeutet die weiter unten festgelegten Verifier-Mutationen auf lokaler Arbeitskopie. Solange der Verifier nicht installiert ist, führt ein unabhängiger trusted Lab-Runner diese Prüfungen aus. Bootstrap muss offen als externer Initial-Trust-Schritt abgenommen werden; der neue Verifier darf seine eigene Entstehung nicht rückwirkend zertifizieren.\n\nProduktionsfiles ideal <300 LOC; keine künstliche Kompression. Geschätzte Zeilen sind keine harte semantische Abbruchgrenze. Tests sind nicht Teil der Produktionsschätzung. Keine Historien-/Remote-API-Fakes als echte Verifikation ausgeben. Sämtliche Netzwerk-/GitHub- und Docker-Abnahmetests müssen mit Testoberflächen laufen, solange kein separater Owner-Auftrag zur Live-Aktivierung vorliegt.\n\nNormative Bindung: SHA256 der UTF-8-JSON-Sequenz [sectionNumber,title,htmlBody] für Abschnitte 1–15, compact JSON ohne abschließenden LF, ist 0e6d89179623535ed431206b2352dfdb66d8edbfad3340d6f10b77ef63c4f0d4. Die Datei results/normative-sections.json im Evidence-Paket trägt genau diese Bytes.\n\nProduktionsschätzung dieses Tasks: 1320 LOC ±30 %, plus eigenständige Tests.\n\n## Ergebnis\n\nImplementiere ausschließlich die vertrauenswürdigen Bootstrap-/Objekt-/Pfad-/Prozess- und Materialisierungsgrenzen aus §§2–5, 11–12. APIs: runBounded, cleanEnv, readCommit, readTree, collectTree, collectChanges, validateHistory, validatePath(Set), materialize, destroy, bootstrapTrustedObjects, loadBaseVerifier. Die Namen und Frozen-Datentypen dürfen intern idiomatisch in Python gespiegelt werden, ihre Bedeutung nicht.\n\nstage0.py und seine Primitiven bilden den später digest-gepinnten Image-Kernel. Er lädt nur BASE-Code, HEAD nie. BASE main.py darf zu diesem Zwischenstand fehlen: A wird mit einem harmlosen generierten BASE-Stub außerhalb des Repos geprüft; ein fehlender realer Entry ist FAIL und kein Produktionspass. Git-Kommandos/Umgebung/Refspecs aus §2 exakt; null Git-Checkout, merge-tree, Rename-Heuristik, Shell-eval, untrusted Hook oder PR-Ausführung.\n\n## Acceptance\n\nAlle Matrixfälle Bootstrap, echte Git-/Filesystem-Proben, Pfad/Modes, History und Materialisierung mit den erwarteten Codes umsetzen. Echte adversariale bare Repositories; Replace-/Alternate-/Graft-/Shallow-Fakten auch bei sauberer Env nachweisen. Mode+Content doppelt sichtbar; 2. Parent verboten nur oberhalb BASE. dir_fd/O_NOFOLLOW auf jedem Parent, O_EXCL am Leaf. Prozessgruppen tatsächlich terminieren. Rawobjekt-/Packgrößen während Verarbeitung begrenzen.\n\nPropertyfamilien Tree/Path mindestens 10.000 deterministische Iterationen je Familie; independent oracle; 100/1000/10000 Files und 1k/10k/100k Objects unter gesetzten Budgets messen. Kein Performance-Gate auf absolute Millisekunden.\n\n## Required Verifier Mutations\n\nA1: GIT_NO_REPLACE_OBJECTS entfernen und Layout-Prüfung für refs/replace entfernen — dedizierter Original-Blob-Assertiontest muss scheitern.\nA2: O_NOFOLLOW bei Parent-Open entfernen — Parent-Symlink-Assertiontest muss scheitern.\nA3: MODE_CHANGE aus Diff entfernen — eigenständiger Mode+Content-Assertiontest muss scheitern.\nA4: duplicate Rawtree-Entry vor Prüfung in dict überschreiben — Duplicate-Assertiontest muss scheitern.\n\nMutanten sind lokale Testinstrumente, keine HEAD-Dateien. Jede Veränderung muss exakt lokalisierbar, einmal angewandt, nicht äquivalent und durch echte Testassertion erkannt sein. Anchorbytes werden nach finaler Implementierung für den Acceptance-Runner eingefroren und vom Reviewer kontrolliert; keine zur Implementierung passende neue Semantik wählen.\n"
+      }
+    }
+  },
+  {
+    "contract": "B",
+    "file": "sources/FORGE-BOOTSTRAP-0001B.contract.DRAFT.md",
+    "bytes": 5820,
+    "sha256": "b6aa76ffdd5035ffdf5d7ad402659bf83bf861ef39000d6d582429785a3852f2",
+    "gitBlobId": "6955f5efa7bb2999933e9260957f6555252b1fdd",
+    "result": {
+      "ok": true,
+      "document": {
+        "ref": {
+          "taskId": "FORGE-BOOTSTRAP-0001B",
+          "contractVersion": 1,
+          "contentHash": "3c0afa0c14fa28ed879b91cbca56d4dbc7d0975af68c32d8ee325efbaf1ac7f5"
+        },
+        "metadata": {
+          "forgeContractFormat": 1,
+          "taskId": "FORGE-BOOTSTRAP-0001B",
+          "contractVersion": 1,
+          "baseCommit": "3d7545d843883418348004e68717399a64da7a7d",
+          "dependencies": [
+            {
+              "taskId": "FORGE-BOOTSTRAP-0001A",
+              "acceptedCommit": null
+            }
+          ],
+          "scope": {
+            "create": [
+              "tools/forge_v01/contract-adapter.mjs",
+              "tools/forge_v01/policy.py",
+              "tools/forge_v01/scope.py",
+              "tools/forge_v01/inventory-reporter.mjs",
+              "tools/forge_v01/inventory.py",
+              "tools/forge_v01/worker.py",
+              "tools/forge_v01/mutations.py",
+              "tools/forge_v01/vitest.config.mjs",
+              "tests/forge-v01/policy-scope.test.ts",
+              "tests/forge-v01/inventory.test.ts",
+              "tests/forge-v01/worker.test.ts",
+              "tests/forge-v01/mutations.test.ts",
+              "tests/forge-v01/properties-b.test.ts"
+            ],
+            "modify": []
+          },
+          "requiredChecks": [
+            {
+              "name": "baseline",
+              "command": "forge-v01:baseline"
+            },
+            {
+              "name": "acceptance",
+              "command": "forge-v01:acceptance-b"
+            },
+            {
+              "name": "mutations",
+              "command": "forge-v01:mutations-b"
+            }
+          ],
+          "mutationSmoke": "required"
+        },
+        "text": "---json\n{\n  \"forgeContractFormat\": 1,\n  \"taskId\": \"FORGE-BOOTSTRAP-0001B\",\n  \"contractVersion\": 1,\n  \"baseCommit\": \"3d7545d843883418348004e68717399a64da7a7d\",\n  \"dependencies\": [\n    {\n      \"taskId\": \"FORGE-BOOTSTRAP-0001A\",\n      \"acceptedCommit\": null\n    }\n  ],\n  \"scope\": {\n    \"create\": [\n      \"tools/forge_v01/contract-adapter.mjs\",\n      \"tools/forge_v01/policy.py\",\n      \"tools/forge_v01/scope.py\",\n      \"tools/forge_v01/inventory-reporter.mjs\",\n      \"tools/forge_v01/inventory.py\",\n      \"tools/forge_v01/worker.py\",\n      \"tools/forge_v01/mutations.py\",\n      \"tools/forge_v01/vitest.config.mjs\",\n      \"tests/forge-v01/policy-scope.test.ts\",\n      \"tests/forge-v01/inventory.test.ts\",\n      \"tests/forge-v01/worker.test.ts\",\n      \"tests/forge-v01/mutations.test.ts\",\n      \"tests/forge-v01/properties-b.test.ts\"\n    ],\n    \"modify\": []\n  },\n  \"requiredChecks\": [\n    {\n      \"name\": \"baseline\",\n      \"command\": \"forge-v01:baseline\"\n    },\n    {\n      \"name\": \"acceptance\",\n      \"command\": \"forge-v01:acceptance-b\"\n    },\n    {\n      \"name\": \"mutations\",\n      \"command\": \"forge-v01:mutations-b\"\n    }\n  ],\n  \"mutationSmoke\": \"required\"\n}\n---\n\n# FORGE-BOOTSTRAP-0001B — Implementation Contract Draft\n\n## Status und bindende Auslegung\n\nDRAFT, nicht registriert und nicht zur Ausführung dieses Auftrags freigegeben. Dieses Dokument verwendet exakt Forge Contract Format 1 des angegebenen aktuellen main. Kein neuer Frontmatter-Key. Normative Details stehen im mitgelieferten FORGE-MINIMUM-VERIFIER-IMPLEMENTATION-PACKAGE.html, Abschnitte 1–18, und im nachstehenden Task-Scope. Die Implementierung ist eine spätere gesonderte Aufgabe.\n\nDie Task-Dateien enthalten keine Architekturwahl mehr: Python-Stdlib für IO, vorhandener TypeScript-Contractparser unverändert, Vitest-Reporter in JavaScript; keine neue Dependency. Keine Änderung bestehender src/forge- oder Domain-Module, package.json, package-lock.json, tsconfig.json oder bestehender Tests. Nur scope.create-Pfade anlegen. Keine GitHub-Settings, Registrierung, Pushes, Reviews oder Deployments durch diese Drafts autorisiert.\n\nrequiredChecks.command ist ein Registry-Schlüssel, kein Shellkommando. \"forge-v01:baseline\" bedeutet bestehende BASE-Typecheck-/Vitest-Suite in isolierter Umgebung; \"forge-v01:acceptance-a/b/c\" bedeutet vollständige ausgewiesene Acceptance-Suite mit exaktem Testinventar; \"forge-v01:mutations-a/b/c\" bedeutet die weiter unten festgelegten Verifier-Mutationen auf lokaler Arbeitskopie. Solange der Verifier nicht installiert ist, führt ein unabhängiger trusted Lab-Runner diese Prüfungen aus. Bootstrap muss offen als externer Initial-Trust-Schritt abgenommen werden; der neue Verifier darf seine eigene Entstehung nicht rückwirkend zertifizieren.\n\nProduktionsfiles ideal <300 LOC; keine künstliche Kompression. Geschätzte Zeilen sind keine harte semantische Abbruchgrenze. Tests sind nicht Teil der Produktionsschätzung. Keine Historien-/Remote-API-Fakes als echte Verifikation ausgeben. Sämtliche Netzwerk-/GitHub- und Docker-Abnahmetests müssen mit Testoberflächen laufen, solange kein separater Owner-Auftrag zur Live-Aktivierung vorliegt.\n\nNormative Bindung: SHA256 der UTF-8-JSON-Sequenz [sectionNumber,title,htmlBody] für Abschnitte 1–15, compact JSON ohne abschließenden LF, ist 0e6d89179623535ed431206b2352dfdb66d8edbfad3340d6f10b77ef63c4f0d4. Die Datei results/normative-sections.json im Evidence-Paket trägt genau diese Bytes.\n\nProduktionsschätzung dieses Tasks: 1190 LOC ±30 %, plus eigenständige Tests.\n\n## Ergebnis\n\nImplementiere §§4, 6–8 sowie zugehörige Fehler-/Typgrenzen auf den akzeptierten A-APIs. Der aktuelle parseContractDocument wird direkt aus BASE mit nodeSha256Utf8 importiert. Format 1 unverändert. Die Node-Zod-Auflösung kommt aus dem trusted Image, nicht HEAD. Strict Policy-/Plan-JSON, exact Scope, keine Coordination-Ausnahme, keine impliziten Commands.\n\nDer Worker ist eine frische Docker-Sandbox, kein child_process direkt neben einem privilegierten GitHub-Supervisor. BASE npm ci --ignore-scripts; nur BASE-manifest/lock; direkt gepinnte tsc-/vitest-Entrypoints. Testinventar über Laufzeit-Graph, tuple+occurrence, complete errors/status. Mutationen nach §8, Infrastructure dominiert Assertion-Kill. Ohne verfügbaren Docker-/Quota-/seccomp-Nachweis schlägt Integration fehl; unsandboxed Fallback ist nicht erlaubt.\n\n## Acceptance\n\nMatrixgruppen Scope/Freeze, Testinventar, Worker und Mutation vollständig. Bestehende 1087-Tests-Baseline darf sich durch die neuen Tests vergrößern; Identitäten und Status statt feste Gesamtzahl prüfen. Bestehende Testdateien unverändert. Zusätzlich echte Node-Script-/npmrc-/Config-Injektionsfixtures und Image/Worker-Outputangriffe. Der Worker darf weder Netzwerk noch Docker-Socket/Actions-Commandfiles erreichen; kein stdout-Workflowcommand gelangt ungefiltert ins Hostlog.\n\nPropertyfamilien Scope/Inventory/Mutation mit je 10.000 deterministischen Iterationen. Die sechs clamp-Mutanten aus §8 mit echtem Vitest wiederholen. BASE failure stoppt HEAD; fehlender Test/Report/Timeout zählt nicht als KILLED.\n\n## Required Verifier Mutations\n\nB1: exact Scope auf startsWith umstellen — scope escape Assertion muss scheitern.\nB2: vollständiges Inventar auf bloße Gesamtzahl reduzieren — löschen+neue Tests Assertion muss scheitern.\nB3: nonzero als KILLED klassifizieren — Compiler-/Timeout-Assertion muss scheitern.\nB4: Developer-Mutationsfallback zulassen — fake detected Assertion muss scheitern.\n\n## Dependency\n\nA muss unabhängig akzeptiert sein. Vor Ausführung diese Draftrevision mit echtem acceptedCommit von A und neuem baseCommit versehen, kanonisch neu parsen und hashen. null ist im Domain-Schema legal, im zukünftigen Gate bewusst blockierend. Keine erfundene Accepted-SHA einsetzen.\n"
+      }
+    }
+  },
+  {
+    "contract": "C",
+    "file": "sources/FORGE-BOOTSTRAP-0001C.contract.DRAFT.md",
+    "bytes": 7219,
+    "sha256": "cdddfc96bddc159eb572d84d47babf24af6a1991fe596fabc65c7985c16bcbd1",
+    "gitBlobId": "7f44afa6b866db44ba09b878fae19a6fc3210387",
+    "result": {
+      "ok": true,
+      "document": {
+        "ref": {
+          "taskId": "FORGE-BOOTSTRAP-0001C",
+          "contractVersion": 1,
+          "contentHash": "22456a465e0b56b59ef8a9fbbcb30f2bfca9fdc652939a2487673c5b95503623"
+        },
+        "metadata": {
+          "forgeContractFormat": 1,
+          "taskId": "FORGE-BOOTSTRAP-0001C",
+          "contractVersion": 1,
+          "baseCommit": "3d7545d843883418348004e68717399a64da7a7d",
+          "dependencies": [
+            {
+              "taskId": "FORGE-BOOTSTRAP-0001B",
+              "acceptedCommit": null
+            }
+          ],
+          "scope": {
+            "create": [
+              "tools/forge_v01/github.py",
+              "tools/forge_v01/reviews.py",
+              "tools/forge_v01/final.py",
+              "tools/forge_v01/main.py",
+              "tools/forge_v01/Dockerfile",
+              ".github/workflows/forge-v01.yml",
+              "forge/verifier/bootstrap-manifest.json",
+              "forge/verifier/policy.json",
+              "forge/verifier/task-plan.schema.json",
+              "forge/verifier/image-inputs.json",
+              "forge/verifier/clamp-plan.example.json",
+              "src/forge-drill/clamp-at-zero.ts",
+              "tests/forge-v01/reviews.test.ts",
+              "tests/forge-v01/final.test.ts",
+              "tests/forge-v01/workflow.test.ts",
+              "tests/forge-v01/properties-c.test.ts",
+              "tests/forge-v01/clamp-at-zero.test.ts"
+            ],
+            "modify": []
+          },
+          "requiredChecks": [
+            {
+              "name": "baseline",
+              "command": "forge-v01:baseline"
+            },
+            {
+              "name": "acceptance",
+              "command": "forge-v01:acceptance-c"
+            },
+            {
+              "name": "mutations",
+              "command": "forge-v01:mutations-c"
+            }
+          ],
+          "mutationSmoke": "required"
+        },
+        "text": "---json\n{\n  \"forgeContractFormat\": 1,\n  \"taskId\": \"FORGE-BOOTSTRAP-0001C\",\n  \"contractVersion\": 1,\n  \"baseCommit\": \"3d7545d843883418348004e68717399a64da7a7d\",\n  \"dependencies\": [\n    {\n      \"taskId\": \"FORGE-BOOTSTRAP-0001B\",\n      \"acceptedCommit\": null\n    }\n  ],\n  \"scope\": {\n    \"create\": [\n      \"tools/forge_v01/github.py\",\n      \"tools/forge_v01/reviews.py\",\n      \"tools/forge_v01/final.py\",\n      \"tools/forge_v01/main.py\",\n      \"tools/forge_v01/Dockerfile\",\n      \".github/workflows/forge-v01.yml\",\n      \"forge/verifier/bootstrap-manifest.json\",\n      \"forge/verifier/policy.json\",\n      \"forge/verifier/task-plan.schema.json\",\n      \"forge/verifier/image-inputs.json\",\n      \"forge/verifier/clamp-plan.example.json\",\n      \"src/forge-drill/clamp-at-zero.ts\",\n      \"tests/forge-v01/reviews.test.ts\",\n      \"tests/forge-v01/final.test.ts\",\n      \"tests/forge-v01/workflow.test.ts\",\n      \"tests/forge-v01/properties-c.test.ts\",\n      \"tests/forge-v01/clamp-at-zero.test.ts\"\n    ],\n    \"modify\": []\n  },\n  \"requiredChecks\": [\n    {\n      \"name\": \"baseline\",\n      \"command\": \"forge-v01:baseline\"\n    },\n    {\n      \"name\": \"acceptance\",\n      \"command\": \"forge-v01:acceptance-c\"\n    },\n    {\n      \"name\": \"mutations\",\n      \"command\": \"forge-v01:mutations-c\"\n    }\n  ],\n  \"mutationSmoke\": \"required\"\n}\n---\n\n# FORGE-BOOTSTRAP-0001C — Implementation Contract Draft\n\n## Status und bindende Auslegung\n\nDRAFT, nicht registriert und nicht zur Ausführung dieses Auftrags freigegeben. Dieses Dokument verwendet exakt Forge Contract Format 1 des angegebenen aktuellen main. Kein neuer Frontmatter-Key. Normative Details stehen im mitgelieferten FORGE-MINIMUM-VERIFIER-IMPLEMENTATION-PACKAGE.html, Abschnitte 1–18, und im nachstehenden Task-Scope. Die Implementierung ist eine spätere gesonderte Aufgabe.\n\nDie Task-Dateien enthalten keine Architekturwahl mehr: Python-Stdlib für IO, vorhandener TypeScript-Contractparser unverändert, Vitest-Reporter in JavaScript; keine neue Dependency. Keine Änderung bestehender src/forge- oder Domain-Module, package.json, package-lock.json, tsconfig.json oder bestehender Tests. Nur scope.create-Pfade anlegen. Keine GitHub-Settings, Registrierung, Pushes, Reviews oder Deployments durch diese Drafts autorisiert.\n\nrequiredChecks.command ist ein Registry-Schlüssel, kein Shellkommando. \"forge-v01:baseline\" bedeutet bestehende BASE-Typecheck-/Vitest-Suite in isolierter Umgebung; \"forge-v01:acceptance-a/b/c\" bedeutet vollständige ausgewiesene Acceptance-Suite mit exaktem Testinventar; \"forge-v01:mutations-a/b/c\" bedeutet die weiter unten festgelegten Verifier-Mutationen auf lokaler Arbeitskopie. Solange der Verifier nicht installiert ist, führt ein unabhängiger trusted Lab-Runner diese Prüfungen aus. Bootstrap muss offen als externer Initial-Trust-Schritt abgenommen werden; der neue Verifier darf seine eigene Entstehung nicht rückwirkend zertifizieren.\n\nProduktionsfiles ideal <300 LOC; keine künstliche Kompression. Geschätzte Zeilen sind keine harte semantische Abbruchgrenze. Tests sind nicht Teil der Produktionsschätzung. Keine Historien-/Remote-API-Fakes als echte Verifikation ausgeben. Sämtliche Netzwerk-/GitHub- und Docker-Abnahmetests müssen mit Testoberflächen laufen, solange kein separater Owner-Auftrag zur Live-Aktivierung vorliegt.\n\nNormative Bindung: SHA256 der UTF-8-JSON-Sequenz [sectionNumber,title,htmlBody] für Abschnitte 1–15, compact JSON ohne abschließenden LF, ist 0e6d89179623535ed431206b2352dfdb66d8edbfad3340d6f10b77ef63c4f0d4. Die Datei results/normative-sections.json im Evidence-Paket trägt genau diese Bytes.\n\nProduktionsschätzung dieses Tasks: 1008 LOC ±30 %, plus eigenständige Tests.\n\n## Ergebnis\n\nImplementiere §§9–11, orchestriere A/B in genau forge-gate und forge-verify. Github.py macht ausschließlich feste GETs. Kein Check-Publisher, kein POST/PATCH/PUT/DELETE-Client. Reviews numeric und exakt gebunden; Edit-/Revocation-/Supersedes-Semantik und Re-run-all-Receipt verpflichtend. Final prüft beide stabilen Snapshot-Runden; policyAssurance bleibt owner_attested für GitHub-Einstellungen.\n\nBaue die Image-Rezeptur mit den festgelegten Toolversionen und A-Kernel. Image-Basis fest Ubuntu 24.04 Linux/amd64. forge/verifier/image-inputs.json bindet den realen Base-Image-Digest, A-Kernel-Commit, Buildrezept-SHA256 und die exakten Toolarchive mit URL/SHA256 (Node: nodejs.org; Python: python.org; Git: kernel.org; Zod: BASE-lock resolved/integrity). Keine Installation ungepinnter latest-Pakete als Ersatz. Erzeuge realen Digest und Manifest; keine Platzhalter in aktivierbarem Workflow. Docker- und Paket-/Imageprüfungen laufen lokal oder auf separat autorisierter Testoberfläche. Der Workflow ist im Draft/Implementations-PR nicht produktiv zu aktivieren, bevor alle Deployment-Gates nachgewiesen sind. Ungetestete native Checkzuordnung ist NO-GO, kein automatischer Architektur-Fallback.\n\nInitialisiere die Policy mit leerem taskIndex und inaktivem Deployment-Nachweis. Beispielplan ist ausdrücklich unregistriert. Für erste Developer-Übung seed clampAtZero(n) als if-Form und feste negative/zero/positive Tests; initial BASE ist grün. Ein späterer separat veröffentlichter Drill-Contract genehmigt ausschließlich Source-MODIFY zur gleichwertigen ternären Form; Mutant return n muss KILLED sein. Equivalent-Mutant ist nur negative Verifier-Fixture und darf nicht als required killable in produktiven Plan geraten.\n\n## Acceptance\n\nReview-/Final-/Workflow-Matrix und deterministische Review-Properties vollständig. Weitere Live-Drills auf separat autorisierter Testoberfläche: native PR-target-Checkzuordnung; ausschließlich Re-run all jobs erfüllt neues Receipt; falscher Trigger-Actor fail; gleicher HEAD bei neuer main-SHA fail; Fake-/Doublechecks fail; global unterbundener push/pull_request/dispatch-Workflow; Owner-OPS erlaubt nur exakten BASE-Scope. Plattformpolicy darf nicht mit Job-Rechten als live_verified ausgegeben werden.\n\nWorkflow only pull_request_target types [opened,reopened,synchronize,ready_for_review], base main; permissions: {}; keine anderen Trigger, kein actions/checkout, keine Caches, kein HEAD-Step. forge-verify hat always() und expliziten roten Fehlerpfad bei fehlendem Gate-Erfolg. Frische VM je Job und vollständiger Bootstrap in jedem Job. Keine Auth- oder Container-Fallbacks bei Verfügbarkeitsschwierigkeiten.\n\n## Required Verifier Mutations\n\nC1: review.user.login statt user.id — same-name/wrong-ID Assertion muss scheitern.\nC2: neuesten Blocker überspringen — revoke/no-fallback Assertion muss scheitern.\nC3: runAttempt aus Gate-Receipt nicht prüfen — rerun-failed-jobs Assertion muss scheitern.\nC4: final main-Abgleich auslassen — stale-main Assertion muss scheitern.\n\n## Dependency und Stop\n\nB muss akzeptiert sein; B bindet A transitiv. Vor Ausführung echte Accepted-SHA für B sowie aktuellen Authoring-baseCommit einsetzen und Revision erhöhen. Bootstrap-Veröffentlichung, GitHub-Settings, Image-Push und produktive Aktivierung bleiben gesonderte Owner-Aktionen. Dieser Contract verlangt deren überprüfbare Abnahmebedingungen, autorisiert aber keine kanonischen Änderungen aus dem vorliegenden Spezifikationsauftrag.\n"
+      }
+    }
+  }
+]

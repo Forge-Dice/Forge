@@ -1,0 +1,418 @@
+{
+  "certification/additional-cases.tsv": {
+    "bytes": 19176,
+    "sha256": "9d049a01bcb7aa19ffd61e4d908b679bb2dfc39383564a8f1cdbf7f6c01b1f5e"
+  },
+  "certification/additional-cases.json": {
+    "bytes": 43718,
+    "sha256": "db55a9def7f6fafc2131b480a731efa0335f322254c5321011f01a9844efab37"
+  },
+  "certification/main-baseline.json": {
+    "bytes": 333663,
+    "sha256": "644ae7782532b15dd80788441006c5e641fc42da7d8f83341752c3a7c819c9b2"
+  },
+  "certification/findings.json": {
+    "bytes": 6697,
+    "sha256": "91a64ed60f4299bfdf84759c4ca102dca34b922dd98d3d047f34a06b23247edb"
+  },
+  "certification/requirements.json": {
+    "bytes": 12095,
+    "sha256": "54e50e83de15105962d0f2a61e0fb2ca96918d54b2c05ba3f1c0b06addc12cbe"
+  },
+  "certification/build_report.py": {
+    "bytes": 59217,
+    "sha256": "3a2631b241c5c2016635c8ffd4c29e04d2f06dc6b52df1e29869f2eee27943b8"
+  },
+  "certification/FORGE-VERIFIER-ABC-INDEPENDENT-CERTIFICATION.html": {
+    "bytes": 149117,
+    "sha256": "421500dac97603540252cf6137179b0e6d998864d632d64ee1c8e9800564529b"
+  },
+  "certification/probe-results.json": {
+    "bytes": 2740,
+    "sha256": "e529966eab3059255da680a59e0cd6e10361baa65462f02c62addf8431296a8a"
+  },
+  "certification/main-compatibility.json": {
+    "bytes": 8215,
+    "sha256": "82e205ee886859e66425dedaceb63a284ca91b3efbd0eb28877728792854cfff"
+  },
+  "certification/reference-rerun.json": {
+    "bytes": 29076,
+    "sha256": "c0f4e4d4df34a8500e7d8b8569e0ffde3a35c057dbace044af40e58ccff855ed"
+  },
+  "certification/acceptance-coverage.csv": {
+    "bytes": 55770,
+    "sha256": "1be2bc8bdf2d69bc7266ed8a2334f1a962753b5e22a528a55c1e8572ca16559b"
+  },
+  "certification/validate_report.py": {
+    "bytes": 1594,
+    "sha256": "a0b72cfaf22b5d444e52cd48ec9f907eba5ed25ef01cac0d927339581eaeb940"
+  },
+  "certification/mutants.json": {
+    "bytes": 3328,
+    "sha256": "a8179b25aec5fd22c5166b6154a4b4e8251a8b1c27116605e589dfa7aa151309"
+  },
+  "certification/audit_probes.py": {
+    "bytes": 4760,
+    "sha256": "7ce409aaac8449c5f096b4f1a5a7b9500bc3e14560603ad466a219f1e49b6b40"
+  },
+  "certification/source-identity.json": {
+    "bytes": 25663,
+    "sha256": "f2e445a9fe01fa6989dcb84cd3eed72ce426059734950baebb19721761ea111c"
+  },
+  "certification/acceptance-coverage.json": {
+    "bytes": 88304,
+    "sha256": "2a76fc39b95124f5263fcc12245961b67b7af911f3c1b739a97b1ef678f83749"
+  },
+  "certification/additional-cases.csv": {
+    "bytes": 26877,
+    "sha256": "e3d7d504fdf33d6ae686b040277a009c3d35bdc26961268ba4050f3d63b950b9"
+  },
+  "certification/README.txt": {
+    "bytes": 1709,
+    "sha256": "e7e354b84efd9c49efd42ce055e84a0408c630c1750cccbd8e8afb9f040331c3"
+  },
+  "certification/validation.json": {
+    "bytes": 290,
+    "sha256": "f4d4caef008fab88a6f0274a7dda4056897a7a721e51d7c2ee4c6885e6fc4900"
+  },
+  "certification/reference-compatibility.json": {
+    "bytes": 231312,
+    "sha256": "178598226bac26d8fbf2ba26150e7d5486461684502f30a0a3488d3a4972904c"
+  },
+  "certification/reference-compatibility.csv": {
+    "bytes": 166720,
+    "sha256": "e1fd946977d31844dc41075b92671a961ff1caede1809cab93fd05d7755e05c2"
+  },
+  "certification/final-main-check.json": {
+    "bytes": 288,
+    "sha256": "6f3920db06329bb77386df52c163ad949839b67bdb50eb75a6004b678c03de90"
+  },
+  "inputs/FORGE-BOOTSTRAP-0001A.contract.DRAFT.md": {
+    "bytes": 5878,
+    "sha256": "db206a9834a9ff460fade6e8ee88d2dd099873e84bb1b2a779879d94c88d0084"
+  },
+  "inputs/FORGE-BOOTSTRAP-0001B.contract.DRAFT.md": {
+    "bytes": 5820,
+    "sha256": "b6aa76ffdd5035ffdf5d7ad402659bf83bf861ef39000d6d582429785a3852f2"
+  },
+  "inputs/FORGE-BOOTSTRAP-0001C.contract.DRAFT.md": {
+    "bytes": 7219,
+    "sha256": "cdddfc96bddc159eb572d84d47babf24af6a1991fe596fabc65c7985c16bcbd1"
+  },
+  "inputs/FORGE-MINIMUM-VERIFIER-IMPLEMENTATION-PACKAGE.html": {
+    "bytes": 125585,
+    "sha256": "27bb408d01725e5a56306428470802c62ea7089bbeaa970f0a3594010e0eec89"
+  },
+  "inputs/FORGE-MINIMUM-VERIFIER-CODEX-HANDOFF.txt": {
+    "bytes": 3446,
+    "sha256": "1f391b287a6a6f3b0fb596138b49791c502f631c7feb6b53965b49cdb31e228d"
+  },
+  "inputs/FORGE-V0.1-BOOTSTRAP-EXPERIMENTAL-REPORT.html": {
+    "bytes": 76955,
+    "sha256": "d3ed7f74b84282de75e3c77da2e43f91845bf4c112699e82b63fcd8ea24a2a3c"
+  },
+  "inputs/FORGE-VERIFIER-REFERENCE-REPORT.html": {
+    "bytes": 30669,
+    "sha256": "036e0c2b1542018f0b56f6233d0725fa47d49a444cc33ec89bfe463e27cc081c"
+  },
+  "inputs/normative-sections.json": {
+    "bytes": 105429,
+    "sha256": "0e6d89179623535ed431206b2352dfdb66d8edbfad3340d6f10b77ef63c4f0d4"
+  },
+  "inputs/original-adversarial-matrix.json": {
+    "bytes": 38467,
+    "sha256": "05a0b115abf8844be4c8b2cdee15b904bfd653bbe9fb9e907c804e126d5e029a"
+  },
+  "inputs/reference-original-cases.json": {
+    "bytes": 1763717,
+    "sha256": "a76873d02c90160b863678cab02da76f2e0ac3c77db8518ace4de6f4f7bcffdb"
+  },
+  "inputs/main-tree.json": {
+    "bytes": 19367,
+    "sha256": "611a925ad1700dcfde551f8d76f1b6e8373c0df05face21acdd58630f11cf209"
+  },
+  "inputs/main/package-lock.json": {
+    "bytes": 49099,
+    "sha256": "82cfe3d52cae976bd5ff611523965ccfd24e506fa5d36cf84b9a0fd62a4e1191"
+  },
+  "inputs/main/tsconfig.json": {
+    "bytes": 411,
+    "sha256": "16d0caa49f009981fccf5bf630d705b723356276506cceea1357a738c30e6f22"
+  },
+  "inputs/main/package.json": {
+    "bytes": 370,
+    "sha256": "d5f7a65f678e4ebd06a7504ec80216a4f38fb495800cc87be16a5e3e72ade30a"
+  },
+  "inputs/main/.gitignore": {
+    "bytes": 14,
+    "sha256": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97"
+  },
+  "inputs/main/.gitkeep": {
+    "bytes": 1,
+    "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+  },
+  "inputs/main/tests/case-solution.test.ts": {
+    "bytes": 24156,
+    "sha256": "95795c29e3c89878c39e0e4d5bf9996acc7f0fdbc956fbcdee34f603e833848a"
+  },
+  "inputs/main/tests/case-semantics.test.ts": {
+    "bytes": 17047,
+    "sha256": "7eb1150aed1a214680be71a8b15b13ff3cef0514ee3a44cd10ff930ef3709503"
+  },
+  "inputs/main/tests/case-truth.typecheck.ts": {
+    "bytes": 2252,
+    "sha256": "1ea79340b6e42edd76898926c7d87baf0005d59b05de93ee7adf3ae54d2c7bf8"
+  },
+  "inputs/main/tests/npc-knowledge.typecheck.ts": {
+    "bytes": 3185,
+    "sha256": "51022ed96dfa9da2deea840e02ce1304529f56d30295d6711d14008d0c5bc143"
+  },
+  "inputs/main/tests/case-solution.identity.test.ts": {
+    "bytes": 4249,
+    "sha256": "aa4e02aa94706112308e8f1b4f1ffdc5bbb8d31090c38b2421edce94891ec911"
+  },
+  "inputs/main/tests/case-truth.test.ts": {
+    "bytes": 16618,
+    "sha256": "fe3c21687eca560a14db705fa7831d30ea6267c9927df3ed32c0e99d1cea4acf"
+  },
+  "inputs/main/tests/case-truth.fixture.ts": {
+    "bytes": 7046,
+    "sha256": "953e17054a06a55876642e07b0f526b607c19c089f307ea5d0dfd1b18247b340"
+  },
+  "inputs/main/tests/case-solution.fixture.ts": {
+    "bytes": 5913,
+    "sha256": "32769b28932d51f8749cceb246bbf5547bf5888c31d3919030e07a09134c5cc5"
+  },
+  "inputs/main/tests/case-solution.typecheck.ts": {
+    "bytes": 2252,
+    "sha256": "84e99fd6033255ec5fe533b7cf98160abf8cf8ac38caa518f0d49e9bb37cb6c9"
+  },
+  "inputs/main/tests/npc-knowledge.test.ts": {
+    "bytes": 25694,
+    "sha256": "753dfeebe6b1d5ba39cf61922c4a2a3a6dc6bcbfb25740288326ec306791d5fb"
+  },
+  "inputs/main/tests/case-truth.identity.test.ts": {
+    "bytes": 4348,
+    "sha256": "ac89a3bac435591c938b0e0e986825b9fd91a2a833aca2296e0e352f11e9715b"
+  },
+  "inputs/main/tests/npc-knowledge.projection.test.ts": {
+    "bytes": 20210,
+    "sha256": "ddec92e985731e7eb33f6900ecf909d5e5b6083de580df4b2a6a7e8b1e5d3051"
+  },
+  "inputs/main/tests/npc-knowledge.fixture.ts": {
+    "bytes": 8372,
+    "sha256": "196c3da48988e264df3c0266ede5ec7c3b469f4d502eb72b6dd4d9e4023b98a5"
+  },
+  "inputs/main/forge/BASELINE-STATUS.md": {
+    "bytes": 3587,
+    "sha256": "4b89d8d8db8d689aad8246576b8f3cc64f55b7ab981eeff329159404e421409d"
+  },
+  "inputs/main/tests/forge-red-team/findings.test.ts": {
+    "bytes": 19892,
+    "sha256": "9cca2c9386d87ca35702065fad9a7b1ca94114547b6242ca14b095cc8a1c933f"
+  },
+  "inputs/main/tests/forge-red-team/model.ts": {
+    "bytes": 14502,
+    "sha256": "8f7c01735ef160a722e458e9d0ae656036dc5e830b5fafbcf3c377e356f894ae"
+  },
+  "inputs/main/tests/forge-red-team/differential.test.ts": {
+    "bytes": 22904,
+    "sha256": "af5b422cb508cba5aaa1be7b93b1f6bc40a80d93b9c0a6e52fc7ef0909d61456"
+  },
+  "inputs/main/tests/forge/contract-document.test.ts": {
+    "bytes": 13465,
+    "sha256": "f6b816cc4cc626e0c39e7255a58af304bcbc755fc08b06d9f8488d88ab55accc"
+  },
+  "inputs/main/tests/forge/start-gate.test.ts": {
+    "bytes": 14784,
+    "sha256": "17b6229a2996aaf807137059add82773629658793adf6f8ead3411d550a88cf4"
+  },
+  "inputs/main/tests/forge/fixtures.ts": {
+    "bytes": 4809,
+    "sha256": "310efa5c11e0c0a1ca346967005a7e490afe024fe09e6f741418209960cedb35"
+  },
+  "inputs/main/tests/forge/typecheck.ts": {
+    "bytes": 2833,
+    "sha256": "7f9ecfc2542eb61ff0871d4c6ed638b5a2f8e2600d15681b0e322be338f31ebc"
+  },
+  "inputs/main/tests/forge/dogfood.test.ts": {
+    "bytes": 10602,
+    "sha256": "2da4fb31d738b0d75856b3e1ceb51c51a2ae045ed69a31979da5008e051908f3"
+  },
+  "inputs/main/tests/forge/kernel.test.ts": {
+    "bytes": 8392,
+    "sha256": "dbe5b8ee7a6becbe8801708e9b316503c67aff6f6b4d8186d086ebc4e3e7ad76"
+  },
+  "inputs/main/tests/forge/review-acceptance.test.ts": {
+    "bytes": 10409,
+    "sha256": "ab28c92bf9cdf4e1247b2ed07d6bf2c7e8ca8695c51c4f30e379f8060405100c"
+  },
+  "inputs/main/tests/forge/run-fixtures.ts": {
+    "bytes": 4997,
+    "sha256": "430b834ee25acf4cfc525f6a8544cf6d94f185aa83fcd0acc480717e87e015b6"
+  },
+  "inputs/main/tests/forge/scenarios.test.ts": {
+    "bytes": 25319,
+    "sha256": "d315b62952c62be868d100ceb3320124408ef3ed469c5e70ff46e00798ab1c5b"
+  },
+  "inputs/main/tests/forge/state.test.ts": {
+    "bytes": 12472,
+    "sha256": "e268dd6d7863de196811c530b19df1de22cc00bc4821dae68edb5057597a49f5"
+  },
+  "inputs/main/tests/forge/repair-v2.test.ts": {
+    "bytes": 7387,
+    "sha256": "f99d3d2302743f2ff124492def756e0eadb36f1c4e661182b3cebb6663d60b2e"
+  },
+  "inputs/main/tests/forge/runs.test.ts": {
+    "bytes": 10146,
+    "sha256": "7dcc38e71a8cced1422b4c41b934631e78fd466202ae0fdf54534aa4d7c943d7"
+  },
+  "inputs/main/tests/forge/ancestry.test.ts": {
+    "bytes": 2488,
+    "sha256": "23ba6c4293ca9b9f537bc58b0a4e31ada2af1f660c5afaf63f9fc3c973ad9b70"
+  },
+  "inputs/main/tests/forge/architecture-approval.test.ts": {
+    "bytes": 2635,
+    "sha256": "b4d5e88abb105e67d6d40170e1baab42a0e2f47b13dad921e4e60989a1a3fb61"
+  },
+  "inputs/main/tests/forge/verification.test.ts": {
+    "bytes": 9242,
+    "sha256": "a1e884fdba27daf9d0daea1242eea6bcb682605dfd7f93dc9e1fc43023356057"
+  },
+  "inputs/main/tests/forge/identity.test.ts": {
+    "bytes": 3871,
+    "sha256": "23860bdd78990578231aa2953e094d826c2807b8cec43d29cca9d73568012901"
+  },
+  "inputs/main/src/domain/npc-knowledge.ts": {
+    "bytes": 12420,
+    "sha256": "b857139cb1b93de85c70663727b261b99a1d06bf55d4ab34309e5addfa0ec34b"
+  },
+  "inputs/main/src/domain/case-truth.identity.ts": {
+    "bytes": 1472,
+    "sha256": "8e0ee1cba53559bbc3c727408d519506a85c6ad434f6c95566e7f3c16fa21033"
+  },
+  "inputs/main/src/domain/case-truth.ts": {
+    "bytes": 11835,
+    "sha256": "95fa06f8463d6a91a74dbc31caeb2a7fe3457c0538704f6c3cdeb19814bfa15e"
+  },
+  "inputs/main/src/domain/case-semantics.ts": {
+    "bytes": 10032,
+    "sha256": "5a5ec3eb777677a23a380b1db93639dde66e5ff1092741d1e489546eb3207bc4"
+  },
+  "inputs/main/src/domain/npc-knowledge.projection.ts": {
+    "bytes": 9508,
+    "sha256": "2f36eb45e880e57337b085c95560ddc0b65b42c4a1b3b497751d62e67d0866cd"
+  },
+  "inputs/main/src/domain/case-solution.identity.ts": {
+    "bytes": 1566,
+    "sha256": "75a5c52049ea7ab2fac0f9252541df286657a1afe842cc252376215a248d9d80"
+  },
+  "inputs/main/src/domain/case-solution.ts": {
+    "bytes": 12627,
+    "sha256": "82265cb3e55718ecfd5761a10e89458462545d5f392f2b1b490f7ca809d42e6c"
+  },
+  "inputs/main/src/forge/freeze.ts": {
+    "bytes": 301,
+    "sha256": "4b69d4fafe30cfaf91d189ab15c1a97f98bc6bfafd9dda4e19f3dc6b2be06f1a"
+  },
+  "inputs/main/src/forge/contract-document.ts": {
+    "bytes": 6111,
+    "sha256": "0e49ccac8309e8e6ee6edf41260eddaa990021ec3efea246b4f53d8eb76e31ab"
+  },
+  "inputs/main/src/forge/state.ts": {
+    "bytes": 22180,
+    "sha256": "87c2f76fb18f3bf769a667638e3a50e355866d116c883f2d397d87f47e31ffed"
+  },
+  "inputs/main/src/forge/events.ts": {
+    "bytes": 4853,
+    "sha256": "715a92348beb539a192d4c131cba78c9ae29a0ee5bccd604a0d66f6c98125615"
+  },
+  "inputs/main/src/forge/kernel.ts": {
+    "bytes": 1694,
+    "sha256": "6900b9ac778e88860c77dee2e53441e85ec59324be10ec676cfe062413e5640a"
+  },
+  "inputs/main/src/forge/runs.ts": {
+    "bytes": 3993,
+    "sha256": "f61aa8dbc092fa6a21f0ad3930bf984eda1abd83846bd3419221a796bdc48fdc"
+  },
+  "inputs/main/src/forge/node-sha256.ts": {
+    "bytes": 402,
+    "sha256": "d3c748e70e5e5b85ff72365c2d51eddf10878e63aba89de5cc318d8b034f3262"
+  },
+  "inputs/main/src/forge/start-gate.ts": {
+    "bytes": 4216,
+    "sha256": "90078e8ac2723d70122bcd47393cac349657f24ab278c1723792d8f0744330de"
+  },
+  "inputs/main/src/forge/identity.ts": {
+    "bytes": 1761,
+    "sha256": "fda964c0dc82700b066dc966b4395084879b8931bb10ca5417cad35363768091"
+  },
+  "inputs/main/src/forge/primitives.ts": {
+    "bytes": 1756,
+    "sha256": "66d2bcff4e12c418d464e187f82152bf243aa5dc1e87a21ad3693dc5e86497c7"
+  },
+  "inputs/main/src/forge/ancestry.ts": {
+    "bytes": 1028,
+    "sha256": "030421bbb42683e9897378b37d7a7798ff572bf0219d14e00c744c88994d1222"
+  },
+  "inputs/main/src/forge/verification.ts": {
+    "bytes": 6750,
+    "sha256": "3389013acab7878cb83123d793e9f1044f2e63c6cd5462e83cdc7c3c9e5d17b5"
+  },
+  "inputs/main/forge/approvals/FORGE-CORE-0001B.v1.architecture_review.json": {
+    "bytes": 1043,
+    "sha256": "e0693c45aba6e5a2bafd063c00d953b81d79148aa56a9e43257de7727bb701ba"
+  },
+  "inputs/main/forge/approvals/FORGE-CORE-0001A.v1.architecture_review.json": {
+    "bytes": 845,
+    "sha256": "97bb31e720538570ce5ec4cccf99c2eefabb494eb43dc7c8a989c6980648f55f"
+  },
+  "inputs/main/forge/contracts/FORGE-CORE-0001B.v2.md": {
+    "bytes": 15579,
+    "sha256": "471cf6e63f8a523350da924fe2afc434f2a51babf4ebdb06b31d67244bd5bf03"
+  },
+  "inputs/main/forge/contracts/FORGE-CORE-0001B.md": {
+    "bytes": 16142,
+    "sha256": "b9f4dd9fc60c99d62d9db7a560c231117c4a654d65377eb05f99d997fbb4fef7"
+  },
+  "inputs/main/forge/contracts/FORGE-CORE-0001A-PATCH-0001.md": {
+    "bytes": 4817,
+    "sha256": "57901f8dd625c46d149ca56d0186c7f1fc2f4416336f4143fd4bbe328f6be359"
+  },
+  "inputs/main/forge/contracts/TASK-0004.md": {
+    "bytes": 38629,
+    "sha256": "c80677d8db3a6dd21872ab3f6203b4c695c98855b558f0e53d80103d45c8e9bd"
+  },
+  "inputs/main/forge/contracts/FORGE-CORE-0001A.md": {
+    "bytes": 21296,
+    "sha256": "bb1b83e5cc5564a6bbe40985d8ca264ab3b96b8bff8a3ff0635b7a2dc3c1b147"
+  },
+  "inputs/main/forge/coordination/CLAUDE.md": {
+    "bytes": 4860,
+    "sha256": "a3f539ba81a8a71b046dee6e410fdbbf6916e2b64404ae31cbae4bd71274b0b6"
+  },
+  "inputs/main/forge/coordination/CODEX.md": {
+    "bytes": 1783,
+    "sha256": "c8680aea638a71101b440e4af5759f6266eee81af5eec262053e1a44eb5ce522"
+  },
+  "inputs/main/forge/reviews/FORGE-CORE-0001B.v2.verification.md": {
+    "bytes": 17105,
+    "sha256": "97dad86fb38b67846248e647c14bdd77873491c4e6ad9e808f4b733cbaee3e94"
+  },
+  "inputs/main/forge/reviews/FORGE-CORE-0001B.v2.mutations.json": {
+    "bytes": 22297,
+    "sha256": "bdb3ae07162c61d359d9ad5fe4741edd97f519904eba38ae9e09992e0ccbe291"
+  },
+  "inputs/main/forge/reviews/FORGE-CORE-0001AB.red-team.md": {
+    "bytes": 26271,
+    "sha256": "1e44b14603e9748aa63bcc6fb51eeb61f4b70d2c85a8fd349455f5143b34069d"
+  },
+  "inputs/main/forge/reviews/TASK-0005.architecture-review.md": {
+    "bytes": 30398,
+    "sha256": "bc2fd09e7f15110df11e22a37e360d47c522bb04b96ed91f8e2e1e846daf75e8"
+  },
+  "inputs/main/forge/reviews/FORGE-CORE-0001B.v2.chatgpt-review.md": {
+    "bytes": 2510,
+    "sha256": "1019e023f58113356a5c80527feee921274cde9da7c85906d63723c0c3f057a4"
+  }
+}

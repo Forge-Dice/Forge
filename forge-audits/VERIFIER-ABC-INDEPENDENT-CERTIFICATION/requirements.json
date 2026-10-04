@@ -1,0 +1,572 @@
+[
+  {
+    "id": "A-INPUT",
+    "owner": "A/C",
+    "source": "§2, §4.1–3",
+    "requirement": "Feste Repo-ID, positive sichere IDs, SHA/JSON/Trigger/PR/Ref-Abgleich",
+    "acceptance": [
+      "AV-001",
+      "AV-002",
+      "AV-003",
+      "AV-004",
+      "AV-005",
+      "AV-006",
+      "AV-007",
+      "AV-008",
+      "AV-009",
+      "AV-010",
+      "AV-011",
+      "AV-012",
+      "AV-093",
+      "AV-094",
+      "AV-095",
+      "AV-096",
+      "AV-176"
+    ]
+  },
+  {
+    "id": "A-FETCH",
+    "owner": "A",
+    "source": "§2",
+    "requirement": "Frische bare ODB, feste Remote und Refs, kein Checkout, kein Depth/Tag/Submodule/Redirect",
+    "acceptance": [
+      "AV-001",
+      "AV-002",
+      "AV-003",
+      "AV-004",
+      "AV-005",
+      "AV-006",
+      "AV-007",
+      "AV-008",
+      "AV-009",
+      "AV-010",
+      "AV-011",
+      "AV-012"
+    ]
+  },
+  {
+    "id": "A-ENV",
+    "owner": "A",
+    "source": "§2",
+    "requirement": "Neue Env-Allowlist; fixed Git argv; keine Credential-/Hook-/Proxy-/Node-Injektion",
+    "acceptance": [
+      "AV-018",
+      "AV-019",
+      "AV-020",
+      "AV-021"
+    ]
+  },
+  {
+    "id": "A-LAYOUT",
+    "owner": "A",
+    "source": "§2",
+    "requirement": "Replace auch packed, Alternates, Grafts, Shallow, Promisor, unerlaubte Config/Hooks reject",
+    "acceptance": [
+      "AV-022",
+      "AV-023",
+      "AV-024",
+      "AV-025",
+      "AV-026",
+      "AV-027",
+      "AV-028"
+    ]
+  },
+  {
+    "id": "A-RAW",
+    "owner": "A",
+    "source": "§3",
+    "requirement": "Typ, OID-Rehash, bounded Framing, Commitstruktur, Tree-OID/Sortierung/Rohduplikate",
+    "acceptance": [
+      "AV-030",
+      "AV-031",
+      "AV-032",
+      "AV-033",
+      "AV-034",
+      "AV-035",
+      "AV-073"
+    ]
+  },
+  {
+    "id": "A-PATH",
+    "owner": "A",
+    "source": "§2–3",
+    "requirement": "Rawbytes, ASCII, vollständige Prefix-/Case-/Leaf-Tries, Windowsnamen und Pfadlimits",
+    "acceptance": [
+      "AV-030",
+      "AV-031",
+      "AV-032",
+      "AV-033",
+      "AV-034",
+      "AV-035",
+      "AV-039",
+      "AV-040",
+      "AV-041",
+      "AV-042",
+      "AV-043",
+      "AV-044",
+      "AV-045",
+      "AV-046",
+      "AV-047",
+      "AV-048",
+      "AV-049",
+      "AV-050",
+      "AV-051",
+      "AV-052",
+      "AV-053",
+      "AV-054",
+      "AV-055",
+      "AV-056",
+      "AV-057",
+      "AV-058"
+    ]
+  },
+  {
+    "id": "A-MODE",
+    "owner": "A/B",
+    "source": "§3–4",
+    "requirement": "100644 neu; 100755 nur unverändert; Symlink/Gitlink/Modeänderung reject",
+    "acceptance": [
+      "AV-059",
+      "AV-060",
+      "AV-061",
+      "AV-062",
+      "AV-063",
+      "AV-064",
+      "AV-065",
+      "AV-066"
+    ]
+  },
+  {
+    "id": "A-HISTORY",
+    "owner": "A/B",
+    "source": "§3–4",
+    "requirement": "HEAD→BASE linear, echte Parents; BASE-Merges erlaubt; alle Zwischen-Snapshots; Netto-Diff nichtleer",
+    "acceptance": [
+      "AV-029",
+      "AV-067",
+      "AV-068",
+      "AV-069",
+      "AV-070",
+      "AV-071",
+      "AV-072",
+      "AV-074",
+      "AV-075",
+      "AV-076",
+      "AV-077",
+      "AV-078",
+      "AV-079",
+      "AV-080"
+    ]
+  },
+  {
+    "id": "A-DIFF",
+    "owner": "A",
+    "source": "§3",
+    "requirement": "Rohpfadunion, ADD/DELETE/MODIFY/MODE_CHANGE; Mode+Content beide; kein Rename",
+    "acceptance": [
+      "AV-059",
+      "AV-060",
+      "AV-061",
+      "AV-062",
+      "AV-063",
+      "AV-064",
+      "AV-065",
+      "AV-066"
+    ]
+  },
+  {
+    "id": "A-LIMIT",
+    "owner": "A/B",
+    "source": "§2",
+    "requirement": "ODB/Objekt-/Pfad-/Prozess-/Materialisierungsbudgets während Verarbeitung",
+    "acceptance": [
+      "AV-013",
+      "AV-014",
+      "AV-015",
+      "AV-016",
+      "AV-017",
+      "AV-067",
+      "AV-068",
+      "AV-069",
+      "AV-070",
+      "AV-071",
+      "AV-072",
+      "AV-119"
+    ]
+  },
+  {
+    "id": "A-FS",
+    "owner": "A",
+    "source": "§5",
+    "requirement": "Frische Roots; alle Parents dir_fd/O_NOFOLLOW; Leaf O_EXCL; regular/nlink; bounded Bytes/Hash",
+    "acceptance": [
+      "AV-036",
+      "AV-037",
+      "AV-038"
+    ]
+  },
+  {
+    "id": "A-KERNEL",
+    "owner": "A/C",
+    "source": "§2",
+    "requirement": "Image-Kernel separat, nur geprüfter BASE-Manifestgraph, niemals HEAD-Verifier",
+    "acceptance": []
+  },
+  {
+    "id": "B-CONTRACT",
+    "owner": "B",
+    "source": "§1, §4",
+    "requirement": "Bestehender Format1-Parser und Präfixhash aus BASE; gebundener Task/Plan/Policyindex",
+    "acceptance": [
+      "AV-093",
+      "AV-094",
+      "AV-095",
+      "AV-096",
+      "AV-097",
+      "AV-100"
+    ]
+  },
+  {
+    "id": "B-DEPENDENCY",
+    "owner": "B/Owner",
+    "source": "§4, B/C Dependency",
+    "requirement": "Echte akzeptierte SHA, nichtnull, authentische BASE-Ancestry; externe Annahme nicht erfinden",
+    "acceptance": [
+      "AV-098",
+      "AV-099"
+    ]
+  },
+  {
+    "id": "B-SCOPE",
+    "owner": "B",
+    "source": "§4",
+    "requirement": "Exact create/modify; keine Deletes/Modeänderungen/Coordination-Ausnahme",
+    "acceptance": [
+      "AV-074",
+      "AV-075",
+      "AV-076",
+      "AV-077",
+      "AV-078",
+      "AV-079",
+      "AV-080",
+      "AV-081",
+      "AV-082",
+      "AV-083",
+      "AV-084",
+      "AV-085",
+      "AV-086",
+      "AV-087",
+      "AV-088",
+      "AV-089",
+      "AV-090",
+      "AV-091",
+      "AV-092",
+      "AV-135"
+    ]
+  },
+  {
+    "id": "B-FREEZE",
+    "owner": "B",
+    "source": "§4, §6",
+    "requirement": "DEV-TCB/Config/Toolchain/bestehende Tests gefroren; Owner nur explicit TCBscope",
+    "acceptance": [
+      "AV-081",
+      "AV-082",
+      "AV-083",
+      "AV-084",
+      "AV-085",
+      "AV-086",
+      "AV-087",
+      "AV-088",
+      "AV-089",
+      "AV-090",
+      "AV-091",
+      "AV-092"
+    ]
+  },
+  {
+    "id": "B-REGISTRY",
+    "owner": "B",
+    "source": "§2, §4",
+    "requirement": "Commands sind Registrydaten; exakte ordered Checks; keine Shell/impliziten Commands",
+    "acceptance": [
+      "AV-101"
+    ]
+  },
+  {
+    "id": "B-TOOLCHAIN",
+    "owner": "B",
+    "source": "§6",
+    "requirement": "BASE Manifest/Lock, ignore-scripts; trusted Compiler/Vitest/config; keine HEAD-Injection",
+    "acceptance": [
+      "AV-120",
+      "AV-122",
+      "AV-123",
+      "AV-124",
+      "AV-125"
+    ]
+  },
+  {
+    "id": "B-WORKER",
+    "owner": "B/C",
+    "source": "§2, §6",
+    "requirement": "Frische getrennte Dockercontainer, Read-only/net-none/cgroups/seccomp; keine Host-/Token-/Socketpfade",
+    "acceptance": [
+      "AV-119",
+      "AV-122",
+      "AV-123",
+      "AV-124",
+      "AV-125"
+    ]
+  },
+  {
+    "id": "B-INVENTORY",
+    "owner": "B",
+    "source": "§7",
+    "requirement": "Komplette Runtimefiles/structural tuple+occurrence, expanded Tests, unique/complete/canonical",
+    "acceptance": [
+      "AV-102",
+      "AV-103",
+      "AV-104",
+      "AV-105",
+      "AV-106",
+      "AV-107",
+      "AV-108",
+      "AV-109",
+      "AV-110",
+      "AV-111",
+      "AV-112",
+      "AV-113",
+      "AV-114",
+      "AV-115",
+      "AV-116",
+      "AV-117",
+      "AV-118",
+      "AV-121"
+    ]
+  },
+  {
+    "id": "B-STATUS",
+    "owner": "B",
+    "source": "§7",
+    "requirement": "BASE vollständig grün; HEAD alle Basetests und alle neuen passed; no only/skip/todo/retry",
+    "acceptance": [
+      "AV-102",
+      "AV-103",
+      "AV-104",
+      "AV-105",
+      "AV-106",
+      "AV-107",
+      "AV-108",
+      "AV-109",
+      "AV-110",
+      "AV-111",
+      "AV-112",
+      "AV-113",
+      "AV-114",
+      "AV-115",
+      "AV-116",
+      "AV-117",
+      "AV-118"
+    ]
+  },
+  {
+    "id": "B-TRANSPORT",
+    "owner": "B",
+    "source": "§6–7",
+    "requirement": "Ein bounded geframter strikter Report; Supervisor beobachtet Exit/Timeout; kein stdout-Echo",
+    "acceptance": [
+      "AV-121"
+    ]
+  },
+  {
+    "id": "B-PATCH",
+    "owner": "B",
+    "source": "§8",
+    "requirement": "Exact einmaliger überlappender Byteanchor, ein Source-MODIFY, Hash/Diff/Frischmaterialisierung",
+    "acceptance": [
+      "AV-126",
+      "AV-127",
+      "AV-128",
+      "AV-129",
+      "AV-130",
+      "AV-131",
+      "AV-132",
+      "AV-133",
+      "AV-134",
+      "AV-135"
+    ]
+  },
+  {
+    "id": "B-KILL",
+    "owner": "B",
+    "source": "§8",
+    "requirement": "Infrastructure dominiert; benannte vorher passed Tests; Exit1+AssertionError; kein Developerfallback",
+    "acceptance": [
+      "AV-126",
+      "AV-127",
+      "AV-128",
+      "AV-129",
+      "AV-130",
+      "AV-131",
+      "AV-132",
+      "AV-133",
+      "AV-134",
+      "AV-136",
+      "AV-137",
+      "AV-138",
+      "AV-139",
+      "AV-140",
+      "AV-141",
+      "AV-142"
+    ]
+  },
+  {
+    "id": "C-REVIEW",
+    "owner": "C",
+    "source": "§9",
+    "requirement": "Server numeric Owner COMMENTED auf H; strikt gebundener canonical Body/externer Bericht",
+    "acceptance": [
+      "AV-143",
+      "AV-144",
+      "AV-145",
+      "AV-146",
+      "AV-147",
+      "AV-148",
+      "AV-149",
+      "AV-150",
+      "AV-151",
+      "AV-153",
+      "AV-157",
+      "AV-158",
+      "AV-159",
+      "AV-160",
+      "AV-161",
+      "AV-162",
+      "AV-163"
+    ]
+  },
+  {
+    "id": "C-INDEPENDENCE",
+    "owner": "C/Owner",
+    "source": "§9",
+    "requirement": "DEV openai braucht anthropic; Providerherkunft vom Owner attestiert, keine Hash-Authentifizierung",
+    "acceptance": [
+      "AV-143",
+      "AV-144",
+      "AV-145",
+      "AV-146",
+      "AV-147",
+      "AV-148",
+      "AV-149",
+      "AV-150",
+      "AV-151"
+    ]
+  },
+  {
+    "id": "C-LATEST",
+    "owner": "C",
+    "source": "§9",
+    "requirement": "Latest published Ownerreview, kein älterer Fallback; Revocation/Blocker/Supersedes",
+    "acceptance": [
+      "AV-152",
+      "AV-153",
+      "AV-157",
+      "AV-158",
+      "AV-159",
+      "AV-160",
+      "AV-161",
+      "AV-162",
+      "AV-163"
+    ]
+  },
+  {
+    "id": "C-EDIT",
+    "owner": "C",
+    "source": "§9–10",
+    "requirement": "Review-Snapshotvergleich an Beobachtungsgrenzen; kein erfundener REST-Edithistorienbeweis",
+    "acceptance": [
+      "AV-154",
+      "AV-155",
+      "AV-156"
+    ]
+  },
+  {
+    "id": "C-FINAL",
+    "owner": "C",
+    "source": "§10",
+    "requirement": "Cleanup vor Final; frische PR/main/review/run-Fakten; zwei stabile Runden in <=10s",
+    "acceptance": [
+      "AV-164",
+      "AV-165",
+      "AV-166",
+      "AV-167",
+      "AV-176"
+    ]
+  },
+  {
+    "id": "C-ATTEMPT",
+    "owner": "C",
+    "source": "§10",
+    "requirement": "Owner triggering_actor.id, Attempt>=2; gleich gebundenes frisches Gatereceipt, exakte Attemptjobs",
+    "acceptance": [
+      "AV-168",
+      "AV-169",
+      "AV-170",
+      "AV-171",
+      "AV-172",
+      "AV-173"
+    ]
+  },
+  {
+    "id": "C-WORKFLOW",
+    "owner": "C",
+    "source": "§2, §10, C Acceptance",
+    "requirement": "Nur PR-target/base main, permissions {}, frische VM/Stage2, always mit rotem Fehlerpfad",
+    "acceptance": [
+      "AV-171",
+      "AV-172",
+      "AV-173"
+    ]
+  },
+  {
+    "id": "C-DEPLOY",
+    "owner": "C/Owner",
+    "source": "§10, C Ergebnis",
+    "requirement": "H1/H2/H3+native Checks extern abgenommen; owner_attested Digest/TTL; kein Publisherfallback",
+    "acceptance": [
+      "AV-174",
+      "AV-175"
+    ]
+  },
+  {
+    "id": "X-CLEANUP",
+    "owner": "A/B/C",
+    "source": "§2, §5, §10",
+    "requirement": "Gruppen/Container/Fds/Roots beendet/entsorgt, Cleanupfehler nie PASS",
+    "acceptance": [
+      "AV-177"
+    ]
+  },
+  {
+    "id": "X-ERROR",
+    "owner": "A/B/C",
+    "source": "§4, §11",
+    "requirement": "Geschlossene Fehlercodes, feste Priorität, feste Gründe, Hashsubjects; keine untrusted Texte",
+    "acceptance": []
+  },
+  {
+    "id": "X-PROPERTY",
+    "owner": "A/B/C",
+    "source": "§14, Draft Acceptance",
+    "requirement": "Deterministische Propertyfamilien, independent oracle; 10k je Familie",
+    "acceptance": []
+  },
+  {
+    "id": "X-SIZE",
+    "owner": "A/B/C",
+    "source": "§12, §15, Draft Status",
+    "requirement": "Weiche Produktionsschätzung, Tests separat, keine kosmetische Kompression",
+    "acceptance": []
+  }
+]

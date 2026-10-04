@@ -1,0 +1,86 @@
+[
+  {
+    "id": "A1",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "AMBIGUOUS",
+    "mutation": "Replace env+Layout weg",
+    "review": "P01: Rawhash noch wirksam; Reader-origin-Assertion kann rot werden, aber replaced Byteacceptance bleibt verhindert. Doppelmutant, nicht exact byte-bound."
+  },
+  {
+    "id": "A2",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "APPLIES (semantic)",
+    "mutation": "Parent O_NOFOLLOW weg",
+    "review": "P02: Linux folgt Symlink bei O_DIRECTORY allein. Echte Parent-FD-Assertion bricht Sicherheitsgrenze; genaue spätere Anchorposition nötig."
+  },
+  {
+    "id": "A3",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "APPLIES (semantic)",
+    "mutation": "MODE_CHANGE aus Diff",
+    "review": "Diff muss zwei Flags enthalten. Isolierter Diffassertiontest sinnvoll; Fullgate kann Mode anderweitig rejecten."
+  },
+  {
+    "id": "A4",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "AMBIGUOUS",
+    "mutation": "Rawentries früh in dict",
+    "review": "Sinnvoll nur vor allen Duplicate-/Sortguards. Nach einem verbleibenden Rawcheck wäre äquivalent."
+  },
+  {
+    "id": "B1",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "APPLIES (semantic, conditional)",
+    "mutation": "Scope startsWith",
+    "review": "Gültige verschiedene .ts-Prefixdatei statt file→directory-DELETE benutzen; sonst Guardmaskierung."
+  },
+  {
+    "id": "B2",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "APPLIES (semantic, isolated)",
+    "mutation": "Inventory auf count",
+    "review": "Verlust+Zusatz bei identischer Zahl in Inventarlayer; Fullfunnel freezed alte Tests bereits."
+  },
+  {
+    "id": "B3",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "AMBIGUOUS",
+    "mutation": "nonzero=KILLED",
+    "review": "Ein vorgeschalteter Compiler/Timeoutguard kann unverändert rejecten. Die tatsächliche classifier-Zeile muss normativen Infra-Vorrang entfernen."
+  },
+  {
+    "id": "B4",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "APPLIES (semantic)",
+    "mutation": "Developerfallback",
+    "review": "Isolierter fake detected ohne unabhängigen Kill muss rot; keine bloße Anzeigelogik mutieren."
+  },
+  {
+    "id": "C1",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "AMBIGUOUS",
+    "mutation": "login statt id",
+    "review": "Vorheriger numeric Reviewfilter kann alles bereits rejecten. Autoritätsentscheidung konkret lokalisieren."
+  },
+  {
+    "id": "C2",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "APPLIES (semantic)",
+    "mutation": "Latest Blocker überspringen",
+    "review": "Neuest revoke+ältere approve kontrollierter Reviewlayer. Full Digestchange darf Test nicht als Ersatz töten."
+  },
+  {
+    "id": "C3",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "AMBIGUOUS",
+    "mutation": "Receipt runAttempt nicht prüfen",
+    "review": "P06: fehlender neuer Gatejob wird vom aktuellen Attemptjobset weiterhin rejectet. Nur Codeänderung ist kosmetische Securityevidence."
+  },
+  {
+    "id": "C4",
+    "currentMain": "DOES_NOT_APPLY",
+    "futureSemantic": "AMBIGUOUS",
+    "mutation": "final main nicht prüfen",
+    "review": "Andere frische PR.base/GITHUB_SHA-Prüfungen können stale main sehen. Kontrollierte Snapshotfixture nötig."
+  }
+]

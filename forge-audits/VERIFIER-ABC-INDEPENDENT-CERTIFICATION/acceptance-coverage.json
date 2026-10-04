@@ -1,0 +1,2412 @@
+[
+  {
+    "id": "AV-001",
+    "group": "Bootstrap / Prozess",
+    "input": "Gültiger öffentlicher Repo-Input, exakte BASE-/HEAD-Refs",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-002",
+    "group": "Bootstrap / Prozess",
+    "input": "GITHUB_SHA mit 39 Hexzeichen",
+    "expected": "PR_INPUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-003",
+    "group": "Bootstrap / Prozess",
+    "input": "SHA mit Großbuchstaben oder :path Suffix",
+    "expected": "PR_INPUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-004",
+    "group": "Bootstrap / Prozess",
+    "input": "PR-Nummer 0, negativ oder Exponentialnotation",
+    "expected": "PR_INPUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "GAP: Exponentialnotation ist lexikalisch, positiver Integerwert allein schließt 1e0 nicht aus.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-005",
+    "group": "Bootstrap / Prozess",
+    "input": "Eventdatei > 1 MiB",
+    "expected": "PR_INPUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-006",
+    "group": "Bootstrap / Prozess",
+    "input": "JSON mit doppeltem repository.id",
+    "expected": "PR_INPUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-007",
+    "group": "Bootstrap / Prozess",
+    "input": "Event ist push statt pull_request_target",
+    "expected": "PR_INPUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-008",
+    "group": "Bootstrap / Prozess",
+    "input": "Event-Aktion edited",
+    "expected": "PR_INPUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-009",
+    "group": "Bootstrap / Prozess",
+    "input": "Remote-URL aus PR wird angeboten",
+    "expected": "GIT_FETCH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "CLARIFY: offered URL als Testeingang vs ignoriertes Zusatzfeld; feste Remote soll nie ersetzt werden.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-010",
+    "group": "Bootstrap / Prozess",
+    "input": "HTTP-Redirect vom festen Git-Remote",
+    "expected": "GIT_FETCH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-011",
+    "group": "Bootstrap / Prozess",
+    "input": "Fetch liefert anderen Head als Live-PR",
+    "expected": "PR_STALE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-012",
+    "group": "Bootstrap / Prozess",
+    "input": "main bewegt sich zwischen GET und Fetch",
+    "expected": "PR_STALE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "A-FETCH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-013",
+    "group": "Bootstrap / Prozess",
+    "input": "Git-Fetch hängt > 90 Sekunden",
+    "expected": "EXECUTION_TIMEOUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-014",
+    "group": "Bootstrap / Prozess",
+    "input": "ODB überschreitet 512 MiB",
+    "expected": "GIT_LIMIT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-015",
+    "group": "Bootstrap / Prozess",
+    "input": "Objektzahl 150001",
+    "expected": "GIT_LIMIT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-016",
+    "group": "Bootstrap / Prozess",
+    "input": "Ein Blob hat 8 MiB + 1 Byte",
+    "expected": "GIT_LIMIT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-017",
+    "group": "Bootstrap / Prozess",
+    "input": "Summe deklarierter entpackter Objektgrößen > 512 MiB",
+    "expected": "GIT_LIMIT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-018",
+    "group": "Bootstrap / Prozess",
+    "input": "GIT_CONFIG_COUNT mit Credential-Helfer im Elternprozess",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-ENV"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-019",
+    "group": "Bootstrap / Prozess",
+    "input": "NODE_OPTIONS mit require-Angriff im Elternprozess",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-ENV"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-020",
+    "group": "Bootstrap / Prozess",
+    "input": "npm_config_userconfig verweist auf Angreiferdatei",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-ENV"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-021",
+    "group": "Bootstrap / Prozess",
+    "input": "HTTPS_PROXY/SSH_ASKPASS im Elternprozess",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-ENV"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-022",
+    "group": "Bootstrap / Prozess",
+    "input": "Versteckter Git-Config-Include nach Fetch",
+    "expected": "GIT_LAYOUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-LAYOUT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-023",
+    "group": "Bootstrap / Prozess",
+    "input": "Hookdatei im neuen ODB",
+    "expected": "GIT_LAYOUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-LAYOUT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-024",
+    "group": "Bootstrap / Prozess",
+    "input": "Promisor-/Partial-Clone-Markierung",
+    "expected": "GIT_LAYOUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-LAYOUT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-025",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "Replace-Ref verändert ungeschützten Objektread; Schutz liest Original, Layout lehnt Ref ab",
+    "expected": "GIT_LAYOUT",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-LAYOUT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-026",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "objects/info/alternates trotz leerer Umgebung",
+    "expected": "GIT_LAYOUT",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-LAYOUT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-027",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "info/grafts im Repository",
+    "expected": "GIT_LAYOUT",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-LAYOUT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-028",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "shallow-Datei im Repository",
+    "expected": "GIT_LAYOUT",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-LAYOUT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-029",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "HEAD-Commit mit zwei echten parent-Headern",
+    "expected": "GIT_HISTORY",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-HISTORY"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-030",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "Doppelter Rohname in demselben Tree",
+    "expected": "GIT_COLLISION",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-RAW",
+      "A-PATH"
+    ],
+    "review": "LAYER: Git fsck/fetch kann früher GIT_FETCH/GIT_OBJECT liefern; raw parser muss Duplicateflag sehen.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-031",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "A.ts und a.ts im selben Snapshot",
+    "expected": "GIT_COLLISION",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-RAW",
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-032",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "Dir/a und dir/b als verschiedene Directory-Schreibweisen",
+    "expected": "GIT_COLLISION",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-RAW",
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-033",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "a als Datei und a/b als Pfad",
+    "expected": "GIT_COLLISION",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-RAW",
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-034",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "A als Datei und a/b als Pfad",
+    "expected": "GIT_COLLISION",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-RAW",
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-035",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "x/a und x/b ohne Kollision",
+    "expected": "PASS",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-RAW",
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-036",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "Parent-Directory wird durch Symlink ersetzt",
+    "expected": "EXECUTION_IO",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-FS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-037",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "Zieldatei existiert bereits",
+    "expected": "EXECUTION_IO",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-FS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-038",
+    "group": "Echte Git-/Dateisystem-Probe",
+    "input": "Binärblob mit NUL wird bytegenau geschrieben",
+    "expected": "PASS",
+    "evidence": "EXPERIMENTALLY VERIFIED — git-lab; künftiger Code muss dieselbe Entscheidung umsetzen",
+    "requirements": [
+      "A-FS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-039",
+    "group": "Pfad und Modes",
+    "input": "Ungültiges UTF-8 im Namen",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-040",
+    "group": "Pfad und Modes",
+    "input": "Newline im Dateinamen",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-041",
+    "group": "Pfad und Modes",
+    "input": "Tab oder DEL im Dateinamen",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-042",
+    "group": "Pfad und Modes",
+    "input": "Absoluter Pfad",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-043",
+    "group": "Pfad und Modes",
+    "input": "Leeres Segment a//b",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-044",
+    "group": "Pfad und Modes",
+    "input": "Traversal a/../b",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-045",
+    "group": "Pfad und Modes",
+    "input": ".git/config",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-046",
+    "group": "Pfad und Modes",
+    "input": ".GiT/config",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-047",
+    "group": "Pfad und Modes",
+    "input": "git~1/config",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-048",
+    "group": "Pfad und Modes",
+    "input": "CON.ts",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-049",
+    "group": "Pfad und Modes",
+    "input": "LPT9.log",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-050",
+    "group": "Pfad und Modes",
+    "input": "Trailing-Dot x.",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-051",
+    "group": "Pfad und Modes",
+    "input": "Backslash a\\b",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-052",
+    "group": "Pfad und Modes",
+    "input": "Colon/ADS a:b",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-053",
+    "group": "Pfad und Modes",
+    "input": "Leading-Dash-Segment -option",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-054",
+    "group": "Pfad und Modes",
+    "input": "NFC é.ts",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-055",
+    "group": "Pfad und Modes",
+    "input": "NFD e + combining accent .ts",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-056",
+    "group": "Pfad und Modes",
+    "input": "NFC und NFD nebeneinander werden vor Normalisierung abgelehnt",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-057",
+    "group": "Pfad und Modes",
+    "input": "Pfadtiefe 17",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-058",
+    "group": "Pfad und Modes",
+    "input": "Segmentlänge 101 Byte",
+    "expected": "GIT_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-PATH"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-059",
+    "group": "Pfad und Modes",
+    "input": "Normale Datei 100644 unverändert",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-MODE",
+      "A-DIFF"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-060",
+    "group": "Pfad und Modes",
+    "input": "Bestehende BASE-Datei 100755 unverändert",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-MODE",
+      "A-DIFF"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-061",
+    "group": "Pfad und Modes",
+    "input": "Neu hinzugefügte Datei 100755",
+    "expected": "SCOPE_MODE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-MODE",
+      "A-DIFF"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-062",
+    "group": "Pfad und Modes",
+    "input": "Mode 120000 Symlink",
+    "expected": "SCOPE_MODE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-MODE",
+      "A-DIFF"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-063",
+    "group": "Pfad und Modes",
+    "input": "Mode 160000 Gitlink",
+    "expected": "SCOPE_MODE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-MODE",
+      "A-DIFF"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-064",
+    "group": "Pfad und Modes",
+    "input": "Unbekannter Mode 100600",
+    "expected": "SCOPE_MODE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-MODE",
+      "A-DIFF"
+    ],
+    "review": "LAYER: raw unknown-octal mode vs Git-Vorfilter sauber trennen.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-065",
+    "group": "Pfad und Modes",
+    "input": "100644 nach 100755 bei gleichem Blob",
+    "expected": "SCOPE_MODE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-MODE",
+      "A-DIFF"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-066",
+    "group": "Pfad und Modes",
+    "input": "Content und Mode zugleich verändert",
+    "expected": "SCOPE_MODE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-MODE",
+      "A-DIFF"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-067",
+    "group": "History / Scope",
+    "input": "Linearer HEAD ist ein Commit nach aktuellem BASE",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-HISTORY",
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-068",
+    "group": "History / Scope",
+    "input": "Trusted BASE hat zwei Parents, HEAD genau einen",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-HISTORY",
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-069",
+    "group": "History / Scope",
+    "input": "HEAD hat keinen BASE-Vorfahren",
+    "expected": "GIT_HISTORY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-HISTORY",
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-070",
+    "group": "History / Scope",
+    "input": "HEAD ist identisch BASE",
+    "expected": "GIT_HISTORY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-HISTORY",
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-071",
+    "group": "History / Scope",
+    "input": "129 neue lineare Commits",
+    "expected": "GIT_LIMIT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-HISTORY",
+      "A-LIMIT"
+    ],
+    "review": "CLARIFY: GIT_LIMIT vs §11 GIT_HISTORY bei History-Budget; Tabelle und prose nicht gleich.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-072",
+    "group": "History / Scope",
+    "input": "HEAD hat Parent auf nicht vorhandenes Objekt",
+    "expected": "GIT_OBJECT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-HISTORY",
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-073",
+    "group": "History / Scope",
+    "input": "Commit mit zwei tree-Headern",
+    "expected": "GIT_OBJECT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-RAW"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-074",
+    "group": "History / Scope",
+    "input": "Temporärer Workflow-Edit im Zwischencommit, später revertiert",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "A-HISTORY"
+    ],
+    "review": "LAYER: Scope/Protected-Precedence mit ausdrücklich genehmigtem Testscope definieren.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-075",
+    "group": "History / Scope",
+    "input": "Erlaubter MODIFY-Pfad existiert in BASE nicht",
+    "expected": "SCOPE_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "A-HISTORY"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-076",
+    "group": "History / Scope",
+    "input": "Erlaubter ADD-Pfad existiert schon in BASE",
+    "expected": "SCOPE_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "A-HISTORY"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-077",
+    "group": "History / Scope",
+    "input": "Umbenennung erlaubter Datei nach anderem Namen",
+    "expected": "SCOPE_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "A-HISTORY"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-078",
+    "group": "History / Scope",
+    "input": "Extra-Datei außerhalb exaktem Scope",
+    "expected": "SCOPE_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "A-HISTORY"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-079",
+    "group": "History / Scope",
+    "input": "Scope src/a.ts wird als Prefix für src/a.ts/escape missbraucht",
+    "expected": "SCOPE_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "A-HISTORY"
+    ],
+    "review": "MUTANT MASK: file→directory erzeugt DELETE; für B1 andere gültige Prefixdatei verwenden.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-080",
+    "group": "History / Scope",
+    "input": "Änderung forge/coordination/CODEX.md ohne Scope",
+    "expected": "SCOPE_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "A-HISTORY"
+    ],
+    "review": "LAYER: Coordination ist auch außerhalb DEV-Klassen; exakter Testeingang erforderlich.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-081",
+    "group": "History / Scope",
+    "input": "Änderung aktiven Contracts in HEAD",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "LAYER: eigener Contract kann parserseitig nicht in Scope; geschützten Pfadtest isolieren.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-082",
+    "group": "History / Scope",
+    "input": "Änderung package.json script",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-083",
+    "group": "History / Scope",
+    "input": "Änderung package-lock.json",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-084",
+    "group": "History / Scope",
+    "input": "Vitest-Config in HEAD hinzugefügt",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-085",
+    "group": "History / Scope",
+    "input": "Tsconfig include geschrumpft",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-086",
+    "group": "History / Scope",
+    "input": "Änderung bestehender Tests/Fixtures",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-087",
+    "group": "History / Scope",
+    "input": "Testdatei gelöscht",
+    "expected": "SCOPE_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-088",
+    "group": "History / Scope",
+    "input": "Testdatei umbenannt",
+    "expected": "SCOPE_PATH",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-089",
+    "group": "History / Scope",
+    "input": "Genehmigte neue Testdatei mit korrektem Scope",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-090",
+    "group": "History / Scope",
+    "input": "DEV verändert Verifier oder Workflow",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-091",
+    "group": "History / Scope",
+    "input": "OWNER_OPS mit explizitem Plan verändert exakt genehmigte TCB-Datei",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-092",
+    "group": "History / Scope",
+    "input": "OWNER_OPS versucht bestehende Tests oder Lockfile zu ändern",
+    "expected": "SCOPE_PROTECTED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-SCOPE",
+      "B-FREEZE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-093",
+    "group": "History / Scope",
+    "input": "Falsche numerische Autor-ID bei gleichem Login",
+    "expected": "IDENTITY_ACTOR",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "B-CONTRACT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-094",
+    "group": "History / Scope",
+    "input": "Fork mit identischem Branch-Namen",
+    "expected": "IDENTITY_ACTOR",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "B-CONTRACT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-095",
+    "group": "History / Scope",
+    "input": "Falscher Codex-Namespace",
+    "expected": "IDENTITY_NAMESPACE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "B-CONTRACT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-096",
+    "group": "History / Scope",
+    "input": "Task im Branch ungleich Contract-Task",
+    "expected": "CONTRACT_BINDING",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "A-INPUT",
+      "B-CONTRACT"
+    ],
+    "review": "CLARIFY: Namespace-Mismatch vs CONTRACT_BINDING; TASK wird laut Regex aus registriertem Task gebunden.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-097",
+    "group": "History / Scope",
+    "input": "Contract nicht canonical JSON",
+    "expected": "CONTRACT_PARSE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-CONTRACT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-098",
+    "group": "History / Scope",
+    "input": "Unaufgelöste dependency acceptedCommit null",
+    "expected": "CONTRACT_DEPENDENCY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-DEPENDENCY"
+    ],
+    "review": "COVERED null-blocking, beweist kein Taskacceptance-Lifecycle.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-099",
+    "group": "History / Scope",
+    "input": "Dependency-Commit kein Vorfahre von BASE",
+    "expected": "CONTRACT_DEPENDENCY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-DEPENDENCY"
+    ],
+    "review": "COVERED Ancestry, beweist allein keine taskId→acceptedCommit-Zuordnung.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-100",
+    "group": "History / Scope",
+    "input": "Doppelter requiredCheck-Name",
+    "expected": "CONTRACT_PARSE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-CONTRACT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-101",
+    "group": "History / Scope",
+    "input": "Nicht registrierter Shell-Befehl im Contract",
+    "expected": "POLICY_INVALID",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-REGISTRY"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-102",
+    "group": "Echtes Testinventar",
+    "input": "Aktueller main: 1087 Tests in 22 Dateien bestehen",
+    "expected": "PASS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-103",
+    "group": "Echtes Testinventar",
+    "input": "Parameterized tests mit mehrfach gleichem formatierten Namen",
+    "expected": "PASS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-104",
+    "group": "Echtes Testinventar",
+    "input": "Zwei identische Titel erhalten occurrence 0 und 1",
+    "expected": "PASS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-105",
+    "group": "Echtes Testinventar",
+    "input": "it.skip bei ansonsten Exit 0",
+    "expected": "TEST_STATUS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-106",
+    "group": "Echtes Testinventar",
+    "input": "it.todo bei ansonsten Exit 0",
+    "expected": "TEST_STATUS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-107",
+    "group": "Echtes Testinventar",
+    "input": "Leere Testdatei",
+    "expected": "TEST_INVENTORY",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-108",
+    "group": "Echtes Testinventar",
+    "input": "Collection-Fehler",
+    "expected": "TEST_INVENTORY",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-109",
+    "group": "Echtes Testinventar",
+    "input": "it.only bei allowOnly false",
+    "expected": "TEST_STATUS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "COVERED echter .only-Report im Paket; kein bloßer Collectionerror.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-110",
+    "group": "Echtes Testinventar",
+    "input": "Assertion-Failure im HEAD",
+    "expected": "TEST_STATUS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-111",
+    "group": "Echtes Testinventar",
+    "input": "Titel geändert bei gleicher Gesamtzahl",
+    "expected": "TEST_INVENTORY",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-112",
+    "group": "Echtes Testinventar",
+    "input": "Neue genehmigte Datei mit zusätzlichem Test",
+    "expected": "PASS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-113",
+    "group": "Echtes Testinventar",
+    "input": "Eine Datei gelöscht, verbleibende Suite Exit 0",
+    "expected": "TEST_INVENTORY",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; isolierte Inventory-Proben umgehen absichtlich früheren Freeze",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-114",
+    "group": "Inventory / Infrastruktur",
+    "input": "Unbekannter Projektname im Report",
+    "expected": "TEST_INVENTORY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-115",
+    "group": "Inventory / Infrastruktur",
+    "input": "Gleiche flache fullName-Zeichenfolge bei anderer ancestor-Struktur",
+    "expected": "TEST_INVENTORY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "AMBIGUOUS: Ersatz einer Baselineidentität FAIL, bloße Coexistenz anderer ancestor-Tupel PASS.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-116",
+    "group": "Inventory / Infrastruktur",
+    "input": "Abschlussreihenfolge der Paralleltests verändert, Identitäten gleich",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-117",
+    "group": "Inventory / Infrastruktur",
+    "input": "Hooks/Unhandled-Error neben bestandenen Tests",
+    "expected": "TEST_INVENTORY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-118",
+    "group": "Inventory / Infrastruktur",
+    "input": "Ein BASE-Test fehlt, zehn neue Tests kompensieren die Anzahl",
+    "expected": "TEST_INVENTORY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-INVENTORY",
+      "B-STATUS"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-119",
+    "group": "Inventory / Infrastruktur",
+    "input": "Timeout liefert nur partielles Inventar",
+    "expected": "EXECUTION_TIMEOUT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-WORKER",
+      "A-LIMIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-120",
+    "group": "Inventory / Infrastruktur",
+    "input": "Compiler-Crash vor HEAD-Tests",
+    "expected": "TEST_COMPILE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-TOOLCHAIN"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-121",
+    "group": "Inventory / Infrastruktur",
+    "input": "Gefälschter oder übergroßer Report",
+    "expected": "TEST_INVENTORY",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-TRANSPORT",
+      "B-INVENTORY"
+    ],
+    "review": "LIMIT: übergroß/strukturell gefälscht reject; perfekte inprozessuale Reporterfälschung laut §6 nicht ausschließbar.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-122",
+    "group": "Inventory / Infrastruktur",
+    "input": "Fehlgeschlagene Installation",
+    "expected": "EXECUTION_SANDBOX",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-WORKER",
+      "B-TOOLCHAIN"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-123",
+    "group": "Inventory / Infrastruktur",
+    "input": "Worker versucht Docker-Socket zu öffnen",
+    "expected": "EXECUTION_SANDBOX",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-WORKER",
+      "B-TOOLCHAIN"
+    ],
+    "review": "LAYER: ein erfolgloser Zugriffsversuch kann vom OS abgewiesen werden und Test grün bleiben; erwartetes Ergebnis muss Isolationprobe vs Supervisorcode benennen.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-124",
+    "group": "Inventory / Infrastruktur",
+    "input": "Worker versucht Netzwerk oder Actions-Dateikommandos",
+    "expected": "EXECUTION_SANDBOX",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-WORKER",
+      "B-TOOLCHAIN"
+    ],
+    "review": "LAYER: syscall/network denied ist kein automatisch beobachtbarer Supervisorfail. stdout command bleibt Daten.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-125",
+    "group": "Inventory / Infrastruktur",
+    "input": "Worker überschreibt schreibgeschützte Tests/Tools",
+    "expected": "EXECUTION_SANDBOX",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-WORKER",
+      "B-TOOLCHAIN"
+    ],
+    "review": "LAYER: readonly denial ist Isolationerfolg; hostile access attempt nicht selbst ein vertrauenswürdiges Ereignis.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-126",
+    "group": "Echte Mutationsprobe",
+    "input": "clampAtZero gibt n zurück, negativer Test wirft AssertionError",
+    "expected": "PASS",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; PASS bedeutet Mutant KILLED",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-127",
+    "group": "Echte Mutationsprobe",
+    "input": "Semantisch gleichwertige if-Form überlebt",
+    "expected": "MUTANT_SURVIVED",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; PASS bedeutet Mutant KILLED",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-128",
+    "group": "Echte Mutationsprobe",
+    "input": "Anker fehlt",
+    "expected": "MUTANT_NOT_APPLIED",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; PASS bedeutet Mutant KILLED",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-129",
+    "group": "Echte Mutationsprobe",
+    "input": "Mutation erzeugt ungültige Syntax",
+    "expected": "MUTANT_INFRA",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; PASS bedeutet Mutant KILLED",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-130",
+    "group": "Echte Mutationsprobe",
+    "input": "Mutation wirft Fehler beim Import",
+    "expected": "MUTANT_INFRA",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; PASS bedeutet Mutant KILLED",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-131",
+    "group": "Echte Mutationsprobe",
+    "input": "Mutation blockiert bis Prozess-Deadline",
+    "expected": "MUTANT_INFRA",
+    "evidence": "EXPERIMENTALLY VERIFIED — runtime-lab; PASS bedeutet Mutant KILLED",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-132",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Anker erscheint zweimal einschließlich überlappender Treffer",
+    "expected": "MUTANT_NOT_APPLIED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-133",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Replacement entspricht Anchor bytegenau",
+    "expected": "MUTANT_NOT_APPLIED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-134",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Patch verändert eine zweite Datei",
+    "expected": "MUTANT_NOT_APPLIED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-PATCH",
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-135",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Mutation auf Testdatei statt genehmigtem Source-Pfad",
+    "expected": "POLICY_INVALID",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-PATCH",
+      "B-SCOPE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-136",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Ein benannter Test fehlt in Mutationsergebnis",
+    "expected": "MUTANT_INFRA",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-137",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "AssertionError im Hook statt im benannten Test",
+    "expected": "MUTANT_INFRA",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-138",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Timeout plus bereits eingetretener AssertionError",
+    "expected": "MUTANT_INFRA",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-139",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Signal/OOM neben Testfehler",
+    "expected": "MUTANT_INFRA",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-140",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Exit 1 ohne Assertion-Report",
+    "expected": "MUTANT_INFRA",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-141",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Developer meldet detected ohne unabhängigen Mutantenlauf",
+    "expected": "MUTANT_INFRA",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-KILL"
+    ],
+    "review": "CLARIFY: fehlender required Mutant NOT_APPLIED vs explizite fake-evidence INFRA; konkrete Fixtures unterscheiden.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-142",
+    "group": "Mutation / Zusatzangriffe",
+    "input": "Equivalent-Rationale soll SURVIVED freistellen",
+    "expected": "MUTANT_SURVIVED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "B-KILL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-143",
+    "group": "Review / Final",
+    "input": "Owner COMMENTED mit allen richtigen Bindungen",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-144",
+    "group": "Review / Final",
+    "input": "APPROVED statt vorgeschriebenem COMMENTED",
+    "expected": "REVIEW_BLOCKED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-145",
+    "group": "Review / Final",
+    "input": "Owner-Login stimmt, numeric ID nicht",
+    "expected": "REVIEW_MISSING",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-146",
+    "group": "Review / Final",
+    "input": "commit_id ist alter HEAD",
+    "expected": "REVIEW_BINDING",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-147",
+    "group": "Review / Final",
+    "input": "Selbe Truth/Quellen, anderer Contracthash in Review",
+    "expected": "REVIEW_BINDING",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-148",
+    "group": "Review / Final",
+    "input": "Review auf falsche PR oder Repository-ID",
+    "expected": "REVIEW_BINDING",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-149",
+    "group": "Review / Final",
+    "input": "External-Review-Hash passt nicht zu eingebetteten Bytes",
+    "expected": "REVIEW_BINDING",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-150",
+    "group": "Review / Final",
+    "input": "External-Review result reject",
+    "expected": "REVIEW_BLOCKED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "CONTRADICTORY TOKEN: §9 erlaubt request_changes, nicht reject; invalid schema vs REVIEW_BLOCKED.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-151",
+    "group": "Review / Final",
+    "input": "Externer Reviewer nur als Chat-Anzeigename angegeben",
+    "expected": "REVIEW_FORMAT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-REVIEW",
+      "C-INDEPENDENCE"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-152",
+    "group": "Review / Final",
+    "input": "PENDING Review",
+    "expected": "REVIEW_MISSING",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-153",
+    "group": "Review / Final",
+    "input": "Maßgebliche Review DISMISSED",
+    "expected": "REVIEW_BLOCKED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST",
+      "C-REVIEW"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-154",
+    "group": "Review / Final",
+    "input": "Review-Body zwischen Gate und Final editiert",
+    "expected": "REVIEW_CHANGED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-EDIT"
+    ],
+    "review": "BLOCKING: Gate→Stage2-Reviewdigest fehlt im fixen Receipt; siehe F02/P04.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-155",
+    "group": "Review / Final",
+    "input": "Review vor erster Beobachtung editiert und jetzt korrekt gebunden",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-EDIT"
+    ],
+    "review": "OBSERVATION BOUNDARY: before first observation gilt je Job oder gesamtem Attempt? F02.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-156",
+    "group": "Review / Final",
+    "input": "Maßgebliche Review zwischen Gate und Final gelöscht",
+    "expected": "REVIEW_CHANGED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-EDIT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-157",
+    "group": "Review / Final",
+    "input": "Neuere malformed Owner-Attestation, ältere korrekt",
+    "expected": "REVIEW_FORMAT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST",
+      "C-REVIEW"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-158",
+    "group": "Review / Final",
+    "input": "Neuere stale Owner-Attestation, ältere korrekt",
+    "expected": "REVIEW_BINDING",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST",
+      "C-REVIEW"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-159",
+    "group": "Review / Final",
+    "input": "Neuer Widerruf",
+    "expected": "REVIEW_BLOCKED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST",
+      "C-REVIEW"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-160",
+    "group": "Review / Final",
+    "input": "Neue Freigabe ohne explizites supersedes der Blocker",
+    "expected": "REVIEW_BLOCKED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST",
+      "C-REVIEW"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-161",
+    "group": "Review / Final",
+    "input": "Neue Freigabe supersedes alle bekannten Blocker",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST",
+      "C-REVIEW"
+    ],
+    "review": "GAP: Supersedesclosure und genaue Menge aller bekannten/noch aktiven Blocker fehlen.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-162",
+    "group": "Review / Final",
+    "input": "Neue widersprechende autorisierte Findings nach Freigabe",
+    "expected": "REVIEW_BLOCKED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST",
+      "C-REVIEW"
+    ],
+    "review": "CLARIFY: ausschließlich Owner ist autorisierter Findings-Schreiber; nicht zweite frei gelabelte AI-Person.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-163",
+    "group": "Review / Final",
+    "input": "Unbeteiligter öffentlicher Kommentar ohne Autorisierung",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-LATEST",
+      "C-REVIEW"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-164",
+    "group": "Review / Final",
+    "input": "PR wird während Tests geschlossen",
+    "expected": "PR_STATE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-FINAL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-165",
+    "group": "Review / Final",
+    "input": "Head bewegt sich während Tests",
+    "expected": "PR_STALE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-FINAL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-166",
+    "group": "Review / Final",
+    "input": "main bewegt sich während Tests",
+    "expected": "PR_STALE",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-FINAL"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-167",
+    "group": "Review / Final",
+    "input": "Policyhash bewegt sich im geprüften Snapshot",
+    "expected": "POLICY_CHANGED",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-FINAL"
+    ],
+    "review": "LAYER: gleiche immutable B-SHA und andere Policybytes ist kein normaler Git-Run; OID-/Startsnapshot-Prüfgrenze explizit.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-168",
+    "group": "Review / Final",
+    "input": "Original actor Codex, triggering_actor numerisch Owner, Attempt 2 komplett",
+    "expected": "PASS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-ATTEMPT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-169",
+    "group": "Review / Final",
+    "input": "triggering_actor Codex bei Attempt 2",
+    "expected": "IDENTITY_RECHECK",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-ATTEMPT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-170",
+    "group": "Review / Final",
+    "input": "Re-run failed jobs verwendet Gate-Receipt von Attempt 1",
+    "expected": "IDENTITY_RECHECK",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-ATTEMPT"
+    ],
+    "review": "C3 MASK: aktueller Attemptjobset enthält ebenfalls kein frisches Gate; Codewechsel allein ist kein Securitykill.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-171",
+    "group": "Review / Final",
+    "input": "Doppelter forge-verify-Job im selben Attempt",
+    "expected": "POLICY_CHECKS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-WORKFLOW",
+      "C-ATTEMPT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-172",
+    "group": "Review / Final",
+    "input": "Fremder Workflow liefert gleichnamigen Check",
+    "expected": "POLICY_CHECKS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-WORKFLOW",
+      "C-ATTEMPT"
+    ],
+    "review": "GAP: aktuelle-Run-Jobs lesen keine fremden Check-Runs; Runtime-Nachweis vs deploymentPolicy konkret trennen.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-173",
+    "group": "Review / Final",
+    "input": "Alte grüne Checks sollen neue SHA freigeben",
+    "expected": "POLICY_CHECKS",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-WORKFLOW",
+      "C-ATTEMPT"
+    ],
+    "review": "DEPLOYMENT: Supervisor kann aktuellen Run binden, native Merge-Enforcement/stale-green bleibt Plattformabnahme.",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-174",
+    "group": "Review / Final",
+    "input": "Native PR-target-Checkzuordnung nicht durch Live-Drill belegt",
+    "expected": "POLICY_DEPLOYMENT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-DEPLOY"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-175",
+    "group": "Review / Final",
+    "input": "Plattformpolicy nicht administrativ geprüft/attestiert",
+    "expected": "POLICY_DEPLOYMENT",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-DEPLOY"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-176",
+    "group": "Review / Final",
+    "input": "API-Lesefehler oder unvollständige Pagination",
+    "expected": "EXECUTION_API",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "C-FINAL",
+      "A-INPUT"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  },
+  {
+    "id": "AV-177",
+    "group": "Review / Final",
+    "input": "Cleanup schlägt nach ansonsten grünen Tests fehl",
+    "expected": "EXECUTION_IO",
+    "evidence": "SPECIFIED — noch kein Integrationstest",
+    "requirements": [
+      "X-CLEANUP"
+    ],
+    "review": "MAPPED; keine zusätzliche Widerspruchsfeststellung bei Contract-Level-Prüfung",
+    "layer": "Layerisoliert gemäß §13; Fullfunnel darf früh sicher rejecten",
+    "productionExecution": "NOT_EXECUTED"
+  }
+]

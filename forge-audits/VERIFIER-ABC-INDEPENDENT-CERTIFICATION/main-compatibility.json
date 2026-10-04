@@ -1,0 +1,359 @@
+[
+  {
+    "contract": "A",
+    "path": "tools/forge_v01/errors.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tools/forge_v01/process.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tools/forge_v01/paths.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tools/forge_v01/objects.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tools/forge_v01/history.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tools/forge_v01/materialize.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tools/forge_v01/bootstrap.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tools/forge_v01/stage0.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tests/forge-v01/git-objects.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tests/forge-v01/paths.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tests/forge-v01/materialize.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tests/forge-v01/bootstrap.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "A",
+    "path": "tests/forge-v01/properties-a.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tools/forge_v01/contract-adapter.mjs",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tools/forge_v01/policy.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tools/forge_v01/scope.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tools/forge_v01/inventory-reporter.mjs",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tools/forge_v01/inventory.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tools/forge_v01/worker.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tools/forge_v01/mutations.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tools/forge_v01/vitest.config.mjs",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tests/forge-v01/policy-scope.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tests/forge-v01/inventory.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tests/forge-v01/worker.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tests/forge-v01/mutations.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "B",
+    "path": "tests/forge-v01/properties-b.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tools/forge_v01/github.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tools/forge_v01/reviews.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tools/forge_v01/final.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tools/forge_v01/main.py",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tools/forge_v01/Dockerfile",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": ".github/workflows/forge-v01.yml",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "forge/verifier/bootstrap-manifest.json",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "forge/verifier/policy.json",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "forge/verifier/task-plan.schema.json",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "forge/verifier/image-inputs.json",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "forge/verifier/clamp-plan.example.json",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "src/forge-drill/clamp-at-zero.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tests/forge-v01/reviews.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tests/forge-v01/final.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tests/forge-v01/workflow.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tests/forge-v01/properties-c.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "C",
+    "path": "tests/forge-v01/clamp-at-zero.test.ts",
+    "role": "CREATE",
+    "exists": false,
+    "assessment": "VALID_NEW_TARGET"
+  },
+  {
+    "contract": "shared",
+    "path": "src/forge/contract-document.ts",
+    "role": "READ",
+    "exists": true,
+    "gitBlobId": "8baed736d500eeb3a8f8ab63110f15dc7d5a1a4e",
+    "assessment": "EXISTS_BYTE_VERIFIED"
+  },
+  {
+    "contract": "shared",
+    "path": "src/forge/primitives.ts",
+    "role": "READ",
+    "exists": true,
+    "gitBlobId": "bfb7c8557e25963f97eea525fe671d6f9b3b405b",
+    "assessment": "EXISTS_BYTE_VERIFIED"
+  },
+  {
+    "contract": "shared",
+    "path": "src/forge/freeze.ts",
+    "role": "READ",
+    "exists": true,
+    "gitBlobId": "d17f739e3db76d421f0ce8727c41e2d512f0a9b8",
+    "assessment": "EXISTS_BYTE_VERIFIED"
+  },
+  {
+    "contract": "shared",
+    "path": "src/forge/node-sha256.ts",
+    "role": "READ",
+    "exists": true,
+    "gitBlobId": "f1bc7ad3bcfa2313c08c86d3c11947fa9f32fe68",
+    "assessment": "EXISTS_BYTE_VERIFIED"
+  },
+  {
+    "contract": "shared",
+    "path": "package.json",
+    "role": "READ",
+    "exists": true,
+    "gitBlobId": "f251cd6687625cacd41146070e0ee42c3c65e24d",
+    "assessment": "EXISTS_BYTE_VERIFIED"
+  },
+  {
+    "contract": "shared",
+    "path": "package-lock.json",
+    "role": "READ",
+    "exists": true,
+    "gitBlobId": "68f5d922983256a7f5d1f6715313629f27548fa7",
+    "assessment": "EXISTS_BYTE_VERIFIED"
+  },
+  {
+    "contract": "shared",
+    "path": "tsconfig.json",
+    "role": "READ",
+    "exists": true,
+    "gitBlobId": "51e278daeeef243079ef2514f54d8a5491e5c078",
+    "assessment": "EXISTS_BYTE_VERIFIED"
+  }
+]

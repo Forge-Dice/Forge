@@ -1,0 +1,129 @@
+group	attack	requirement	assessment
+A	8-MiB-Blob exakt am Limit plus vorgeschriebenes cat-file-Framing	§2/§3 Output/Blob	GAP F01; P03 zeigt 55 Bytes Überlauf
+A	Zwei einzeln erlaubte 5-MiB-Blobs über denselben langlebigen Batchprozess	§2/§3 Batchbudgets	GAP F01; Lebenszeitbudget stoppt erlaubten Objektstrom
+A	Ein Tree-OID wird unter zwei verschiedenen gültigen Prefixen wiederverwendet	§3 Prefixprüfung	REJECT falls erst zweiter Prefix kollidiert; Cache darf Pfadprüfung nicht überspringen
+A	Verzeichnis- und Dateiname gleichen Sortierprefixes a und a.c	§3 Git-Treesortierung	REJECT nur bei falscher Directory-Terminator-Sortierung; nicht lexikographisch vereinfachen
+A	Tree enthält gültigen Entry plus 19 statt 20 OID-Bytes	§3 Rohframing	REJECT GIT_OBJECT
+A	Tree enthält strukturell sortierte verschiedene Entries und einen trailing Byte	§3 kein trailing garbage	REJECT GIT_OBJECT
+A	Commit parent-Header mit Fortsetzungszeile trotz gültiger Parent-OID	§3 strukturale Header	REJECT GIT_OBJECT
+A	Commit mit zwei Parents, einer davon BASE, einer identisch zum ersten	§3 neue Parentzahl	REJECT GIT_HISTORY; Parent-Set darf Duplikat nicht verstecken
+A	BASE selbst ist Merge, Authoring-baseCommit ist nur auf zweitem BASE-Parent erreichbar	§3/§4 BASE-Ancestry	GAP F05 zur Algorithmusgrenze; Vorfahrprüfung muss alle BASE-Parents lesen
+A	Commit chain 128 inklusive HEAD und exklusive BASE	§2/§3 Historylimit	ALLOW wenn alle anderen Regeln erfüllt; off-by-one Grenzfall
+A	126 lineare Commits, temporärer verbotener Filemode und danach Rückkehr	§3/§4 Zwischen-Snapshots	REJECT SCOPE_MODE; Nettodiff reicht nicht
+A	Zwischencommit legt Source an, löscht sie wieder, später anderer erlaubter Diff	§4 DELETE-Verbot	REJECT; Revert bereinigt keine historisch verbotene Änderung
+A	100755 in BASE bleibt Mode-identisch, Inhalt wird trotzdem geändert	§3 100755 nur unverändert	REJECT SCOPE_MODE; content-only ist hier unzulässig
+A	Unter anderem Prefix wiederverwendeter Blob-OID liefert falschen Objekttyp	§3 OID-Typprüfung	REJECT GIT_OBJECT; Typcache muss korrekt gebunden sein
+A	Replace-Angriff nach Entfernung von Env und Layoutguards, Rawhash bleibt aktiv	§3 Objekt-Rehash/A1	REJECT GIT_OBJECT; P01, kein belegter unsicherer PASS
+A	Packed refs/replace vorhanden, loose refs fehlen vollständig	§2 Layout	REJECT GIT_LAYOUT; kein Verzeichnis-only Check
+A	Leere objects/info/alternates-Datei statt aktiver Alternates-Pfade	§2 Vorhandensein verboten	REJECT GIT_LAYOUT auch ohne tatsächliche Umleitung
+A	Promisor-Datei tief im pack-Verzeichnis mit sonst normalem Fetch	§2 Layout	REJECT GIT_LAYOUT; gesamte zulässige ODB-Struktur kontrollieren
+A	Git-Config-Key zweimal, einmal sicher und später unsicher	§2 erlaubte Config	REJECT GIT_LAYOUT; nicht last-value-only erlauben
+A	Event gibt Remote mit kanonischem Host und userinfo oder Query	§2 feste Remote	REJECT bzw. ignorieren als nicht konsumierbares Textfeld; AV009 braucht API-Einstieg
+A	Segment COM0.ts oder COM10.ts im Gegensatz zu COM1.ts	§3 Windowsgrammar	ALLOW erste zwei nach expliziter 1..9-Regel; kein erweitertes Geräteverbot erfinden
+A	Root enthält AUX.test.ts, kein exakt AUX.ts	§3 Gerätename vor Extension	REJECT GIT_PATH; erster Punkt bestimmt Gerätebasename
+A	Casekollision nur zwischen zwei Directory-Prefixen mit verschiedenen Leaves	§3 Prefix-Trie	REJECT GIT_COLLISION; kein Leaf-only Casecheck
+A	Pfad ist 255 Bytes bei 16 Segmenten, jeder Segmentlänge <=100	§2/§3 Pfadlimit	ALLOW wenn Grammar/Modes korrekt; Grenzfall
+A	Ascii-Pfad enthält Segment ..x und .x statt genau .. oder .	§3 Grammar	ALLOW; pauschales startsWith-dot-Verbot wäre zusätzliche Semantik
+A	Leaf wird während Materialisierung zum Hardlink mit nlink=2	§5 fstat/nlink	REJECT EXECUTION_IO
+A	Parent-Symlink wird erst nach erfolgreichem Parent-FD-Open ausgetauscht	§5 dir_fd	Gebundener FD bleibt im ursprünglichen Directory; prüfen, keine Pfadauflösung wiederholen
+A	Root wird vor Root-FD-Open durch Symlink auf fremdes Verzeichnis ersetzt	§5 Root O_NOFOLLOW	REJECT EXECUTION_IO
+A	Cleanup trifft fremden Symlink im privaten Root nach Worker-Abbruch	§5 fd-sicheres destroy	Kein rekursives Folgen; sonst Schutzlücke, zusätzliche Abnahme nötig
+A	stdout erreicht 8 MiB, stderr liefert anschließend ein Byte	§2 kombinierter Output	REJECT; getrennte Limits würden Budget verdoppeln
+A	Child löst sich mit setsid von der ursprünglichen Prozessgruppe	§2 Gruppen/Workercleanup	GAP F10: wait-all über PG allein unzureichend; cgroup/Containerabnahme muss residuale Prozesse zeigen
+A	Gültiges Event-JSON nutzt 1e0 für PR-ID	§2 positive Integer/AV004	GAP F03: lexikalische Exponentialnotation vs numerischer Integralwert nicht vollständig spezifiziert
+B	Gleiche Testzahl, verlorene BASE-Identität, neue gleiche Titel in anderer Datei	§7 strukturierte Identität	REJECT TEST_INVENTORY
+B	Mehrere identische Titel ändern Laufzeitreihenfolge, Collectionbaum gleich	§7 occurrence vor Abschluss	ALLOW; occurrence darf nicht onFinish vergeben werden
+B	Identische Titel ändern Collectionreihenfolge bei identischem eingefrorenem Source	§7/§6 semantische Grenze	BOUNDARY P07; Inventar bindet Positionen, keine Bodysemantik
+B	NFC-Testtitel in BASE, NFD in HEAD, Pfade bleiben ASCII	§7 unveränderte Titel	REJECT TEST_INVENTORY; keine Title-Normalisierung
+B	Titel enthalten Literaldelimiter, neue ancestor-Aufteilung erzeugt gleiche Anzeige	§7 Tuple/AV115	REJECT bei Identitätswechsel; coexistence ALLOW; Katalogkontext klären
+B	Report occurrence-Liste 0,2 bei zwei ansonsten grünen Duplikaten	§7 zusammenhängende occurrence	REJECT TEST_INVENTORY
+B	Report enthält dieselbe vollständige Identität zweimal mit passed und failed	§7 Eindeutigkeit	REJECT TEST_INVENTORY vor Statusbewertung
+B	BASE enthält todo, HEAD ersetzt ihn durch echten passed Test	§7 BASE muss grün	REJECT TEST_BASELINE; HEAD repariert keinen ungültigen Start
+B	Neue genehmigte Testdatei hat nur leere describe-Suite	§7 empty Collection	REJECT TEST_INVENTORY
+B	Parameterized Test liefert im HEAD andere Werte, gleiche Anzahl	§7 Runtimeexpansion	REJECT falls expandierte Titel/Identitäten abweichen; gleiche Identität ist Bodygrenze
+B	Dynamisches context.skip nach zunächst bestandener Assertion	§7 Endstatus	REJECT TEST_STATUS
+B	Test läuft zweimal durch Retry und wird erst danach grün	§6/§7 retry=0	REJECT/unerlaubte Runtimekonfiguration; kein versteckter Retry-PASS
+B	HEAD-Suite Exit 0, Report reason failed mit nur passed Rows	§7 komplette konsistente Ergebnisse	REJECT TEST_INVENTORY; reason-Enum muss vollständig definiert werden
+B	Report exakt 8 MiB plus längengeframter Transportheader	§2/§6 Transport	GAP F01 wie Blobframing
+B	Testcode schreibt zusätzlichen zweiten JSON-Frame auf stdout	§6 genau ein Report	REJECT TEST_INVENTORY/EXECUTION_IO; genaue Präzedenz ergänzen
+B	Header behauptet 1 KiB Report, tatsächlicher Stream endet nach 100 Bytes	§6 Framing	REJECT; niemals partielles JSON als Diagnose-PASS
+B	Malicious npmrc wird als BASE-Repo-Datei mitgeführt, Install-cwd enthält sie nicht	§6 Install nur Manifest/Lock	ALLOW solange weder BASE- noch HEAD-npmrc konsumiert wird
+B	package.json Lifecycle-Script ist gefährlich, trusted BASE-lock bleibt gültig	§6 ignore-scripts	Script darf nicht ausgeführt werden; kein späteres npm test
+B	Vite config steht in genehmigter Source und wird per Import explizit geladen	§6 Sandbox/§4 Scope	BOUNDARY: explizite Sourceimports bleiben untrusted Code; Autodiscovery-Schutz ist kein Import-Verbot
+B	HEAD-tsconfig Excludes verstecken einen echten Source-Typefehler	§4 Freeze/§6 BASE-tsconfig	REJECT schon Static Gate; getrennte Compilerprobe muss ebenfalls Fehler sehen
+B	HEAD enthält Source außerhalb ursprünglicher src/tests-Includes	§6 Include-Bindung	REJECT POLICY_INVALID; Scope allein reicht nicht
+B	Mutant Anchor aaa tritt in aaaa an zwei überlappenden Positionen auf	§8 overlaid count	REJECT MUTANT_NOT_APPLIED
+B	Mutant Replacement leer, eindeutiger Anchor, Syntax bleibt gültig	§8 0..65536 Replacement	APPLY erlaubt; Kill muss echte benannte Assertion sein
+B	Patch ändert nur Source, Ergebnis überschreitet 8-MiB-Bloblimit	§8/§2 Patchbudgets	REJECT; NOT_APPLIED vs GIT_LIMIT-Mapping muss verbindlich werden
+B	Benannter Test passed, anderer unbenannter Test wirft AssertionError	§8 nonnamed failure	REJECT MUTANT_INFRA; kein Kill
+B	Benannter Test wirft TypeError, exit1 und keine anderen Fehler	§8 AssertionError-only	REJECT MUTANT_INFRA
+B	Benannter Test wirft AssertionError, weiterer Hook schlägt fehl	§8 Infrastrukturpriorität	REJECT MUTANT_INFRA
+B	Alle Tests passed, Prozess beendet sich trotzdem mit exit1	§8 konsistenter Exit	REJECT MUTANT_INFRA
+B	Benannter Test failed AssertionError, Prozess exit0	§8 KILLED exit1	REJECT MUTANT_INFRA
+B	Mutant behauptet nachträglich detected und äquivalent zugleich	§8 kein Developerfallback	REJECT; dokumentierter Report ersetzt keinen Supervisorlauf
+B	Eine genehmigte Source monkeypatcht Reporter und schreibt perfektes Inventar	§6 erklärte JS-Grenze	BOUNDARY: PASS kann innerhalb zugestandener Inprozessgrenze gefälscht werden; keine starke Ehrlichkeitsgarantie
+B	Neue Testdatei importiert candidate tools-Verifier im privilegierten Hostprozess	§6 Worker-only	REJECT EXECUTION_SANDBOX; technische Tests gehören in unprivilegierten Worker
+C	Owner-Review hat gleiche Bindungen, Body wird nach Gate vor Stage2 ersetzt	§9/§10/AV154	GAP F02; P04 Information-loss
+C	Review wurde vor Gate editiert, bleibt danach unverändert	§9/AV155	ALLOW aktuelle gültige Attestation; kein historischer Editbeweis behaupten
+C	Review wird innerhalb Stage2 hin und zurück editiert zwischen GETs	§9/§10 nicht atomarer Snapshot	BOUNDARY: unbeobachtete ABA-Änderung nicht erkennbar, kein uneingeschränktes Editschutzversprechen
+C	Latest Ownerreview gleicher submitted_at, höhere numeric ID ist revoke	§9 Sortierung	REJECT REVIEW_BLOCKED
+C	Neuester Ownerreview ist ordinary prose, ältere Attestation gültig	§9 kein fallback	REJECT REVIEW_FORMAT
+C	Latest APPROVED nach gültigem COMMENTED-Review	§9 State	REJECT REVIEW_BLOCKED; native Approval ist kein Forgeapprove
+C	PENDING-Ownerreview nach gültiger veröffentlichter Attestation	§9 nur veröffentlichte Reviews	ALLOW falls ansonsten unverändert; PENDING blockiert nicht automatisch Latest-published
+C	Unbeteiligter Nutzer postet kopierte perfekte Owner-Attestation	§9 user.id	Ignorieren als nicht autorisiert; keine Freigabe aus Body
+C	supersedes enthält dieselbe reviewId zweimal mit verschiedenen Digests	§9 eindeutige Supersedes	REJECT REVIEW_BLOCKED/FORMAT nach geklärtem Schema
+C	supersedes verweist auf gelöschten Blocker, ID bleibt bekannt	§9 aktueller API-Datensatz	REJECT; unbekannte aktuelle Referenz darf nicht still gelten
+C	Neue Approve supersedes nur neueren von zwei ungelösten Blockern	§9 alle Blocker	REJECT REVIEW_BLOCKED
+C	Ältester Blocker wurde in korrekter Zwischenapprove superseded, neue Approve supersedes jüngsten	§9 Supersedesclosure	GAP F04: aktuell vs jemals bekannte Blocker/Transitivität nicht definiert
+C	External result reject statt request_changes	§9 Enum/AV150	GAP F03; P08 ungültiger Wert, erwartete REVIEW_BLOCKED nicht eindeutig
+C	External findings severity fatal, critical oder blocking bei result approve	§9 keine blocking Findings	GAP F04: Severityenum/Blockingprädikat fehlen
+C	External Reviewer provider OPENAI oder openai mit Whitespace	§9 DEV provider anthropic	REJECT; keine Case-/Trim-Aliasbildung für Independence
+C	OWNER_OPS-Review gleicher Provider wie der tatsächlich coding Owneragent	§4/§9 Profile	GAP F04: Ownercoding-Provider und unabhängige Providerregel fehlen; keine DEV-Regel erfinden
+C	ExternalReviewBase64 hat alternative Paddingform mit denselben Bytes	§9 canonical Base64	REJECT REVIEW_FORMAT
+C	External report hash stimmt, innerer verifierSha stimmt nicht	§9 doppelte Bindung	REJECT REVIEW_BINDING
+C	Reviewbody 64 KiB, embedded decoded report 32 KiB, JSONtiefe über32	§2/§9 Limits	REJECT; exakte Tiefegrenze im Reviewparser festschreiben
+C	Deployment checkedAt ist eine Sekunde in Zukunft	§10 TTL	REJECT POLICY_DEPLOYMENT
+C	Deployment checkedAt exakt 30 Minuten vor Final	§10 älter als30min	ALLOW; danach plus1 Sekunde REJECT
+C	Owner rerunt einzig forge-verify, altes Gate bleibt green	§10 Receipt/Jobs	REJECT IDENTITY_RECHECK/POLICY_CHECKS; C3 muss zweite Barriere beachten
+C	Owner rerunt forge-gate inklusive downstream forge-verify statt Menü All	§10 frischer Attempt	GAP F09: gleiche effektive Jobs/Receipt, UI-Intent nicht beobachtbar
+C	Gate receipt aus anderem PR mit gleichem B/H/RunAttempt	§10 feste Runbindung	REJECT über runId bzw. PR-Startbindung; PR nicht im Receipt, nur trusted Bindung nutzen
+C	Andere Workflowdatei erzeugt gleichnamige Jobs in anderem Run	§10/AV172	GAP F09: eigener Attempt-Jobread sieht fremden Run nicht; Deployment vs Runtimegarantie trennen
+C	Reviewwiderruf erfolgt erst nach letztem Final-GET vor Checkabschluss	§10 Race-Limit	BOUNDARY: Owner-Premergecheck erforderlich, kein atomarer PASS-Beweis
+C	main springt B->B2->B zwischen den beiden GETs	§10/H2 Race	H2 soll Forcepush verhindern; compromised Admin ist TCB; Snapshot allein erkennt ABA nicht
+C	PR wird auf andere Base retargeted und vor Final wieder auf main gesetzt	§10 Snapshot/Workflowquelle	GAP F09: WorkflowSHA/Base-Provenienz prüfen; unbeobachtete Retargethistory nicht rekonstruieren
+C	API pagination liefert gleiche reviewId auf zwei aufeinanderfolgenden Seiten	§2 vollständige API/§9 IDs	REJECT/erneute definierte Snapshotbehandlung; nicht doublecount/silent dedup
+C	Erste Finalrunde enthält Revocation, zweite gültige Approve	§10 maximal2 stabile Runden	REJECT; nicht bis zufällig passende Runden loopen
+C	Job if always wird mit continue-on-error bei Verify kombiniert	§10 roter terminaler Pfad	REJECT Workflowabnahme; sonst falsches Green trotz exit1
+C	Supervisor schreibt Worker-Body ungefiltert als GITHUB_OUTPUT-Wert	§6/§10 trusted receipt	REJECT; Workflowcommand-Injection darf kein Receipt schaffen
+X	A benötigt vier Live-GETs, Transportmodul github.py wird erst C angelegt	A §2/C §12	GAP F05: A-owned Minimaltransport oder feste Schnittstelle ausdrücklich zuweisen
+X	B verlangt realen Sandboxnachweis, endgültiges Image und Rezept kommen erst C	B §6/C Task	GAP F05: unabhängiges gepinntes Acceptanceimage/Fixture als Testeingang definieren
+X	Initial manifest fehlt auf main, A-harness zeigt Stub-PASS als Production-PASS	A Stub/§2	REJECT; A erlaubt Stub nur als Laborstub, realer fehlender Entry FAIL
+X	Stage0 lädt HEAD-main.py weil BASE-main.py noch nicht existiert	A Stage0	REJECT; kein Fehlend-als-Fallback
+X	Policy taskIndex enthält A-Hash, aber ungebundene andere Planbytes	§4 Hashbindung	REJECT CONTRACT_BINDING/POLICY_INVALID
+X	Dependency A wird mit Anfangs-main-SHA statt angenommenem A-Commit beschriftet	§4 Dependency	GAP F06: Nichtnull+Ancestry beweisen keine Taskannahme; P05
+X	B dependency Accepted-SHA wird korrekt ersetzt, Contractversion bleibt1	B Dependency/C Revision	GAP F07: B sagt neu parsen/hash, C verlangt explizit Revision erhöhen; einheitliche Revisionspflicht klären
+X	Neue B-Revision verweist auf noch nicht akzeptierten A-Commit aus offenem PR	B Dependency	REJECT; externes Accepted-Record nötig, bloß vorhandenes Objekt nicht ausreichend
+X	Aktiver Vertrag soll seinen eigenen Pfad im scope.modify einschließen	aktueller Format1/§4	REJECT CONTRACT_PARSE; eigener Contract ist parserseitig ausgeschlossen
+X	Angeblicher reads-Key wird in Contractfrontmatter eingeschleust	aktueller Format1	REJECT CONTRACT_PARSE; Reads sind kein verfügbarer Schema-Key
+X	Ein Contract ohne Reads wird als filesystem Read-Sandbox interpretiert	§4/§6	BOUNDARY: vollständiger Snapshot ist lesbar; kein Reads-Enforcement erfunden
+X	Bootstrap-Lab-Command wird in normalem Developerplan registriert	§2 Registry	REJECT POLICY_INVALID; externer Bootstrappfad separat
+X	A/B/C tools-Mutanten werden als normale Source-Mutanten in Produktplan eingetragen	§8 vs Draft-Mutanten	REJECT POLICY_INVALID; lokaler Acceptanceharness braucht gesondertes Instrumentierungsprofil
+X	Bootstrapimplementierung soll mit DEV-Profil gleichzeitig tools und neue Tests schreiben	§4 Profile/Drafts	Normaler Gate REJECT; externer Initial-Trust-Bootstrappfad ist ausdrücklich erforderlich
+X	C Owner-OPS soll tools plus clamp Source als einen normalen Producttask schreiben	§4 Profile/C Scope	Normaler Gate nicht gedeckt; Initialbootstrap laut Handoff nutzen, kein stiller Bypass
+X	A1-Guardmutant überlebt sicher dank Rawhash, Reviewer zählt Codewechsel als Sicherheitskill	A1/§3	GAP F08; P01, kein kosmetischer Nachweis
+X	A4-Dictmutant wirkt erst nach Rawtree-Sort/Duplicate-Erkennung	A4/§3	GAP F08: äquivalent, exakter Eingriff vor verbleibenden Guards muss belegt werden
+X	B1 startsWith-Fixture wird zuvor am DELETE von file->directory gestoppt	B1/§4	GAP F08: Guardmaskierung; disjunkten gültigen Sourceprefix wählen
+X	B2 Countmutant wird nur im Fullfunnel mit frozen deleted tests getestet	B2/§4/§7	GAP F08: Freeze stoppt; isoliertes Inventar-Gegenbeispiel nötig
+X	B3 nonzero-Killmutant wird schon vom vorgeschalteten Typecheckguard abgefangen	B3/§8	GAP F08: eigener Classification-Einstieg erforderlich
+X	C1 Loginmutant bleibt dank vorgelagerter numeric Ownerfilter-Abweisung rot	C1/§9	GAP F08: tatsächliche mutierte Identitätsentscheidung lokalisieren
+X	C4 ohne final-main-Vergleich prüft trotzdem PR.base.sha=B bei verändertem main	C4/§10	GAP F08: Fixture muss PR.base-Fakt kontrolliert alt halten und andere Guards deklarieren
+X	Referenceinput ohne Nonce soll von A/B/C unverändert PASS erhalten	§4 Namespace/Reference	REJECT IDENTITY_NAMESPACE; alle150 shipped Inputs betroffen
+X	Referencecommand npm test soll Registry-Vertrauen bekommen	§2 Registry/Reference	REJECT POLICY_INVALID; nie aus Referenz Shellausführung ableiten
+X	Referenceoccurrence1 soll unverändert als V1 occurrence akzeptiert werden	§7/Reference	REJECT TEST_INVENTORY; explizite Schemaübersetzung erforderlich
+X	Reference auxiliary limits.files=1 soll feste V0.1-Limits überschreiben	§2/§4/Reference	NOT NORMATIVE; Reference-only, nicht Productionauthority
+X	Reference verlangt missing reads rejection ohne Reads-Schema in A/B/C	Format1/Reference	NOT COMPARABLE; kein verborgenes Requirement importieren
+X	Reference acceptedDependencies-Map wird zu produktiver Autorität ohne Ownerbindung	§4/Reference	REJECT untrusted Map; F06 muss normative Herkunft benennen
+X	Reference gültiger Unicodepfad soll gegen ASCII-Vertrag durchgesetzt werden	§3/Reference	REJECT GIT_PATH in A/B/C; Referenzprofil hat andere Domain
+X	Historischer Drafthash fehlt, alter Assistant-PASS ersetzt Byteprüfung	Source Identity	NOT COMPARABLE; kein PRESERVED ohne tatsächliche historische Bytes
+X	Produktionsschätzung wird als harter400-LOC-Taskcut benutzt	Draft Größen/§12	REJECT dieses neue Limit; Schätzungen explizit weich
+X	Nur Anzahl177 oder128 wird als ausgeführte Security-Testevidence dargestellt	§13/Korpusstatus	REJECT Berichtsaussage; Designfälle, Proben und echte Runs getrennt

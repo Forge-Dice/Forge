@@ -1,0 +1,1154 @@
+[
+  {
+    "group": "A",
+    "attack": "8-MiB-Blob exakt am Limit plus vorgeschriebenes cat-file-Framing",
+    "requirement": "§2/§3 Output/Blob",
+    "assessment": "GAP F01; P03 zeigt 55 Bytes Überlauf",
+    "id": "CA-001",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Zwei einzeln erlaubte 5-MiB-Blobs über denselben langlebigen Batchprozess",
+    "requirement": "§2/§3 Batchbudgets",
+    "assessment": "GAP F01; Lebenszeitbudget stoppt erlaubten Objektstrom",
+    "id": "CA-002",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Ein Tree-OID wird unter zwei verschiedenen gültigen Prefixen wiederverwendet",
+    "requirement": "§3 Prefixprüfung",
+    "assessment": "REJECT falls erst zweiter Prefix kollidiert; Cache darf Pfadprüfung nicht überspringen",
+    "id": "CA-003",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Verzeichnis- und Dateiname gleichen Sortierprefixes a und a.c",
+    "requirement": "§3 Git-Treesortierung",
+    "assessment": "REJECT nur bei falscher Directory-Terminator-Sortierung; nicht lexikographisch vereinfachen",
+    "id": "CA-004",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Tree enthält gültigen Entry plus 19 statt 20 OID-Bytes",
+    "requirement": "§3 Rohframing",
+    "assessment": "REJECT GIT_OBJECT",
+    "id": "CA-005",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Tree enthält strukturell sortierte verschiedene Entries und einen trailing Byte",
+    "requirement": "§3 kein trailing garbage",
+    "assessment": "REJECT GIT_OBJECT",
+    "id": "CA-006",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Commit parent-Header mit Fortsetzungszeile trotz gültiger Parent-OID",
+    "requirement": "§3 strukturale Header",
+    "assessment": "REJECT GIT_OBJECT",
+    "id": "CA-007",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Commit mit zwei Parents, einer davon BASE, einer identisch zum ersten",
+    "requirement": "§3 neue Parentzahl",
+    "assessment": "REJECT GIT_HISTORY; Parent-Set darf Duplikat nicht verstecken",
+    "id": "CA-008",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "BASE selbst ist Merge, Authoring-baseCommit ist nur auf zweitem BASE-Parent erreichbar",
+    "requirement": "§3/§4 BASE-Ancestry",
+    "assessment": "GAP F05 zur Algorithmusgrenze; Vorfahrprüfung muss alle BASE-Parents lesen",
+    "id": "CA-009",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Commit chain 128 inklusive HEAD und exklusive BASE",
+    "requirement": "§2/§3 Historylimit",
+    "assessment": "ALLOW wenn alle anderen Regeln erfüllt; off-by-one Grenzfall",
+    "id": "CA-010",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "126 lineare Commits, temporärer verbotener Filemode und danach Rückkehr",
+    "requirement": "§3/§4 Zwischen-Snapshots",
+    "assessment": "REJECT SCOPE_MODE; Nettodiff reicht nicht",
+    "id": "CA-011",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Zwischencommit legt Source an, löscht sie wieder, später anderer erlaubter Diff",
+    "requirement": "§4 DELETE-Verbot",
+    "assessment": "REJECT; Revert bereinigt keine historisch verbotene Änderung",
+    "id": "CA-012",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "100755 in BASE bleibt Mode-identisch, Inhalt wird trotzdem geändert",
+    "requirement": "§3 100755 nur unverändert",
+    "assessment": "REJECT SCOPE_MODE; content-only ist hier unzulässig",
+    "id": "CA-013",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Unter anderem Prefix wiederverwendeter Blob-OID liefert falschen Objekttyp",
+    "requirement": "§3 OID-Typprüfung",
+    "assessment": "REJECT GIT_OBJECT; Typcache muss korrekt gebunden sein",
+    "id": "CA-014",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Replace-Angriff nach Entfernung von Env und Layoutguards, Rawhash bleibt aktiv",
+    "requirement": "§3 Objekt-Rehash/A1",
+    "assessment": "REJECT GIT_OBJECT; P01, kein belegter unsicherer PASS",
+    "id": "CA-015",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Packed refs/replace vorhanden, loose refs fehlen vollständig",
+    "requirement": "§2 Layout",
+    "assessment": "REJECT GIT_LAYOUT; kein Verzeichnis-only Check",
+    "id": "CA-016",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Leere objects/info/alternates-Datei statt aktiver Alternates-Pfade",
+    "requirement": "§2 Vorhandensein verboten",
+    "assessment": "REJECT GIT_LAYOUT auch ohne tatsächliche Umleitung",
+    "id": "CA-017",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Promisor-Datei tief im pack-Verzeichnis mit sonst normalem Fetch",
+    "requirement": "§2 Layout",
+    "assessment": "REJECT GIT_LAYOUT; gesamte zulässige ODB-Struktur kontrollieren",
+    "id": "CA-018",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Git-Config-Key zweimal, einmal sicher und später unsicher",
+    "requirement": "§2 erlaubte Config",
+    "assessment": "REJECT GIT_LAYOUT; nicht last-value-only erlauben",
+    "id": "CA-019",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Event gibt Remote mit kanonischem Host und userinfo oder Query",
+    "requirement": "§2 feste Remote",
+    "assessment": "REJECT bzw. ignorieren als nicht konsumierbares Textfeld; AV009 braucht API-Einstieg",
+    "id": "CA-020",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Segment COM0.ts oder COM10.ts im Gegensatz zu COM1.ts",
+    "requirement": "§3 Windowsgrammar",
+    "assessment": "ALLOW erste zwei nach expliziter 1..9-Regel; kein erweitertes Geräteverbot erfinden",
+    "id": "CA-021",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Root enthält AUX.test.ts, kein exakt AUX.ts",
+    "requirement": "§3 Gerätename vor Extension",
+    "assessment": "REJECT GIT_PATH; erster Punkt bestimmt Gerätebasename",
+    "id": "CA-022",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Casekollision nur zwischen zwei Directory-Prefixen mit verschiedenen Leaves",
+    "requirement": "§3 Prefix-Trie",
+    "assessment": "REJECT GIT_COLLISION; kein Leaf-only Casecheck",
+    "id": "CA-023",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Pfad ist 255 Bytes bei 16 Segmenten, jeder Segmentlänge <=100",
+    "requirement": "§2/§3 Pfadlimit",
+    "assessment": "ALLOW wenn Grammar/Modes korrekt; Grenzfall",
+    "id": "CA-024",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Ascii-Pfad enthält Segment ..x und .x statt genau .. oder .",
+    "requirement": "§3 Grammar",
+    "assessment": "ALLOW; pauschales startsWith-dot-Verbot wäre zusätzliche Semantik",
+    "id": "CA-025",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Leaf wird während Materialisierung zum Hardlink mit nlink=2",
+    "requirement": "§5 fstat/nlink",
+    "assessment": "REJECT EXECUTION_IO",
+    "id": "CA-026",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Parent-Symlink wird erst nach erfolgreichem Parent-FD-Open ausgetauscht",
+    "requirement": "§5 dir_fd",
+    "assessment": "Gebundener FD bleibt im ursprünglichen Directory; prüfen, keine Pfadauflösung wiederholen",
+    "id": "CA-027",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Root wird vor Root-FD-Open durch Symlink auf fremdes Verzeichnis ersetzt",
+    "requirement": "§5 Root O_NOFOLLOW",
+    "assessment": "REJECT EXECUTION_IO",
+    "id": "CA-028",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Cleanup trifft fremden Symlink im privaten Root nach Worker-Abbruch",
+    "requirement": "§5 fd-sicheres destroy",
+    "assessment": "Kein rekursives Folgen; sonst Schutzlücke, zusätzliche Abnahme nötig",
+    "id": "CA-029",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "stdout erreicht 8 MiB, stderr liefert anschließend ein Byte",
+    "requirement": "§2 kombinierter Output",
+    "assessment": "REJECT; getrennte Limits würden Budget verdoppeln",
+    "id": "CA-030",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Child löst sich mit setsid von der ursprünglichen Prozessgruppe",
+    "requirement": "§2 Gruppen/Workercleanup",
+    "assessment": "GAP F10: wait-all über PG allein unzureichend; cgroup/Containerabnahme muss residuale Prozesse zeigen",
+    "id": "CA-031",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "A",
+    "attack": "Gültiges Event-JSON nutzt 1e0 für PR-ID",
+    "requirement": "§2 positive Integer/AV004",
+    "assessment": "GAP F03: lexikalische Exponentialnotation vs numerischer Integralwert nicht vollständig spezifiziert",
+    "id": "CA-032",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Gleiche Testzahl, verlorene BASE-Identität, neue gleiche Titel in anderer Datei",
+    "requirement": "§7 strukturierte Identität",
+    "assessment": "REJECT TEST_INVENTORY",
+    "id": "CA-033",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Mehrere identische Titel ändern Laufzeitreihenfolge, Collectionbaum gleich",
+    "requirement": "§7 occurrence vor Abschluss",
+    "assessment": "ALLOW; occurrence darf nicht onFinish vergeben werden",
+    "id": "CA-034",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Identische Titel ändern Collectionreihenfolge bei identischem eingefrorenem Source",
+    "requirement": "§7/§6 semantische Grenze",
+    "assessment": "BOUNDARY P07; Inventar bindet Positionen, keine Bodysemantik",
+    "id": "CA-035",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "NFC-Testtitel in BASE, NFD in HEAD, Pfade bleiben ASCII",
+    "requirement": "§7 unveränderte Titel",
+    "assessment": "REJECT TEST_INVENTORY; keine Title-Normalisierung",
+    "id": "CA-036",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Titel enthalten Literaldelimiter, neue ancestor-Aufteilung erzeugt gleiche Anzeige",
+    "requirement": "§7 Tuple/AV115",
+    "assessment": "REJECT bei Identitätswechsel; coexistence ALLOW; Katalogkontext klären",
+    "id": "CA-037",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Report occurrence-Liste 0,2 bei zwei ansonsten grünen Duplikaten",
+    "requirement": "§7 zusammenhängende occurrence",
+    "assessment": "REJECT TEST_INVENTORY",
+    "id": "CA-038",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Report enthält dieselbe vollständige Identität zweimal mit passed und failed",
+    "requirement": "§7 Eindeutigkeit",
+    "assessment": "REJECT TEST_INVENTORY vor Statusbewertung",
+    "id": "CA-039",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "BASE enthält todo, HEAD ersetzt ihn durch echten passed Test",
+    "requirement": "§7 BASE muss grün",
+    "assessment": "REJECT TEST_BASELINE; HEAD repariert keinen ungültigen Start",
+    "id": "CA-040",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Neue genehmigte Testdatei hat nur leere describe-Suite",
+    "requirement": "§7 empty Collection",
+    "assessment": "REJECT TEST_INVENTORY",
+    "id": "CA-041",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Parameterized Test liefert im HEAD andere Werte, gleiche Anzahl",
+    "requirement": "§7 Runtimeexpansion",
+    "assessment": "REJECT falls expandierte Titel/Identitäten abweichen; gleiche Identität ist Bodygrenze",
+    "id": "CA-042",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Dynamisches context.skip nach zunächst bestandener Assertion",
+    "requirement": "§7 Endstatus",
+    "assessment": "REJECT TEST_STATUS",
+    "id": "CA-043",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Test läuft zweimal durch Retry und wird erst danach grün",
+    "requirement": "§6/§7 retry=0",
+    "assessment": "REJECT/unerlaubte Runtimekonfiguration; kein versteckter Retry-PASS",
+    "id": "CA-044",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "HEAD-Suite Exit 0, Report reason failed mit nur passed Rows",
+    "requirement": "§7 komplette konsistente Ergebnisse",
+    "assessment": "REJECT TEST_INVENTORY; reason-Enum muss vollständig definiert werden",
+    "id": "CA-045",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Report exakt 8 MiB plus längengeframter Transportheader",
+    "requirement": "§2/§6 Transport",
+    "assessment": "GAP F01 wie Blobframing",
+    "id": "CA-046",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Testcode schreibt zusätzlichen zweiten JSON-Frame auf stdout",
+    "requirement": "§6 genau ein Report",
+    "assessment": "REJECT TEST_INVENTORY/EXECUTION_IO; genaue Präzedenz ergänzen",
+    "id": "CA-047",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Header behauptet 1 KiB Report, tatsächlicher Stream endet nach 100 Bytes",
+    "requirement": "§6 Framing",
+    "assessment": "REJECT; niemals partielles JSON als Diagnose-PASS",
+    "id": "CA-048",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Malicious npmrc wird als BASE-Repo-Datei mitgeführt, Install-cwd enthält sie nicht",
+    "requirement": "§6 Install nur Manifest/Lock",
+    "assessment": "ALLOW solange weder BASE- noch HEAD-npmrc konsumiert wird",
+    "id": "CA-049",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "package.json Lifecycle-Script ist gefährlich, trusted BASE-lock bleibt gültig",
+    "requirement": "§6 ignore-scripts",
+    "assessment": "Script darf nicht ausgeführt werden; kein späteres npm test",
+    "id": "CA-050",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Vite config steht in genehmigter Source und wird per Import explizit geladen",
+    "requirement": "§6 Sandbox/§4 Scope",
+    "assessment": "BOUNDARY: explizite Sourceimports bleiben untrusted Code; Autodiscovery-Schutz ist kein Import-Verbot",
+    "id": "CA-051",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "HEAD-tsconfig Excludes verstecken einen echten Source-Typefehler",
+    "requirement": "§4 Freeze/§6 BASE-tsconfig",
+    "assessment": "REJECT schon Static Gate; getrennte Compilerprobe muss ebenfalls Fehler sehen",
+    "id": "CA-052",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "HEAD enthält Source außerhalb ursprünglicher src/tests-Includes",
+    "requirement": "§6 Include-Bindung",
+    "assessment": "REJECT POLICY_INVALID; Scope allein reicht nicht",
+    "id": "CA-053",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Mutant Anchor aaa tritt in aaaa an zwei überlappenden Positionen auf",
+    "requirement": "§8 overlaid count",
+    "assessment": "REJECT MUTANT_NOT_APPLIED",
+    "id": "CA-054",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Mutant Replacement leer, eindeutiger Anchor, Syntax bleibt gültig",
+    "requirement": "§8 0..65536 Replacement",
+    "assessment": "APPLY erlaubt; Kill muss echte benannte Assertion sein",
+    "id": "CA-055",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Patch ändert nur Source, Ergebnis überschreitet 8-MiB-Bloblimit",
+    "requirement": "§8/§2 Patchbudgets",
+    "assessment": "REJECT; NOT_APPLIED vs GIT_LIMIT-Mapping muss verbindlich werden",
+    "id": "CA-056",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Benannter Test passed, anderer unbenannter Test wirft AssertionError",
+    "requirement": "§8 nonnamed failure",
+    "assessment": "REJECT MUTANT_INFRA; kein Kill",
+    "id": "CA-057",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Benannter Test wirft TypeError, exit1 und keine anderen Fehler",
+    "requirement": "§8 AssertionError-only",
+    "assessment": "REJECT MUTANT_INFRA",
+    "id": "CA-058",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Benannter Test wirft AssertionError, weiterer Hook schlägt fehl",
+    "requirement": "§8 Infrastrukturpriorität",
+    "assessment": "REJECT MUTANT_INFRA",
+    "id": "CA-059",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Alle Tests passed, Prozess beendet sich trotzdem mit exit1",
+    "requirement": "§8 konsistenter Exit",
+    "assessment": "REJECT MUTANT_INFRA",
+    "id": "CA-060",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Benannter Test failed AssertionError, Prozess exit0",
+    "requirement": "§8 KILLED exit1",
+    "assessment": "REJECT MUTANT_INFRA",
+    "id": "CA-061",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Mutant behauptet nachträglich detected und äquivalent zugleich",
+    "requirement": "§8 kein Developerfallback",
+    "assessment": "REJECT; dokumentierter Report ersetzt keinen Supervisorlauf",
+    "id": "CA-062",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Eine genehmigte Source monkeypatcht Reporter und schreibt perfektes Inventar",
+    "requirement": "§6 erklärte JS-Grenze",
+    "assessment": "BOUNDARY: PASS kann innerhalb zugestandener Inprozessgrenze gefälscht werden; keine starke Ehrlichkeitsgarantie",
+    "id": "CA-063",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "B",
+    "attack": "Neue Testdatei importiert candidate tools-Verifier im privilegierten Hostprozess",
+    "requirement": "§6 Worker-only",
+    "assessment": "REJECT EXECUTION_SANDBOX; technische Tests gehören in unprivilegierten Worker",
+    "id": "CA-064",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Owner-Review hat gleiche Bindungen, Body wird nach Gate vor Stage2 ersetzt",
+    "requirement": "§9/§10/AV154",
+    "assessment": "GAP F02; P04 Information-loss",
+    "id": "CA-065",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Review wurde vor Gate editiert, bleibt danach unverändert",
+    "requirement": "§9/AV155",
+    "assessment": "ALLOW aktuelle gültige Attestation; kein historischer Editbeweis behaupten",
+    "id": "CA-066",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Review wird innerhalb Stage2 hin und zurück editiert zwischen GETs",
+    "requirement": "§9/§10 nicht atomarer Snapshot",
+    "assessment": "BOUNDARY: unbeobachtete ABA-Änderung nicht erkennbar, kein uneingeschränktes Editschutzversprechen",
+    "id": "CA-067",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Latest Ownerreview gleicher submitted_at, höhere numeric ID ist revoke",
+    "requirement": "§9 Sortierung",
+    "assessment": "REJECT REVIEW_BLOCKED",
+    "id": "CA-068",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Neuester Ownerreview ist ordinary prose, ältere Attestation gültig",
+    "requirement": "§9 kein fallback",
+    "assessment": "REJECT REVIEW_FORMAT",
+    "id": "CA-069",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Latest APPROVED nach gültigem COMMENTED-Review",
+    "requirement": "§9 State",
+    "assessment": "REJECT REVIEW_BLOCKED; native Approval ist kein Forgeapprove",
+    "id": "CA-070",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "PENDING-Ownerreview nach gültiger veröffentlichter Attestation",
+    "requirement": "§9 nur veröffentlichte Reviews",
+    "assessment": "ALLOW falls ansonsten unverändert; PENDING blockiert nicht automatisch Latest-published",
+    "id": "CA-071",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Unbeteiligter Nutzer postet kopierte perfekte Owner-Attestation",
+    "requirement": "§9 user.id",
+    "assessment": "Ignorieren als nicht autorisiert; keine Freigabe aus Body",
+    "id": "CA-072",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "supersedes enthält dieselbe reviewId zweimal mit verschiedenen Digests",
+    "requirement": "§9 eindeutige Supersedes",
+    "assessment": "REJECT REVIEW_BLOCKED/FORMAT nach geklärtem Schema",
+    "id": "CA-073",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "supersedes verweist auf gelöschten Blocker, ID bleibt bekannt",
+    "requirement": "§9 aktueller API-Datensatz",
+    "assessment": "REJECT; unbekannte aktuelle Referenz darf nicht still gelten",
+    "id": "CA-074",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Neue Approve supersedes nur neueren von zwei ungelösten Blockern",
+    "requirement": "§9 alle Blocker",
+    "assessment": "REJECT REVIEW_BLOCKED",
+    "id": "CA-075",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Ältester Blocker wurde in korrekter Zwischenapprove superseded, neue Approve supersedes jüngsten",
+    "requirement": "§9 Supersedesclosure",
+    "assessment": "GAP F04: aktuell vs jemals bekannte Blocker/Transitivität nicht definiert",
+    "id": "CA-076",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "External result reject statt request_changes",
+    "requirement": "§9 Enum/AV150",
+    "assessment": "GAP F03; P08 ungültiger Wert, erwartete REVIEW_BLOCKED nicht eindeutig",
+    "id": "CA-077",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "External findings severity fatal, critical oder blocking bei result approve",
+    "requirement": "§9 keine blocking Findings",
+    "assessment": "GAP F04: Severityenum/Blockingprädikat fehlen",
+    "id": "CA-078",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "External Reviewer provider OPENAI oder openai mit Whitespace",
+    "requirement": "§9 DEV provider anthropic",
+    "assessment": "REJECT; keine Case-/Trim-Aliasbildung für Independence",
+    "id": "CA-079",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "OWNER_OPS-Review gleicher Provider wie der tatsächlich coding Owneragent",
+    "requirement": "§4/§9 Profile",
+    "assessment": "GAP F04: Ownercoding-Provider und unabhängige Providerregel fehlen; keine DEV-Regel erfinden",
+    "id": "CA-080",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "ExternalReviewBase64 hat alternative Paddingform mit denselben Bytes",
+    "requirement": "§9 canonical Base64",
+    "assessment": "REJECT REVIEW_FORMAT",
+    "id": "CA-081",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "External report hash stimmt, innerer verifierSha stimmt nicht",
+    "requirement": "§9 doppelte Bindung",
+    "assessment": "REJECT REVIEW_BINDING",
+    "id": "CA-082",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Reviewbody 64 KiB, embedded decoded report 32 KiB, JSONtiefe über32",
+    "requirement": "§2/§9 Limits",
+    "assessment": "REJECT; exakte Tiefegrenze im Reviewparser festschreiben",
+    "id": "CA-083",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Deployment checkedAt ist eine Sekunde in Zukunft",
+    "requirement": "§10 TTL",
+    "assessment": "REJECT POLICY_DEPLOYMENT",
+    "id": "CA-084",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Deployment checkedAt exakt 30 Minuten vor Final",
+    "requirement": "§10 älter als30min",
+    "assessment": "ALLOW; danach plus1 Sekunde REJECT",
+    "id": "CA-085",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Owner rerunt einzig forge-verify, altes Gate bleibt green",
+    "requirement": "§10 Receipt/Jobs",
+    "assessment": "REJECT IDENTITY_RECHECK/POLICY_CHECKS; C3 muss zweite Barriere beachten",
+    "id": "CA-086",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Owner rerunt forge-gate inklusive downstream forge-verify statt Menü All",
+    "requirement": "§10 frischer Attempt",
+    "assessment": "GAP F09: gleiche effektive Jobs/Receipt, UI-Intent nicht beobachtbar",
+    "id": "CA-087",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Gate receipt aus anderem PR mit gleichem B/H/RunAttempt",
+    "requirement": "§10 feste Runbindung",
+    "assessment": "REJECT über runId bzw. PR-Startbindung; PR nicht im Receipt, nur trusted Bindung nutzen",
+    "id": "CA-088",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Andere Workflowdatei erzeugt gleichnamige Jobs in anderem Run",
+    "requirement": "§10/AV172",
+    "assessment": "GAP F09: eigener Attempt-Jobread sieht fremden Run nicht; Deployment vs Runtimegarantie trennen",
+    "id": "CA-089",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Reviewwiderruf erfolgt erst nach letztem Final-GET vor Checkabschluss",
+    "requirement": "§10 Race-Limit",
+    "assessment": "BOUNDARY: Owner-Premergecheck erforderlich, kein atomarer PASS-Beweis",
+    "id": "CA-090",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "main springt B->B2->B zwischen den beiden GETs",
+    "requirement": "§10/H2 Race",
+    "assessment": "H2 soll Forcepush verhindern; compromised Admin ist TCB; Snapshot allein erkennt ABA nicht",
+    "id": "CA-091",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "PR wird auf andere Base retargeted und vor Final wieder auf main gesetzt",
+    "requirement": "§10 Snapshot/Workflowquelle",
+    "assessment": "GAP F09: WorkflowSHA/Base-Provenienz prüfen; unbeobachtete Retargethistory nicht rekonstruieren",
+    "id": "CA-092",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "API pagination liefert gleiche reviewId auf zwei aufeinanderfolgenden Seiten",
+    "requirement": "§2 vollständige API/§9 IDs",
+    "assessment": "REJECT/erneute definierte Snapshotbehandlung; nicht doublecount/silent dedup",
+    "id": "CA-093",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Erste Finalrunde enthält Revocation, zweite gültige Approve",
+    "requirement": "§10 maximal2 stabile Runden",
+    "assessment": "REJECT; nicht bis zufällig passende Runden loopen",
+    "id": "CA-094",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Job if always wird mit continue-on-error bei Verify kombiniert",
+    "requirement": "§10 roter terminaler Pfad",
+    "assessment": "REJECT Workflowabnahme; sonst falsches Green trotz exit1",
+    "id": "CA-095",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "C",
+    "attack": "Supervisor schreibt Worker-Body ungefiltert als GITHUB_OUTPUT-Wert",
+    "requirement": "§6/§10 trusted receipt",
+    "assessment": "REJECT; Workflowcommand-Injection darf kein Receipt schaffen",
+    "id": "CA-096",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "A benötigt vier Live-GETs, Transportmodul github.py wird erst C angelegt",
+    "requirement": "A §2/C §12",
+    "assessment": "GAP F05: A-owned Minimaltransport oder feste Schnittstelle ausdrücklich zuweisen",
+    "id": "CA-097",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "B verlangt realen Sandboxnachweis, endgültiges Image und Rezept kommen erst C",
+    "requirement": "B §6/C Task",
+    "assessment": "GAP F05: unabhängiges gepinntes Acceptanceimage/Fixture als Testeingang definieren",
+    "id": "CA-098",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Initial manifest fehlt auf main, A-harness zeigt Stub-PASS als Production-PASS",
+    "requirement": "A Stub/§2",
+    "assessment": "REJECT; A erlaubt Stub nur als Laborstub, realer fehlender Entry FAIL",
+    "id": "CA-099",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Stage0 lädt HEAD-main.py weil BASE-main.py noch nicht existiert",
+    "requirement": "A Stage0",
+    "assessment": "REJECT; kein Fehlend-als-Fallback",
+    "id": "CA-100",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Policy taskIndex enthält A-Hash, aber ungebundene andere Planbytes",
+    "requirement": "§4 Hashbindung",
+    "assessment": "REJECT CONTRACT_BINDING/POLICY_INVALID",
+    "id": "CA-101",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Dependency A wird mit Anfangs-main-SHA statt angenommenem A-Commit beschriftet",
+    "requirement": "§4 Dependency",
+    "assessment": "GAP F06: Nichtnull+Ancestry beweisen keine Taskannahme; P05",
+    "id": "CA-102",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "B dependency Accepted-SHA wird korrekt ersetzt, Contractversion bleibt1",
+    "requirement": "B Dependency/C Revision",
+    "assessment": "GAP F07: B sagt neu parsen/hash, C verlangt explizit Revision erhöhen; einheitliche Revisionspflicht klären",
+    "id": "CA-103",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Neue B-Revision verweist auf noch nicht akzeptierten A-Commit aus offenem PR",
+    "requirement": "B Dependency",
+    "assessment": "REJECT; externes Accepted-Record nötig, bloß vorhandenes Objekt nicht ausreichend",
+    "id": "CA-104",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Aktiver Vertrag soll seinen eigenen Pfad im scope.modify einschließen",
+    "requirement": "aktueller Format1/§4",
+    "assessment": "REJECT CONTRACT_PARSE; eigener Contract ist parserseitig ausgeschlossen",
+    "id": "CA-105",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Angeblicher reads-Key wird in Contractfrontmatter eingeschleust",
+    "requirement": "aktueller Format1",
+    "assessment": "REJECT CONTRACT_PARSE; Reads sind kein verfügbarer Schema-Key",
+    "id": "CA-106",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Ein Contract ohne Reads wird als filesystem Read-Sandbox interpretiert",
+    "requirement": "§4/§6",
+    "assessment": "BOUNDARY: vollständiger Snapshot ist lesbar; kein Reads-Enforcement erfunden",
+    "id": "CA-107",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Bootstrap-Lab-Command wird in normalem Developerplan registriert",
+    "requirement": "§2 Registry",
+    "assessment": "REJECT POLICY_INVALID; externer Bootstrappfad separat",
+    "id": "CA-108",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "A/B/C tools-Mutanten werden als normale Source-Mutanten in Produktplan eingetragen",
+    "requirement": "§8 vs Draft-Mutanten",
+    "assessment": "REJECT POLICY_INVALID; lokaler Acceptanceharness braucht gesondertes Instrumentierungsprofil",
+    "id": "CA-109",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Bootstrapimplementierung soll mit DEV-Profil gleichzeitig tools und neue Tests schreiben",
+    "requirement": "§4 Profile/Drafts",
+    "assessment": "Normaler Gate REJECT; externer Initial-Trust-Bootstrappfad ist ausdrücklich erforderlich",
+    "id": "CA-110",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "C Owner-OPS soll tools plus clamp Source als einen normalen Producttask schreiben",
+    "requirement": "§4 Profile/C Scope",
+    "assessment": "Normaler Gate nicht gedeckt; Initialbootstrap laut Handoff nutzen, kein stiller Bypass",
+    "id": "CA-111",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "A1-Guardmutant überlebt sicher dank Rawhash, Reviewer zählt Codewechsel als Sicherheitskill",
+    "requirement": "A1/§3",
+    "assessment": "GAP F08; P01, kein kosmetischer Nachweis",
+    "id": "CA-112",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "A4-Dictmutant wirkt erst nach Rawtree-Sort/Duplicate-Erkennung",
+    "requirement": "A4/§3",
+    "assessment": "GAP F08: äquivalent, exakter Eingriff vor verbleibenden Guards muss belegt werden",
+    "id": "CA-113",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "B1 startsWith-Fixture wird zuvor am DELETE von file->directory gestoppt",
+    "requirement": "B1/§4",
+    "assessment": "GAP F08: Guardmaskierung; disjunkten gültigen Sourceprefix wählen",
+    "id": "CA-114",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "B2 Countmutant wird nur im Fullfunnel mit frozen deleted tests getestet",
+    "requirement": "B2/§4/§7",
+    "assessment": "GAP F08: Freeze stoppt; isoliertes Inventar-Gegenbeispiel nötig",
+    "id": "CA-115",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "B3 nonzero-Killmutant wird schon vom vorgeschalteten Typecheckguard abgefangen",
+    "requirement": "B3/§8",
+    "assessment": "GAP F08: eigener Classification-Einstieg erforderlich",
+    "id": "CA-116",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "C1 Loginmutant bleibt dank vorgelagerter numeric Ownerfilter-Abweisung rot",
+    "requirement": "C1/§9",
+    "assessment": "GAP F08: tatsächliche mutierte Identitätsentscheidung lokalisieren",
+    "id": "CA-117",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "C4 ohne final-main-Vergleich prüft trotzdem PR.base.sha=B bei verändertem main",
+    "requirement": "C4/§10",
+    "assessment": "GAP F08: Fixture muss PR.base-Fakt kontrolliert alt halten und andere Guards deklarieren",
+    "id": "CA-118",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Referenceinput ohne Nonce soll von A/B/C unverändert PASS erhalten",
+    "requirement": "§4 Namespace/Reference",
+    "assessment": "REJECT IDENTITY_NAMESPACE; alle150 shipped Inputs betroffen",
+    "id": "CA-119",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Referencecommand npm test soll Registry-Vertrauen bekommen",
+    "requirement": "§2 Registry/Reference",
+    "assessment": "REJECT POLICY_INVALID; nie aus Referenz Shellausführung ableiten",
+    "id": "CA-120",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Referenceoccurrence1 soll unverändert als V1 occurrence akzeptiert werden",
+    "requirement": "§7/Reference",
+    "assessment": "REJECT TEST_INVENTORY; explizite Schemaübersetzung erforderlich",
+    "id": "CA-121",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Reference auxiliary limits.files=1 soll feste V0.1-Limits überschreiben",
+    "requirement": "§2/§4/Reference",
+    "assessment": "NOT NORMATIVE; Reference-only, nicht Productionauthority",
+    "id": "CA-122",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Reference verlangt missing reads rejection ohne Reads-Schema in A/B/C",
+    "requirement": "Format1/Reference",
+    "assessment": "NOT COMPARABLE; kein verborgenes Requirement importieren",
+    "id": "CA-123",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Reference acceptedDependencies-Map wird zu produktiver Autorität ohne Ownerbindung",
+    "requirement": "§4/Reference",
+    "assessment": "REJECT untrusted Map; F06 muss normative Herkunft benennen",
+    "id": "CA-124",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Reference gültiger Unicodepfad soll gegen ASCII-Vertrag durchgesetzt werden",
+    "requirement": "§3/Reference",
+    "assessment": "REJECT GIT_PATH in A/B/C; Referenzprofil hat andere Domain",
+    "id": "CA-125",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Historischer Drafthash fehlt, alter Assistant-PASS ersetzt Byteprüfung",
+    "requirement": "Source Identity",
+    "assessment": "NOT COMPARABLE; kein PRESERVED ohne tatsächliche historische Bytes",
+    "id": "CA-126",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Produktionsschätzung wird als harter400-LOC-Taskcut benutzt",
+    "requirement": "Draft Größen/§12",
+    "assessment": "REJECT dieses neue Limit; Schätzungen explizit weich",
+    "id": "CA-127",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  },
+  {
+    "group": "X",
+    "attack": "Nur Anzahl177 oder128 wird als ausgeführte Security-Testevidence dargestellt",
+    "requirement": "§13/Korpusstatus",
+    "assessment": "REJECT Berichtsaussage; Designfälle, Proben und echte Runs getrennt",
+    "id": "CA-128",
+    "method": "CONTRACT_REASONING",
+    "execution": "NOT_EXECUTED_AS_PRODUCTION_TEST"
+  }
+]
