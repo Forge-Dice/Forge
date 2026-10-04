@@ -6,6 +6,7 @@ import { initialSession, replaySession, type SessionState } from "../src/domain/
 import * as saveModule from "../src/domain/case-session-save.ts";
 import { decodeSessionSave, encodeSessionSave, loadSessionSaveForPlayer, SAVE_LIMITS } from "../src/domain/case-session-save.ts";
 import { CLAIMS, events, play, refOf, sessionPackage } from "./case-session.fixture.ts";
+import { loadVitrine, resolveVitrinePackage } from "./vitrine.fixture.ts";
 
 // MYST-SESSION-0001C matrix C01-C42 on the library case of Session A/B (real modules throughout).
 
@@ -79,6 +80,33 @@ describe("save: roundtrip", () => {
     const loaded = decodeSessionSave(pkg, encoded(state));
     expect(loaded).toEqual({ ok: true, state });
     if (loaded.ok) expect(loaded.state.knowledge.observations.length).toBeGreaterThan(2);
+  });
+
+  it("C02 Vitrine: the full witness and the solving accusation roundtrip on the resolved package", () => {
+    const resolution = resolveVitrinePackage(loadVitrine());
+    if (!resolution.ok) throw new Error(JSON.stringify(resolution.findings));
+    const vitrine = resolution.package;
+    const ref = (id: string) => refOf(vitrine, id);
+    const actor = (person: string, value: boolean) => ({
+      claim: { kind: "personRoleForEvent", person: ref(`person:${person}`), event: ref("event:e04"), role: "direct_actor" },
+      value,
+    });
+    const witness = [
+      { type: "investigate", action: "search_location", target: ref("location:hof") },
+      { type: "interrogate", npc: ref("person:nora"), questionId: "question:q08" },
+      { type: "investigate", action: "examine_item", target: ref("item:kamera") },
+      { type: "interrogate", npc: ref("person:oskar"), questionId: "question:q14" },
+      { type: "investigate", action: "examine_item", target: ref("item:terminal") },
+    ];
+    const explored = play(vitrine, witness);
+    expect(explored.knowledge.discoveries.map((d) => d.evidence).sort()).toEqual(
+      ["evidence:d03", "evidence:d04", "evidence:d05"].map(ref).sort(),
+    );
+    expect(decodeSessionSave(vitrine, encoded(explored, vitrine))).toEqual({ ok: true, state: explored });
+    const solved = play(vitrine, [{ type: "accuse", literals: ["max", "lina", "nora", "oskar"].map((p) => actor(p, p === "lina")) }], explored);
+    expect(solved.phase).toBe("solved");
+    expect(decodeSessionSave(vitrine, encoded(solved, vitrine))).toEqual({ ok: true, state: solved });
+    expect(decodeSessionSave(pkg, encoded(solved, vitrine))).toEqual({ ok: false, code: "INCOMPATIBLE_PACKAGE" });
   });
 
   it("C03 a solved history roundtrips with its terminal phase", () => {
