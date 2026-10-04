@@ -14,6 +14,7 @@
     set: (k, v) => { try { localStorage.setItem(k, v); } catch {} },
   };
   const none = async () => null;
+  const esc = (t) => String(t).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
   async function request(method, url, body) {
     const res = await app.handle(method, url, body === undefined ? none : async () => body);
@@ -50,7 +51,7 @@
     if (res.headers["content-disposition"]) return download(res);
     const html = res.headers["content-type"]?.startsWith("text/html")
       ? res.body
-      : `<!doctype html><meta charset="utf-8"><body style="font:18px system-ui;background:#1c1814;color:#f5eedf;padding:40px"><p>${res.status}: ${res.body}</p><p><a style="color:#c99a4b" href="/">Zu den Fällen</a></p>`;
+      : `<!doctype html><meta charset="utf-8"><body style="font:18px system-ui;background:#1c1814;color:#f5eedf;padding:40px"><p>${res.status}: ${esc(res.body)}</p><p><a style="color:#c99a4b" href="/">Zu den Fällen</a></p>`;
     try { history.replaceState(null, "", `#${url}`); } catch {}
     frame.srcdoc = html.replace(/<head>|<body[^>]*>/, (tag) => tag + PAGE_SHIM);
   }
