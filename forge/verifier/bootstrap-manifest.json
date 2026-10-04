@@ -3,7 +3,7 @@
   "files": [
     {
       "path": "tools/forge_v01/main.py",
-      "sha256": "a8fbf317ba47935102c912160e5424db6e39e610fccb3bd3a4aef315051f87ab"
+      "sha256": "b9afc9846e426cdee3caf83eaffc7a598481c2ef38641b93615dc31bb9fe54ac"
     },
     {
       "path": "tools/forge_v01/bootstrap.py",
@@ -19,7 +19,7 @@
     },
     {
       "path": "tools/forge_v01/final.py",
-      "sha256": "b279b4ef9f549be3c0f36bd3384423547df156ab82dfa1458c9b1c19b2c39523"
+      "sha256": "0d662965bdd970d9e42b22e8cf483c0ed6e51287e8ffa745d848ecff706cd025"
     },
     {
       "path": "tools/forge_v01/github.py",

@@ -9,6 +9,7 @@ site each). Failures are collected and the primary one follows PKG §11 enum pre
 
 from __future__ import annotations
 
+import calendar
 import hashlib
 import json
 import re
@@ -25,6 +26,7 @@ RECEIPT_LIMIT = 1024
 WORKFLOW_PATH = ".github/workflows/forge-v01.yml"
 GATE_JOB, VERIFY_JOB = "forge-gate", "forge-verify"
 FINAL_WINDOW = 10.0
+DEPLOYMENT_TTL = 30 * 60
 _HEX64 = re.compile(r"[0-9a-f]{64}")
 
 
@@ -182,3 +184,13 @@ def final_recheck(snapshots: list, receipt: dict, expected: dict) -> dict:
     if failures:
         raise first(failures)
     return {"reviewSnapshotDigest": receipt["reviewSnapshotDigest"], "attestationId": expected["attestation"]["reviewId"]}
+
+
+def check_deployment(deployment: dict, policy_digest: str, now: float) -> None:
+    """PKG §10 platform policy: attested digest equals BASE policy, checkedAt not future, at most 30 min old."""
+    try:
+        checked = calendar.timegm(time.strptime(deployment["checkedAt"], "%Y-%m-%dT%H:%M:%SZ"))
+    except (KeyError, TypeError, ValueError):
+        raise fail("POLICY_DEPLOYMENT", PHASE) from None
+    if deployment.get("policyDigest") != policy_digest or not 0 <= now - checked <= DEPLOYMENT_TTL:
+        raise fail("POLICY_DEPLOYMENT", PHASE)

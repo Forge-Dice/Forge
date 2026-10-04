@@ -12,7 +12,6 @@ import sys
 sys.dont_write_bytecode = True
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import calendar  # noqa: E402
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import re  # noqa: E402
@@ -33,7 +32,6 @@ from materialize import destroy, materialize  # noqa: E402
 BOOTSTRAP_VERSION = 1
 SUBCOMMANDS = {"forge-gate": "gate", "forge-verify": "verify"}
 FACTS_LIMIT = 64 * 1024
-DEPLOYMENT_TTL = 30 * 60
 MANIFEST_PATH = "forge/verifier/bootstrap-manifest.json"
 PARSER_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _IMAGE = re.compile(r"[a-z0-9][a-z0-9._/-]{0,200}@(sha256:[0-9a-f]{64})")
@@ -158,13 +156,6 @@ def _worker_steps(g: dict, ws: str) -> None:
             mutations.aggregate(plan["mutants"], {r["id"]: r for r in records})
 
 
-def check_deployment(chosen: dict, pol: dict, now: float) -> None:
-    """PKG §10 Plattformpolicy: Owner-attested digest equals BASE policy, checkedAt within 30 min, not future."""
-    checked = calendar.timegm(time.strptime(chosen["deployment"]["checkedAt"], "%Y-%m-%dT%H:%M:%SZ"))
-    if chosen["deployment"]["policyDigest"] != pol["deploymentPolicyDigest"] or not 0 <= now - checked <= DEPLOYMENT_TTL:
-        raise fail("POLICY_DEPLOYMENT", "final")
-
-
 def run_verify(g: dict, facts: dict, ws: str) -> dict:
     receipt = final.parse_receipt(facts.get("receipt"))
     final.check_stage2_start(receipt, g["current"], g["current"]["reviewSnapshotDigest"])
@@ -178,7 +169,7 @@ def run_verify(g: dict, facts: dict, ws: str) -> dict:
     expected = {"attestation": chosen, "ownerId": owner, "repoId": bootstrap.REPO_ID, "pr": ev.pr, "B": trusted.base,
                 "H": trusted.head, "runId": ev.run_id, "runAttempt": ev.run_attempt, "recheckRequired": True}
     bound = final.final_recheck(snapshots, receipt, expected)
-    check_deployment(chosen, g["policy"], time.time())
+    final.check_deployment(chosen["deployment"], g["policy"]["deploymentPolicyDigest"], time.time())
     return {"format": 1, "outcome": "PASS", "policyAssurance": "owner_attested", "taskId": g["bound"]["taskId"],
             "profile": g["bound"]["profile"], "B": trusted.base, "H": trusted.head, "runId": ev.run_id,
             "runAttempt": ev.run_attempt, "reviewSnapshotDigest": bound["reviewSnapshotDigest"],

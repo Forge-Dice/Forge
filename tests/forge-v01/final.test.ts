@@ -610,3 +610,24 @@ describe("final recheck property family", () => {
     expect(actual.length).toBe(ITERATIONS);
   });
 });
+
+describe("deployment check (PKG §10 platform policy)", () => {
+  const DIGEST = "d".repeat(64);
+  const AT = "2026-10-04T19:00:00Z";
+  const T = Date.parse(AT) / 1000;
+  const run = (deployment: unknown, now: number, digest = DIGEST) =>
+    outcome(py([{ fn: "final.check_deployment", args: [deployment, digest, now] }])[0]!);
+
+  test("matching digest, checkedAt 0 s and exactly 30 min old → PASS", () => {
+    expect(run({ policyDigest: DIGEST, checkedAt: AT }, T)).toBe("PASS");
+    expect(run({ policyDigest: DIGEST, checkedAt: AT }, T + 1800)).toBe("PASS");
+  });
+
+  test("older than 30 min, in the future, other digest or malformed checkedAt → POLICY_DEPLOYMENT", () => {
+    expect(run({ policyDigest: DIGEST, checkedAt: AT }, T + 1801)).toBe("POLICY_DEPLOYMENT");
+    expect(run({ policyDigest: DIGEST, checkedAt: AT }, T - 1)).toBe("POLICY_DEPLOYMENT");
+    expect(run({ policyDigest: "e".repeat(64), checkedAt: AT }, T)).toBe("POLICY_DEPLOYMENT");
+    expect(run({ policyDigest: DIGEST, checkedAt: "2026-10-04 19:00:00" }, T)).toBe("POLICY_DEPLOYMENT");
+    expect(run({ policyDigest: DIGEST }, T)).toBe("POLICY_DEPLOYMENT");
+  });
+});
