@@ -62,7 +62,8 @@ export const PACKAGE_LIMITS = Object.freeze({
 
 // v1: every NPC statement is sincere. v2 adds authored lies (interrogation rule act "lie"); a v1
 // package with a lie rule is rejected, so v1 packages and their identities stay exactly as they were.
-export const RULESET_VERSIONS = ["mystery-session-v1", "mystery-session-v2"] as const;
+// v3 = v2 plus the player event {type:"hint"} (case-hints.ts), which needs a bound proof.
+export const RULESET_VERSIONS = ["mystery-session-v1", "mystery-session-v2", "mystery-session-v3"] as const;
 export type RulesetVersion = (typeof RULESET_VERSIONS)[number];
 const KINDS = PLAYER_REF_KINDS;
 
