@@ -1,4 +1,5 @@
-import { accusations, confrontations, hintsUsed, investigations, known, questions, recordText, type Action, type Game } from "./game.ts";
+import { accusations, confrontations, hintsUsed, investigations, known, msg, questions, recordText, type Action, type Game } from "./game.ts";
+import { DEFAULT_LANG, MESSAGES, type Lang, type Messages } from "./messages.ts";
 
 // HTML views of the local browser front end. Pure: (game, feedback) -> page. Every label comes from
 // PublicContent or released observations through the CLI's own helpers; actions are addressed by
@@ -14,13 +15,13 @@ export type CaseCard = { readonly slug: string; readonly title: string; readonly
 const escape = (text: string): string =>
   text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-const GROUPS: [string, string][] = [
-  ["person", "Personen"],
-  ["location", "Orte"],
-  ["item", "Gegenstände"],
-  ["event", "Ereignisse"],
-  ["evidence", "Nachweise"],
-];
+const GROUPS = ["person", "location", "item", "event", "evidence"] as const;
+
+/** Link to the same page in the other language; the server remembers the choice in a cookie. */
+function langSwitch(m: Messages, back: string): string {
+  const other = m.web.otherLang;
+  return `<a class="lang-link" href="/sprache?l=${other.lang}&amp;zurueck=${encodeURIComponent(back)}" hreflang="${other.lang}" lang="${other.lang}" title="${escape(other.title)}">${escape(other.label)}</a>`;
+}
 
 const lastEvent = (game: Game) => game.state.events.length - 1;
 const isNew = (game: Game, eventIndex: number) => eventIndex === lastEvent(game);
@@ -37,9 +38,9 @@ const paragraphs = (text: string) =>
     .map((p) => `<p>${escape(p.trim())}</p>`)
     .join("");
 
-function layout(title: string, body: string, bodyClass = ""): string {
+function layout(title: string, body: string, bodyClass = "", lang: Lang = DEFAULT_LANG): string {
   return `<!doctype html>
-<html lang="de">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -57,23 +58,25 @@ ${body}
 
 // ---------- Case selection ----------
 
-export function renderCaseList(cases: readonly CaseCard[]): string {
+export function renderCaseList(cases: readonly CaseCard[], lang: Lang = DEFAULT_LANG): string {
+  const m = MESSAGES[lang].web;
   const cards = cases
     .map((c, i) => {
-      const solved = c.progress === "Gelöst";
-      const badge = c.progress === null ? `<span class="badge">Neu</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
-      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">Akte Nr. ${String(i + 1).padStart(3, "0")}</span><h2>${escape(c.title)}</h2><p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">Akte öffnen →</span></span>${
-        solved ? `<span class="stamp small" aria-hidden="true">Gelöst</span>` : ""
+      const solved = c.progress === m.solvedBadge;
+      const badge = c.progress === null ? `<span class="badge">${m.newBadge}</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
+      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">${m.fileNo(String(i + 1).padStart(3, "0"))}</span><h2>${escape(c.title)}</h2><p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">${m.openFile}</span></span>${
+        solved ? `<span class="stamp small" aria-hidden="true">${m.solvedBadge}</span>` : ""
       }</a></li>`;
     })
     .join("");
   return layout(
-    "Fälle",
-    `<a class="skip" href="#faelle">Zu den Fällen springen</a>
-<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a></p></header>
-<main id="faelle" class="shelf"><h2 class="visually-hidden">Offene Akten</h2><ul class="cases">${cards}</ul>
-<p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>`,
+    m.casesTitle,
+    `<a class="skip" href="#faelle">${m.skipCases}</a>
+<header class="masthead"><p class="kicker">${m.office}</p><h1>${m.appTitle}</h1><p class="lead">${escape(m.lead)}</p><p><a class="button ghost" href="/hilfe">${m.howTo} <span aria-hidden="true">→</span></a> ${langSwitch(MESSAGES[lang], "/")}</p></header>
+<main id="faelle" class="shelf"><h2 class="visually-hidden">${m.openFiles}</h2><ul class="cases">${cards}</ul>
+<p class="hint">${escape(m.casesHint)}</p></main>`,
     "page-cases",
+    lang,
   );
 }
 
@@ -98,7 +101,8 @@ const actionKey = (a: Action) => JSON.stringify(a.event);
 /** Investigations grouped by their verb ("Ort durchsuchen: Innenhof" -> Orte / Innenhof). */
 function investigationList(game: Game, slug: string, fresh: ReadonlySet<string>): string {
   const actions = investigations(game);
-  if (actions.length === 0) return `<p class="muted">Gerade nichts zu untersuchen.</p>`;
+  const m = msg(game).web;
+  if (actions.length === 0) return `<p class="muted">${m.nothingToInvestigate}</p>`;
   const done = doneKeys(game);
   const groups = new Map<string, string[]>();
   actions.forEach((a, i) => {
@@ -109,7 +113,7 @@ function investigationList(game: Game, slug: string, fresh: ReadonlySet<string>)
     groups.set(verb, [...(groups.get(verb) ?? []), actionForm(game, slug, "u", i, target, { cls, hidden: verb === "" ? undefined : `${verb}: ` })]);
   });
   return [...groups]
-    .map(([verb, forms]) => `<div class="group"><h3>${escape(verb === "" ? "Untersuchen" : verb)}</h3><div class="actions">${forms.join("")}</div></div>`)
+    .map(([verb, forms]) => `<div class="group"><h3>${escape(verb === "" ? m.investigate : verb)}</h3><div class="actions">${forms.join("")}</div></div>`)
     .join("");
 }
 
@@ -119,13 +123,14 @@ function confrontationSection(game: Game, slug: string): string {
   if (actions.length === 0) return "";
   const done = doneKeys(game);
   const forms = actions.map((a, i) => actionForm(game, slug, "v", i, a.label, { cls: ["act", done.has(actionKey(a)) ? "done" : ""].filter(Boolean).join(" ") }));
-  return `\n<section id="vorhalten" class="card" tabindex="-1"><h2>Vorhalten</h2><div class="actions">${forms.join("")}</div></section>`;
+  return `\n<section id="vorhalten" class="card" tabindex="-1"><h2>${msg(game).web.confront}</h2><div class="actions">${forms.join("")}</div></section>`;
 }
 
 /** Interrogation questions grouped by NPC ("Name: Frage" labels from the CLI menu). */
 function questionList(game: Game, slug: string, fresh: ReadonlySet<string>): string {
   const actions = questions(game);
-  if (actions.length === 0) return `<p class="muted">Gerade keine Fragen verfügbar.</p>`;
+  const m = msg(game).web;
+  if (actions.length === 0) return `<p class="muted">${m.noQuestions}</p>`;
   const done = doneKeys(game);
   const byNpc = new Map<string, { forms: string[]; fresh: number; done: number }>();
   actions.forEach((a, i) => {
@@ -146,30 +151,32 @@ function questionList(game: Game, slug: string, fresh: ReadonlySet<string>): str
         .map((w) => w[0] ?? "")
         .join("")
         .slice(0, 2);
-      const meta = `${g.forms.length} ${g.forms.length === 1 ? "Frage" : "Fragen"}${g.done > 0 ? ` · ${g.done} gestellt` : ""}`;
+      const meta = `${m.questionCount(g.forms.length)}${g.done > 0 ? ` · ${m.asked(g.done)}` : ""}`;
       return `<details class="witness" open><summary><span class="avatar" aria-hidden="true">${escape(initials)}</span><span class="npc-name">${escape(npc)}</span><span class="npc-meta">${meta}</span>${
-        g.fresh > 0 ? `<span class="tag">${g.fresh} neu</span>` : ""
+        g.fresh > 0 ? `<span class="tag">${m.fresh(g.fresh)}</span>` : ""
       }</summary><div class="actions questions">${g.forms.join("")}</div></details>`;
     })
     .join("");
 }
 
 function journalEntry(game: Game, kind: string, text: string, eventIndex: number): string {
+  const m = msg(game);
   const fresh = isNew(game, eventIndex);
   const { head, rest } = lines(text);
   const isEvidence = kind === "evidence";
-  const title = isEvidence ? head.replace(/^Fund: /, "") : head;
-  const details = rest.map((l) => `<p class="${/^(Beobachtung|Aussage von)/.test(l) ? "fact" : /^\(/.test(l) ? "aside" : "text"}">${escape(l)}</p>`).join("");
+  const title = isEvidence && head.startsWith(m.findPrefix) ? head.slice(m.findPrefix.length) : head;
+  const details = rest.map((l) => `<p class="${m.factPattern.test(l) ? "fact" : /^\(/.test(l) ? "aside" : "text"}">${escape(l)}</p>`).join("");
   return `<li value="${eventIndex + 1}" class="${kind}${fresh ? " new" : ""}"><span class="entry-no" aria-hidden="true">${eventIndex + 1}</span><div class="entry"><p class="entry-kind">${
-    isEvidence ? "Fund" : "Aussage"
-  }${fresh ? ` <span class="tag">neu</span>` : ""}</p><p class="entry-title">${escape(title)}</p>${details}</div></li>`;
+    isEvidence ? m.web.find : m.web.statement
+  }${fresh ? ` <span class="tag">${m.web.newTag}</span>` : ""}</p><p class="entry-title">${escape(title)}</p>${details}</div></li>`;
 }
 
 function journal(game: Game): string {
   const records = game.state.knowledge.observations;
   const used = hintsUsed(game);
-  const hints = used === 0 ? "" : `<p class="muted hints-used">Hinweise genutzt: ${used}</p>`;
-  if (records.length === 0) return `<p class="muted">Noch keine Funde oder Aussagen. Was du findest und hörst, landet hier.</p>${hints}`;
+  const m = msg(game);
+  const hints = used === 0 ? "" : `<p class="muted hints-used">${m.hintsUsed(used)}</p>`;
+  if (records.length === 0) return `<p class="muted">${m.web.journalEmpty}</p>${hints}`;
   // Newest first: what just happened is on top.
   return `${hints}<ol class="journal" reversed>${[...records]
     .reverse()
@@ -187,16 +194,18 @@ function journal(game: Game): string {
 /** Graded hint on demand; every hint is a session event and counted in the journal and the closing. */
 function hintCard(game: Game, slug: string): string {
   const used = hintsUsed(game);
-  return `<section id="hinweis" class="card hint"><h2>Hinweis</h2><p class="muted">Stockt die Ermittlung? Ein Hinweis zeigt die Richtung, wiederholt wird er konkreter.</p><div class="actions">${actionForm(game, slug, "h", 0, "Hinweis holen")}</div><p class="muted">Hinweise genutzt: ${used}</p></section>`;
+  const m = msg(game);
+  return `<section id="hinweis" class="card hint"><h2>${m.web.hint}</h2><p class="muted">${m.web.hintIntro}</p><div class="actions">${actionForm(game, slug, "h", 0, m.web.getHint)}</div><p class="muted">${m.hintsUsed(used)}</p></section>`;
 }
 
 function knownList(game: Game): string {
   const fresh = new Set(
     game.state.knowledge.known.filter((k) => k.firstSeen.kind === "event" && isNew(game, k.firstSeen.eventIndex)).map((k) => k.ref),
   );
-  return GROUPS.map(([kind, title]) => {
-    const items = known(game, kind).map((k) => `<li${fresh.has(k.ref) ? ` class="new"` : ""}>${escape(k.label)}${fresh.has(k.ref) ? ` <span class="tag">neu</span>` : ""}</li>`);
-    return `<h3>${title} <span class="count">${items.length}</span></h3>${items.length === 0 ? `<p class="muted">–</p>` : `<ul class="chips">${items.join("")}</ul>`}`;
+  const m = msg(game).web;
+  return GROUPS.map((kind) => {
+    const items = known(game, kind).map((k) => `<li${fresh.has(k.ref) ? ` class="new"` : ""}>${escape(k.label)}${fresh.has(k.ref) ? ` <span class="tag">${m.newTag}</span>` : ""}</li>`);
+    return `<h3>${m.groups[kind]} <span class="count">${items.length}</span></h3>${items.length === 0 ? `<p class="muted">–</p>` : `<ul class="chips">${items.join("")}</ul>`}`;
   }).join("");
 }
 
@@ -215,88 +224,91 @@ function closing(game: Game, slug: string): string {
   const evidence = known(game, "evidence").map((k) => k.label);
   const tries = game.state.verdicts.length;
   const steps = game.state.events.length;
-  return `<div id="ende" class="closing-wrap" tabindex="-1"><section class="closing"><h2>Fall gelöst</h2>
-<span class="stamp" aria-hidden="true">Gelöst</span>
-<p class="big">${escape(name === null ? "Deine Anklage trifft zu." : `${name} war es.`)}</p>
-${publicContent.epilogue === undefined ? "" : `<h3 class="epilogue-title">Auflösung</h3><div class="epilogue">${paragraphs(publicContent.epilogue)}</div>`}
-<dl class="stats"><div><dt>Aktionen</dt><dd>${steps}</dd></div><div><dt>Hinweise</dt><dd>${hintsUsed(game)}</dd></div><div><dt>${tries === 1 ? "Anklage" : "Anklagen"}</dt><dd>${tries}</dd></div><div><dt>Nachweise</dt><dd>${evidence.length}</dd></div></dl>
-<p><strong>${escape(publicContent.challengeQuestion)}</strong> – deine Antwort erfüllt den Fallauftrag.</p>
-<p>Du hast ${steps} Aktionen gebraucht${tries > 1 ? ` und ${tries} Anklagen erhoben` : " und gleich die erste Anklage richtig gestellt"}.</p>
-${evidence.length === 0 ? "" : `<h3>Deine Nachweise</h3><ul class="chips">${evidence.map((e) => `<li>${escape(e)}</li>`).join("")}</ul>`}
-<details class="rules"><summary>Was den Fall entschied</summary><ul>${publicContent.publicRules.map((r) => `<li>${escape(r.text)}</li>`).join("")}</ul></details>
-<div class="actions end-actions"><form method="post" action="/fall/${slug}/new"><button type="submit" class="primary">Noch einmal spielen</button></form><a class="button" href="/">Anderer Fall</a></div>
+  const m = msg(game).web;
+  return `<div id="ende" class="closing-wrap" tabindex="-1"><section class="closing"><h2>${m.caseSolved}</h2>
+<span class="stamp" aria-hidden="true">${m.solvedBadge}</span>
+<p class="big">${escape(name === null ? m.yourAccusation : m.itWas(name))}</p>
+${publicContent.epilogue === undefined ? "" : `<h3 class="epilogue-title">${m.resolution}</h3><div class="epilogue">${paragraphs(publicContent.epilogue)}</div>`}
+<dl class="stats"><div><dt>${m.statActions}</dt><dd>${steps}</dd></div><div><dt>${m.statHints}</dt><dd>${hintsUsed(game)}</dd></div><div><dt>${m.statAccusations(tries)}</dt><dd>${tries}</dd></div><div><dt>${m.statEvidence}</dt><dd>${evidence.length}</dd></div></dl>
+<p><strong>${escape(publicContent.challengeQuestion)}</strong> – ${m.answerFulfils}</p>
+<p>${m.took(steps, tries)}</p>
+${evidence.length === 0 ? "" : `<h3>${m.yourEvidence}</h3><ul class="chips">${evidence.map((e) => `<li>${escape(e)}</li>`).join("")}</ul>`}
+<details class="rules"><summary>${m.whatDecided}</summary><ul>${publicContent.publicRules.map((r) => `<li>${escape(r.text)}</li>`).join("")}</ul></details>
+<div class="actions end-actions"><form method="post" action="/fall/${slug}/new"><button type="submit" class="primary">${m.playAgain}</button></form><a class="button" href="/">${m.otherCase}</a></div>
 </section></div>`;
 }
 
-function notice(feedback: Feedback): string {
+function notice(feedback: Feedback, m: Messages): string {
   const body = feedback.lines
     .map((l) => {
       const { head, rest } = lines(l);
-      const isFind = head.startsWith("Fund: ");
-      return `<div class="${isFind ? "find" : "line"}">${isFind ? `<p class="find-title"><span class="tag">neu</span> ${escape(head.slice(6))}</p>` : `<p>${escape(head)}</p>`}${rest
-        .map((r) => `<p class="${/^(Beobachtung|Aussage von)/.test(r) ? "fact" : "text"}">${escape(r)}</p>`)
+      const isFind = head.startsWith(m.findPrefix);
+      return `<div class="${isFind ? "find" : "line"}">${isFind ? `<p class="find-title"><span class="tag">${m.web.newTag}</span> ${escape(head.slice(m.findPrefix.length))}</p>` : `<p>${escape(head)}</p>`}${rest
+        .map((r) => `<p class="${m.factPattern.test(r) ? "fact" : "text"}">${escape(r)}</p>`)
         .join("")}</div>`;
     })
     .join("");
   return `<section id="notice" class="notice ${feedback.tone}" role="status" aria-labelledby="notice-title" tabindex="-1"><div class="notice-head"><h2 id="notice-title">${escape(
     feedback.title,
-  )}</h2><button type="button" class="close" data-close aria-label="Meldung schließen (Esc)">×</button></div><div class="notice-body">${body}</div></section>`;
+  )}</h2><button type="button" class="close" data-close aria-label="${m.web.closeNotice}">×</button></div><div class="notice-body">${body}</div></section>`;
 }
 
 export function renderGame(game: Game, slug: string, feedback: Feedback | null, fresh: ReadonlySet<string> = new Set()): string {
   const { publicContent } = game.pkg;
   const solved = game.state.phase === "solved";
   const steps = game.state.events.length;
+  const all = msg(game);
+  const m = all.web;
   const nav: [string, string, string][] = solved
-    ? [["ende", "Auflösung", "E"], ["akte", "Akte", "F"], ["journal", "Journal", "J"]]
-    : [["akte", "Akte", "F"], ["untersuchen", "Untersuchen", "U"], ["verhoeren", "Verhören", "V"], ["journal", "Journal", "J"], ["anklage", "Anklage", "A"], ["bekannt", "Bekannt", "B"]];
+    ? [["ende", m.navResolution, "E"], ["akte", m.navFile, "F"], ["journal", m.navJournal, "J"]]
+    : [["akte", m.navFile, "F"], ["untersuchen", m.navInvestigate, "U"], ["verhoeren", m.navInterrogate, "V"], ["journal", m.navJournal, "J"], ["anklage", m.navAccuse, "A"], ["bekannt", m.navKnown, "B"]];
   const accuse = accusations(game);
-  const body = `<a class="skip" href="#spiel">Zum Spiel springen</a>
-<header class="topbar"><a class="home" href="/"><span aria-hidden="true">←</span> Alle Fälle</a><div class="case-title"><p class="kicker">Fallakte</p><h1>${escape(publicContent.title)}</h1></div><a class="help-link" href="/hilfe" aria-keyshortcuts="?"><span aria-hidden="true">?</span><span class="help-text"> Hilfe</span></a><span class="badge${
+  const body = `<a class="skip" href="#spiel">${m.skipGame}</a>
+<header class="topbar"><a class="home" href="/"><span aria-hidden="true">←</span> ${m.allCases}</a><div class="case-title"><p class="kicker">${m.caseFile}</p><h1>${escape(publicContent.title)}</h1></div>${langSwitch(all, `/fall/${slug}`)}<a class="help-link" href="/hilfe" aria-keyshortcuts="?"><span aria-hidden="true">?</span><span class="help-text"> ${m.help}</span></a><span class="badge${
     solved ? " solved" : ""
-  }">${solved ? "Gelöst" : `${steps} Aktionen<span class="badge-more"> · ${known(game, "evidence").length} Nachweise</span>`}</span></header>
-<nav class="tabs" aria-label="Bereiche des Falls"><ul>${nav.map(([id, label, key]) => `<li><a href="#${id}" data-key="${key}" aria-keyshortcuts="${key}">${label}<kbd aria-hidden="true">${key}</kbd></a></li>`).join("")}</ul></nav>
-${feedback === null ? "" : notice(feedback)}
+  }">${solved ? m.solvedBadge : `${m.actions(steps)}<span class="badge-more"> · ${m.evidenceCount(known(game, "evidence").length)}</span>`}</span></header>
+<nav class="tabs" aria-label="${m.caseAreas}"><ul>${nav.map(([id, label, key]) => `<li><a href="#${id}" data-key="${key}" aria-keyshortcuts="${key}">${label}<kbd aria-hidden="true">${key}</kbd></a></li>`).join("")}</ul></nav>
+${feedback === null ? "" : notice(feedback, all)}
 <main id="spiel" class="desk${solved ? " is-solved" : ""}">
-<aside class="dossier" aria-label="Fallakte">
-<details id="akte" class="folder" tabindex="-1"${steps === 0 ? " open" : ""}><summary><h2>Fallakte</h2><span class="summary-hint">Auftrag, Hintergrund und Regeln</span></summary>
-<div class="folder-body"><p class="mission"><span class="label">Auftrag</span>${escape(publicContent.challengeQuestion)}</p>
+<aside class="dossier" aria-label="${m.caseFile}">
+<details id="akte" class="folder" tabindex="-1"${steps === 0 ? " open" : ""}><summary><h2>${m.caseFile}</h2><span class="summary-hint">${m.caseFileSummary}</span></summary>
+<div class="folder-body"><p class="mission"><span class="label">${m.mission}</span>${escape(publicContent.challengeQuestion)}</p>
 <div class="brief">${paragraphs(publicContent.brief)}</div>
-<h3>Regeln</h3><ul class="rules-list">${publicContent.publicRules.map((r) => `<li>${escape(r.text)}</li>`).join("")}</ul></div></details>
+<h3>${m.rules}</h3><ul class="rules-list">${publicContent.publicRules.map((r) => `<li>${escape(r.text)}</li>`).join("")}</ul></div></details>
 </aside>
 <div class="play">
 ${solved ? closing(game, slug) : ""}
 ${
   solved
     ? ""
-    : `<section id="untersuchen" class="card" tabindex="-1"><h2>Untersuchen</h2>${investigationList(game, slug, fresh)}</section>
-<section id="verhoeren" class="card" tabindex="-1"><h2>Verhören</h2>${questionList(game, slug, fresh)}</section>${confrontationSection(game, slug)}`
+    : `<section id="untersuchen" class="card" tabindex="-1"><h2>${m.investigate}</h2>${investigationList(game, slug, fresh)}</section>
+<section id="verhoeren" class="card" tabindex="-1"><h2>${m.interrogate}</h2>${questionList(game, slug, fresh)}</section>${confrontationSection(game, slug)}`
 }
-<section id="journal" class="card" tabindex="-1"><h2>${solved ? "Dein Ermittlungsweg" : "Journal"}</h2>${journal(game)}</section>
+<section id="journal" class="card" tabindex="-1"><h2>${solved ? m.yourPath : m.journal}</h2>${journal(game)}</section>
 ${
   solved
     ? ""
-    : `<section id="anklage" class="card accuse" tabindex="-1"><h2>Anklage</h2><p class="mission">${escape(publicContent.challengeQuestion)}</p><p class="muted">Eine falsche Anklage beendet den Fall nicht, wird aber im Journal vermerkt.</p>${
+    : `<section id="anklage" class="card accuse" tabindex="-1"><h2>${m.accusation}</h2><p class="mission">${escape(publicContent.challengeQuestion)}</p><p class="muted">${m.wrongAccusationNote}</p>${
         accuse.length === 0
-          ? `<p class="muted">Keine Anklage möglich.</p>`
+          ? `<p class="muted">${m.noAccusation}</p>`
           : `<div class="actions suspects">${accuse.map((a, i) => actionForm(game, slug, "a", i, a.label, { cls: "suspect", confirm: a.label })).join("")}</div>`
       }</section>`
 }
 </div>
-<aside class="dossier side" aria-label="Bekannt und Spielstand">
-<section id="bekannt" class="card" tabindex="-1"><h2>Bekannt</h2>${knownList(game)}</section>
+<aside class="dossier side" aria-label="${m.knownAndState}">
+<section id="bekannt" class="card" tabindex="-1"><h2>${m.known}</h2>${knownList(game)}</section>
 ${solved || game.pkg.identity.rulesetVersion !== "mystery-session-v3" ? "" : hintCard(game, slug)}
-<section class="card save"><h2>Spielstand</h2>
-<div class="actions"><a class="button" href="/fall/${slug}/save" download="${slug}.save.json">Speichern</a>
-<label class="button" tabindex="0" role="button" id="load-label">Laden<input type="file" id="load" accept=".json,application/json" hidden></label>
-<form method="post" action="/fall/${slug}/new" data-confirm-new><button type="submit">Neu beginnen</button></form></div></section>
+<section class="card save"><h2>${m.saveState}</h2>
+<div class="actions"><a class="button" href="/fall/${slug}/save" download="${slug}.save.json">${m.save}</a>
+<label class="button" tabindex="0" role="button" id="load-label">${m.load}<input type="file" id="load" accept=".json,application/json" hidden></label>
+<form method="post" action="/fall/${slug}/new" data-confirm-new><button type="submit">${m.restart}</button></form></div></section>
 </aside>
 </main>
-<footer class="keys"><p class="key-list"><span class="visually-hidden">Tastenkürzel: </span>${nav.map(([, label, key]) => `<kbd>${key}</kbd> ${label}`).join(" · ")} · <kbd>Esc</kbd> Meldung schließen · <kbd>?</kbd> Hilfe</p><p><button type="button" class="ghost" data-intro>Einführung ansehen</button> <a class="button ghost" href="/hilfe">Hilfe</a></p></footer>
-${intro()}
-<dialog id="confirm" aria-labelledby="confirm-title"><form method="dialog"><h2 id="confirm-title"></h2><p id="confirm-text"></p><div class="actions"><button value="cancel" class="secondary">Abbrechen</button><button value="ok" class="danger" id="confirm-ok">Anklagen</button></div></form></dialog>
-<script>${script(slug, solved, feedback !== null)}</script>`;
-  return layout(publicContent.title, body);
+<footer class="keys"><p class="key-list"><span class="visually-hidden">${m.shortcuts}</span>${nav.map(([, label, key]) => `<kbd>${key}</kbd> ${label}`).join(" · ")} · <kbd>Esc</kbd> ${m.closeShort} · <kbd>?</kbd> ${m.help}</p><p><button type="button" class="ghost" data-intro>${m.showIntro}</button> <a class="button ghost" href="/hilfe">${m.help}</a></p></footer>
+${intro(all)}
+<dialog id="confirm" aria-labelledby="confirm-title"><form method="dialog"><h2 id="confirm-title"></h2><p id="confirm-text"></p><div class="actions"><button value="cancel" class="secondary">${m.cancel}</button><button value="ok" class="danger" id="confirm-ok">${m.accuse}</button></div></form></dialog>
+<script>${script(slug, solved, feedback !== null, all)}</script>`;
+  return layout(publicContent.title, body, "", game.lang ?? DEFAULT_LANG);
 }
 
 // ---------- Introduction and help ----------
@@ -305,78 +317,58 @@ const ICON = (paths: string) =>
   `<svg class="icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
 
 /** The four steps of the introduction; the help page reuses them as its overview. */
-const INTRO_STEPS: readonly { icon: string; title: string; text: string }[] = [
-  {
-    icon: ICON(`<path d="M10 6h20l8 8v28H10z"/><path d="M30 6v8h8"/><path d="M16 22h16M16 28h16M16 34h10"/>`),
-    title: "Lies die Fallakte",
-    text: "In der Akte stehen der Auftrag, der Hintergrund und die Regeln des Falls. Der Auftrag ist die Frage, die du am Ende beantworten musst.",
-  },
-  {
-    icon: ICON(`<circle cx="20" cy="20" r="11"/><path d="M28 28l12 12"/>`),
-    title: "Sichere Spuren",
-    text: "Unter „Untersuchen“ durchsuchst du Orte und prüfst Gegenstände und Personen. Unter „Verhören“ stellst du den Beteiligten Fragen. Jede Spur kann neue öffnen: Ein roter Punkt markiert sie, ein Haken zeigt, was du schon getan hast.",
-  },
-  {
-    icon: ICON(`<path d="M12 8h22a4 4 0 0 1 4 4v28H16a4 4 0 0 1-4-4z"/><path d="M12 36a4 4 0 0 1 4-4h22"/><path d="M19 15h12M19 21h8"/>`),
-    title: "Führe das Journal",
-    text: "Jeder Fund und jede Aussage landet im Journal, das Neueste oben und gelb markiert. Unter „Bekannt“ siehst du alle Personen, Orte und Nachweise. Funde sind belastbar, Menschen dagegen können sich irren oder lügen.",
-  },
-  {
-    icon: ICON(`<path d="M8 40h20"/><path d="M14 34h8"/><path d="M22 10l12 12"/><path d="M17 15l12 12"/><path d="M20 12l-6 6 6 6 6-6z"/><path d="M28 20l12 12"/>`),
-    title: "Erhebe Anklage",
-    text: "Wenn deine Nachweise tragen, klagst du unter „Anklage“ an. Eine falsche Anklage beendet den Fall nicht, wird aber vermerkt. Nach der richtigen liest du die Auflösung.",
-  },
+/** Icons of the four introduction steps (text in the message table); the help page reuses them. */
+const INTRO_ICONS: readonly string[] = [
+  ICON(`<path d="M10 6h20l8 8v28H10z"/><path d="M30 6v8h8"/><path d="M16 22h16M16 28h16M16 34h10"/>`),
+  ICON(`<circle cx="20" cy="20" r="11"/><path d="M28 28l12 12"/>`),
+  ICON(`<path d="M12 8h22a4 4 0 0 1 4 4v28H16a4 4 0 0 1-4-4z"/><path d="M12 36a4 4 0 0 1 4-4h22"/><path d="M19 15h12M19 21h8"/>`),
+  ICON(`<path d="M8 40h20"/><path d="M14 34h8"/><path d="M22 10l12 12"/><path d="M17 15l12 12"/><path d="M20 12l-6 6 6 6 6-6z"/><path d="M28 20l12 12"/>`),
 ];
+const introSteps = (m: Messages) => m.web.introSteps.map((st, i) => ({ ...st, icon: INTRO_ICONS[i]! }));
 
-function intro(): string {
+function intro(all: Messages): string {
+  const m = all.web;
+  const INTRO_STEPS = introSteps(all);
   const steps = INTRO_STEPS.map(
     (st, i) => `<section data-step${i === 0 ? "" : " hidden"}>${st.icon}<h3>${escape(st.title)}</h3><p>${escape(st.text)}</p></section>`,
   ).join("");
-  return `<dialog id="intro" class="intro" aria-labelledby="intro-title"><form method="dialog"><div class="intro-head"><h2 id="intro-title" class="kicker">Einführung</h2><span class="intro-count">Schritt <span data-count>1</span> von ${INTRO_STEPS.length}</span><button value="skip" class="ghost skip-intro">Überspringen</button></div>
+  return `<dialog id="intro" class="intro" aria-labelledby="intro-title"><form method="dialog"><div class="intro-head"><h2 id="intro-title" class="kicker">${m.introTitle}</h2><span class="intro-count">${m.step} <span data-count>1</span> ${m.of} ${INTRO_STEPS.length}</span><button value="skip" class="ghost skip-intro">${m.skip}</button></div>
 <div class="intro-steps" aria-live="polite">${steps}</div>
-<div class="intro-foot"><div class="dots" aria-hidden="true">${INTRO_STEPS.map((_, i) => `<span${i === 0 ? ` class="on"` : ""}></span>`).join("")}</div><button type="button" data-prev disabled>Zurück</button><button type="button" data-next class="primary">Weiter</button></div></form></dialog>`;
+<div class="intro-foot"><div class="dots" aria-hidden="true">${INTRO_STEPS.map((_, i) => `<span${i === 0 ? ` class="on"` : ""}></span>`).join("")}</div><button type="button" data-prev disabled>${m.back}</button><button type="button" data-next class="primary">${m.next}</button></div></form></dialog>`;
 }
 
 /** The manual: same look as the cases, no case content, so nothing of any case can leak here. */
-export function renderHelp(): string {
-  const overview = INTRO_STEPS.map((st, i) => `<li><span class="step-no" aria-hidden="true">${i + 1}</span>${st.icon}<div><h3>${escape(st.title)}</h3><p>${escape(st.text)}</p></div></li>`).join("");
-  const legend: [string, string][] = [
-    [`<span class="tag">neu</span>`, "Gerade hinzugekommen: ein Fund, eine Person, ein Ort oder ein Nachweis."],
-    [`<span class="legend-dot"></span>`, "Eine neu geöffnete Spur, die du noch nicht verfolgt hast."],
-    [`<span class="legend-done">✓</span>`, "Schon getan. Du kannst es wiederholen, es kostet nichts."],
-    [`<span class="legend-marker">Gelb</span>`, "Der neueste Eintrag im Journal und neu Bekanntes."],
-  ];
-  const keys: [string, string][] = [
-    ["F", "Fallakte"],
-    ["U", "Untersuchen"],
-    ["V", "Verhören"],
-    ["J", "Journal"],
-    ["A", "Anklage"],
-    ["B", "Bekannt"],
-    ["E", "Auflösung (nach dem Fall)"],
-    ["Esc", "Meldung oder Dialog schließen"],
-    ["Tab", "Zum nächsten Knopf"],
-    ["?", "Diese Hilfe"],
-  ];
+export function renderHelp(lang: Lang = DEFAULT_LANG): string {
+  const all = MESSAGES[lang];
+  const m = all.web;
+  const overview = introSteps(all).map((st, i) => `<li><span class="step-no" aria-hidden="true">${i + 1}</span>${st.icon}<div><h3>${escape(st.title)}</h3><p>${escape(st.text)}</p></div></li>`).join("");
+  const signs = [`<span class="tag">${m.newTag}</span>`, `<span class="legend-dot"></span>`, `<span class="legend-done">✓</span>`, `<span class="legend-marker">${m.legendMarker}</span>`];
+  const legend: [string, string][] = signs.map((sign, i) => [sign, m.legend[i]!]);
+  const keys = m.keys;
   return layout(
-    "Hilfe",
-    `<a class="skip" href="#hilfe">Zur Hilfe springen</a>
-<header class="topbar"><a class="home" href="/"><span aria-hidden="true">←</span> Alle Fälle</a><div class="case-title"><p class="kicker">Handbuch</p><h1>So ermittelst du</h1></div></header>
+    m.help,
+    `<a class="skip" href="#hilfe">${m.skipHelp}</a>
+<header class="topbar"><a class="home" href="/"><span aria-hidden="true">←</span> ${m.allCases}</a><div class="case-title"><p class="kicker">${m.manual}</p><h1>${m.howTo}</h1></div>${langSwitch(all, "/hilfe")}</header>
 <main id="hilfe" class="manual">
-<section class="card"><h2>Worum es geht</h2><p class="lead-ink">Jeder Fall stellt dir eine Frage, meist: Wer war es? Du beantwortest sie mit einer Anklage. Dafür sammelst du Funde und Aussagen, bis nur noch eine Antwort zu allen Nachweisen passt.</p></section>
-<section class="card"><h2>Ein Fall in vier Schritten</h2><ol class="overview">${overview}</ol></section>
-<section class="card"><h2>Aussagen richtig lesen</h2><p>Funde aus Kameras, Sensoren und Akten gelten als belastbar. Was Menschen sagen, ist ihre Sicht: Sie können sich irren, etwas nicht wissen, schweigen oder lügen. Vergleiche Aussagen mit den Funden. Ein Schweigen oder ein Besuch zu anderer Zeit ist noch kein Beweis.</p><p>Die Regeln in der Fallakte sagen dir, was in diesem Fall als sicher gilt.</p></section>
-<section class="card"><h2>Zeichen auf einen Blick</h2><dl class="legend">${legend.map(([sign, text]) => `<div><dt>${sign}</dt><dd>${escape(text)}</dd></div>`).join("")}</dl></section>
-<section class="card"><h2>Spielstand</h2><p>Jeder Fall merkt sich seinen Stand, solange der Server läuft. Mit „Speichern“ lädst du eine Datei herunter, mit „Laden“ setzt du genau dort wieder an. „Neu beginnen“ startet den Fall von vorn.</p></section>
-<section class="card"><h2>Tastatur</h2><dl class="keymap">${keys.map(([k, t]) => `<div><dt><kbd>${escape(k)}</kbd></dt><dd>${escape(t)}</dd></div>`).join("")}</dl><p class="muted">Alle Knöpfe funktionieren auch ohne Maus und mit Screenreader.</p></section>
-<p class="manual-foot"><a class="button primary-link" href="/">Zu den Fällen</a></p>
+<section class="card"><h2>${m.aboutTitle}</h2><p class="lead-ink">${escape(m.about)}</p></section>
+<section class="card"><h2>${m.fourSteps}</h2><ol class="overview">${overview}</ol></section>
+<section class="card"><h2>${m.readingTitle}</h2><p>${escape(m.reading)}</p><p>${escape(m.readingRules)}</p></section>
+<section class="card"><h2>${m.signsTitle}</h2><dl class="legend">${legend.map(([sign, text]) => `<div><dt>${sign}</dt><dd>${escape(text)}</dd></div>`).join("")}</dl></section>
+<section class="card"><h2>${m.saveState}</h2><p>${escape(m.saveText)}</p></section>
+<section class="card"><h2>${m.keyboard}</h2><dl class="keymap">${keys.map(([k, t]) => `<div><dt><kbd>${escape(k)}</kbd></dt><dd>${escape(t)}</dd></div>`).join("")}</dl><p class="muted">${m.keyboardNote}</p></section>
+<p class="manual-foot"><a class="button primary-link" href="/">${m.toCases}</a></p>
 </main>`,
+    "",
+    lang,
   );
 }
 
 // Progressive enhancement only: every action is a plain form post without it. Loading reads the
 // chosen file in the browser and posts its exact text; the server decodes it.
-const script = (slug: string, solved: boolean, hasNotice: boolean) => `(() => {
+const script = (slug: string, solved: boolean, hasNotice: boolean, all: Messages) => {
+  const m = all.web;
+  const js = (text: string) => JSON.stringify(text).replace(/</g, "\\u003c");
+  return `(() => {
 const path = "/fall/${slug}", store = { get(k) { try { return sessionStorage.getItem(path + k); } catch { return null; } }, set(k, v) { try { sessionStorage.setItem(path + k, v); } catch {} }, del(k) { try { sessionStorage.removeItem(path + k); } catch {} } };
 const load = document.getElementById("load"), loadLabel = document.getElementById("load-label");
 load.addEventListener("change", async (e) => {
@@ -408,12 +400,12 @@ if (sheet) {
 const dialog = document.getElementById("confirm");
 document.querySelectorAll("form:not([method=dialog])").forEach((f) => f.addEventListener("submit", (e) => {
   const section = f.closest("section[id]");
-  if (f.dataset.confirmNew !== undefined && !confirm("Neues Spiel beginnen? Ein nicht gespeicherter Stand geht verloren.")) return e.preventDefault();
+  if (f.dataset.confirmNew !== undefined && !confirm(${js(m.confirmNew)})) return e.preventDefault();
   if (f.dataset.confirm !== undefined && !f.dataset.ok) {
     e.preventDefault();
-    if (typeof dialog.showModal !== "function") { if (confirm(f.dataset.confirm + " anklagen?")) { f.dataset.ok = "1"; f.requestSubmit(); } return; }
-    document.getElementById("confirm-title").textContent = f.dataset.confirm + " anklagen?";
-    document.getElementById("confirm-text").textContent = "Du legst dich fest: " + f.dataset.confirm + " soll die Antwort auf den Fallauftrag sein.";
+    if (typeof dialog.showModal !== "function") { if (confirm(f.dataset.confirm + ${js(m.confirmAccuse)})) { f.dataset.ok = "1"; f.requestSubmit(); } return; }
+    document.getElementById("confirm-title").textContent = f.dataset.confirm + ${js(m.confirmAccuse)};
+    document.getElementById("confirm-text").textContent = ${js(m.commit)} + f.dataset.confirm + ${js(m.commitTail)};
     dialog.returnValue = "";
     dialog.showModal();
     document.getElementById("confirm-ok").focus();
@@ -455,7 +447,7 @@ const show = (i) => {
   dots.forEach((d, j) => d.classList.toggle("on", j === step));
   intro.querySelector("[data-count]").textContent = step + 1;
   prev.disabled = step === 0;
-  next.textContent = step === steps.length - 1 ? "Los geht’s" : "Weiter";
+  next.textContent = step === steps.length - 1 ? ${js(m.letsGo)} : ${js(m.next)};
 };
 const openIntro = () => { if (typeof intro.showModal !== "function") return; show(0); intro.showModal(); next.focus(); };
 prev.addEventListener("click", () => show(step - 1));
@@ -475,6 +467,7 @@ document.addEventListener("keydown", (e) => {
   if (id) { e.preventDefault(); go(id); }
 });
 })();`;
+};
 
 const STYLE = `
 :root {
@@ -660,6 +653,9 @@ dialog .actions { justify-content: flex-end; margin-top: 18px; }
 /* Help link, ghost buttons */
 .help-link { display: inline-flex; align-items: center; gap: 4px; font: 600 14px var(--sans); color: #e9dcc3; text-decoration: none; padding: 5px 12px; border: 1px solid #5a4a39; border-radius: 999px; white-space: nowrap; }
 .help-link:hover { color: #fff; border-color: var(--brass); }
+.lang-link { font: 600 13px var(--sans); color: #e9dcc3; text-decoration: none; padding: 5px 10px; border: 1px solid #5a4a39; border-radius: 999px; white-space: nowrap; }
+.lang-link:hover { color: #fff; border-color: var(--brass); }
+.masthead .lang-link { margin-left: 8px; }
 .help-link > span[aria-hidden] { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--brass); color: var(--desk); font-weight: 800; font-size: 12px; }
 .ghost, a.ghost { background: transparent; color: #e9dcc3; border-color: #5a4a39; box-shadow: none; }
 .ghost:hover, a.ghost:hover { background: rgba(255,255,255,.06); color: #fff; border-color: var(--brass); box-shadow: none; }

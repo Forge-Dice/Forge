@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "title": "The Silenced Violin",
+  "brief": "Intermission at the concert hall. When the soloist Marta Weil returns to her dressing room at 20:50, her violin case is empty. The dressing room's motion sensor was triggered exactly once: at 20:40.\n\nYour task: Find out who took the violin with their own hands. The suspects are Ida Reiner, Paul Adler, Kurt Mohn, Vera Lind and Henrik Sand. Search the rooms, examine what you find, and question Ida, Paul, Kurt and Vera. Not every trail leads to the culprit, and a refusal to answer is not a confession.",
+  "challengeQuestion": "Who took the violin from the dressing room at 20:40?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:ida"
+      },
+      "label": "Ida Reiner",
+      "role": "violist"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:paul"
+      },
+      "label": "Paul Adler",
+      "role": "conductor"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:kurt"
+      },
+      "label": "Kurt Mohn",
+      "role": "caretaker"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:vera"
+      },
+      "label": "Vera Lind",
+      "role": "music critic"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:henrik"
+      },
+      "label": "Henrik Sand",
+      "role": "patron"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:marta"
+      },
+      "label": "Marta Weil",
+      "role": "soloist"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:buehne"
+      },
+      "label": "Stage",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:foyer"
+      },
+      "label": "Foyer",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:garderobe"
+      },
+      "label": "Soloist's dressing room",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:keller"
+      },
+      "label": "Boiler room",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:loge"
+      },
+      "label": "VIP box",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:geige"
+      },
+      "label": "Marta's violin",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:schaltschrank"
+      },
+      "label": "Control cabinet",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:diebstahl"
+      },
+      "label": "Disappearance of the violin at 20:40",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:pause"
+      },
+      "label": "Concert intermission",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:wartung"
+      },
+      "label": "Heating maintenance",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:telefonat"
+      },
+      "label": "Phone call in the box",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:entdeckung"
+      },
+      "label": "Discovery of the empty case",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:pausenfoto"
+      },
+      "label": "Press photo from the foyer",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:heizungsprotokoll"
+      },
+      "label": "Control cabinet login",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:logenprotokoll"
+      },
+      "label": "Box lock log",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kellerplan"
+      },
+      "label": "Maintenance schedule",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:haar"
+      },
+      "label": "Grey hair",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:vera",
+      "questionId": "question:q02",
+      "text": "Was Paul Adler in the foyer at 20:40?"
+    },
+    {
+      "npc": "person:vera",
+      "questionId": "question:q03",
+      "text": "Was Henrik Sand in the VIP box at 20:40?"
+    },
+    {
+      "npc": "person:vera",
+      "questionId": "question:q04",
+      "text": "Was Ida Reiner on stage at 20:40?"
+    },
+    {
+      "npc": "person:kurt",
+      "questionId": "question:q01",
+      "text": "Were you in the boiler room at 20:40?"
+    },
+    {
+      "npc": "person:kurt",
+      "questionId": "question:q07",
+      "text": "What were you doing in the boiler room?"
+    },
+    {
+      "npc": "person:kurt",
+      "questionId": "question:q05",
+      "text": "Was Paul Adler in the dressing room at 20:40?"
+    },
+    {
+      "npc": "person:kurt",
+      "questionId": "question:q04",
+      "text": "Was Ida Reiner on stage at 20:40?"
+    },
+    {
+      "npc": "person:paul",
+      "questionId": "question:q02",
+      "text": "Were you in the foyer at 20:40?"
+    },
+    {
+      "npc": "person:paul",
+      "questionId": "question:q04",
+      "text": "Was Ida Reiner on stage at 20:40?"
+    },
+    {
+      "npc": "person:paul",
+      "questionId": "question:q05",
+      "text": "Were you in the dressing room at 20:40?"
+    },
+    {
+      "npc": "person:ida",
+      "questionId": "question:q04",
+      "text": "Were you on stage at 20:40?"
+    },
+    {
+      "npc": "person:ida",
+      "questionId": "question:q06",
+      "text": "Were you in the dressing room at 20:40?"
+    },
+    {
+      "npc": "person:ida",
+      "questionId": "question:q05",
+      "text": "Was Paul Adler in the dressing room at 20:40?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Whatever a find with a timestamp shows counts as fact. Statements by people can be mistaken."
+    },
+    {
+      "id": "rule:presence",
+      "text": "The violin was taken from the soloist's dressing room at 20:40 by exactly one person. Anyone who was provably somewhere else at 20:40 is ruled out."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Only Ida Reiner, Paul Adler, Kurt Mohn, Vera Lind and Henrik Sand are suspects. If four are ruled out, the fifth person remains."
+    }
+  ],
+  "epilogue": "Ida Reiner confesses. For years she had played second fiddle to Marta Weil and wanted to take over the solo in the second half herself. At 20:40, while everyone was standing in the foyer, she took the violin from the dressing room.\n\nPaul Adler and Vera Lind can be seen in the press photo from the foyer, Henrik Sand was on the phone behind the locked VIP box door, and Kurt Mohn was logged in at the control cabinet in the basement at that very minute. The grey hair on the violin case was a false lead: Paul had carried the case during setup in the afternoon."
+}

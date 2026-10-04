@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "entries": [
+    {
+      "evidenceId": "evidence:d01",
+      "text": "The visitor stamp confirms: Max was in the Gallery at 18:02. The stamp says nothing about 18:04.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        },
+        {
+          "kind": "person",
+          "id": "person:max"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:galerie",
+            "at": 120
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d02",
+      "text": "Authenticated removal sensor reports 18:04:00; shows no identity.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e04"
+        },
+        {
+          "kind": "item",
+          "id": "item:medaille"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e04",
+            "itemId": "item:medaille"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d03",
+      "text": "Nora can be recognised on an undated contact sheet from the courtyard photo shoot. Ask her about the complete photo evidence.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e05"
+        },
+        {
+          "kind": "person",
+          "id": "person:nora"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e05",
+            "personId": "person:nora"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d04",
+      "text": "Complete camera footage shows Max and Nora in the Courtyard at 18:04:00.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:hof"
+        },
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "person",
+          "id": "person:nora"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:nora",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d05",
+      "text": "Archive camera shows Oskar in the Archive at 18:04:00.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:archiv"
+        },
+        {
+          "kind": "person",
+          "id": "person:oskar"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:oskar",
+            "locationId": "location:archiv",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d06",
+      "text": "Workshop recording, 18:05: Lina is standing at a closed transport case. Its contents are not visible.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e07"
+        },
+        {
+          "kind": "item",
+          "id": "item:kassette"
+        },
+        {
+          "kind": "location",
+          "id": "location:werkstatt"
+        },
+        {
+          "kind": "person",
+          "id": "person:lina"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e07",
+            "personId": "person:lina"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e07",
+            "itemId": "item:kassette"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lina",
+            "locationId": "location:werkstatt",
+            "at": 300
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d07",
+      "text": "Receipt confirms Oskar and Lina at the key handover at 18:03.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e03"
+        },
+        {
+          "kind": "item",
+          "id": "item:schluessel"
+        },
+        {
+          "kind": "location",
+          "id": "location:archiv"
+        },
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "person",
+          "id": "person:oskar"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e03",
+            "personId": "person:lina"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e03",
+            "itemId": "item:schluessel"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e03",
+            "personId": "person:oskar"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lina",
+            "locationId": "location:archiv",
+            "at": 180
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d08",
+      "text": "Closing list names exactly the four people who remained in the museum.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e01"
+        },
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "person",
+          "id": "person:nora"
+        },
+        {
+          "kind": "person",
+          "id": "person:oskar"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e01",
+            "personId": "person:max"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e01",
+            "personId": "person:lina"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e01",
+            "personId": "person:nora"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e01",
+            "personId": "person:oskar"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    }
+  ]
+}

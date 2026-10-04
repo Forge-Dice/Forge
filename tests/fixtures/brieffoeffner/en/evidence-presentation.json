@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "entries": [
+    {
+      "evidenceId": "evidence:cuff-button",
+      "text": "Next to the desk lies a cuff button torn from Ben's shirt. Beside it: Clara's blood, not yet dry. The button was torn off during the crime.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ben"
+        },
+        {
+          "kind": "event",
+          "id": "event:murder"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:murder",
+            "personId": "person:ben"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:fingerprint",
+      "text": "There is a fingerprint of Anna's on the handle of the letter opener. It does not show when it was left.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "item",
+          "id": "item:letter-opener"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:muddy-path",
+      "text": "Fresh footprints in the garden flowerbed, matching the tread of Anna's boots. The gardener's counter shows: they were made at 20:25, at the time of the crime.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "location",
+          "id": "location:garden"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:anna",
+            "locationId": "location:garden",
+            "at": 1500
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:gloves-dirty",
+      "text": "Anna's gardening gloves are lying on the bench, covered in fresh soil.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "item",
+          "id": "item:gloves"
+        }
+      ],
+      "reports": []
+    }
+  ]
+}

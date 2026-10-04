@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "title": "The Hut's Cash Box",
+  "brief": "A storm over the glacier. Since 22:00 the hut has been snowed in, and the door can no longer be opened. At 23:20 the landlady Rosa Egger finds the cash cabinet in the common room open; the hut's cash box with the season's takings is gone. The bell on the cabinet rang exactly once: at 23:10.\n\nAt dinner, Lukas Brandl, Mira Hofer, Gerd Sailer and Johanna Pichler sat at the table with Rosa. Dr. Pichler has retired with a migraine and is not speaking to anyone today. Find out who took the cash box with their own hands, and check carefully who is really in the house tonight. Not every guest sits down to dinner.",
+  "challengeQuestion": "Who took the hut's cash box from the common room at 23:10?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:rosa"
+      },
+      "label": "Rosa Egger",
+      "role": "hut warden"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:lukas"
+      },
+      "label": "Lukas Brandl",
+      "role": "mountain guide"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:mira"
+      },
+      "label": "Mira Hofer",
+      "role": "geology student"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:gerd"
+      },
+      "label": "Gerd Sailer",
+      "role": "nature photographer"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:johanna"
+      },
+      "label": "Johanna Pichler",
+      "role": "doctor"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:tobias"
+      },
+      "label": "Tobias Wenger",
+      "role": "ski tourer in the winter room"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:stube"
+      },
+      "label": "Common room",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:funkraum"
+      },
+      "label": "Radio room",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:terrasse"
+      },
+      "label": "Sun terrace",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:lager"
+      },
+      "label": "Dormitory",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:winterraum"
+      },
+      "label": "Winter room",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kasse"
+      },
+      "label": "Hut's cash box",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:buch"
+      },
+      "label": "Hut book",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:funkgeraet"
+      },
+      "label": "Radio",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "label": "Gerd's camera",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:abendessen"
+      },
+      "label": "Dinner",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:eintrag"
+      },
+      "label": "Signing the hut book",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:funkspruch"
+      },
+      "label": "Radio call to mountain rescue",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:sternfoto"
+      },
+      "label": "Star photos",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:diebstahl"
+      },
+      "label": "Disappearance of the cash box at 23:10",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:entdeckung"
+      },
+      "label": "Discovery of the open cabinet",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:schrank"
+      },
+      "label": "Open cash cabinet",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:abdruck"
+      },
+      "label": "Boot print",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:eintrag"
+      },
+      "label": "Entry in the hut book",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:funkbuch"
+      },
+      "label": "Radio logbook",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:funkprotokoll"
+      },
+      "label": "Radio log",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:stativ"
+      },
+      "label": "Tripod on the terrace",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:sternserie"
+      },
+      "label": "Star series",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:felle"
+      },
+      "label": "Climbing skins",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:rosa",
+      "questionId": "question:q04",
+      "text": "Is there an entry from this evening in the hut book?"
+    },
+    {
+      "npc": "person:rosa",
+      "questionId": "question:q03",
+      "text": "Was Lukas Brandl in the common room at 23:10?"
+    },
+    {
+      "npc": "person:lukas",
+      "questionId": "question:q01",
+      "text": "Were you on the radio in the radio room at 23:10?"
+    },
+    {
+      "npc": "person:lukas",
+      "questionId": "question:q03",
+      "text": "Were you in the common room at 23:10?"
+    },
+    {
+      "npc": "person:mira",
+      "questionId": "question:q03",
+      "text": "Was Lukas Brandl in the common room at 23:10?"
+    },
+    {
+      "npc": "person:mira",
+      "questionId": "question:q02",
+      "text": "Was Gerd Sailer taking photos on the terrace at 23:10?"
+    },
+    {
+      "npc": "person:gerd",
+      "questionId": "question:q02",
+      "text": "Were you taking photos on the terrace at 23:10?"
+    },
+    {
+      "npc": "person:gerd",
+      "questionId": "question:q03",
+      "text": "Was Lukas Brandl in the common room at 23:10?"
+    },
+    {
+      "npc": "person:tobias",
+      "questionId": "question:q06",
+      "text": "Did you settle into the winter room at 21:40?"
+    },
+    {
+      "npc": "person:tobias",
+      "questionId": "question:q05",
+      "text": "Were you in the common room at 23:10?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Whatever a device, a photo or an entry with a time records counts as fact. Statements by people can be mistaken."
+    },
+    {
+      "id": "rule:presence",
+      "text": "The hut's cash box was taken from the common room at 23:10 by exactly one person. Anyone who was provably somewhere else at 23:10 is ruled out."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Since 22:00 the hut has been snowed in; no one came in or went out. Every person who was in the hut this evening is a suspect, including anyone who did not sit at dinner. If all the others are ruled out, the last person remains."
+    }
+  ],
+  "epilogue": "Tobias Wenger opens the door of the winter room without resistance. He had arrived at 21:40, shortly before the storm, signed in quietly and not taken a seat at the table because he could not pay for the night. At 23:10, while everyone else was on the radio or taking photos, he took the cash box from the cabinet. His touring boots have the same coarse tread as a mountain guide's.\n\nLukas Brandl was at the radio the whole time. The print in front of the cabinet was a false lead, and Mira was honestly mistaken when she thought he was in the common room. The cash box is under Tobias' sleeping bag, complete."
+}
