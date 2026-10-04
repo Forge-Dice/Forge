@@ -56,3 +56,10 @@ def run_for_test(event_bytes: bytes, runner_facts: dict, workspace: str, seams: 
     loaded = load_base_verifier(event_bytes, runner_facts, workspace, _seams=built)
     result = run_verifier(loaded, workspace, [], deadline_seconds=30.0)
     return {"loaded": loaded, "returncode": result.returncode, "stdout": result.stdout.decode("utf-8", "replace")}
+
+
+def github_read_for_test(fn: str, answers: dict, *args):
+    """Driver entry: one github.py read over a FixedTransport built from `answers`."""
+    import github
+
+    return getattr(github, fn)(FixedTransport(answers), *args)
