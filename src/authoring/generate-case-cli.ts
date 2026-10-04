@@ -1,9 +1,9 @@
 import { createInterface } from "node:readline/promises";
 import { checkCaseFolder, formatCaseCheck } from "./check-case.ts";
-import { generateCase, generatedPackage, writeGeneratedCase } from "./case-generator.ts";
+import { CASE_SCHEMAS, generateCase, generatedClockOrigin, generatedPackage, writeGeneratedCase, type CaseSchema } from "./case-generator.ts";
 import { command, intro, newGame, type Game } from "../play/game.ts";
 
-// `npm run generate-case -- --seed N [--out <ordner>] [--play]`: writes a generated case folder,
+// `npm run generate-case -- --seed N [--schema <schema>] [--out <ordner>] [--play]`: writes a generated case folder,
 // checks it with check-case and, with --play, starts it in the terminal.
 
 const args = process.argv.slice(2);
@@ -12,18 +12,19 @@ const option = (name: string) => {
   return i < 0 ? undefined : args[i + 1];
 };
 const seed = Number(option("--seed"));
-if (!Number.isSafeInteger(seed) || seed < 0) {
-  console.log("Aufruf: npm run generate-case -- --seed <zahl> [--out <ordner>] [--play]");
+const schema = option("--schema");
+if (!Number.isSafeInteger(seed) || seed < 0 || (schema !== undefined && !(CASE_SCHEMAS as readonly string[]).includes(schema))) {
+  console.log(`Aufruf: npm run generate-case -- --seed <zahl> [--schema ${CASE_SCHEMAS.join("|")}] [--out <ordner>] [--play]`);
   process.exitCode = 2;
 } else {
-  const generated = generateCase(seed);
+  const generated = generateCase(seed, schema as CaseSchema | undefined);
   const dir = option("--out") ?? `generated/fall-${seed}`;
   const files = writeGeneratedCase(generated, dir);
-  console.log(`„${generated.title}“ (Seed ${seed}${generated.withLie ? ", mit Lüge" : ""}): ${files.length} Dateien in ${dir}`);
+  console.log(`„${generated.title}“ (Seed ${seed}, Schema ${generated.schema}${generated.withLie ? ", mit Lüge" : ""}): ${files.length} Dateien in ${dir}`);
   const check = checkCaseFolder(dir);
   console.log(formatCaseCheck(check));
   if (!check.ok) process.exitCode = 1;
-  else if (args.includes("--play")) await play(newGame(generatedPackage(generated), (generated.files["case.json"] as { clockOrigin: number }).clockOrigin));
+  else if (args.includes("--play")) await play(newGame(generatedPackage(generated), generatedClockOrigin(generated)));
 }
 
 async function play(start: Game): Promise<void> {
