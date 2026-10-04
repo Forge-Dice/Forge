@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+  "entries": [
+    {
+      "evidenceId": "evidence:shoeprint",
+      "text": "In front of the open cash cabinet is a fresh, muddy stud print. Only Jonas wears football boots like these in the club. When the print was made, it does not show.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:jonas"
+        },
+        {
+          "kind": "location",
+          "id": "location:clubhouse"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:training-list",
+      "text": "The training list from the afternoon, countersigned by the referee: Mila ran the training, Kurt was in goal. Both were on the field from 16:50 to 17:10.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:mila"
+        },
+        {
+          "kind": "person",
+          "id": "person:kurt"
+        },
+        {
+          "kind": "location",
+          "id": "location:field"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:mila",
+            "locationId": "location:field",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:kurt",
+            "locationId": "location:field",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    }
+  ]
+}

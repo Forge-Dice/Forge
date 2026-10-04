@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+  "entries": [
+    {
+      "evidenceId": "evidence:waage",
+      "text": "Only a ring of straw is left on the fair scale. Its log: 14:05 “Otto”, 312 kilos, record. 15:00:00 weight drops to zero. Otto did not leave on his own.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:wiegezelt"
+        },
+        {
+          "kind": "item",
+          "id": "item:kuerbis"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:handschuhe",
+      "text": "Next to the scale lie flowery gardening gloves, embroidered: H. M. Everyone in the village knows them, Hilde Moosbrugger has worn them for twenty years. When they were left here, they do not tell.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hilde"
+        },
+        {
+          "kind": "location",
+          "id": "location:wiegezelt"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:schleifspur",
+      "text": "Behind the tent the canvas is rolled up. A broad, flattened trail leads through the grass right across the fairground to the car park meadow. Something very round and very heavy was rolled here.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:parkwiese"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:parkschein",
+      "text": "In the car park meadow stands a ladder wagon with fresh straw and a broken-off pumpkin leaf. A parking ticket for the fair meadow is clipped to the wagon: “Entry 14:40, F. Kranz, Oberbrunn.” So Ferdinand Kranz was at the fair today.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ferdl"
+        },
+        {
+          "kind": "location",
+          "id": "location:parkwiese"
+        },
+        {
+          "kind": "event",
+          "id": "event:ankunft"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:ferdl",
+            "locationId": "location:parkwiese",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:stativ",
+      "text": "In front of the festival stage stands a tripod with the local paper's camera. It films every speech, with a timestamp, whether anyone wants to watch or not.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:buehne"
+        },
+        {
+          "kind": "item",
+          "id": "item:kamera"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:festvideo",
+      "text": "Festival video, timestamp 15:00:00: Mayor Hübner stands at the lectern and has been speaking for ten minutes about the importance of the pumpkin for the village community. There is no end in sight.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:alois"
+        },
+        {
+          "kind": "location",
+          "id": "location:buehne"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:alois",
+            "locationId": "location:buehne",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:kuchenbon",
+      "text": "The till roll of the cake stand: 15:00:00, three slices of plum cake, sold by Hilde Moosbrugger, rung up by Lotte Brandl. The till prints both names on every receipt.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hilde"
+        },
+        {
+          "kind": "person",
+          "id": "person:lotte"
+        },
+        {
+          "kind": "location",
+          "id": "location:kuchenstand"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:hilde",
+            "locationId": "location:kuchenstand",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lotte",
+            "locationId": "location:kuchenstand",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:tombolafoto",
+      "text": "The souvenir photo at the raffle stand, timestamp 15:00:00: Sepp Gruber in full fire brigade uniform, his arm in the raffle drum up to the shoulder, his eyes fixed on the main prize, a lawnmower.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:sepp"
+        },
+        {
+          "kind": "location",
+          "id": "location:tombola"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:sepp",
+            "locationId": "location:tombola",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:zapfanlage",
+      "text": "The counter of the beer tent's tap system: 15:00:00 keg 2 tapped, tap card Resi Huber. The system only lets in whoever inserts the card themselves.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:resi"
+        },
+        {
+          "kind": "location",
+          "id": "location:bierzelt"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:resi",
+            "locationId": "location:bierzelt",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    }
+  ]
+}
