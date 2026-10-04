@@ -1,8 +1,11 @@
+import { readdirSync, readFileSync } from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { join } from "node:path";
 import { checkCaseFolder } from "../authoring/check-case.ts";
 import { caseSources, clockOriginOf, CaseWorkspace, editsFromForm, isCaseName, playtestFolder, type CaseSource, type Probe } from "./editor.ts";
 import { checkPanel, playtestPanel, renderEditor, renderEditorHome, type WorkspaceCard } from "./editor-page.ts";
 import type { StructureOp } from "./editor-structure.ts";
+import { exportCaseFiles } from "./case-share.ts";
 import type { Feedback } from "./web-page.ts";
 
 // HTTP routes of the case editor inside play:web:
@@ -119,11 +122,17 @@ export function createEditorRoutes(options: EditorOptions) {
       redirect(res, `/editor/${name}`);
       return true;
     }
-    const m = /^\/editor\/([a-z0-9][a-z0-9-]{0,63})(\/(check|save|struct|undo))?$/.exec(url.pathname);
+    const m = /^\/editor\/([a-z0-9][a-z0-9-]{0,63})(\/(check|save|struct|undo|export))?$/.exec(url.pathname);
     const name = m?.[1] ?? "";
     const dir = m === null || !isCaseName(name) ? null : workspace.dirOf(name);
     if (m === null || dir === null) return fail(res, 404, "Keine Arbeitskopie mit diesem Namen."), true;
     switch (`${req.method} ${m[3] ?? ""}`) {
+      case "GET export": {
+        // The saved working copy as one share file; the game checks it again in full on import.
+        const files = Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, readFileSync(join(dir, f), "utf8")]));
+        res.writeHead(200, { "content-type": "application/json; charset=utf-8", "content-disposition": `attachment; filename="${name}.kriminalfall.json"`, "cache-control": "no-store" }).end(exportCaseFiles(files));
+        return true;
+      }
       case "GET ": {
         const check = checkCaseFolder(dir);
         const { report, reason } = playtestFolder(dir, check);
