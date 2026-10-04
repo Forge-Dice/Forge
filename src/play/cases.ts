@@ -1,9 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { parseCaseTruth } from "../domain/case-truth.ts";
 import { resolveCasePackage, type PackageRefSource, type ResolvedCasePackage, type RulesetVersion } from "../domain/case-package.ts";
 import { buildPlayerRefIndex, playerRefFor, resolvePlayerRef } from "../domain/player-ref.ts";
 import { bindCaseProof } from "../authoring/check-case.ts";
-import { DEFAULT_LANG, type Lang } from "./messages.ts";
+import { difficultyDots, type Difficulty } from "./difficulty.ts";
+import { DEFAULT_LANG, MESSAGES, type Lang } from "./messages.ts";
 import { loadText, switchLang, type Game } from "./game.ts";
 
 // Trusted host side of the play CLI: loads a playable case from its fixture files and resolves it
@@ -20,15 +22,17 @@ export type PlayCase = {
   readonly clockOrigin: number;
   /** Play runs every case under v3 (hints); see RULESET_VERSIONS in case-package.ts. */
   readonly rulesetVersion: RulesetVersion;
+  /** Measured by `npm run playtest` (default seeds); a test keeps it in step with the bot. */
+  readonly difficulty?: Difficulty;
 };
 
 export const PLAY_CASES = {
-  vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v3" },
-  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3" },
-  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3" },
-  "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600, rulesetVersion: "mystery-session-v3" },
-  nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0, rulesetVersion: "mystery-session-v3" },
-  leuchtfeuer: { dir: "leuchtfeuer", npcs: ["hinrich", "frauke", "ole", "marlene", "jasper", "knut"], salt: "1e0c1e0c1e0c1e0c1e0c1e0c1e0c1e0c", clockOrigin: 0, rulesetVersion: "mystery-session-v3" },
+  vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5 },
+  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 1 },
+  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 3 },
+  "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4 },
+  nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 4 },
+  leuchtfeuer: { dir: "leuchtfeuer", npcs: ["hinrich", "frauke", "ole", "marlene", "jasper", "knut"], salt: "1e0c1e0c1e0c1e0c1e0c1e0c1e0c1e0c", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 4 },
 } as const satisfies Record<string, PlayCase>;
 export type PlayCaseName = keyof typeof PLAY_CASES;
 
@@ -73,17 +77,31 @@ const readFixture = (c: PlayCase, name: string, lang: Lang = DEFAULT_LANG): unkn
 /** Languages a case has player text for: the default plus every locale folder. */
 export const caseLangs = (c: PlayCase): Lang[] => [DEFAULT_LANG, ...(["en"] as const).filter((l) => existsSync(new URL(`${l}/public-content.json`, fixtureDir(c))))];
 
+/** The case list of the CLI: name, title and measured difficulty, one case per line. */
+export function caseListText(lang: Lang = DEFAULT_LANG): string {
+  const m = MESSAGES[lang];
+  const rows = (Object.entries(PLAY_CASES) as [PlayCaseName, PlayCase][]).map(([name, c]) => {
+    const title = (readFixture(c, "public-content.json", lang) as { title: string }).title;
+    const difficulty = c.difficulty === undefined ? m.cli.notMeasured : `${difficultyDots(c.difficulty)} ${m.difficulty[c.difficulty]}`;
+    return `  ${name.padEnd(12)} ${difficulty.padEnd(17)} ${title}`;
+  });
+  return [m.cli.caseListHead, ...rows].join("\n");
+}
+
 export function playPackageInput(c: PlayCase, lang: Lang = DEFAULT_LANG): Record<string, unknown> {
-  const read = (name: string): unknown => readFixture(c, name, lang);
+  return packageInputFrom((name) => readFixture(c, name, lang), c.npcs, c.rulesetVersion);
+}
+
+function packageInputFrom(read: (name: string) => unknown, npcs: readonly string[], rulesetVersion: RulesetVersion): Record<string, unknown> {
   return {
     schemaVersion: 1,
-    rulesetVersion: c.rulesetVersion,
+    rulesetVersion,
     truth: read("truth.json"),
     solution: read("solution.json"),
     access: read("evidence-access.json"),
     presentation: read("evidence-presentation.json"),
     catalogue: read("questions.json"),
-    npcs: c.npcs.map((npc) => ({ snapshot: read(`npc-${npc}.json`), profile: read(`interrogation-${npc}.json`) })),
+    npcs: npcs.map((npc) => ({ snapshot: read(`npc-${npc}.json`), profile: read(`interrogation-${npc}.json`) })),
     initial: read("initial-setup.json"),
     challenge: read("challenge.json"),
     publicContent: read("public-content.json"),
@@ -92,13 +110,16 @@ export function playPackageInput(c: PlayCase, lang: Lang = DEFAULT_LANG): Record
   };
 }
 
+function bindAndResolve(read: (name: string) => unknown, input: Record<string, unknown>, salt: string, what: string): ResolvedCasePackage {
+  input.proof = bindCaseProof(input as Parameters<typeof bindCaseProof>[0], read("release-manifest.json"), read("proof-profile.json"), salt);
+  const result = resolveCasePackage(input, refSource(input.truth, salt));
+  if (!result.ok) throw new Error(`Case package "${what}" rejected: ${JSON.stringify(result.findings)}`);
+  return result.package;
+}
+
 export function loadPlayPackage(name: PlayCaseName, lang: Lang = DEFAULT_LANG): ResolvedCasePackage {
   const c = PLAY_CASES[name];
-  const input = playPackageInput(c, lang);
-  input.proof = bindCaseProof(input as Parameters<typeof bindCaseProof>[0], readFixture(c, "release-manifest.json"), readFixture(c, "proof-profile.json"), c.salt);
-  const result = resolveCasePackage(input, refSource(input.truth, c.salt));
-  if (!result.ok) throw new Error(`Case package "${name}" rejected: ${JSON.stringify(result.findings)}`);
-  return result.package;
+  return bindAndResolve((file) => readFixture(c, file), playPackageInput(c, lang), c.salt, name);
 }
 
 /**
@@ -121,4 +142,10 @@ export function loadSaveInLang(
     if (moved !== null) return { ok: true, game: moved };
   }
   return direct;
+}
+
+/** Any case folder (already passed check-case) as a package under the play ruleset (hints on). */
+export function loadFolderPackage(dir: string, npcs: readonly string[], salt: string): ResolvedCasePackage {
+  const read = (name: string): unknown => JSON.parse(readFileSync(join(dir, name), "utf8"));
+  return bindAndResolve(read, packageInputFrom(read, npcs, "mystery-session-v3"), salt, dir);
 }

@@ -1,4 +1,5 @@
 import { rulesetAllows } from "../domain/case-package.ts";
+import { difficultyDots, type Difficulty } from "./difficulty.ts";
 import { accusations, confrontations, hintsUsed, investigations, known, msg, questions, recordText, type Action, type Game } from "./game.ts";
 import { DEFAULT_LANG, MESSAGES, type Lang, type Messages } from "./messages.ts";
 
@@ -11,9 +12,9 @@ export type Feedback = {
   readonly title: string;
   readonly lines: readonly string[];
 };
-export type CaseCard = { readonly slug: string; readonly title: string; readonly teaser: string; readonly progress: string | null };
+export type CaseCard = { readonly slug: string; readonly title: string; readonly teaser: string; readonly progress: string | null; readonly difficulty?: Difficulty };
 
-const escape = (text: string): string =>
+export const escape = (text: string): string =>
   text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 const GROUPS = ["person", "location", "item", "event", "evidence"] as const;
@@ -39,7 +40,8 @@ const paragraphs = (text: string) =>
     .map((p) => `<p>${escape(p.trim())}</p>`)
     .join("");
 
-function layout(title: string, body: string, bodyClass = "", lang: Lang = DEFAULT_LANG): string {
+/** Page frame shared by game, help and the case editor; extraStyle is appended to the base sheet. */
+export function layout(title: string, body: string, bodyClass = "", extraStyle = "", lang: Lang = DEFAULT_LANG): string {
   return `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -48,7 +50,7 @@ function layout(title: string, body: string, bodyClass = "", lang: Lang = DEFAUL
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1c1814">
 <title>${escape(title)}</title>
-<style>${STYLE}</style>
+<style>${STYLE}${extraStyle}</style>
 </head>
 <body${bodyClass === "" ? "" : ` class="${bodyClass}"`}>
 ${body}
@@ -59,13 +61,17 @@ ${body}
 
 // ---------- Case selection ----------
 
-export function renderCaseList(cases: readonly CaseCard[], lang: Lang = DEFAULT_LANG): string {
+/** Measured by the playtest bot; dots for the eye, the word for everyone. */
+const difficultyTag = (d: Difficulty | undefined, m: Messages): string =>
+  d === undefined ? "" : `<span class="difficulty" title="${escape(m.web.difficultyTitle(d))}"><span class="visually-hidden">${m.web.difficultyHidden}</span><span class="dots" aria-hidden="true">${difficultyDots(d)}</span> ${m.difficulty[d]}</span>`;
+
+export function renderCaseList(cases: readonly CaseCard[], editorLink = false, lang: Lang = DEFAULT_LANG): string {
   const m = MESSAGES[lang].web;
   const cards = cases
     .map((c, i) => {
       const solved = c.progress === m.solvedBadge;
       const badge = c.progress === null ? `<span class="badge">${m.newBadge}</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
-      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">${m.fileNo(String(i + 1).padStart(3, "0"))}</span><h2>${escape(c.title)}</h2><p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">${m.openFile}</span></span>${
+      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">${m.fileNo(String(i + 1).padStart(3, "0"))}</span><h2>${escape(c.title)}</h2>${difficultyTag(c.difficulty, MESSAGES[lang])}<p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">${m.openFile}</span></span>${
         solved ? `<span class="stamp small" aria-hidden="true">${m.solvedBadge}</span>` : ""
       }</a></li>`;
     })
@@ -73,11 +79,12 @@ export function renderCaseList(cases: readonly CaseCard[], lang: Lang = DEFAULT_
   return layout(
     m.casesTitle,
     `<a class="skip" href="#faelle">${m.skipCases}</a>
-<header class="masthead"><p class="kicker">${m.office}</p><h1>${m.appTitle}</h1><p class="lead">${escape(m.lead)}</p><p><a class="button ghost" href="/hilfe">${m.howTo} <span aria-hidden="true">→</span></a> ${langSwitch(MESSAGES[lang], "/")}</p></header>
+<header class="masthead"><p class="kicker">${m.office}</p><h1>${m.appTitle}</h1><p class="lead">${escape(m.lead)}</p><p><a class="button ghost" href="/hilfe">${m.howTo} <span aria-hidden="true">→</span></a>${editorLink ? ` <a class="button ghost" href="/editor">${m.editor}</a>` : ""} ${langSwitch(MESSAGES[lang], "/")}</p></header>
 <main id="faelle" class="shelf"><h2 class="visually-hidden">${m.openFiles}</h2><ul class="cases">${cards}</ul>
 <section class="random-case" aria-labelledby="zufall"><h2 id="zufall">${m.randomTitle}</h2><p>${escape(m.randomText)}</p><form method="post" action="/zufall"><label for="seed">Seed</label> <input id="seed" name="seed" inputmode="numeric" pattern="[0-9]{0,9}" maxlength="9" placeholder="${escape(m.seedPlaceholder)}"> <button type="submit">${m.openRandom}</button></form></section>
 <p class="hint">${escape(m.casesHint)}</p></main>`,
     "page-cases",
+    "",
     lang,
   );
 }
@@ -310,7 +317,7 @@ ${solved || !rulesetAllows(game.pkg.identity.rulesetVersion, "hints") ? "" : hin
 ${intro(all)}
 <dialog id="confirm" aria-labelledby="confirm-title"><form method="dialog"><h2 id="confirm-title"></h2><p id="confirm-text"></p><div class="actions"><button value="cancel" class="secondary">${m.cancel}</button><button value="ok" class="danger" id="confirm-ok">${m.accuse}</button></div></form></dialog>
 <script>${script(slug, solved, feedback !== null, all)}</script>`;
-  return layout(publicContent.title, body, "", game.lang ?? DEFAULT_LANG);
+  return layout(publicContent.title, body, "", "", game.lang ?? DEFAULT_LANG);
 }
 
 // ---------- Introduction and help ----------
@@ -360,6 +367,7 @@ export function renderHelp(lang: Lang = DEFAULT_LANG): string {
 <section class="card"><h2>${m.keyboard}</h2><dl class="keymap">${keys.map(([k, t]) => `<div><dt><kbd>${escape(k)}</kbd></dt><dd>${escape(t)}</dd></div>`).join("")}</dl><p class="muted">${m.keyboardNote}</p></section>
 <p class="manual-foot"><a class="button primary-link" href="/">${m.toCases}</a></p>
 </main>`,
+    "",
     "",
     lang,
   );
@@ -651,6 +659,8 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .case-no { font: 700 12px var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--blood); }
 .case-card h2 { margin: 6px 0 10px; font-size: 26px; }
 .case-card p { color: #4a3d2e; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.case-card .difficulty { display: block; font: 600 13px var(--sans); margin: -4px 0 8px; color: var(--ink-soft); }
+.case-card .difficulty .dots { letter-spacing: 2px; color: var(--blood); }
 .case-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 8px; }
 .case-card .badge { background: rgba(42,33,25,.12); color: var(--ink); border-color: rgba(42,33,25,.25); }
 .case-card .badge.solved { background: var(--ok); color: #fff; }

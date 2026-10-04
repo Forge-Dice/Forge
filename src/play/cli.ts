@@ -1,11 +1,12 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { command, intro, newGame, saveText, type Game } from "./game.ts";
-import { PLAY_CASES, loadPlayPackage, loadSaveInLang, playCaseName } from "./cases.ts";
+import { PLAY_CASES, caseListText, loadPlayPackage, loadSaveInLang, playCaseName } from "./cases.ts";
 import { DEFAULT_LANG, MESSAGES, parseLang, type Lang } from "./messages.ts";
 
 // `npm run play [-- <fall>] [--lang en]`: a case in the terminal over the real session reducer.
-// Cases: see PLAY_CASES in cases.ts (vitrine is the default). Languages: de (default), en.
+// Cases: see PLAY_CASES in cases.ts (vitrine is the default); `npm run play -- liste` lists them.
+// Languages: de (default), en.
 
 /** `--lang en`, `--lang=en`; the rest are positional arguments. */
 function parseArgs(argv: readonly string[]): { positional: string[]; lang: string | null } {
@@ -29,9 +30,13 @@ async function main(): Promise<void> {
     return;
   }
   const m = MESSAGES[lang];
+  if (["liste", "fälle", "list", "cases"].includes(args.positional[0] ?? "")) {
+    console.log(caseListText(lang));
+    return;
+  }
   const name = playCaseName(args.positional[0]);
   if (name === null) {
-    console.log(m.cli.unknownCase(args.positional[0] ?? "", Object.keys(PLAY_CASES).join(", ")));
+    console.log(`${m.cli.unknownCase(args.positional[0] ?? "")}\n${caseListText(lang)}`);
     process.exitCode = 1;
     return;
   }

@@ -1,4 +1,4 @@
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
 import {
@@ -119,7 +119,7 @@ export type WebHandler = (method: string, url: string, body: () => Promise<strin
  * The whole front end as a function of (method, url, body) over one in-memory game per case. The
  * node server below and the single-file browser build (web-standalone.ts) both run exactly this.
  */
-export function createWebHandler(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}): WebHandler {
+export function createWebHandler(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, options: { readonly editorLink?: boolean } = {}): WebHandler {
   // Given packages are the German ones; other languages load their locale variant on demand.
   const loaded = new Map<string, ResolvedCasePackage>();
   const pkgFor = (name: PlayCaseName, lang: Lang): ResolvedCasePackage => {
@@ -229,9 +229,9 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
         const { publicContent } = s.game.pkg;
         const steps = s.game.state.events.length;
         const progress = s.game.state.phase === "solved" ? m.solvedBadge : steps === 0 ? null : m.actions(steps);
-        return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress };
+        return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress, difficulty: PLAY_CASES[name].difficulty };
       });
-      return html(renderCaseList(cards, lang));
+      return html(renderCaseList(cards, options.editorLink === true, lang));
     }
     if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp(lang));
     if (method === "GET" && url.pathname === "/sprache") {
@@ -294,20 +294,15 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
   };
 }
 
+/** Extra node routes in front of the game (the case editor); true when the request was handled. */
+export type NodeRoutes = (req: IncomingMessage, res: ServerResponse, url: URL) => Promise<boolean>;
+
 /** Node request handler around createWebHandler; exported for tests. */
-export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}) {
-  const handle = createWebHandler(packages);
+export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, extra: { readonly routes: NodeRoutes; readonly editorLink: boolean } | null = null) {
+  const handle = createWebHandler(packages, { editorLink: extra?.editorLink === true });
   return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
+    if (extra !== null && (await extra.routes(req, res, new URL(req.url ?? "/", "http://localhost")))) return;
     const out = await handle(req.method ?? "GET", req.url ?? "/", () => readBody(req), req.headers.cookie);
     res.writeHead(out.status, out.headers).end(out.body);
   };
-}
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const port = Number(process.env.PORT ?? 4173);
-  const app = createWebApp();
-  // Local only: bound to the loopback interface.
-  createServer((req, res) => void app(req, res)).listen(port, "127.0.0.1", () => {
-    console.log(MESSAGES[DEFAULT_LANG].web.running(port));
-  });
 }

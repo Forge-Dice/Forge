@@ -12,6 +12,7 @@ npm run play -- geige        # anderer Fall: vitrine, brieföffner (briefoeffner
 npm run play -- geige --lang en   # auf Englisch (im Browser: Umschalter oben, die Wahl bleibt gespeichert)
 npm run play:web             # Browser auf http://localhost:4173 (PORT=… für einen anderen Port)
 npm run build:web            # eine einzige HTML-Datei (dist/kriminalfaelle.html), spielbar ohne Server
+npm run play -- liste        # alle Fälle mit Schwierigkeit
 ```
 
 Befehle im Terminal (`hilfe` zeigt sie im Spiel):
@@ -67,6 +68,20 @@ Oberfläche stehen in `src/play/messages.ts`.
 
 Exit-Code 0 heißt: gültig und lösbar. Jeder Fehler nennt Datei und Feld. Spielbar wird ein Fall mit
 einem Eintrag in `PLAY_CASES` (`src/play/cases.ts`).
+
+Ist der Fall gültig, spielt ihn `check-case` zusätzlich mit dem Spieltest-Bot und gibt dessen
+Balance-Warnungen als Hinweise aus (`--ohne-spieltest` lässt das weg). Ausführlich:
+
+```sh
+npm run playtest -- geige       # oder: all; --seeds N für mehr oder weniger Läufe
+```
+
+Vier simulierte Spielstile (systematisch, neugierig, voreilig, hinweise) spielen über die echte
+Session. Ein Bot klagt richtig an, sobald sein eigenes Wissen den Beweis des Falls trägt. Daraus
+folgen Kennzahlen, eine Schwierigkeit von 1 bis 5 und Warnungen (zu früh lösbar, falsche Fährte nie
+berührt, Fund ohne Rolle im Beweis, Raten lohnt sich). Die Schwierigkeit steht als `difficulty` in
+`PLAY_CASES`; ein Test hält sie gleich dem gemessenen Wert, `npm run playtest` nennt bei Abweichung
+den neuen Wert.
 
 Regelversionen (v1, v2, v3) sind an einer Stelle erklärt: `RULESET_VERSIONS` in
 `src/domain/case-package.ts`. Kurz: v1 ohne Lügen, v2 mit Lügen und Vorhalten, v3 zusätzlich mit
