@@ -112,6 +112,7 @@ describe("standalone browser build", () => {
       expect(page).toContain('<html lang="en">');
       expect(page).toContain(">Investigate</h2>");
     }
-    expect((await both("GET", "/")).body).toContain("<h1>Detective Cases</h1>");
+    // The bundle's case list also lists the random cases earlier tests opened there.
+    expect((await bundled("GET", "/", body(undefined), "sprache=en")).body).toContain("<h1>Detective Cases</h1>");
   });
 });

@@ -138,8 +138,8 @@ describe("npm run play -- geige", () => {
     const f = say("f");
     const garderobe = say(`f ${numberOf(f, "Waren Sie um 20:40 in der Garderobe?")}`);
     const buehne = say(`f ${numberOf(say("f"), "Waren Sie um 20:40 auf der Bühne?")}`);
-    expect(garderobe).toContain("„Nein.“");
-    expect(buehne).toContain("„Ja.“");
+    expect(garderobe).toContain("„In der Garderobe? Nein, wirklich nicht.“");
+    expect(buehne).toContain("„Ja, um 20:40 war ich auf der Bühne.“");
     expect(garderobe + buehne).not.toMatch(/Lüge|lügt|gelogen/);
     const a = say("a");
     expect(say(`a ${numberOf(a, "Ida Reiner")}`)).toContain("Fall gelöst");
@@ -147,7 +147,7 @@ describe("npm run play -- geige", () => {
 
   it("route A: Kurt's answer makes the cabinet examinable", () => {
     const say = player();
-    expect(say(`f ${numberOf(say("f"), "Haben Sie in der Pause den Schaltschrank im Keller kontrolliert?")}`)).toContain("„Ja.“");
+    expect(say(`f ${numberOf(say("f"), "Haben Sie in der Pause den Schaltschrank im Keller kontrolliert?")}`)).toContain("den Schaltschrank hab ich kontrolliert");
     expect(say("u")).toContain("Gegenstand untersuchen: Schaltschrank");
   });
 });

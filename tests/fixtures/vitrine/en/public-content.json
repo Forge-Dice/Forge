@@ -249,102 +249,122 @@
     {
       "npc": "person:lina",
       "questionId": "question:q16",
-      "text": "Were you in the Gallery at 18:04?"
+      "text": "Were you in the Gallery at 18:04?",
+      "answer": "I won't comment on that. Ask someone else."
     },
     {
       "npc": "person:lina",
       "questionId": "question:q17",
-      "text": "Did Max remove the medal by hand?"
+      "text": "Did Max remove the medal by hand?",
+      "answer": "Max? No, he didn't."
     },
     {
       "npc": "person:lina",
       "questionId": "question:q18",
-      "text": "Were you in the Workshop at 18:05?"
+      "text": "Were you in the Workshop at 18:05?",
+      "answer": "Yes, at 18:05 I was in my workshop, at my workbench."
     },
     {
       "npc": "person:lina",
       "questionId": "question:q19",
-      "text": "Was Nora in the Courtyard at 18:04?"
+      "text": "Was Nora in the Courtyard at 18:04?",
+      "answer": "Whether Nora was in the courtyard? I can't tell you that."
     },
     {
       "npc": "person:lina",
       "questionId": "question:q20",
-      "text": "Do you want to tell me anything about the medal?"
+      "text": "Do you want to tell me anything about the medal?",
+      "answer": "I have nothing to say about the medal."
     },
     {
       "npc": "person:max",
       "questionId": "question:q01",
-      "text": "Were you in the Gallery at 18:02?"
+      "text": "Were you in the Gallery at 18:02?",
+      "answer": "Yes, at 18:02 I was in the gallery, I admit that openly."
     },
     {
       "npc": "person:max",
       "questionId": "question:q02",
-      "text": "Were you in the Gallery at 18:04?"
+      "text": "Were you in the Gallery at 18:04?",
+      "answer": "No! By 18:04 I was long gone from there."
     },
     {
       "npc": "person:max",
       "questionId": "question:q03",
-      "text": "Were you in the Courtyard at 18:04?"
+      "text": "Were you in the Courtyard at 18:04?",
+      "answer": "Yes, at 18:04 I was standing in the courtyard."
     },
     {
       "npc": "person:max",
       "questionId": "question:q04",
-      "text": "Was Lina in the Gallery at 18:04?"
+      "text": "Was Lina in the Gallery at 18:04?",
+      "answer": "How should I know? I wasn't there."
     },
     {
       "npc": "person:max",
       "questionId": "question:q05",
-      "text": "Was the Courtyard photo shoot filmed in full?"
+      "text": "Was the Courtyard photo shoot filmed in full?",
+      "answer": "Filmed? I don't know anything about that, you'll have to ask Nora."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q06",
-      "text": "Was Max in the Courtyard at 18:04?"
+      "text": "Was Max in the Courtyard at 18:04?",
+      "answer": "Yes, at 18:04 Max was standing with me in the courtyard."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q07",
-      "text": "Were you in the Courtyard at 18:04?"
+      "text": "Were you in the Courtyard at 18:04?",
+      "answer": "Yes, I was in the courtyard taking photos."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q08",
-      "text": "Was your camera running the whole time during the Courtyard photo shoot?"
+      "text": "Was your camera running the whole time during the Courtyard photo shoot?",
+      "answer": "Yes, the camera ran the whole time. I always leave it running during a shoot."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q09",
-      "text": "Was Max in the Gallery at 18:04?"
+      "text": "Was Max in the Gallery at 18:04?",
+      "answer": "No, he wasn't in the gallery, he was standing right next to me."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q10",
-      "text": "Was Lina in the Gallery at 18:04?"
+      "text": "Was Lina in the Gallery at 18:04?",
+      "answer": "Lina? Hm. I was outside, I can't say for sure."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q11",
-      "text": "Was Max in the Gallery at 18:02?"
+      "text": "Was Max in the Gallery at 18:02?",
+      "answer": "Indeed, Mr Brandt was in the gallery at 18:02."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q12",
-      "text": "Was Max in the Gallery at 18:04?"
+      "text": "Was Max in the Gallery at 18:04?",
+      "answer": "Indeed. At 18:04 Mr Brandt was in the gallery, I am quite sure of it."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q13",
-      "text": "Were you in the Archive at 18:04?"
+      "text": "Were you in the Archive at 18:04?",
+      "answer": "Indeed, I was in the archive at my work."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q14",
-      "text": "Is there a device in the Archive that records who works there?"
+      "text": "Is there a device in the Archive that records who works there?",
+      "answer": "Indeed, the archive has a logging device. Whoever works there is recorded in it."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q15",
-      "text": "Was Lina with you in the Archive at 18:03?"
+      "text": "Was Lina with you in the Archive at 18:03?",
+      "answer": "Indeed, Ms Kern came to see me in the archive at 18:03."
     }
   ],
   "publicRules": [

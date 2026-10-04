@@ -249,52 +249,63 @@
     {
       "npc": "person:rosa",
       "questionId": "question:q04",
-      "text": "Steht im Hüttenbuch ein Eintrag von heute Abend?"
+      "text": "Steht im Hüttenbuch ein Eintrag von heute Abend?",
+      "answer": "Ja, freilich, da steht ein Eintrag von heut Abend."
     },
     {
       "npc": "person:rosa",
       "questionId": "question:q03",
-      "text": "War Lukas Brandl um 23:10 in der Gaststube?"
+      "text": "War Lukas Brandl um 23:10 in der Gaststube?",
+      "answer": "Der Lukas in der Gaststube? Mei, da bin ich mir nicht sicher."
     },
     {
       "npc": "person:lukas",
       "questionId": "question:q01",
-      "text": "Haben Sie um 23:10 im Funkraum gefunkt?"
+      "text": "Haben Sie um 23:10 im Funkraum gefunkt?",
+      "answer": "Ja. Um 23:10 hab ich im Funkraum gefunkt."
     },
     {
       "npc": "person:lukas",
       "questionId": "question:q03",
-      "text": "Waren Sie um 23:10 in der Gaststube?"
+      "text": "Waren Sie um 23:10 in der Gaststube?",
+      "answer": "Nein. Da war ich im Funkraum, nicht in der Gaststube."
     },
     {
       "npc": "person:mira",
       "questionId": "question:q03",
-      "text": "War Lukas Brandl um 23:10 in der Gaststube?"
+      "text": "War Lukas Brandl um 23:10 in der Gaststube?",
+      "answer": "Ich glaube schon, dass Lukas in der Gaststube war. Ganz sicher bin ich aber nicht."
     },
     {
       "npc": "person:mira",
       "questionId": "question:q02",
-      "text": "Hat Gerd Sailer um 23:10 auf der Terrasse fotografiert?"
+      "text": "Hat Gerd Sailer um 23:10 auf der Terrasse fotografiert?",
+      "answer": "Ja, Gerd hat um 23:10 auf der Terrasse fotografiert. Er wollte unbedingt den Sturm."
     },
     {
       "npc": "person:gerd",
       "questionId": "question:q02",
-      "text": "Haben Sie um 23:10 auf der Terrasse fotografiert?"
+      "text": "Haben Sie um 23:10 auf der Terrasse fotografiert?",
+      "answer": "Ja, auf der Terrasse, um 23:10. Bei dem Sturm, das waren Bilder!"
     },
     {
       "npc": "person:gerd",
       "questionId": "question:q03",
-      "text": "War Lukas Brandl um 23:10 in der Gaststube?"
+      "text": "War Lukas Brandl um 23:10 in der Gaststube?",
+      "answer": "Lukas? Schwer zu sagen, ich war ja draußen."
     },
     {
       "npc": "person:tobias",
       "questionId": "question:q06",
-      "text": "Haben Sie sich um 21:40 im Winterraum eingerichtet?"
+      "text": "Haben Sie sich um 21:40 im Winterraum eingerichtet?",
+      "answer": "Ja, um 21:40 hab ich mich im Winterraum eingerichtet."
     },
     {
       "npc": "person:tobias",
       "questionId": "question:q05",
-      "text": "Waren Sie um 23:10 in der Gaststube?"
+      "text": "Waren Sie um 23:10 in der Gaststube?",
+      "answer": "In der Gaststube? Nein, ich bin den ganzen Abend im Winterraum geblieben.",
+      "admission": "Gut, ja. Um 23:10 war ich in der Gaststube."
     }
   ],
   "publicRules": [

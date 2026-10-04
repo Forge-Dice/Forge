@@ -249,52 +249,63 @@
     {
       "npc": "person:rosa",
       "questionId": "question:q04",
-      "text": "Is there an entry from this evening in the hut book?"
+      "text": "Is there an entry from this evening in the hut book?",
+      "answer": "Yes, sure, there's an entry from this evening."
     },
     {
       "npc": "person:rosa",
       "questionId": "question:q03",
-      "text": "Was Lukas Brandl in the common room at 23:10?"
+      "text": "Was Lukas Brandl in the common room at 23:10?",
+      "answer": "Lukas in the common room? Well, I'm not sure about that."
     },
     {
       "npc": "person:lukas",
       "questionId": "question:q01",
-      "text": "Were you on the radio in the radio room at 23:10?"
+      "text": "Were you on the radio in the radio room at 23:10?",
+      "answer": "Yes. At 23:10 I was on the radio in the radio room."
     },
     {
       "npc": "person:lukas",
       "questionId": "question:q03",
-      "text": "Were you in the common room at 23:10?"
+      "text": "Were you in the common room at 23:10?",
+      "answer": "No. I was in the radio room then, not in the common room."
     },
     {
       "npc": "person:mira",
       "questionId": "question:q03",
-      "text": "Was Lukas Brandl in the common room at 23:10?"
+      "text": "Was Lukas Brandl in the common room at 23:10?",
+      "answer": "I think Lukas was in the common room. But I'm not completely sure."
     },
     {
       "npc": "person:mira",
       "questionId": "question:q02",
-      "text": "Was Gerd Sailer taking photos on the terrace at 23:10?"
+      "text": "Was Gerd Sailer taking photos on the terrace at 23:10?",
+      "answer": "Yes, Gerd was taking photos on the terrace at 23:10. He absolutely wanted the storm."
     },
     {
       "npc": "person:gerd",
       "questionId": "question:q02",
-      "text": "Were you taking photos on the terrace at 23:10?"
+      "text": "Were you taking photos on the terrace at 23:10?",
+      "answer": "Yes, on the terrace, at 23:10. In that storm, those were pictures!"
     },
     {
       "npc": "person:gerd",
       "questionId": "question:q03",
-      "text": "Was Lukas Brandl in the common room at 23:10?"
+      "text": "Was Lukas Brandl in the common room at 23:10?",
+      "answer": "Lukas? Hard to say, I was outside."
     },
     {
       "npc": "person:tobias",
       "questionId": "question:q06",
-      "text": "Did you settle into the winter room at 21:40?"
+      "text": "Did you settle into the winter room at 21:40?",
+      "answer": "Yes, at 21:40 I settled into the winter room."
     },
     {
       "npc": "person:tobias",
       "questionId": "question:q05",
-      "text": "Were you in the common room at 23:10?"
+      "text": "Were you in the common room at 23:10?",
+      "answer": "In the common room? No, I stayed in the winter room all evening.",
+      "admission": "Fine, yes. At 23:10 I was in the common room."
     }
   ],
   "publicRules": [

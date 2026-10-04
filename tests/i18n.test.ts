@@ -75,6 +75,26 @@ describe("locale variants in check-case", () => {
     expect(check.filled).toEqual([expect.objectContaining({ file: "en/source.json", field: "presentation", stale: true })]);
   });
 
+  it("lets a translation reword NPC voices and answer sentences, but not drop a reply kind", () => {
+    const dir = mkdtempSync(join(tmpdir(), "i18n-"));
+    cpSync(fixture("geige"), dir, { recursive: true });
+    const edit = (path: string, change: (c: { questionTexts: { npc: string; answer?: string }[]; voices?: unknown }) => void) => {
+      const content = JSON.parse(readFileSync(join(dir, path), "utf8"));
+      change(content);
+      writeFileSync(join(dir, path), JSON.stringify(content));
+    };
+    const npc = (c: { questionTexts: { npc: string }[] }) => c.questionTexts[0]!.npc;
+    edit("public-content.json", (c) => (c.voices = [{ npc: npc(c), lines: { affirms: ["Freilich."], decline: ["Nix da."] } }]));
+    edit("en/public-content.json", (c) => {
+      c.voices = [{ npc: npc(c), lines: { affirms: ["Sure.", "Of course."], decline: ["No way."] } }];
+      c.questionTexts[0]!.answer = "Yes, he was, holding court as always.";
+    });
+    const ok = checkCaseFolder(dir, "en");
+    expect(ok.problems.filter((p) => p.severity === "error")).toEqual([]);
+    edit("en/public-content.json", (c) => (c.voices = [{ npc: npc(c), lines: { affirms: ["Sure."] } }]));
+    expect(checkCaseFolder(dir, "en").problems).toEqual(expect.arrayContaining([expect.objectContaining({ file: "en/public-content.json", field: "voices[0].lines", severity: "error" })]));
+  });
+
   it("rejects a translation that changes more than text, naming the locale file", () => {
     const dir = mkdtempSync(join(tmpdir(), "i18n-"));
     cpSync(fixture("vitrine"), dir, { recursive: true });

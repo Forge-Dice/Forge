@@ -254,13 +254,33 @@ function voiced(game: Game, npc: string, key: string, questionId: string): strin
   return lines[h % lines.length]!;
 }
 
-export function answerText(game: Game, o: InterrogationObservation): string {
-  const npcId = game.pkg.refs.resolve(o.npc)?.id;
-  const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === o.questionId);
+function questionOf(game: Game, npc: string, questionId: string) {
+  const npcId = game.pkg.refs.resolve(npc)?.id;
+  return game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === questionId);
+}
+
+/** Whether the player broke this NPC's lie on the question before event index `before`. */
+function admittedBefore(game: Game, npc: string, questionId: string, before: number): boolean {
+  return game.state.knowledge.observations.some(
+    (r) =>
+      r.source.kind === "confrontation" &&
+      r.source.eventIndex < before &&
+      r.source.npc === npc &&
+      r.source.questionId === questionId &&
+      (r.observation as ConfrontationObservation).act === "admit",
+  );
+}
+
+/**
+ * The NPC's reply. Wording, first match wins: the question's own answer sentence (its admission
+ * once the lie is broken), the NPC's voice, the plain stance. `at` is the record's event index.
+ */
+export function answerText(game: Game, o: InterrogationObservation, at = Infinity): string {
+  const question = questionOf(game, o.npc, o.questionId);
   const m = msg(game);
   const head = m.answerHead(labelOf(game, o.npc), question?.text ?? o.questionId);
-  if (o.act === "decline") return `${head}: ${m.q(voiced(game, o.npc, "decline", o.questionId) ?? "")}`;
-  const said = `${head}: ${m.q(voiced(game, o.npc, o.stance, o.questionId) ?? "")}`;
+  const authored = question?.admission !== undefined && admittedBefore(game, o.npc, o.questionId, at) ? question.admission : question?.answer;
+  const said = `${head}: ${m.q(authored ?? voiced(game, o.npc, o.act === "decline" ? "decline" : o.stance, o.questionId) ?? "")}`;
   return "statement" in o ? `${said}\n  ${m.aboutClaim(claimText(game, o.statement))}` : said;
 }
 
@@ -306,8 +326,10 @@ export function confrontationText(game: Game, o: ConfrontationObservation): stri
   const m = msg(game);
   const head = m.confrontHead(labelOf(game, o.npc), labelOf(game, o.evidence));
   if (o.act === "stands_by") return `${head}: ${m.q(voiced(game, o.npc, "stands_by", o.questionId) ?? "")}`;
+  const admission = questionOf(game, o.npc, o.questionId)?.admission;
   const givesIn = voiced(game, o.npc, "gives_in", o.questionId);
-  return `${head}, ${m.givesIn}: ${m.q(`${givesIn === null ? "" : `${givesIn} `}${voiced(game, o.npc, o.stance, o.questionId) ?? ""}`)}\n  ${m.aboutClaim(claimText(game, o.statement))}`;
+  const said = admission ?? `${givesIn === null ? "" : `${givesIn} `}${voiced(game, o.npc, o.stance, o.questionId) ?? ""}`;
+  return `${head}, ${m.givesIn}: ${m.q(said)}\n  ${m.aboutClaim(claimText(game, o.statement))}`;
 }
 
 function outputText(game: Game, output: SessionOutput): string {
@@ -357,7 +379,7 @@ export function recordText(game: Game, r: SessionState["knowledge"]["observation
     case "evidence":
       return evidenceText(game, r.observation as EvidenceObservation);
     case "npc":
-      return answerText(game, r.observation as InterrogationObservation);
+      return answerText(game, r.observation as InterrogationObservation, r.source.eventIndex);
     case "confrontation":
       return confrontationText(game, r.observation as ConfrontationObservation);
   }

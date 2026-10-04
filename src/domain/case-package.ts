@@ -116,7 +116,19 @@ const PublicContentSchema = z.strictObject({
   challengeQuestion: ShortText,
   labels: z.array(z.strictObject({ entity: EntityRefSchema, label: ShortText, role: ShortText.nullable() })).max(PACKAGE_LIMITS.labels),
   questionTexts: z
-    .array(z.strictObject({ npc: z.string(), questionId: QuestionIdSchema, text: ShortText }))
+    .array(
+      z.strictObject({
+        npc: z.string(),
+        questionId: QuestionIdSchema,
+        text: ShortText,
+        // Optional voiced reply to this rule (answer, lie or decline); without it the player sees
+        // the plain stance ("Ja.", "Nein." ...). Part of publicContentHash, so of the release context.
+        answer: ShortText.optional(),
+        // Optional voiced reply once a lie is broken: the giving-in on confrontation and every
+        // later answer to the question. Only for a lie with an authored confrontation.
+        admission: ShortText.optional(),
+      }),
+    )
     .max(PACKAGE_LIMITS.questionTexts),
   publicRules: z.array(z.strictObject({ id: z.string().regex(/^[a-z][a-z0-9:_-]{0,63}$/), text: ShortText })).max(PACKAGE_LIMITS.publicRules),
   // Narrated resolution, shown to the player only after a solving accusation. Optional; part of
@@ -252,7 +264,12 @@ function checkInitial(initial: InitialSetup, entities: ReadonlySet<string>): voi
   });
 }
 
-function checkPublicContent(content: PublicContent, entities: ReadonlySet<string>, pairs: ReadonlySet<string>): void {
+function checkPublicContent(
+  content: PublicContent,
+  entities: ReadonlySet<string>,
+  pairs: ReadonlySet<string>,
+  confrontable: ReadonlySet<string>,
+): void {
   const labels = new Set<string>();
   content.labels.forEach(({ entity }, i) => {
     const key = entityKey(entity.kind, entity.id);
@@ -260,9 +277,10 @@ function checkPublicContent(content: PublicContent, entities: ReadonlySet<string
     labels.add(key);
   });
   const texts = new Set<string>();
-  content.questionTexts.forEach(({ npc, questionId }, i) => {
+  content.questionTexts.forEach(({ npc, questionId, admission }, i) => {
     const key = `${npc}|${questionId}`;
     if (!pairs.has(key) || texts.has(key)) reject("REFERENCE", ["publicContent", "questionTexts", i]);
+    if (admission !== undefined && !confrontable.has(key)) reject("REFERENCE", ["publicContent", "questionTexts", i, "admission"]);
     texts.add(key);
   });
   if (texts.size !== pairs.size) reject("REFERENCE", ["publicContent", "questionTexts"]);
@@ -358,7 +376,10 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
   checkInitial(initial, entities);
   const publicContent = component("publicContent", () => PublicContentSchema.parse(input.publicContent)) as PublicContent;
   const pairs = new Set(npcs.flatMap(({ profile }) => profile.rules.map((rule) => `${profile.npcId}|${rule.questionId}`)));
-  checkPublicContent(publicContent, entities, pairs);
+  const confrontable = new Set(
+    npcs.flatMap(({ profile }) => (profile.confrontations ?? []).map((c) => `${profile.npcId}|${c.questionId}`)),
+  );
+  checkPublicContent(publicContent, entities, pairs, confrontable);
 
   const mapping = verifyRefs(source, truth, truthHash);
   const config = { profile: source.config.profile, saltHex: source.config.saltHex };

@@ -161,42 +161,51 @@
     {
       "npc": "person:anna",
       "questionId": "question:q01",
-      "text": "Was Ben present at Clara's death?"
+      "text": "Was Ben present at Clara's death?",
+      "answer": "I think so. Ben was nearby, I have a feeling about it."
     },
     {
       "npc": "person:anna",
       "questionId": "question:q02",
-      "text": "Were you present at Clara's death?"
+      "text": "Were you present at Clara's death?",
+      "answer": "I ... I don't know. I don't even know exactly when it happened."
     },
     {
       "npc": "person:anna",
       "questionId": "question:q04",
-      "text": "Were you in the Garden at 20:25?"
+      "text": "Were you in the Garden at 20:25?",
+      "answer": "Yes, at 20:25 I was outside in the garden."
     },
     {
       "npc": "person:anna",
       "questionId": "question:q05",
-      "text": "Were you in the Library at 20:25?"
+      "text": "Were you in the Library at 20:25?",
+      "answer": "No, I wasn't in the library then."
     },
     {
       "npc": "person:ben",
       "questionId": "question:q01",
-      "text": "Were you present at Clara's death?"
+      "text": "Were you present at Clara's death?",
+      "answer": "No. I wasn't there, I swear to you.",
+      "admission": "All right. Yes, I was there when Clara died."
     },
     {
       "npc": "person:ben",
       "questionId": "question:q02",
-      "text": "Was Anna present at Clara's death?"
+      "text": "Was Anna present at Clara's death?",
+      "answer": "Yes, Anna was there. Ask her yourself."
     },
     {
       "npc": "person:ben",
       "questionId": "question:q03",
-      "text": "Was Clara killed with the letter opener?"
+      "text": "Was Clara killed with the letter opener?",
+      "answer": "I won't say a word about that without my lawyer."
     },
     {
       "npc": "person:ben",
       "questionId": "question:q04",
-      "text": "Was Anna in the Garden at 20:25?"
+      "text": "Was Anna in the Garden at 20:25?",
+      "answer": "Yes, Anna was in the garden at 20:25."
     }
   ],
   "publicRules": [

@@ -145,7 +145,7 @@ describe("confronting in CLI and browser", () => {
     const line = listing.split("\n").find((l) => l.includes("Ben zu „Waren Sie bei Claras Tod dabei?“") && l.includes("Manschettenknopf"));
     expect(line, listing).toBeDefined();
     const out = command(game, `v ${line!.trim().split(".")[0]}`);
-    expect(out.text).toContain("gibt nach: „Ja.“");
+    expect(out.text).toContain("gibt nach: „Also gut. Ja, ich war dabei, als Clara starb.“");
     expect(command(out.game, "j").text).toContain("gibt nach");
   });
 

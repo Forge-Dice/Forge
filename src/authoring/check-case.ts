@@ -338,9 +338,9 @@ const SOURCE_FILE = "source.json";
 function textDigest(raw: unknown): string {
   const texts: string[] = [];
   const walk = (v: unknown, key: string): void => {
-    if (Array.isArray(v)) v.forEach((x) => walk(x, ""));
-    else if (typeof v === "object" && v !== null) for (const [k, x] of Object.entries(v)) walk(x, k);
-    else if (typeof v === "string" && TEXT_FIELDS.has(key)) texts.push(v);
+    if (Array.isArray(v)) v.forEach((x) => walk(x, key === VOICE_LINES ? key : ""));
+    else if (typeof v === "object" && v !== null) for (const [k, x] of Object.entries(v)) walk(x, key === VOICE_LINES ? key : k);
+    else if (typeof v === "string" && (TEXT_FIELDS.has(key) || key === VOICE_LINES)) texts.push(v);
   };
   walk(raw, "");
   return createHash("sha256").update(JSON.stringify(texts)).digest("hex");
@@ -357,7 +357,9 @@ function checkSource(file: string, source: unknown, key: string, digest: string,
 }
 
 /** Fields that hold player text; a translation may change only these. */
-const TEXT_FIELDS = new Set(["title", "brief", "challengeQuestion", "label", "role", "text", "epilogue"]);
+const TEXT_FIELDS = new Set(["title", "brief", "challengeQuestion", "label", "role", "text", "answer", "admission", "epilogue"]);
+/** An NPC voice (voices[].lines): per reply kind a list of wordings; a translation may reword and recount them. */
+const VOICE_LINES = "lines";
 const INTERNAL_ID = /\b(person|event|item|location|question|evidence|rule|case):[a-z0-9]/;
 
 /** A locale file is the base file with other texts: same structure, same ids, same claims. */
@@ -375,10 +377,20 @@ function checkTranslation(base: unknown, translated: unknown, file: string, c: C
         if (TEXT_FIELDS.has(k) && typeof bv === "string" && typeof tv === "string") {
           if (tv.trim() === "") c.error(file, at, "Übersetzung ist leer");
           else if (INTERNAL_ID.test(tv)) c.error(file, at, "Übersetzung enthält eine interne ID");
+        } else if (k === VOICE_LINES && /^voices\[\d+\]$/.test(path)) {
+          voiceLines(bv, tv, at);
         } else walk(bv, tv, at);
       }
     } else if (JSON.stringify(b) !== JSON.stringify(t)) {
       c.error(file, path || "(Datei)", "weicht vom Grundfall ab: eine Übersetzung ändert nur Texte");
+    }
+  };
+  const voiceLines = (b: unknown, t: unknown, path: string): void => {
+    const kinds = (v: unknown) => (typeof v === "object" && v !== null && !Array.isArray(v) ? Object.keys(v).sort().join(",") : null);
+    if (kinds(b) === null || kinds(b) !== kinds(t)) return c.error(file, path, "weicht vom Grundfall ab: eine Übersetzung ändert nur Texte");
+    for (const [k, lines] of Object.entries(t as Record<string, unknown>)) {
+      if (!Array.isArray(lines) || lines.length === 0 || !lines.every((x) => typeof x === "string" && x.trim() !== "")) c.error(file, `${path}.${k}`, "Übersetzung ist leer");
+      else if (lines.some((x) => INTERNAL_ID.test(x as string))) c.error(file, `${path}.${k}`, "Übersetzung enthält eine interne ID");
     }
   };
   walk(base, translated, "");
