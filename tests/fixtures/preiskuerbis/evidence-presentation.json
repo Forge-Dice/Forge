@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+  "entries": [
+    {
+      "evidenceId": "evidence:waage",
+      "text": "Auf der Festwaage liegt nur noch ein Strohkranz. Ihr Protokoll: 14:05 Uhr „Otto“, 312 Kilo, Rekord. 15:00:00 Uhr Gewicht fällt auf null. Otto ist nicht von selbst gegangen.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:wiegezelt"
+        },
+        {
+          "kind": "item",
+          "id": "item:kuerbis"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:handschuhe",
+      "text": "Neben der Waage liegen geblümte Gartenhandschuhe, eingestickt: H. M. Jeder im Dorf kennt sie, Hilde Moosbrugger trägt sie seit zwanzig Jahren. Wann sie hier liegen geblieben sind, verraten sie nicht.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hilde"
+        },
+        {
+          "kind": "location",
+          "id": "location:wiegezelt"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:schleifspur",
+      "text": "Hinter dem Zelt ist die Plane hochgeschlagen. Eine breite, plattgewalzte Spur führt durchs Gras quer über den Festplatz bis zur Parkwiese. Hier wurde etwas sehr Rundes und sehr Schweres gerollt.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:parkwiese"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:parkschein",
+      "text": "Auf der Parkwiese steht ein Leiterwagen mit frischem Stroh und einem abgebrochenen Kürbisblatt. Am Wagen klemmt ein Parkschein der Festwiese: „Einfahrt 14:40 Uhr, F. Kranz, Oberbrunn.“ Ferdinand Kranz war also heute auf dem Fest.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ferdl"
+        },
+        {
+          "kind": "location",
+          "id": "location:parkwiese"
+        },
+        {
+          "kind": "event",
+          "id": "event:ankunft"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:ferdl",
+            "locationId": "location:parkwiese",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:stativ",
+      "text": "Vor der Festbühne steht ein Stativ mit der Kamera der Lokalzeitung. Sie filmt jede Rede, mit Zeitstempel, ob es jemand sehen will oder nicht.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:buehne"
+        },
+        {
+          "kind": "item",
+          "id": "item:kamera"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:festvideo",
+      "text": "Festvideo, Zeitstempel 15:00:00 Uhr: Bürgermeister Hübner steht am Rednerpult und spricht seit zehn Minuten über die Bedeutung des Kürbisses für die Dorfgemeinschaft. Ein Ende ist nicht in Sicht.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:alois"
+        },
+        {
+          "kind": "location",
+          "id": "location:buehne"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:alois",
+            "locationId": "location:buehne",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:kuchenbon",
+      "text": "Der Kassenstreifen des Kuchenstands: 15:00:00 Uhr, drei Stück Zwetschgendatschi, verkauft von Hilde Moosbrugger, kassiert von Lotte Brandl. Die Kasse druckt beide Namen auf jeden Bon.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hilde"
+        },
+        {
+          "kind": "person",
+          "id": "person:lotte"
+        },
+        {
+          "kind": "location",
+          "id": "location:kuchenstand"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:hilde",
+            "locationId": "location:kuchenstand",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lotte",
+            "locationId": "location:kuchenstand",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:tombolafoto",
+      "text": "Das Erinnerungsfoto am Tombolastand, Zeitstempel 15:00:00 Uhr: Sepp Gruber in voller Feuerwehruniform, den Arm bis zur Schulter in der Lostrommel, den Blick fest auf den Hauptpreis gerichtet, einen Rasenmäher.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:sepp"
+        },
+        {
+          "kind": "location",
+          "id": "location:tombola"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:sepp",
+            "locationId": "location:tombola",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:zapfanlage",
+      "text": "Das Zählwerk der Zapfanlage im Bierzelt: 15:00:00 Uhr Fass 2 angestochen, Schankkarte Resi Huber. Die Anlage lässt nur zu, wer die Karte selbst einsteckt.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:resi"
+        },
+        {
+          "kind": "location",
+          "id": "location:bierzelt"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:resi",
+            "locationId": "location:bierzelt",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    }
+  ]
+}

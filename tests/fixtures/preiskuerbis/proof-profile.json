@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "bindings": {
+    "caseId": "case:preiskuerbis",
+    "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+    "solutionHash": "ca6d3511e60c24a2d52dac280e88f412d3d09f183f4b8817747e646db6f2b929",
+    "releaseHash": "0e6fc1da98959fb20d500210311de0bc9e1d0aef91c107eb4ba0859c647e4fc5"
+  },
+  "answerScope": [
+    "conclusion:actor-alois",
+    "conclusion:actor-hilde",
+    "conclusion:actor-sepp",
+    "conclusion:actor-lotte",
+    "conclusion:actor-resi",
+    "conclusion:actor-ferdl"
+  ],
+  "ambiguityPolicy": "must_disambiguate",
+  "question": {
+    "kind": "required_literals"
+  },
+  "observations": [
+    {
+      "id": "observed:alois",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:alois-buehne",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:festvideo"
+      }
+    },
+    {
+      "id": "public-rule:alois",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:alois",
+          "allOf": [
+            "observation:alois"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-alois",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:hilde",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:hilde-kuchen",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:kuchenbon"
+      }
+    },
+    {
+      "id": "public-rule:hilde",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:hilde",
+          "allOf": [
+            "observation:hilde"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-hilde",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:lotte",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:lotte-kuchen",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:kuchenbon"
+      }
+    },
+    {
+      "id": "public-rule:lotte",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:lotte",
+          "allOf": [
+            "observation:lotte"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-lotte",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:sepp",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:sepp-tombola",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:tombolafoto"
+      }
+    },
+    {
+      "id": "public-rule:sepp",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:sepp",
+          "allOf": [
+            "observation:sepp"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-sepp",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:resi",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:resi-bierzelt",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:zapfanlage"
+      }
+    },
+    {
+      "id": "public-rule:resi",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:resi",
+          "allOf": [
+            "observation:resi"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-resi",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:ferdl",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:ferdl-park",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:parkschein"
+      }
+    },
+    {
+      "id": "public-rule:ferdl",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "remaining:ferdl",
+          "allOf": [
+            "literal:alois",
+            "literal:hilde",
+            "literal:lotte",
+            "literal:sepp",
+            "literal:resi",
+            "observation:ferdl"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-ferdl",
+            "value": true
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "observation:alois",
+      "kind": "observation",
+      "observationId": "observed:alois"
+    },
+    {
+      "id": "license:alois",
+      "kind": "observation",
+      "observationId": "public-rule:alois"
+    },
+    {
+      "id": "literal:alois",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-alois",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:hilde",
+      "kind": "observation",
+      "observationId": "observed:hilde"
+    },
+    {
+      "id": "license:hilde",
+      "kind": "observation",
+      "observationId": "public-rule:hilde"
+    },
+    {
+      "id": "literal:hilde",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-hilde",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:lotte",
+      "kind": "observation",
+      "observationId": "observed:lotte"
+    },
+    {
+      "id": "license:lotte",
+      "kind": "observation",
+      "observationId": "public-rule:lotte"
+    },
+    {
+      "id": "literal:lotte",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-lotte",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:sepp",
+      "kind": "observation",
+      "observationId": "observed:sepp"
+    },
+    {
+      "id": "license:sepp",
+      "kind": "observation",
+      "observationId": "public-rule:sepp"
+    },
+    {
+      "id": "literal:sepp",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-sepp",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:resi",
+      "kind": "observation",
+      "observationId": "observed:resi"
+    },
+    {
+      "id": "license:resi",
+      "kind": "observation",
+      "observationId": "public-rule:resi"
+    },
+    {
+      "id": "literal:resi",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-resi",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:ferdl",
+      "kind": "observation",
+      "observationId": "observed:ferdl"
+    },
+    {
+      "id": "license:ferdl",
+      "kind": "observation",
+      "observationId": "public-rule:ferdl"
+    },
+    {
+      "id": "literal:ferdl",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-ferdl",
+        "value": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "exclude:alois",
+      "allOf": [
+        "observation:alois",
+        "license:alois"
+      ],
+      "to": "literal:alois",
+      "license": "license:alois"
+    },
+    {
+      "id": "exclude:hilde",
+      "allOf": [
+        "observation:hilde",
+        "license:hilde"
+      ],
+      "to": "literal:hilde",
+      "license": "license:hilde"
+    },
+    {
+      "id": "exclude:lotte",
+      "allOf": [
+        "observation:lotte",
+        "license:lotte"
+      ],
+      "to": "literal:lotte",
+      "license": "license:lotte"
+    },
+    {
+      "id": "exclude:sepp",
+      "allOf": [
+        "observation:sepp",
+        "license:sepp"
+      ],
+      "to": "literal:sepp",
+      "license": "license:sepp"
+    },
+    {
+      "id": "exclude:resi",
+      "allOf": [
+        "observation:resi",
+        "license:resi"
+      ],
+      "to": "literal:resi",
+      "license": "license:resi"
+    },
+    {
+      "id": "remaining:ferdl",
+      "allOf": [
+        "literal:alois",
+        "literal:hilde",
+        "literal:lotte",
+        "literal:sepp",
+        "literal:resi",
+        "observation:ferdl",
+        "license:ferdl"
+      ],
+      "to": "literal:ferdl",
+      "license": "license:ferdl"
+    }
+  ],
+  "witnessStepIds": [
+    "search-wiegezelt",
+    "search-parkwiese",
+    "search-buehne",
+    "read-kamera",
+    "search-kuchenstand",
+    "search-tombola",
+    "search-bierzelt"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "known": [
+    {
+      "kind": "person",
+      "id": "person:alois"
+    },
+    {
+      "kind": "person",
+      "id": "person:hilde"
+    },
+    {
+      "kind": "person",
+      "id": "person:sepp"
+    },
+    {
+      "kind": "person",
+      "id": "person:lotte"
+    },
+    {
+      "kind": "person",
+      "id": "person:resi"
+    },
+    {
+      "kind": "location",
+      "id": "location:wiegezelt"
+    },
+    {
+      "kind": "location",
+      "id": "location:buehne"
+    },
+    {
+      "kind": "location",
+      "id": "location:kuchenstand"
+    },
+    {
+      "kind": "location",
+      "id": "location:tombola"
+    },
+    {
+      "kind": "location",
+      "id": "location:bierzelt"
+    },
+    {
+      "kind": "location",
+      "id": "location:feuerwehr"
+    },
+    {
+      "kind": "event",
+      "id": "event:raub"
+    }
+  ]
+}
