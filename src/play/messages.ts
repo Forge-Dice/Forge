@@ -6,10 +6,10 @@ export const LANGS = ["de", "en"] as const;
 export type Lang = (typeof LANGS)[number];
 export const DEFAULT_LANG: Lang = "de";
 
-/** "en", "EN", "en-US" -> "en"; anything unknown -> null. */
+/** "en", "EN", "en-US" -> "en"; anything unknown ("enx", "denglish") -> null. */
 export function parseLang(input: string | null | undefined): Lang | null {
-  const code = (input ?? "").trim().toLowerCase().slice(0, 2);
-  return (LANGS as readonly string[]).includes(code) ? (code as Lang) : null;
+  const match = /^([a-z]{2})(?:[-_][a-z0-9]{2,8})?$/.exec((input ?? "").trim().toLowerCase());
+  return match !== null && (LANGS as readonly string[]).includes(match[1]!) ? (match[1] as Lang) : null;
 }
 
 type Plural = (n: number) => string;
