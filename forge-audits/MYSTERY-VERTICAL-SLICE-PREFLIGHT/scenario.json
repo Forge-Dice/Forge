@@ -1,0 +1,218 @@
+{
+  "packageBinding": {
+    "truthHash": "f445f3b4ea632409542d6db96438f06db81b823990a2402ca9387fbcf60a6657",
+    "solutionHash": "733f7a8307e5df0a0e54395fb3e341cd8d6c35915e92727426a809e129d515d8",
+    "npcScratchHash": "3f6a1ca725c652ef7ab4e5c4311ca7b1cc788442df95afa08bbae72bd3a8c4e6",
+    "accessScratchHash": "3c0f1d3c032ed83f69a681de08f7fec793b2769bd4a441c04e4339f1876fb0b6",
+    "ruleset": "preflight-mock-v1"
+  },
+  "packageScratchHash": "7fe268008e0c78a954c93ad9141da447b990ab49f25714c35083180ca4dfd77c",
+  "semanticReport": {
+    "rulesetVersion": "case-semantics-v1",
+    "findings": []
+  },
+  "npcVisibleContext": {
+    "schemaVersion": 1,
+    "asOf": 500,
+    "self": {
+      "kind": "person",
+      "index": 1
+    },
+    "awareness": [
+      {
+        "kind": "evidence",
+        "index": 1
+      }
+    ],
+    "attitudes": [
+      {
+        "subject": {
+          "kind": "proposition",
+          "index": 1
+        },
+        "claim": {
+          "kind": "personAt",
+          "person": {
+            "kind": "person",
+            "index": 2
+          },
+          "location": {
+            "kind": "location",
+            "index": 1
+          },
+          "at": 300
+        },
+        "stance": {
+          "kind": "knowledge",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "conclusion",
+          "index": 1
+        },
+        "claim": {
+          "kind": "personResponsibleForEvent",
+          "person": {
+            "kind": "person",
+            "index": 2
+          },
+          "event": {
+            "kind": "event",
+            "index": 1
+          }
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      },
+      {
+        "subject": {
+          "kind": "conclusion",
+          "index": 2
+        },
+        "claim": {
+          "kind": "personRoleForEvent",
+          "person": {
+            "kind": "person",
+            "index": 2
+          },
+          "event": {
+            "kind": "event",
+            "index": 1
+          },
+          "role": "planner"
+        },
+        "stance": {
+          "kind": "belief",
+          "value": true
+        }
+      }
+    ]
+  },
+  "events": [
+    {
+      "seq": 1,
+      "kind": "start",
+      "packageScratchHash": "7fe268008e0c78a954c93ad9141da447b990ab49f25714c35083180ca4dfd77c"
+    },
+    {
+      "seq": 2,
+      "kind": "investigate",
+      "action": {
+        "kind": "examine_item",
+        "id": "item:knife"
+      }
+    },
+    {
+      "seq": 3,
+      "kind": "discover_evidence",
+      "evidence": [
+        {
+          "kind": "evidence",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "seq": 4,
+      "kind": "interrogate_npc",
+      "contextOrdinal": 1,
+      "queryClaim": {
+        "kind": "personResponsibleForEvent",
+        "person": {
+          "kind": "person",
+          "index": 2
+        },
+        "event": {
+          "kind": "event",
+          "index": 1
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "kind": "receive_statement",
+      "contextOrdinal": 1,
+      "act": {
+        "kind": "assert",
+        "subject": {
+          "kind": "conclusion",
+          "index": 1
+        },
+        "claim": {
+          "kind": "personResponsibleForEvent",
+          "person": {
+            "kind": "person",
+            "index": 2
+          },
+          "event": {
+            "kind": "event",
+            "index": 1
+          }
+        },
+        "value": true,
+        "commitment": "belief"
+      }
+    },
+    {
+      "seq": 6,
+      "kind": "submit_accusation",
+      "literals": [
+        {
+          "conclusionId": "conclusion:ben-responsible",
+          "value": true
+        }
+      ]
+    },
+    {
+      "seq": 7,
+      "kind": "receive_verdict",
+      "verdict": "solved"
+    }
+  ],
+  "outcome": {
+    "evidence": [
+      {
+        "kind": "evidence",
+        "index": 1
+      }
+    ],
+    "statements": [
+      {
+        "contextOrdinal": 1,
+        "act": {
+          "kind": "assert",
+          "subject": {
+            "kind": "conclusion",
+            "index": 1
+          },
+          "claim": {
+            "kind": "personResponsibleForEvent",
+            "person": {
+              "kind": "person",
+              "index": 2
+            },
+            "event": {
+              "kind": "event",
+              "index": 1
+            }
+          },
+          "value": true,
+          "commitment": "belief"
+        }
+      }
+    ],
+    "verdict": "solved"
+  },
+  "notes": [
+    "Oracle uses cloned authoring input and public parser, NOT production evaluation API.",
+    "No canonical case-package identity exists; scratch hash uses ordered arrays and must not be adopted as a contract.",
+    "Accusation is authored by trusted script; no approved player entity/claim-to-Conclusion binding exists.",
+    "Evidence handles are a scratch host mapping, not shared with projection-local NPC handles.",
+    "Replay stores accepted outputs here; it does not authenticate them or implement future command replay.",
+    "Interrogator receives only NPC-visible context, outputs only mock act. Player never receives entire context."
+  ]
+}

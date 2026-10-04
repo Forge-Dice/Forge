@@ -1,0 +1,70 @@
+{
+  "T": [
+    "CaseIdSchema",
+    "CaseTruthSchema",
+    "ClaimSchema",
+    "EventIdSchema",
+    "EventSchema",
+    "EvidenceIdSchema",
+    "EvidenceLinkSchema",
+    "EvidenceSchema",
+    "ItemIdSchema",
+    "ItemSchema",
+    "LocationIdSchema",
+    "LocationSchema",
+    "MotiveIdSchema",
+    "MotiveSchema",
+    "PersonIdSchema",
+    "PersonSchema",
+    "PropositionIdSchema",
+    "PropositionSchema",
+    "RedHerringIdSchema",
+    "RedHerringSchema",
+    "RelationshipIdSchema",
+    "RelationshipSchema",
+    "SecretIdSchema",
+    "SecretSchema",
+    "SourceRefSchema",
+    "TextSchema",
+    "TickSchema",
+    "TimeSpanSchema",
+    "parseCaseTruth"
+  ],
+  "TI": [
+    "CANONICALIZATION_PROFILE",
+    "hashCaseTruth",
+    "serializeCaseTruth"
+  ],
+  "S": [
+    "ConclusionClaimSchema",
+    "ConclusionIdSchema",
+    "ConclusionLiteralSchema",
+    "ConclusionSchema",
+    "EventResolutionSchema",
+    "IntentSchema",
+    "MechanismSchema",
+    "ResponsibilityAssignmentSchema",
+    "ResponsibilityRoleSchema",
+    "TargetRefSchema",
+    "createCaseSolutionSchema",
+    "parseCaseSolution"
+  ],
+  "SI": [
+    "SOLUTION_CANONICALIZATION_PROFILE",
+    "hashCaseSolution",
+    "serializeCaseSolution"
+  ],
+  "N": [
+    "AttitudeEntrySchema",
+    "AwarenessEntrySchema",
+    "AwarenessSubjectSchema",
+    "EpistemicStanceSchema",
+    "ProvenanceSchema",
+    "StatementSubjectSchema",
+    "createNpcKnowledgeSchema",
+    "parseNpcKnowledge"
+  ],
+  "P": [
+    "projectNpcKnowledge"
+  ]
+}

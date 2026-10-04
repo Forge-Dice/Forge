@@ -1,0 +1,50 @@
+[
+  {
+    "id": "E01",
+    "name": "same truth + solution + npcId + revision + asOf, different NPC content",
+    "status": "PASS",
+    "detail": "metadata tuple does not identify a snapshot content"
+  },
+  {
+    "id": "E02",
+    "name": "same visible context across changed raw domain IDs",
+    "status": "PASS",
+    "detail": "visible claim cannot recover canonical person ID; mapping is not derivable"
+  },
+  {
+    "id": "E03",
+    "name": "Proposition ID alias changes local statement handle despite same claim",
+    "status": "PASS",
+    "detail": "structural equivalence does not give persistent statement-handle identity"
+  },
+  {
+    "id": "E04",
+    "name": "NPC asOf is not globally matched to session time",
+    "status": "PASS",
+    "detail": "projection validates hashes, not an absent session tick"
+  },
+  {
+    "id": "E05",
+    "name": "standalone component schemas are not frozen snapshots",
+    "status": "PASS",
+    "detail": "leaf schemas validate shape, root parsers confer snapshot guarantees"
+  },
+  {
+    "id": "E06",
+    "name": "self is implicit, even with empty NPC awareness",
+    "status": "PASS",
+    "detail": null
+  },
+  {
+    "id": "E07",
+    "name": "knowledge truth is authored truth, not proof of acquisition/inference",
+    "status": "PASS",
+    "detail": "prior knowledge of later event accepted; no autonomous knowledge justification"
+  },
+  {
+    "id": "E08",
+    "name": "runtime root brands do not serialize",
+    "status": "PASS",
+    "detail": "nominal TypeScript brands require reparsing after JSON load"
+  }
+]

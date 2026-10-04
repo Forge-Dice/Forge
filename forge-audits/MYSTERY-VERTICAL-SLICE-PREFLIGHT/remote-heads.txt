@@ -1,0 +1,6 @@
+be40a6876aaba328d91c2ef1bbba0bc4263cfe3d	refs/heads/claude/forge-architecture-review-hjdq89
+0dfd90362b7d9f53c3626a90b579d835f76e7a20	refs/heads/codex/forge-core-v2-repair
+fab792afb4acb7d8bd709133829becd8d7e16aaf	refs/heads/codex/mystery-task-0005
+6a8c0c5349eccaf12f45e3e9128b816f316d37a6	refs/heads/codex/task-0004-contract
+8dc692b0adc82e9dd2ccef60b6013006e700a744	refs/heads/forge/run/codex/IDENTITY-SPIKE-1
+3d7545d843883418348004e68717399a64da7a7d	refs/heads/main
