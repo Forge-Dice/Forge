@@ -27,11 +27,11 @@ export type PlayCase = {
 export const PLAY_CASES = {
   lernfall: { dir: "lernfall", npcs: ["jonas", "mila"], salt: "1ea51ea51ea51ea51ea51ea51ea51ea5", clockOrigin: 16 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 2 },
   vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5 },
-  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5 },
-  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4 },
+  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4 },
+  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 3 },
   "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5 },
   nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 4 },
-  leuchtfeuer: { dir: "leuchtfeuer", npcs: ["hinrich", "frauke", "ole", "marlene", "jasper", "knut"], salt: "1e0c1e0c1e0c1e0c1e0c1e0c1e0c1e0c", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 5 },
+  leuchtfeuer: { dir: "leuchtfeuer", npcs: ["hinrich", "frauke", "ole", "marlene", "jasper", "knut"], salt: "1e0c1e0c1e0c1e0c1e0c1e0c1e0c1e0c", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 4 },
 } as const satisfies Record<string, PlayCase>;
 export type PlayCaseName = keyof typeof PLAY_CASES;
 

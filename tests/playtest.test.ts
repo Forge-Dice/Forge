@@ -76,9 +76,9 @@ describe("playRun", () => {
 describe("rating", () => {
   it("fixed thresholds from effort, traps, friction and help", () => {
     expect(difficulty({ actionsToSolve: 3, wrongAccusations: 0, deadEndRate: 0.2, hints: 2 })).toBe(1);
-    expect(difficulty({ actionsToSolve: 10, wrongAccusations: 1, deadEndRate: 0.3, hints: 4 })).toBe(2);
-    expect(difficulty({ actionsToSolve: 14, wrongAccusations: 1, deadEndRate: 0.4, hints: 7 })).toBe(3);
-    expect(difficulty({ actionsToSolve: 20, wrongAccusations: 1, deadEndRate: 0.5, hints: 12 })).toBe(4);
+    expect(difficulty({ actionsToSolve: 15, wrongAccusations: 1, deadEndRate: 0.3, hints: 4 })).toBe(2);
+    expect(difficulty({ actionsToSolve: 20, wrongAccusations: 1, deadEndRate: 0.4, hints: 7 })).toBe(3);
+    expect(difficulty({ actionsToSolve: 25, wrongAccusations: 1, deadEndRate: 0.5, hints: 12 })).toBe(4);
     expect(difficulty({ actionsToSolve: 40, wrongAccusations: 2, deadEndRate: 0.5, hints: 12 })).toBe(5);
   });
 

@@ -308,7 +308,9 @@ const round2 = (x: number) => Math.round(x * 100) / 100;
  */
 export function difficulty(m: Pick<CaseReport["metrics"], "actionsToSolve" | "wrongAccusations" | "deadEndRate" | "hints">): 1 | 2 | 3 | 4 | 5 {
   const score = m.actionsToSolve / 10 + m.wrongAccusations / 2 + m.deadEndRate + m.hints / 10;
-  return score < 1.5 ? 1 : score < 2.75 ? 2 : score < 4 ? 3 : score < 5 ? 4 : 5;
+  // Calibrated after the review fixes (per-style medians, unsolved = MAX_ACTIONS): the easiest
+  // generated cases score about 2, the tutorial 2.5, the shipped cases 4.4 to 5.8.
+  return score < 2.25 ? 1 : score < 3.25 ? 2 : score < 4.5 ? 3 : score < 5.5 ? 4 : 5;
 }
 
 /**
