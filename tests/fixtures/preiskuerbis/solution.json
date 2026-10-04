@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "revision": 1,
+  "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+  "resolutions": [
+    {
+      "eventId": "event:raub",
+      "targets": [
+        {
+          "kind": "item",
+          "id": "item:kuerbis"
+        }
+      ],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": [
+          {
+            "personId": "person:ferdl",
+            "roles": [
+              "direct_actor"
+            ]
+          }
+        ]
+      },
+      "intent": "intended",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "conclusion:actor-alois",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:alois",
+        "eventId": "event:raub",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-hilde",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:hilde",
+        "eventId": "event:raub",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-sepp",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:sepp",
+        "eventId": "event:raub",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-lotte",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:lotte",
+        "eventId": "event:raub",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-resi",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:resi",
+        "eventId": "event:raub",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-ferdl",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:ferdl",
+        "eventId": "event:raub",
+        "role": "direct_actor"
+      }
+    }
+  ],
+  "requiredConclusions": [
+    {
+      "conclusionId": "conclusion:actor-alois",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-hilde",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-sepp",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-lotte",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-resi",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-ferdl",
+      "value": true
+    }
+  ]
+}

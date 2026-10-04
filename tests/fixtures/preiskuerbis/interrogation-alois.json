@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+  "catalogueHash": "05120d4c6fde5cbd362cf886d474e67db6e06dcc4db80b565023ff9d17c02eaf",
+  "npcId": "person:alois",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q04",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:alois",
+        "locationId": "location:buehne",
+        "at": 3600
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q05",
+      "act": "answer",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:rede",
+        "itemId": "item:kamera"
+      },
+      "reveal": [
+        {
+          "kind": "event",
+          "id": "event:rede"
+        },
+        {
+          "kind": "item",
+          "id": "item:kamera"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+  "catalogueHash": "05120d4c6fde5cbd362cf886d474e67db6e06dcc4db80b565023ff9d17c02eaf",
+  "npcId": "person:ferdl",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q10",
+      "act": "lie",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ferdl",
+        "locationId": "location:parkwiese",
+        "at": 2400
+      },
+      "stance": "denies",
+      "reveal": []
+    },
+    {
+      "questionId": "question:q11",
+      "act": "decline"
+    }
+  ],
+  "confrontations": [
+    {
+      "questionId": "question:q10",
+      "evidenceId": "evidence:parkschein",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ferdl",
+        "locationId": "location:parkwiese",
+        "at": 2400
+      },
+      "reveal": []
+    }
+  ]
+}
