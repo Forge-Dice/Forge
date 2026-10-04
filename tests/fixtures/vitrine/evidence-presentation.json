@@ -5,7 +5,7 @@
   "entries": [
     {
       "evidenceId": "evidence:d01",
-      "text": "Der Besucherstempel bestätigt: Max war um 18:02 in der Galerie. Über den Zeitpunkt 18:04 sagt der Stempel nichts.",
+      "text": "Der Stempel im Besucherbuch: Max Brandt hat die Galerie um 18:02 betreten. Wo er um 18:04 war, verrät der Stempel nicht.",
       "mentions": [
         {
           "kind": "location",
@@ -33,7 +33,7 @@
     },
     {
       "evidenceId": "evidence:d02",
-      "text": "Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität.",
+      "text": "Das Protokoll des Vitrinensensors: Glas angehoben um 18:04:00 Uhr. Wer es anhob, zeigt der Sensor nicht.",
       "mentions": [
         {
           "kind": "event",
@@ -60,7 +60,7 @@
     },
     {
       "evidenceId": "evidence:d03",
-      "text": "Nora ist auf einem undatierten Kontaktbogen des Hoffototermins erkennbar. Frage sie nach dem vollständigen Fotonachweis.",
+      "text": "Ein Kontaktbogen vom Fototermin im Hof, ohne Uhrzeit. Nora Weiss ist auf mehreren Bildern zu erkennen. Den vollständigen Film hat sie selbst.",
       "mentions": [
         {
           "kind": "event",
@@ -87,7 +87,7 @@
     },
     {
       "evidenceId": "evidence:d04",
-      "text": "Vollständiger Kamerafilm zeigt Max und Nora um 18:04:00 im Hof.",
+      "text": "Der vollständige Film vom Fototermin, Bild für Bild mit Uhrzeit: Um 18:04:00 stehen Max Brandt und Nora Weiss im Innenhof, Max mit einem Glas Sekt in der Hand.",
       "mentions": [
         {
           "kind": "location",
@@ -131,7 +131,7 @@
     },
     {
       "evidenceId": "evidence:d05",
-      "text": "Archivkamera zeigt Oskar um 18:04:00 im Archiv.",
+      "text": "Die Archivkamera zeigt Oskar Falk um 18:04:00 am Schreibtisch im Archiv, über ein Inventarbuch gebeugt.",
       "mentions": [
         {
           "kind": "location",
@@ -159,7 +159,7 @@
     },
     {
       "evidenceId": "evidence:d06",
-      "text": "Werkstattaufnahme, 18:05: Lina steht an einer geschlossenen Transportkassette. Ihr Inhalt ist nicht sichtbar.",
+      "text": "Aufnahme aus der Werkstatt, 18:05 Uhr: Lina Kern steht an einer geschlossenen Transportkassette und legt die Hand auf den Deckel. Was darin liegt, ist nicht zu sehen.",
       "mentions": [
         {
           "kind": "event",
@@ -217,7 +217,7 @@
     },
     {
       "evidenceId": "evidence:d07",
-      "text": "Quittung bestätigt Oskar und Lina bei der Schlüsselübergabe um 18:03.",
+      "text": "Die Quittung im Schlüsselbuch: Um 18:03 hat Oskar Falk Lina Kern den Vitrinenschlüssel ausgehändigt. Beide haben unterschrieben.",
       "mentions": [
         {
           "kind": "event",
@@ -290,7 +290,7 @@
     },
     {
       "evidenceId": "evidence:d08",
-      "text": "Schließliste nennt genau die vier Personen, die im Museum verblieben.",
+      "text": "Die Schließliste im Foyer nennt genau vier Personen, die nach Schließung im Haus blieben: Max Brandt, Lina Kern, Nora Weiss und Oskar Falk.",
       "mentions": [
         {
           "kind": "event",

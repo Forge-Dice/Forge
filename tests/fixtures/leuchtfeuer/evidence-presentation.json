@@ -93,7 +93,7 @@
     },
     {
       "evidenceId": "evidence:kassenbuch",
-      "text": "Das Kassenbuch des Fährhauses, letzte Buchung: 01:45 Uhr, Hinrich Paulsen, zwei Grog, angeschrieben. Hinter dem Tresen steht das Telefon, es speichert jedes Gespräch.",
+      "text": "Das Kassenbuch des Fährhauses, in Fraukes runder Schrift. Letzte Buchung: 01:45 Uhr, Hinrich Paulsen, zwei Grog, angeschrieben. Hinter dem Tresen steht das Telefon, es speichert jedes Gespräch.",
       "mentions": [
         {
           "kind": "person",

@@ -68,7 +68,7 @@ describe("standalone browser build", () => {
   it("solves Die leere Vitrine in the bundle", async () => {
     const V = "/fall/vitrine";
     await bundled("POST", `${V}/new`, body(undefined));
-    const labels = ["Ort durchsuchen: Innenhof", "Kann ich den vollständigen Film dieses Hoffototermins sehen?", "Gegenstand untersuchen: Noras Kamera", "Wo ist der unabhängige Archivnachweis?", "Gegenstand untersuchen: Archivterminal", "Lina Kern"];
+    const labels = ["Ort durchsuchen: Innenhof", "Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?", "Gegenstand untersuchen: Noras Kamera", "Zeichnet im Archiv ein Gerät auf, wer dort arbeitet?", "Gegenstand untersuchen: Archivterminal", "Lina Kern"];
     for (const label of labels) {
       const page = (await bundled("GET", V, body(undefined))).body;
       const form = [...page.matchAll(/<form method="post" action="\/fall\/[a-z]+\/act"[^>]*>(.*?)<\/form>/g)].find(([, inner]) =>

@@ -4,7 +4,7 @@
     "caseId": "case:nachtzug",
     "truthHash": "c8807cc498002fcdae7a65f7b5df1435cce251658b09f0b4b8d52ef5a986c6a9",
     "solutionHash": "ecc6da3f7883d94dd6578d987f94a4cef34e49f8d972b0807a0322284a127d4d",
-    "releaseHash": "f2b5e00f6a79acc44f4af62c4be5695f780d59db997694d85a106bcf534bf8c5"
+    "releaseHash": "106cfccfe1ddd4ef70dd6fb7605d9c775d0bee929c5cf37bdf69518e3f3d61dd"
   },
   "answerScope": [
     "conclusion:actor-bruno",
