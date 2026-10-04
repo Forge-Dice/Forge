@@ -407,20 +407,28 @@ if (sheet) {
   if (!${solved}) sheet.focus({ preventScroll: true });
 }
 
-// Accusations ask first, in a dialog; new game asks with the browser's own prompt.
+// Accusations and a new game ask first, in the page's own dialog (embedding frames may block confirm()).
 const dialog = document.getElementById("confirm");
+const question = (f) =>
+  f.dataset.confirmNew !== undefined
+    ? { title: "Neues Spiel beginnen?", text: "Der bisherige Stand dieses Falls geht verloren.", ok: "Neu beginnen" }
+    : f.dataset.confirm !== undefined
+      ? { title: f.dataset.confirm + " anklagen?", text: "Du legst dich fest: " + f.dataset.confirm + " soll die Antwort auf den Fallauftrag sein.", ok: "Anklagen" }
+      : null;
 document.querySelectorAll("form:not([method=dialog])").forEach((f) => f.addEventListener("submit", (e) => {
   const section = f.closest("section[id]");
-  if (f.dataset.confirmNew !== undefined && !confirm("Neues Spiel beginnen? Ein nicht gespeicherter Stand geht verloren.")) return e.preventDefault();
-  if (f.dataset.confirm !== undefined && !f.dataset.ok) {
+  const ask = question(f);
+  if (ask !== null && !f.dataset.ok) {
     e.preventDefault();
-    if (typeof dialog.showModal !== "function") { if (confirm(f.dataset.confirm + " anklagen?")) { f.dataset.ok = "1"; f.requestSubmit(); } return; }
-    document.getElementById("confirm-title").textContent = f.dataset.confirm + " anklagen?";
-    document.getElementById("confirm-text").textContent = "Du legst dich fest: " + f.dataset.confirm + " soll die Antwort auf den Fallauftrag sein.";
+    const go = () => { f.dataset.ok = "1"; f.requestSubmit(); };
+    if (typeof dialog.showModal !== "function") { if (confirm(ask.title)) go(); return; }
+    document.getElementById("confirm-title").textContent = ask.title;
+    document.getElementById("confirm-text").textContent = ask.text;
+    document.getElementById("confirm-ok").textContent = ask.ok;
     dialog.returnValue = "";
     dialog.showModal();
     document.getElementById("confirm-ok").focus();
-    dialog.addEventListener("close", () => { if (dialog.returnValue === "ok") { f.dataset.ok = "1"; f.requestSubmit(); } }, { once: true });
+    dialog.addEventListener("close", () => { if (dialog.returnValue === "ok") go(); }, { once: true });
     return;
   }
   store.set(":y", String(window.scrollY));

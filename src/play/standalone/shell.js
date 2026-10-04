@@ -72,6 +72,7 @@
       e.preventDefault();
       go((form.getAttribute("method") || "GET").toUpperCase(), form.getAttribute("action"), new URLSearchParams(new FormData(form)).toString());
     });
+    doc.querySelector(".save h2")?.insertAdjacentHTML("afterend", `<p class="muted">Dein Stand wird automatisch in diesem Browser gespeichert.</p>`);
     frame.hidden = false;
     boot.hidden = true;
   });
