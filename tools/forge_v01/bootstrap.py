@@ -117,7 +117,7 @@ def parse_event(event_bytes: bytes, runner_facts: dict) -> EventFacts:
         positive_id(facts.get("runId")),
         positive_id(facts.get("runAttempt")),
         positive_id(facts.get("actorId")),
-        isinstance(event, dict) and event.get("action") in ACTIONS,
+        isinstance(event, dict) and isinstance(event.get("action"), str) and event["action"] in ACTIONS,
         positive_id(pr) and _get(event, "number") in (None, pr),
         _get(event, "repository", "id") == REPO_ID and positive_id(_get(event, "repository", "id")),
         _get(event, "repository", "full_name") == REPO_NAME,
