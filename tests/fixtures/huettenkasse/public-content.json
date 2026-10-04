@@ -235,6 +235,14 @@
       },
       "label": "Steigfelle",
       "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:banderole"
+      },
+      "label": "Banderole",
+      "role": null
     }
   ],
   "questionTexts": [
