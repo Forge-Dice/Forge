@@ -1,4 +1,4 @@
-import { rulesetAllows, type ResolvedCasePackage } from "../domain/case-package.ts";
+import { rulesetAllows, type PublicContent, type ResolvedCasePackage } from "../domain/case-package.ts";
 import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
 import { hintCount, hintsExhausted, type Hint } from "../domain/case-hints.ts";
 import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
@@ -231,6 +231,21 @@ const STANCES: Record<string, string> = {
   does_not_know: "Das weiß ich nicht.",
 };
 
+const DEFAULT_LINES: Record<string, string> = { ...STANCES, decline: "Dazu sage ich nichts.", stands_by: "Ich bleibe bei dem, was ich gesagt habe." };
+
+/**
+ * The NPC's wording of one reply kind: their authored voice if the case has one (picked per
+ * question, so repeated questions read the same), otherwise the neutral default.
+ */
+function voiced(game: Game, npc: string, key: string, questionId: string): string | null {
+  const npcId = game.pkg.refs.resolve(npc)?.id;
+  const lines = game.pkg.publicContent.voices?.find((v) => v.npc === npcId)?.lines[key as keyof NonNullable<PublicContent["voices"]>[number]["lines"]];
+  if (lines === undefined || lines.length === 0) return DEFAULT_LINES[key] ?? null;
+  let h = 0;
+  for (const ch of questionId) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return lines[h % lines.length]!;
+}
+
 function questionOf(game: Game, npc: string, questionId: string) {
   const npcId = game.pkg.refs.resolve(npc)?.id;
   return game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === questionId);
@@ -249,15 +264,14 @@ function admittedBefore(game: Game, npc: string, questionId: string, before: num
 }
 
 /**
- * The NPC's reply: the authored answer sentence when the case has one (the admission once the lie
- * is broken), otherwise the plain stance. `at` is the record's event index (default: now).
+ * The NPC's reply. Wording, first match wins: the question's own answer sentence (its admission
+ * once the lie is broken), the NPC's voice, the plain stance. `at` is the record's event index.
  */
 export function answerText(game: Game, o: InterrogationObservation, at = Infinity): string {
   const question = questionOf(game, o.npc, o.questionId);
   const head = `${labelOf(game, o.npc)} auf „${question?.text ?? o.questionId}“`;
   const authored = question?.admission !== undefined && admittedBefore(game, o.npc, o.questionId, at) ? question.admission : question?.answer;
-  const plain = o.act === "decline" ? "Dazu sage ich nichts." : STANCES[o.stance];
-  const said = `${head}: „${authored ?? plain}“`;
+  const said = `${head}: „${authored ?? voiced(game, o.npc, o.act === "decline" ? "decline" : o.stance, o.questionId)}“`;
   return "statement" in o ? `${said}\n  (zur Behauptung: ${claimText(game, o.statement)})` : said;
 }
 
@@ -309,8 +323,10 @@ export function hintText(game: Game, hint: Hint): string {
 
 export function confrontationText(game: Game, o: ConfrontationObservation): string {
   const head = `${labelOf(game, o.npc)}, mit „${labelOf(game, o.evidence)}“ konfrontiert`;
-  if (o.act === "stands_by") return `${head}: „Ich bleibe bei dem, was ich gesagt habe.“`;
-  const said = questionOf(game, o.npc, o.questionId)?.admission ?? STANCES[o.stance];
+  if (o.act === "stands_by") return `${head}: „${voiced(game, o.npc, "stands_by", o.questionId)}“`;
+  const admission = questionOf(game, o.npc, o.questionId)?.admission;
+  const givesIn = voiced(game, o.npc, "gives_in", o.questionId);
+  const said = admission ?? `${givesIn === null ? "" : `${givesIn} `}${voiced(game, o.npc, o.stance, o.questionId)}`;
   return `${head}, gibt nach: „${said}“\n  (zur Behauptung: ${claimText(game, o.statement)})`;
 }
 

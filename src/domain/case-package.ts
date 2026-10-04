@@ -55,6 +55,7 @@ export const PACKAGE_LIMITS = Object.freeze({
   rulesPerNpc: 128,
   labels: 256,
   questionTexts: 2048,
+  voices: 64,
   publicRules: 64,
   textMax: 1000,
   briefMax: 4000,
@@ -105,6 +106,9 @@ const BriefText = z.string().superRefine((text, ctx) => {
   }
 });
 
+/** Reply kinds an NPC voice can phrase: the answer stances, a refusal, and both confrontation outcomes. */
+export const VOICE_KEYS = ["affirms", "denies", "leans_affirms", "leans_denies", "uncertain", "does_not_know", "decline", "stands_by", "gives_in"] as const;
+
 const PublicContentSchema = z.strictObject({
   schemaVersion: z.literal(1),
   title: ShortText,
@@ -130,6 +134,12 @@ const PublicContentSchema = z.strictObject({
   // Narrated resolution, shown to the player only after a solving accusation. Optional; part of
   // publicContentHash and therefore of the release context and the package identity.
   epilogue: BriefText.optional(),
+  // How an NPC phrases their answers (personality): per reply kind one to four wordings, picked
+  // per question. Optional; only wording, never content, so a lie sounds like any other answer.
+  voices: z
+    .array(z.strictObject({ npc: z.string(), lines: z.partialRecord(z.enum(VOICE_KEYS), z.array(ShortText).min(1).max(4)) }))
+    .max(PACKAGE_LIMITS.voices)
+    .optional(),
 });
 export type PublicContent = DeepReadonly<z.output<typeof PublicContentSchema>>;
 
@@ -274,6 +284,12 @@ function checkPublicContent(
     texts.add(key);
   });
   if (texts.size !== pairs.size) reject("REFERENCE", ["publicContent", "questionTexts"]);
+  const npcs = new Set([...pairs].map((key) => key.split("|")[0]!));
+  const voiced = new Set<string>();
+  content.voices?.forEach(({ npc }, i) => {
+    if (!npcs.has(npc) || voiced.has(npc)) reject("REFERENCE", ["publicContent", "voices", i]);
+    voiced.add(npc);
+  });
   const rules = new Set<string>();
   content.publicRules.forEach(({ id }, i) => {
     if (rules.has(id)) reject("REFERENCE", ["publicContent", "publicRules", i]);
