@@ -47,8 +47,8 @@ describe("standalone browser build", () => {
     };
     expect((await both("GET", "/")).status).toBe(200);
     expect((await both("GET", "/hilfe")).status).toBe(200);
-    for (const c of Object.values(PLAY_CASES)) {
-      const home = `/fall/${c.dir}`;
+    expect((await both("POST", "/zufall", "seed=4711")).headers.location).toBe("/fall/zufall-4711");
+    for (const home of [...Object.values(PLAY_CASES).map((c) => `/fall/${c.dir}`), "/fall/zufall-4711"]) {
       let page = (await both("GET", home)).body;
       // A fixed walk through the menus: every step takes another offered action.
       for (let step = 0; step < 14 && forms(page).length > 0; step++) {

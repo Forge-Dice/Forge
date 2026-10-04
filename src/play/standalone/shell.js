@@ -79,7 +79,9 @@
 
   (async () => {
     // Restore every saved case silently, then open the page the address names.
-    for (const slug of app.slugs) {
+    let keys = [];
+    try { keys = Object.keys(localStorage).filter((k) => k.startsWith(KEY)); } catch {}
+    for (const slug of new Set([...app.slugs, ...keys.map((k) => k.slice(KEY.length))])) {
       const saved = store.get(KEY + slug);
       if (saved === null) continue;
       const loaded = await app.handle("POST", `/fall/${slug}/load`, async () => saved);
