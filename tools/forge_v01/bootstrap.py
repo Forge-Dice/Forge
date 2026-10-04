@@ -17,7 +17,8 @@ from dataclasses import dataclass, field
 
 import process
 from errors import fail
-from objects import OBJECT_BUDGET_BYTES, OBJECT_BUDGET_COUNT, ObjectStore
+from objects import OBJECT_BUDGET_BYTES, OBJECT_BUDGET_COUNT, TYPE_LIMITS, ObjectStore
+from odb_layout import check_layout, list_refs  # noqa: F401  (re-exported entry points)
 
 REPO_ID = 1401864629
 REPO_NAME = "Forge-Dice/Forge"
@@ -234,14 +235,6 @@ def compare_live(event: EventFacts, live: LiveFacts) -> None:
 
 # -- private ODB, layout, fetch --------------------------------------------------------------
 
-ALLOWED_CONFIG = (
-    ("core.repositoryformatversion", "0"),
-    ("core.filemode", "true"),
-    ("core.bare", "true"),
-)
-FORBIDDEN_FILES = ("info/grafts", "shallow", "objects/info/alternates", "objects/info/http-alternates")
-
-
 @dataclass(frozen=True)
 class Seams:
     remote: str = REMOTE_URL
@@ -285,63 +278,31 @@ def init_odb(workspace: str) -> tuple[str, str]:
     return odb, private
 
 
-def list_refs(odb: str, private: str) -> dict[str, str]:
-    result = process.run_git(odb, private, "for-each-ref", "--format=%(objectname) %(refname)", phase="bootstrap")
-    if result.returncode != 0:
-        raise fail("GIT_LAYOUT", "bootstrap")
-    refs = {}
-    for line in result.stdout.decode("ascii", "replace").splitlines():
-        oid, _, name = line.partition(" ")
-        refs[name] = oid
-    return refs
-
-
-def check_layout(odb: str, private: str, allowed_refs: frozenset) -> dict[str, str]:
-    """Reject anything a fresh ODB plus our own fetches would not contain. Returns the refs."""
-    config = process.run_bounded(
-        [process.GIT, "config", "--file", os.path.join(odb, "config"), "--list", "--null"],
-        process.clean_env("git", private), deadline_seconds=10.0, phase="bootstrap",
-    )
-    if config.returncode != 0:
-        raise fail("GIT_LAYOUT", "bootstrap")
-    entries = tuple(tuple(item.split(b"\n", 1)) for item in config.stdout.split(b"\0") if item)
-    if sorted(entries) != sorted((k.encode(), v.encode()) for k, v in ALLOWED_CONFIG):
-        raise fail("GIT_LAYOUT", "bootstrap")
-    for name in FORBIDDEN_FILES:
-        if os.path.lexists(os.path.join(odb, name)):
-            raise fail("GIT_LAYOUT", "bootstrap")
-    hooks = os.path.join(odb, "hooks")
-    if os.path.lexists(hooks) and (os.path.islink(hooks) or os.listdir(hooks)):
-        raise fail("GIT_LAYOUT", "bootstrap")
-    pack_dir = os.path.join(odb, "objects", "pack")
-    if os.path.isdir(pack_dir) and any(name.endswith(".promisor") for name in os.listdir(pack_dir)):
-        raise fail("GIT_LAYOUT", "bootstrap")
-    refs = list_refs(odb, private)
-    # One allowlist covers loose and packed refs alike, refs/replace/* included (mutant A1 site).
-    for name in refs:
-        if name not in allowed_refs:
-            raise fail("GIT_LAYOUT", "bootstrap")
-    return refs
-
-
 def account(odb: str, private: str, seams: Seams) -> None:
-    """Post-fetch budgets: disk usage, object count and summed declared sizes (GIT_LIMIT)."""
+    """Post-fetch budgets: disk usage, object count, summed and per-type declared sizes (GIT_LIMIT)."""
     disk = 0
     for root, _dirs, files in os.walk(os.path.join(odb, "objects")):
         disk += sum(os.lstat(os.path.join(root, name)).st_size for name in files)
     if disk > seams.disk_budget:
         raise fail("GIT_LIMIT", "bootstrap")
-    result = process.run_git(odb, private, "cat-file", "--batch-all-objects", "--batch-check=%(objectsize)",
-                             deadline_seconds=60.0, phase="bootstrap")
+    result = process.run_git(odb, private, "cat-file", "--batch-all-objects",
+                             "--batch-check=%(objecttype) %(objectsize)", deadline_seconds=60.0, phase="bootstrap")
     if result.returncode != 0:
         raise fail("GIT_OBJECT", "bootstrap")
-    sizes = result.stdout.split()
-    if len(sizes) > seams.budget_count or sum(int(size) for size in sizes) > seams.budget_bytes:
+    rows = [line.split(b" ") for line in result.stdout.splitlines()]
+    if any(len(row) != 2 or row[0].decode("ascii", "replace") not in TYPE_LIMITS or not row[1].isdigit() for row in rows):
+        raise fail("GIT_OBJECT", "bootstrap")
+    if len(rows) > seams.budget_count or sum(int(size) for _type, size in rows) > seams.budget_bytes:
+        raise fail("GIT_LIMIT", "bootstrap")
+    # Per-type caps of PKG §2 hold during acquisition too, not only when an object is read later.
+    if any(int(size) > TYPE_LIMITS[kind.decode("ascii")] for kind, size in rows):
         raise fail("GIT_LIMIT", "bootstrap")
 
 
 def fetch(odb: str, private: str, seams: Seams, source_ref: str, target_ref: str, expected: str,
           allowed_refs: frozenset) -> None:
+    # Layout before (the target ref must not exist yet) and after every fetch (PKG §2 step 3).
+    check_layout(odb, private, allowed_refs - {target_ref})
     argv = process.git_argv(
         odb, "fetch", "--no-tags", "--no-recurse-submodules", "--no-write-fetch-head", "--quiet",
         seams.remote, f"+{source_ref}:{target_ref}", extra_config=seams.extra_git_config(),

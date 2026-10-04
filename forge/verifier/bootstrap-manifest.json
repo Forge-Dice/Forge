@@ -7,7 +7,7 @@
     },
     {
       "path": "tools/forge_v01/bootstrap.py",
-      "sha256": "2c175b328a8c662bb028530546b1880fda1bfe42e45d2b808b9bd732f30c335f"
+      "sha256": "2de23467b8228f53b140e17350064707543c77c77f0f45b98bba35c5ae35a7ae"
     },
     {
       "path": "tools/forge_v01/contract-adapter.mjs",
@@ -48,6 +48,10 @@
     {
       "path": "tools/forge_v01/objects.py",
       "sha256": "fe9082925cadbfa70011162b0a9cb2328e0391370008c9c2bb41e1a4df2915f7"
+    },
+    {
+      "path": "tools/forge_v01/odb_layout.py",
+      "sha256": "a6954cc16b5d0509cd7e91ff64aed67ce18f7d8b59bb66d9ec303f454a5b2f31"
     },
     {
       "path": "tools/forge_v01/paths.py",

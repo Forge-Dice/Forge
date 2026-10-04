@@ -43,7 +43,7 @@ RUN mkdir -p /opt/node && tar -xJf node.tar.xz -C /opt/node --strip-components=1
  && ln -sf ../lib/node_modules/npm/bin/npm-cli.js /opt/node/bin/npm \
  && mkdir -p /trusted/node_modules/zod && tar -xzf zod.tgz -C /trusted/node_modules/zod --strip-components=1 \
  && tar -xzf docker.tgz -C /usr/local/bin --strip-components=1 docker/docker
-COPY stage0.py errors.py process.py paths.py objects.py materialize.py bootstrap.py /opt/forge/bootstrap/
+COPY stage0.py errors.py process.py paths.py objects.py materialize.py odb_layout.py bootstrap.py /opt/forge/bootstrap/
 RUN echo "${KERNEL_COMMIT}" > /opt/forge/bootstrap/KERNEL_COMMIT
 
 FROM docker.io/library/ubuntu@${UBUNTU_DIGEST}

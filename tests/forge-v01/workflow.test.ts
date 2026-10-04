@@ -231,14 +231,17 @@ describe("verifier data files and main.py", () => {
     expect(text).not.toMatch(/apt-get install(?![^\n]*--snapshot)/);
     expect((text.match(/sha256sum -c --strict/g) ?? []).length).toBe(1);
     expect((text.match(/^ && fetch /gm) ?? []).length).toBe(6);
-    expect(text).toMatch(/COPY stage0\.py errors\.py process\.py paths\.py objects\.py materialize\.py bootstrap\.py \/opt\/forge\/bootstrap\//);
+    expect(text).toMatch(/COPY stage0\.py errors\.py process\.py paths\.py objects\.py materialize\.py odb_layout\.py bootstrap\.py \/opt\/forge\/bootstrap\//);
     expect(text).toMatch(/^ENTRYPOINT \["\/opt\/python\/bin\/python3\.12", "-I", "-B", "\/opt\/forge\/bootstrap\/stage0\.py"\]$/m);
   });
 
   test("stage0.py imports its siblings under python -I -B from a foreign cwd (image entrypoint)", () => {
     const dir = mkdtempSync(join(tmpdir(), "forge-stage0-"));
     try {
-      for (const name of readdirSync(TOOLS).filter((n) => n.endsWith(".py"))) writeFileSync(join(dir, name), readFileSync(join(TOOLS, name)));
+      // exactly the files the Dockerfile copies into /opt/forge/bootstrap, so a missing module fails here
+      const copy = /^COPY ((?:\S+\.py )+)\/opt\/forge\/bootstrap\/$/m.exec(readFileSync(join(TOOLS, "Dockerfile"), "utf8"));
+      expect(copy).not.toBeNull();
+      for (const name of copy![1]!.trim().split(" ")) writeFileSync(join(dir, name), readFileSync(join(TOOLS, name)));
       const run = spawnSync(PYTHON, ["-I", "-B", join(dir, "stage0.py")], { cwd: tmpdir(), encoding: "utf8" });
       expect(run.stderr).toBe("");
       expect(run.status).toBe(1); // bad argv, but no ModuleNotFoundError
