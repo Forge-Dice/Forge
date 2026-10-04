@@ -5,7 +5,7 @@ import { PLAY_CASES, loadPlayPackage, loadSaveInLang, playCaseName } from "./cas
 import { DEFAULT_LANG, MESSAGES, parseLang, type Lang } from "./messages.ts";
 
 // `npm run play [-- <fall>] [--lang en]`: a case in the terminal over the real session reducer.
-// Cases: vitrine (default), brieföffner, geige, hüttenkasse, nachtzug. Languages: de (default), en.
+// Cases: see PLAY_CASES in cases.ts (vitrine is the default). Languages: de (default), en.
 
 /** `--lang en`, `--lang=en`; the rest are positional arguments. */
 function parseArgs(argv: readonly string[]): { positional: string[]; lang: string | null } {

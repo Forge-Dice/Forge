@@ -235,6 +235,14 @@
       },
       "label": "Climbing skins",
       "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:banderole"
+      },
+      "label": "Money band",
+      "role": null
     }
   ],
   "questionTexts": [

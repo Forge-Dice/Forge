@@ -1,3 +1,4 @@
+import { rulesetAllows } from "../domain/case-package.ts";
 import { accusations, confrontations, hintsUsed, investigations, known, msg, questions, recordText, type Action, type Game } from "./game.ts";
 import { DEFAULT_LANG, MESSAGES, type Lang, type Messages } from "./messages.ts";
 
@@ -297,7 +298,7 @@ ${
 </div>
 <aside class="dossier side" aria-label="${m.knownAndState}">
 <section id="bekannt" class="card" tabindex="-1"><h2>${m.known}</h2>${knownList(game)}</section>
-${solved || game.pkg.identity.rulesetVersion !== "mystery-session-v3" ? "" : hintCard(game, slug)}
+${solved || !rulesetAllows(game.pkg.identity.rulesetVersion, "hints") ? "" : hintCard(game, slug)}
 <section class="card save"><h2>${m.saveState}</h2>
 <div class="actions"><a class="button" href="/fall/${slug}/save" download="${slug}.save.json">${m.save}</a>
 <label class="button" tabindex="0" role="button" id="load-label">${m.load}<input type="file" id="load" accept=".json,application/json" hidden></label>
@@ -369,13 +370,15 @@ const script = (slug: string, solved: boolean, hasNotice: boolean, all: Messages
   const m = all.web;
   const js = (text: string) => JSON.stringify(text).replace(/</g, "\\u003c");
   return `(() => {
+// The single-file build hosts pages in a frame and provides its own navigation as kfVisit.
+const visit = (url) => (typeof window.kfVisit === "function" ? window.kfVisit(url) : (location.href = url));
 const path = "/fall/${slug}", store = { get(k) { try { return sessionStorage.getItem(path + k); } catch { return null; } }, set(k, v) { try { sessionStorage.setItem(path + k, v); } catch {} }, del(k) { try { sessionStorage.removeItem(path + k); } catch {} } };
 const load = document.getElementById("load"), loadLabel = document.getElementById("load-label");
 load.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   await fetch(path + "/load", { method: "POST", headers: { "content-type": "text/plain;charset=utf-8" }, body: await file.text() });
-  location.href = path;
+  visit(path);
 });
 loadLabel.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); load.click(); } });
 
@@ -436,7 +439,7 @@ const go = (id) => {
   target.scrollIntoView({ block: "start" });
   target.focus({ preventScroll: true });
 };
-document.querySelectorAll("[data-key]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); go(a.getAttribute("href").slice(1)); history.replaceState(null, "", a.getAttribute("href")); }));
+document.querySelectorAll("[data-key]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); go(a.getAttribute("href").slice(1)); try { history.replaceState(null, "", a.getAttribute("href")); } catch {} }));
 // First visit: a short, skippable introduction; it remembers that it was seen.
 const intro = document.getElementById("intro"), steps = [...intro.querySelectorAll("[data-step]")];
 const prev = intro.querySelector("[data-prev]"), next = intro.querySelector("[data-next]"), dots = [...intro.querySelectorAll(".dots span")];
@@ -462,7 +465,7 @@ if (!seen && !${solved}) { if (sheet) sheet.hidden = true; openIntro(); }
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") return closeSheet();
   if (e.ctrlKey || e.metaKey || e.altKey || dialog.open || intro.open || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
-  if (e.key === "?") { e.preventDefault(); location.href = "/hilfe"; return; }
+  if (e.key === "?") { e.preventDefault(); visit("/hilfe"); return; }
   const id = keys[e.key.toLowerCase()];
   if (id) { e.preventDefault(); go(id); }
 });

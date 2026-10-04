@@ -11,7 +11,9 @@
     "test": "vitest run",
     "play": "node --experimental-transform-types --no-warnings src/play/cli.ts",
     "check-case": "node --experimental-transform-types --no-warnings src/authoring/check-case-cli.ts",
-    "play:web": "node --experimental-transform-types --no-warnings src/play/web.ts"
+    "play:web": "node --experimental-transform-types --no-warnings src/play/web.ts",
+    "generate-case": "node --experimental-transform-types --no-warnings src/authoring/generate-case-cli.ts",
+    "build:web": "node --experimental-transform-types --no-warnings src/play/standalone/build.ts"
   },
   "dependencies": {
     "zod": "4.6.5"

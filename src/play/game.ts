@@ -24,6 +24,9 @@ export const newGame = (pkg: ResolvedCasePackage, clockOrigin = 0, lang?: Lang):
 /** UI text table of the game's language. */
 export const msg = (game: Pick<Game, "lang">): Messages => MESSAGES[game.lang ?? "de"];
 
+/** Player text for each session error code (German); per language in msg(game).errors. */
+export const SESSION_ERRORS: Record<string, string> = MESSAGES.de.errors;
+
 export function intro(game: Game): string {
   const { publicContent } = game.pkg;
   const m = msg(game).cli;
