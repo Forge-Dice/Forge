@@ -1,0 +1,2962 @@
+[
+  {
+    "name": "PERSON_LOCATION_CONFLICT > %s at different locations",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 115,
+      "column": 5
+    }
+  },
+  {
+    "name": "PERSON_LOCATION_CONFLICT > overlap at the same location is no conflict",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 119,
+      "column": 3
+    }
+  },
+  {
+    "name": "PERSON_LOCATION_CONFLICT > different people may overlap at different locations",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 123,
+      "column": 3
+    }
+  },
+  {
+    "name": "PERSON_LOCATION_CONFLICT > positive personAt conflicts with an event elsewhere",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 127,
+      "column": 3
+    }
+  },
+  {
+    "name": "PERSON_LOCATION_CONFLICT > two positive personAt claims at different locations on the same tick conflict",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 132,
+      "column": 3
+    }
+  },
+  {
+    "name": "PERSON_LOCATION_CONFLICT > negative personAt is not a presence fact",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 137,
+      "column": 3
+    }
+  },
+  {
+    "name": "PERSON_LOCATION_CONFLICT > detects conflicts between facts that are not neighbours in array or time order",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 142,
+      "column": 3
+    }
+  },
+  {
+    "name": "ITEM_LOCATION_CONFLICT > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 157,
+      "column": 5
+    }
+  },
+  {
+    "name": "PERSON_PRESENCE_NEGATED > false personAt %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 170,
+      "column": 5
+    }
+  },
+  {
+    "name": "claim/event list consistency > eventHasParticipant %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 184,
+      "column": 5
+    }
+  },
+  {
+    "name": "claim/event list consistency > eventHasItem %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 193,
+      "column": 5
+    }
+  },
+  {
+    "name": "CLAIM_TRUTH_CONFLICT > personAt with both truth values",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 201,
+      "column": 3
+    }
+  },
+  {
+    "name": "CLAIM_TRUTH_CONFLICT > eventHasParticipant with both truth values",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 206,
+      "column": 3
+    }
+  },
+  {
+    "name": "CLAIM_TRUTH_CONFLICT > eventHasItem with both truth values",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 214,
+      "column": 3
+    }
+  },
+  {
+    "name": "CLAIM_TRUTH_CONFLICT > the same claim with the same truth value is allowed",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 222,
+      "column": 3
+    }
+  },
+  {
+    "name": "CLAIM_TRUTH_CONFLICT > claims differing in %s with different truth values are allowed",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 232,
+      "column": 5
+    }
+  },
+  {
+    "name": "CAUSE_STARTS_AFTER_EFFECT > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 243,
+      "column": 5
+    }
+  },
+  {
+    "name": "CAUSAL_CYCLE > two-event cycle with equal start times",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 250,
+      "column": 3
+    }
+  },
+  {
+    "name": "CAUSAL_CYCLE > three-event cycle yields exactly one finding",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 255,
+      "column": 3
+    }
+  },
+  {
+    "name": "CAUSAL_CYCLE > a cycle with different start times is reported together with the timing violation",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 264,
+      "column": 3
+    }
+  },
+  {
+    "name": "CAUSAL_CYCLE > two separate cycles yield one finding each",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 272,
+      "column": 3
+    }
+  },
+  {
+    "name": "CAUSAL_CYCLE > a diamond-shaped DAG is no cycle",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 285,
+      "column": 3
+    }
+  },
+  {
+    "name": "deliberately unchecked semantics > the full fixture has no findings",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 299,
+      "column": 3
+    }
+  },
+  {
+    "name": "deliberately unchecked semantics > %s yields no findings",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 318,
+      "column": 5
+    }
+  },
+  {
+    "name": "report > collects every independent violation, sorted by code then subjectIds",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 326,
+      "column": 3
+    }
+  },
+  {
+    "name": "report > is identical for every permutation of the input",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 337,
+      "column": 3
+    }
+  },
+  {
+    "name": "report > is identical on repeated validation and leaves the snapshot untouched",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 345,
+      "column": 3
+    }
+  },
+  {
+    "name": "report > is recursively frozen",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 354,
+      "column": 3
+    }
+  },
+  {
+    "name": "report > carries no validity or playability marker",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-semantics.test.ts",
+    "location": {
+      "line": 367,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > the fixture truth hash literal matches the TASK-0001 hash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.identity.test.ts",
+    "location": {
+      "line": 30,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > AC-13: golden answer key matches the hand-written canonical string and SHA-256",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.identity.test.ts",
+    "location": {
+      "line": 34,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > AC-12: key order and permutations of every array produce identical serialization and hash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.identity.test.ts",
+    "location": {
+      "line": 40,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > AC-13: parse(JSON.parse(serialize(%s))) round-trips",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.identity.test.ts",
+    "location": {
+      "line": 58,
+      "column": 5
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > hashing is stable and yields 64 lowercase hex characters",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.identity.test.ts",
+    "location": {
+      "line": 65,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > changing %s changes the hash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.identity.test.ts",
+    "location": {
+      "line": 78,
+      "column": 5
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > serialization does not reorder the snapshot's arrays",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.identity.test.ts",
+    "location": {
+      "line": 85,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted answer keys > base: one event, one responsible person, one matching required conclusion",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 64,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted answer keys > AC-09: several responsible people, several roles and several required conclusions",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 68,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted answer keys > conclusions that are not required may be false or undetermined",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 88,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted answer keys > targets may be empty and a cause event needs no resolution of its own",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 99,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted answer keys > accepts Number.MAX_SAFE_INTEGER as revision",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 108,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-03/04/10: strict shape and formats > rejects an unknown property on %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 124,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-03/04/10: strict shape and formats > rejects a missing %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 137,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-03/04/10: strict shape and formats > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 164,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-03/04/10: strict shape and formats > accepts the slug length limit of 64",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 168,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding to the CaseTruth snapshot > rejects a different caseId",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 178,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding to the CaseTruth snapshot > rejects a well-formed but different truthHash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 182,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding to the CaseTruth snapshot > rejects a solution for another revision of the same case",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 186,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding to the CaseTruth snapshot > rejects a matching hash when parsed against a different truth with the same caseId and revision",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 191,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding to the CaseTruth snapshot > does not depend on the truth revision for its own revision",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 196,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-06: references > rejects an unresolved %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 218,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-06: uniqueness and local rules > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 239,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-06: uniqueness and local rules > claims that differ in any field are not duplicates",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 243,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-07: conclusion truth table > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 293,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-08: required answers > rejects a required answer whose conclusion is true but required false",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 299,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-08: required answers > rejects an undetermined conclusion required as %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 303,
+      "column": 25
+    }
+  },
+  {
+    "name": "AC-08: required answers > accepts a matching negative requirement",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 312,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-08: required answers > checks every required literal, not just the first",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 320,
+      "column": 3
+    }
+  },
+  {
+    "name": "error behaviour > safeParse reports failure without throwing for %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 341,
+      "column": 5
+    }
+  },
+  {
+    "name": "error behaviour > parse and parseCaseSolution throw a ZodError",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 346,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-11: immutability via %s > is decoupled from the input, which stays mutable",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 357,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-11: immutability via %s > is recursively frozen and rejects mutation attempts",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 370,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-11: immutability via %s > embeds no copy of the CaseTruth",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 395,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-14: CaseTruth and TASK-0002 are unaffected > leaves the truth hash and semantic report unchanged; responsibility creates no presence",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-solution.test.ts",
+    "location": {
+      "line": 401,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > AC-17: key order and permutations of every collection kind do not change serialization or hash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.identity.test.ts",
+    "location": {
+      "line": 30,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > AC-18/20: a fixed fixture with Unicode and escapes matches the hand-written canonical string and SHA-256",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.identity.test.ts",
+    "location": {
+      "line": 48,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > AC-19: repeated hashing is stable and the hash is 64 lowercase hex characters",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.identity.test.ts",
+    "location": {
+      "line": 54,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > AC-19: changing the %s changes the hash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.identity.test.ts",
+    "location": {
+      "line": 74,
+      "column": 5
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > AC-21: parse(JSON.parse(serialize(snapshot))) round-trips the %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.identity.test.ts",
+    "location": {
+      "line": 82,
+      "column": 5
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > serialization does not reorder the snapshot's arrays",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.identity.test.ts",
+    "location": {
+      "line": 89,
+      "column": 3
+    }
+  },
+  {
+    "name": "canonical serialization and hashing > text is neither trimmed nor Unicode-normalized",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.identity.test.ts",
+    "location": {
+      "line": 98,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted structure > AC-02/03: accepts a case with every entity type, all claim kinds, both time kinds and both truth values",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 39,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted structure > AC-04: one evidence can support and refute propositions about different events",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 51,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted structure > AC-05: real evidence may support a false proposition as part of a red herring",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 60,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted structure > accepts a structurally empty case",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 71,
+      "column": 3
+    }
+  },
+  {
+    "name": "accepted structure > AC-09: accepts instant times, including tick 0",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 78,
+      "column": 3
+    }
+  },
+  {
+    "name": "form and local rules > AC-06: rejects unknown property on %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 92,
+      "column": 5
+    }
+  },
+  {
+    "name": "form and local rules > AC-07: rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 117,
+      "column": 5
+    }
+  },
+  {
+    "name": "form and local rules > AC-08: rejects %s ticks everywhere ticks occur",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 129,
+      "column": 5
+    }
+  },
+  {
+    "name": "form and local rules > AC-08: rejects an unsafe integer (2**53) as %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 140,
+      "column": 5
+    }
+  },
+  {
+    "name": "form and local rules > AC-08: accepts Number.MAX_SAFE_INTEGER as %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 148,
+      "column": 5
+    }
+  },
+  {
+    "name": "form and local rules > AC-09: rejects interval [%i, %i)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 155,
+      "column": 5
+    }
+  },
+  {
+    "name": "form and local rules > AC-10: rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 172,
+      "column": 5
+    }
+  },
+  {
+    "name": "form and local rules > AC-12: rejects a relationship from a person to themselves",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 176,
+      "column": 3
+    }
+  },
+  {
+    "name": "form and local rules > AC-12: rejects an event listing itself as its cause",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 180,
+      "column": 3
+    }
+  },
+  {
+    "name": "form and local rules > AC-22: rejects an unknown schemaVersion",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 184,
+      "column": 3
+    }
+  },
+  {
+    "name": "reference integrity > AC-11: rejects unresolved %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 214,
+      "column": 5
+    }
+  },
+  {
+    "name": "reference integrity > accepts forward references regardless of array order",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 218,
+      "column": 3
+    }
+  },
+  {
+    "name": "immutability via %s > AC-13: later changes to the input do not reach the snapshot; the input stays mutable",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 230,
+      "column": 3
+    }
+  },
+  {
+    "name": "immutability via %s > AC-14: every object and array in the snapshot is frozen",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 246,
+      "column": 3
+    }
+  },
+  {
+    "name": "immutability via %s > AC-14: mutation attempts throw and change nothing",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 258,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-23: structural success is not semantic validity > accepts a person in two places at once (spatial conflict is checked later)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 282,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-23: structural success is not semantic validity > accepts an indirect causal cycle (acyclicity is checked later)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 297,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-23: structural success is not semantic validity > accepts a red herring whose target is true (no red-herring truth rule exists; see TASK-0002 revision)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 302,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-23: structural success is not semantic validity > the snapshot carries no validity or playability marker",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/case-truth.test.ts",
+    "location": {
+      "line": 307,
+      "column": 3
+    }
+  },
+  {
+    "name": "projection output > M1: a visible belief stance is not the source snapshot object",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 136,
+      "column": 3
+    }
+  },
+  {
+    "name": "projection output > 14.1: exact handles, co-reference and ordering",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 150,
+      "column": 3
+    }
+  },
+  {
+    "name": "projection output > 14.12: all nine claim shapes match the allowlist exactly",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 156,
+      "column": 3
+    }
+  },
+  {
+    "name": "projection output > an empty snapshot yields only self",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 198,
+      "column": 3
+    }
+  },
+  {
+    "name": "projection output > works without a solution for proposition-only snapshots",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 203,
+      "column": 3
+    }
+  },
+  {
+    "name": "14.14: releases only what was explicitly given > event awareness plus one participant claim shows no other participants",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 216,
+      "column": 3
+    }
+  },
+  {
+    "name": "14.14: releases only what was explicitly given > person awareness releases no name, motive, relationship or role",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 227,
+      "column": 3
+    }
+  },
+  {
+    "name": "14.14: releases only what was explicitly given > evidence awareness releases neither its source, its links nor its description",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 233,
+      "column": 3
+    }
+  },
+  {
+    "name": "14.14: releases only what was explicitly given > participation, secrets and evidence create nothing for %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 239,
+      "column": 42
+    }
+  },
+  {
+    "name": "metamorphic barrier tests (always rebound correctly) > 14.2: permuting all source collections, NPC collections and property orders changes nothing",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 247,
+      "column": 3
+    }
+  },
+  {
+    "name": "metamorphic barrier tests (always rebound correctly) > 14.3: unreleased entities with earlier IDs do not shift any handle",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 261,
+      "column": 3
+    }
+  },
+  {
+    "name": "metamorphic barrier tests (always rebound correctly) > 14.4/14.5: speaking IDs and free-text spoilers never leave",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 273,
+      "column": 3
+    }
+  },
+  {
+    "name": "metamorphic barrier tests (always rebound correctly) > 14.6: hidden author data can change without changing the context",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 278,
+      "column": 3
+    }
+  },
+  {
+    "name": "metamorphic barrier tests (always rebound correctly) > 14.7: a changed objective truth value behind an identical belief is invisible",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 299,
+      "column": 3
+    }
+  },
+  {
+    "name": "metamorphic barrier tests (always rebound correctly) > 14.8: the canonical conclusion status (%s) is invisible",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 308,
+      "column": 5
+    }
+  },
+  {
+    "name": "metamorphic barrier tests (always rebound correctly) > 14.9: provenance, sources and acquisition times stay private",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 316,
+      "column": 3
+    }
+  },
+  {
+    "name": "metamorphic barrier tests (always rebound correctly) > 14.15: snapshots are not history; each projects only its own entries",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 334,
+      "column": 3
+    }
+  },
+  {
+    "name": "14.11/AC-13: context swap > %s yields exactly the mismatch result",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 356,
+      "column": 5
+    }
+  },
+  {
+    "name": "14.11/AC-13: context swap > a solution-bound snapshot without conclusion attitudes cannot be projected without its solution",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 362,
+      "column": 3
+    }
+  },
+  {
+    "name": "14.11/AC-13: context swap > a snapshot parsed without solution cannot be projected with one",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 372,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-11: projection mutates neither snapshot, truth nor solution",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.projection.test.ts",
+    "location": {
+      "line": 378,
+      "column": 1
+    }
+  },
+  {
+    "name": "AC-03/04: strict shape > AC-04: an empty snapshot is valid and nothing is added",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 43,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-03/04: strict shape > parsing never creates entries, even for event participation, secrets or evidence",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 49,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-03/04: strict shape > rejects %s as root without throwing",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 61,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-03/04: strict shape > rejects an extra property on %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 74,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-03/04: strict shape > rejects a missing %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 86,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-03/04: strict shape > rejects a wrong discriminator: %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 97,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-03/04: strict shape > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 117,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-03/04: strict shape > accepts safe integer limits for revision, asOf and acquiredAt",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 121,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 137,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-05: binding > rejects a non-null solutionHash when no solution is bound",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 141,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding > rejects conclusion attitudes when no solution is bound, even with a valid ID",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 145,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding > accepts a proposition-only snapshot without solution",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 150,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding > requires the solution binding also for snapshots without conclusion attitudes",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 155,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding > does not accept the same caseId and revision with changed truth content",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 159,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding > reports a solution bound to another truth at solutionHash, without the factory throwing",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 166,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-05: binding > does not accept another solution with the same revision",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 174,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-06: references > accepts an existing %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 193,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-06: references > rejects a missing %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 208,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-06: references > rejects a wrong ID prefix on %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 219,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-06: references > AC-12: dangling references everywhere yield Zod issues, not exceptions",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 223,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-07/08: knowledge, belief, uncertainty > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 247,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-07/08: knowledge, belief, uncertainty > keeps subjective values as authored (no normalization towards the truth)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 253,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-07/08: knowledge, belief, uncertainty > belief and uncertainty about conclusion %s are allowed whatever its canonical status",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 262,
+      "column": 71
+    }
+  },
+  {
+    "name": "AC-07/08: knowledge, belief, uncertainty > rejects knowledge:%s about a conclusion",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 271,
+      "column": 25
+    }
+  },
+  {
+    "name": "AC-07/08: knowledge, belief, uncertainty > a missing statement stays missing: no negation, no uncertainty is added",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 275,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-09: statement uniqueness > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 291,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-09: statement uniqueness > claims differing in any field and across namespaces are distinct statements",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 295,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-09: statement uniqueness > different NPCs may hold opposite attitudes towards the same claim",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 306,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-09: statement uniqueness > two observers of the same event may interpret it differently",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 315,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-10: provenance and time > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 340,
+      "column": 5
+    }
+  },
+  {
+    "name": "AC-10: provenance and time > applies the same time rules to attitudes",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 349,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-10: provenance and time > witnessing does not require participation (Anna witnesses the argument she is not part of)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 353,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-10: provenance and time > a teller with unknown or contradicting knowledge is no reason to reject",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 357,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-10: provenance and time > evidence provenance for a belief in a false conclusion is allowed",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 365,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-10: provenance and time > same asOf with different revisions and values are independent snapshots",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 369,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-11: immutability via %s > is decoupled from the input, which stays mutable",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 390,
+      "column": 3
+    }
+  },
+  {
+    "name": "AC-11: immutability via %s > is recursively frozen, rejects mutation and embeds no truth or solution",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 405,
+      "column": 3
+    }
+  },
+  {
+    "name": "truth and solution hashes and the TASK-0002 report are unchanged by NPC parsing",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/npc-knowledge.test.ts",
+    "location": {
+      "line": 429,
+      "column": 1
+    }
+  },
+  {
+    "name": "isAncestorOrSelf > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/ancestry.test.ts",
+    "location": {
+      "line": 20,
+      "column": 5
+    }
+  },
+  {
+    "name": "isAncestorOrSelf > is fail-closed: a missing edge breaks reachability",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/ancestry.test.ts",
+    "location": {
+      "line": 24,
+      "column": 3
+    }
+  },
+  {
+    "name": "isAncestorOrSelf > terminates on cyclic witnessed edges",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/ancestry.test.ts",
+    "location": {
+      "line": 30,
+      "column": 3
+    }
+  },
+  {
+    "name": "isAncestorOrSelf > ignores prototype properties as commit keys",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/ancestry.test.ts",
+    "location": {
+      "line": 36,
+      "column": 3
+    }
+  },
+  {
+    "name": "isAncestorOrSelf > handles long linear histories without recursion limits",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/ancestry.test.ts",
+    "location": {
+      "line": 41,
+      "column": 3
+    }
+  },
+  {
+    "name": "isReachableFromRefs > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/ancestry.test.ts",
+    "location": {
+      "line": 57,
+      "column": 5
+    }
+  },
+  {
+    "name": "0001A-PATCH-0001 architecture findings > %s with findings list %i",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/architecture-approval.test.ts",
+    "location": {
+      "line": 16,
+      "column": 14
+    }
+  },
+  {
+    "name": "0001A-PATCH-0001 architecture findings > retains prior validation precedence and checks findings before dependencies",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/architecture-approval.test.ts",
+    "location": {
+      "line": 35,
+      "column": 3
+    }
+  },
+  {
+    "name": "hash > matches the independently computed golden vector",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 19,
+      "column": 3
+    }
+  },
+  {
+    "name": "hash > covers the domain prefix",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 24,
+      "column": 3
+    }
+  },
+  {
+    "name": "hash > encodes multi-byte UTF-8 including surrogate pairs like sha256sum does",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 30,
+      "column": 3
+    }
+  },
+  {
+    "name": "hash > changes when %s changes",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 39,
+      "column": 6
+    }
+  },
+  {
+    "name": "hash > is computed from the exact text, so metadata and hash cannot disagree",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 45,
+      "column": 3
+    }
+  },
+  {
+    "name": "stage 1: encoding > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 61,
+      "column": 6
+    }
+  },
+  {
+    "name": "stage 1: encoding > accepts %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 69,
+      "column": 6
+    }
+  },
+  {
+    "name": "stage 2-3: frontmatter > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 92,
+      "column": 6
+    }
+  },
+  {
+    "name": "stage 2-3: frontmatter > never throws on frontmatter nested %i levels deep",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 96,
+      "column": 30
+    }
+  },
+  {
+    "name": "stage 2-3: frontmatter > accepts canonical JSON with a different key order",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 102,
+      "column": 6
+    }
+  },
+  {
+    "name": "stage 2-3: frontmatter > accepts %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 110,
+      "column": 6
+    }
+  },
+  {
+    "name": "stage 4: metadata schema > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 146,
+      "column": 6
+    }
+  },
+  {
+    "name": "stage 4: metadata schema > accepts %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 159,
+      "column": 6
+    }
+  },
+  {
+    "name": "results are deeply frozen and paths are stable",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 164,
+      "column": 4
+    }
+  },
+  {
+    "name": "fuzz: random edits of a valid contract > seed %i: never throws; ok results hash the exact text",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 200,
+      "column": 56
+    }
+  },
+  {
+    "name": "fuzz: random edits of a valid contract > every single-character deletion of the golden contract is either rejected or hashes differently",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 224,
+      "column": 6
+    }
+  },
+  {
+    "name": "fuzz: random edits of a valid contract > body-only edits keep metadata identical but always change the hash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/contract-document.test.ts",
+    "location": {
+      "line": 232,
+      "column": 6
+    }
+  },
+  {
+    "name": "Forge contracts in this repository > FORGE-CORE-0001A exists",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/dogfood.test.ts",
+    "location": {
+      "line": 24,
+      "column": 3
+    }
+  },
+  {
+    "name": "Forge contracts in this repository > %s parses in its own format",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/dogfood.test.ts",
+    "location": {
+      "line": 28,
+      "column": 26
+    }
+  },
+  {
+    "name": "Forge contracts in this repository > approval record %s is bound to the exact contract text",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/dogfood.test.ts",
+    "location": {
+      "line": 34,
+      "column": 21
+    }
+  },
+  {
+    "name": "Forge contracts in this repository > every file under src/forge and tests/forge is in the scope of a Forge contract",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/dogfood.test.ts",
+    "location": {
+      "line": 44,
+      "column": 3
+    }
+  },
+  {
+    "name": "Forge contracts in this repository > the pilot TASK-0004 contract (YAML with status fields) is not a valid Forge contract",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/dogfood.test.ts",
+    "location": {
+      "line": 50,
+      "column": 3
+    }
+  },
+  {
+    "name": "night replay of FORGE-CORE-0001A/B (dogfood) > the kernel accepts this night's real history; both tasks wait for an independent code review",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/dogfood.test.ts",
+    "location": {
+      "line": 140,
+      "column": 3
+    }
+  },
+  {
+    "name": "night replay of FORGE-CORE-0001A/B (dogfood) > a hypothetical file outside the 0001A scope would have failed verification",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/dogfood.test.ts",
+    "location": {
+      "line": 152,
+      "column": 3
+    }
+  },
+  {
+    "name": "night replay of FORGE-CORE-0001A/B (dogfood) > the developer cannot review its own work, so the night cannot end in accepted",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/dogfood.test.ts",
+    "location": {
+      "line": 161,
+      "column": 3
+    }
+  },
+  {
+    "name": "isIndependentReviewer > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/identity.test.ts",
+    "location": {
+      "line": 21,
+      "column": 5
+    }
+  },
+  {
+    "name": "isIndependentReviewer > a human reviewer is never blocked by the provider rule, even with the same provider string",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/identity.test.ts",
+    "location": {
+      "line": 26,
+      "column": 3
+    }
+  },
+  {
+    "name": "isIndependentReviewer > different models of one provider are the same provider for the strict AI rule",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/identity.test.ts",
+    "location": {
+      "line": 32,
+      "column": 3
+    }
+  },
+  {
+    "name": "AgentIdentitySchema > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/identity.test.ts",
+    "location": {
+      "line": 50,
+      "column": 5
+    }
+  },
+  {
+    "name": "AgentIdentitySchema > sameIdentity compares all four fields",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/identity.test.ts",
+    "location": {
+      "line": 54,
+      "column": 3
+    }
+  },
+  {
+    "name": "replay > equals step-by-step applyEvent",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 33,
+      "column": 3
+    }
+  },
+  {
+    "name": "replay > is deterministic and independent of earlier calls",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 44,
+      "column": 3
+    }
+  },
+  {
+    "name": "replay > stops at the first rejected event and reports its index",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 51,
+      "column": 3
+    }
+  },
+  {
+    "name": "replay > logs exactly the accepted events, in order",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 57,
+      "column": 3
+    }
+  },
+  {
+    "name": "replay > replays a long log in linear time",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 63,
+      "column": 3
+    }
+  },
+  {
+    "name": "applyEvent purity > a rejected event changes nothing",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 74,
+      "column": 3
+    }
+  },
+  {
+    "name": "applyEvent purity > an accepted event returns a new state and leaves the old one intact",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 82,
+      "column": 3
+    }
+  },
+  {
+    "name": "applyEvent purity > does not mutate or freeze the input event",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 91,
+      "column": 3
+    }
+  },
+  {
+    "name": "applyEvent purity > logs the parsed event, not the caller's object",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 99,
+      "column": 3
+    }
+  },
+  {
+    "name": "applyEvent purity > states, results and rejections are deeply frozen",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 107,
+      "column": 3
+    }
+  },
+  {
+    "name": "policy binding > the policy decides same-provider AI review",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 125,
+      "column": 3
+    }
+  },
+  {
+    "name": "policy binding > a state built under one policy cannot be extended by a kernel with another",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 132,
+      "column": 3
+    }
+  },
+  {
+    "name": "policy binding > rejects an invalid policy at kernel creation",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 137,
+      "column": 3
+    }
+  },
+  {
+    "name": "policy binding > the kernel itself is frozen",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 141,
+      "column": 3
+    }
+  },
+  {
+    "name": "injected hash port > uses only the injected function for content hashes",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 148,
+      "column": 3
+    }
+  },
+  {
+    "name": "injected hash port > never hashes malformed text",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 154,
+      "column": 3
+    }
+  },
+  {
+    "name": "persistent data structures (not authoritative state persistence) > restores authoritative JSON events via replay, never a forged disposable state cache",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 170,
+      "column": 3
+    }
+  },
+  {
+    "name": "persistent data structures (not authoritative state persistence) > branching from one state yields independent successors",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 183,
+      "column": 3
+    }
+  },
+  {
+    "name": "persistent data structures (not authoritative state persistence) > successor states share no mutable structure with their predecessor",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts",
+    "location": {
+      "line": 196,
+      "column": 3
+    }
+  },
+  {
+    "name": "0001B v2 rename and scope > neither rename direction exempts %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 16,
+      "column": 17
+    }
+  },
+  {
+    "name": "0001B v2 rename and scope > allows only coordination-to-coordination moves, including nested paths",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 27,
+      "column": 3
+    }
+  },
+  {
+    "name": "0001B v2 rename and scope > deleted is never exempt: %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 32,
+      "column": 51
+    }
+  },
+  {
+    "name": "0001B v2 rename and scope > protected paths cannot be whitelisted: %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 36,
+      "column": 100
+    }
+  },
+  {
+    "name": "0001B v2 rename and scope > coordination %s remains exempt",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 44,
+      "column": 42
+    }
+  },
+  {
+    "name": "0001B v2 strict rename evidence > rejects malformed ChangedFile %#",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 56,
+      "column": 5
+    }
+  },
+  {
+    "name": "0001B v2 strict rename evidence > rejects invalid endpoint %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 60,
+      "column": 156
+    }
+  },
+  {
+    "name": "0001B v2 strict rename evidence > rejects duplicate endpoints with exact path %#",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 71,
+      "column": 5
+    }
+  },
+  {
+    "name": "0001B v2 strict rename evidence > preserves distinct rename endpoints after strict parsing",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 77,
+      "column": 3
+    }
+  },
+  {
+    "name": "0001B v2 required check cardinality > rejects duplicate required checks %#",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 86,
+      "column": 121
+    }
+  },
+  {
+    "name": "0001B v2 required check cardinality > cannot satisfy a required check %#",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 93,
+      "column": 147
+    }
+  },
+  {
+    "name": "0001B v2 required check cardinality > extra non-required checks cannot mask missing checks; unique failures are informational",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 97,
+      "column": 3
+    }
+  },
+  {
+    "name": "0001B v2 kernel boundary > schema-invalid evidence never enters the log %#",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 112,
+      "column": 5
+    }
+  },
+  {
+    "name": "0001B v2 kernel boundary > valid but forbidden rename evidence produces failed, not a schema rejection",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 124,
+      "column": 3
+    }
+  },
+  {
+    "name": "0001B v2 kernel boundary > valid coordination move and empty diff remain verifiable",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/repair-v2.test.ts",
+    "location": {
+      "line": 129,
+      "column": 3
+    }
+  },
+  {
+    "name": "code review > approve → review_approved",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 31,
+      "column": 3
+    }
+  },
+  {
+    "name": "code review > code_change → rework_required → new run with the same contract → awaiting_review",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 35,
+      "column": 3
+    }
+  },
+  {
+    "name": "code review > a failed rework run keeps the task in rework_required",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 43,
+      "column": 3
+    }
+  },
+  {
+    "name": "code review > contract_change → contract_revision_required → blocked until a new approved version",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 49,
+      "column": 3
+    }
+  },
+  {
+    "name": "code review > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 75,
+      "column": 5
+    }
+  },
+  {
+    "name": "code review > approve with only non-blocking findings is fine",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 79,
+      "column": 3
+    }
+  },
+  {
+    "name": "code review > only the latest verified run of the current revision can be reviewed",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 83,
+      "column": 3
+    }
+  },
+  {
+    "name": "code review > a verified run on a superseded revision can no longer be reviewed",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 93,
+      "column": 3
+    }
+  },
+  {
+    "name": "code review > reviewer independence > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 106,
+      "column": 7
+    }
+  },
+  {
+    "name": "code review > equivalent mutations must be acknowledged (O11) > rejects a review that does not acknowledge them",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 120,
+      "column": 5
+    }
+  },
+  {
+    "name": "code review > equivalent mutations must be acknowledged (O11) > rejects acknowledging a mutation that was not declared equivalent",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 124,
+      "column": 5
+    }
+  },
+  {
+    "name": "code review > equivalent mutations must be acknowledged (O11) > accepts an exact acknowledgement, also on request_changes",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 128,
+      "column": 5
+    }
+  },
+  {
+    "name": "task acceptance > a human owner accepts; the task is terminal",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 138,
+      "column": 3
+    }
+  },
+  {
+    "name": "task acceptance > rejects acceptance %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 152,
+      "column": 5
+    }
+  },
+  {
+    "name": "task acceptance > accepted is terminal: no new contract, approval or run",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 156,
+      "column": 3
+    }
+  },
+  {
+    "name": "task acceptance > dependencies become approvable once the dependency is accepted > matching accepted commit → approved",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 171,
+      "column": 5
+    }
+  },
+  {
+    "name": "task acceptance > dependencies become approvable once the dependency is accepted > other commit → DEPENDENCY_MISMATCH",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 177,
+      "column": 5
+    }
+  },
+  {
+    "name": "task acceptance > dependencies become approvable once the dependency is accepted > not yet accepted → DEPENDENCY_NOT_ACCEPTED",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/review-acceptance.test.ts",
+    "location": {
+      "line": 182,
+      "column": 5
+    }
+  },
+  {
+    "name": "run_started > starts from the contract commit and puts the task into implementing",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 32,
+      "column": 3
+    }
+  },
+  {
+    "name": "run_started > recomputes the gate from the recorded observation (contract only local → rejected)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 39,
+      "column": 3
+    }
+  },
+  {
+    "name": "run_started > allows only one active run per task",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 45,
+      "column": 3
+    }
+  },
+  {
+    "name": "run_started > rejects a duplicate run id even after the first run ended",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 50,
+      "column": 3
+    }
+  },
+  {
+    "name": "run_started > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 58,
+      "column": 5
+    }
+  },
+  {
+    "name": "run_started > is not allowed on a draft contract",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 62,
+      "column": 3
+    }
+  },
+  {
+    "name": "developer report > moves running to reported; a local commit is not persisted",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 68,
+      "column": 3
+    }
+  },
+  {
+    "name": "developer report > only the run developer may report",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 74,
+      "column": 3
+    }
+  },
+  {
+    "name": "developer report > rejects a report %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 81,
+      "column": 5
+    }
+  },
+  {
+    "name": "remote observation (O8: push 403, retry) > not_contained → retry → contained",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 89,
+      "column": 3
+    }
+  },
+  {
+    "name": "remote observation (O8: push 403, retry) > many negative observations never terminate; only an explicit run_failed does",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 96,
+      "column": 3
+    }
+  },
+  {
+    "name": "remote observation (O8: push 403, retry) > %s → %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 116,
+      "column": 5
+    }
+  },
+  {
+    "name": "remote observation (O8: push 403, retry) > a result that does not descend from the start commit is never persisted for this run",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 120,
+      "column": 3
+    }
+  },
+  {
+    "name": "remote observation (O8: push 403, retry) > another remote ref is fine if it is the claimed one (O9: task identity not from branch names)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 125,
+      "column": 3
+    }
+  },
+  {
+    "name": "remote observation (O8: push 403, retry) > rejects an observation %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 140,
+      "column": 5
+    }
+  },
+  {
+    "name": "verification gate > verification before remote persistence is rejected",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 146,
+      "column": 3
+    }
+  },
+  {
+    "name": "verification gate > evidence must be for the claimed commit",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 151,
+      "column": 3
+    }
+  },
+  {
+    "name": "verification gate > a passing verification makes the run verified and the task awaiting review",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 156,
+      "column": 3
+    }
+  },
+  {
+    "name": "verification gate > a failing verification is terminal and the task becomes startable again",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 162,
+      "column": 3
+    }
+  },
+  {
+    "name": "verification gate > verification twice is rejected",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 170,
+      "column": 3
+    }
+  },
+  {
+    "name": "verification gate > evidence with duplicate changed paths is malformed",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 174,
+      "column": 3
+    }
+  },
+  {
+    "name": "explicit failure and abandonment > run_failed and run_abandoned are allowed in %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 187,
+      "column": 34
+    }
+  },
+  {
+    "name": "explicit failure and abandonment > terminal runs cannot fail or be abandoned again",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 192,
+      "column": 3
+    }
+  },
+  {
+    "name": "explicit failure and abandonment > the owner may fail a run, another developer may not",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 197,
+      "column": 3
+    }
+  },
+  {
+    "name": "explicit failure and abandonment > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 206,
+      "column": 5
+    }
+  },
+  {
+    "name": "explicit failure and abandonment > an abandoned worker frees the task (WORKER_LOST)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/runs.test.ts",
+    "location": {
+      "line": 210,
+      "column": 3
+    }
+  },
+  {
+    "name": "pilot scenarios > [observed O8] TASK-0001: 403 push, work only local, later pushed, verified, accepted",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 50,
+      "column": 3
+    }
+  },
+  {
+    "name": "pilot scenarios > [observed O7] TASK-0004: contradictory frontmatter cannot even be registered",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 67,
+      "column": 3
+    }
+  },
+  {
+    "name": "pilot scenarios > [observed O10] TASK-0004 P2: a surviving must_detect mutant fails verification; a fixed rerun passes",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 73,
+      "column": 3
+    }
+  },
+  {
+    "name": "pilot scenarios > [observed O11] equivalent mutants (K9, M5) pass verification but must be acknowledged in review",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 81,
+      "column": 3
+    }
+  },
+  {
+    "name": "pilot scenarios > [observed problem 2] draft against an unaccepted dependency, then reconciled v2",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 89,
+      "column": 3
+    }
+  },
+  {
+    "name": "pilot scenarios > [constructed] worker lost mid-run, then a clean rerun",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 99,
+      "column": 3
+    }
+  },
+  {
+    "name": "invalid event orders > %s is rejected at the offending event",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 117,
+      "column": 5
+    }
+  },
+  {
+    "name": "invalid event orders > a tampered log whose run_started observation does not allow a start cannot be replayed",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 123,
+      "column": 3
+    }
+  },
+  {
+    "name": "long mixed logs > replay equals step-by-step application",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 133,
+      "column": 3
+    }
+  },
+  {
+    "name": "long mixed logs > derives the expected final states for every task and run",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 139,
+      "column": 3
+    }
+  },
+  {
+    "name": "long mixed logs > interleaving independent tasks does not change their outcome",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 152,
+      "column": 3
+    }
+  },
+  {
+    "name": "property: random histories keep all invariants > seed %i",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 292,
+      "column": 55
+    }
+  },
+  {
+    "name": "adversarial: structurally broken events never throw and never corrupt state > seed %i",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 355,
+      "column": 57
+    }
+  },
+  {
+    "name": "adversarial: structurally broken events never throw and never corrupt state > the start gate never throws on hostile requests",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 381,
+      "column": 3
+    }
+  },
+  {
+    "name": "differential: kernel task states equal an independent reference model > seed %i",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/scenarios.test.ts",
+    "location": {
+      "line": 442,
+      "column": 57
+    }
+  },
+  {
+    "name": "allowed start > starts from the contract commit",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 22,
+      "column": 3
+    }
+  },
+  {
+    "name": "allowed start > allows base == contract commit (contract committed together with base)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 30,
+      "column": 3
+    }
+  },
+  {
+    "name": "allowed start > allows dependencies that are ancestors of base when the contract is approved (not reachable in 0001A, see state tests)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 35,
+      "column": 3
+    }
+  },
+  {
+    "name": "single block reasons > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 67,
+      "column": 5
+    }
+  },
+  {
+    "name": "single block reasons > missing edges fail closed: no edge from head to contract means not persisted",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 71,
+      "column": 3
+    }
+  },
+  {
+    "name": "single block reasons > missing edge between contract and base fails closed",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 79,
+      "column": 3
+    }
+  },
+  {
+    "name": "single block reasons > empty refs block everything repo-related",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 87,
+      "column": 3
+    }
+  },
+  {
+    "name": "single block reasons > the task id is not derived from ref names",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 94,
+      "column": 3
+    }
+  },
+  {
+    "name": "log-based reasons > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 124,
+      "column": 5
+    }
+  },
+  {
+    "name": "log-based reasons > the new approved version can start",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 128,
+      "column": 3
+    }
+  },
+  {
+    "name": "combined reasons, sorting and determinism > reports every applicable reason sorted by code then subject",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 135,
+      "column": 3
+    }
+  },
+  {
+    "name": "combined reasons, sorting and determinism > dependency in base passes G1 while one outside fails",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 164,
+      "column": 3
+    }
+  },
+  {
+    "name": "combined reasons, sorting and determinism > key order of refs and parents does not change the decision",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 174,
+      "column": 3
+    }
+  },
+  {
+    "name": "combined reasons, sorting and determinism > decisions are frozen and inputs untouched",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 188,
+      "column": 3
+    }
+  },
+  {
+    "name": "request validation > %s → REQUEST_INVALID only",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 211,
+      "column": 5
+    }
+  },
+  {
+    "name": "task states from FORGE-CORE-0001B > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 226,
+      "column": 5
+    }
+  },
+  {
+    "name": "metamorphic: the gate is monotone in witnessed facts (fail-closed) > seed %i: subset of facts never has fewer reasons than the superset",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 269,
+      "column": 55
+    }
+  },
+  {
+    "name": "metamorphic: the gate is monotone in witnessed facts (fail-closed) > the full witness has no repo reasons; only the unapproved contract blocks",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/start-gate.test.ts",
+    "location": {
+      "line": 280,
+      "column": 3
+    }
+  },
+  {
+    "name": "event schema and roles > rejects %s with EVENT_SCHEMA",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 50,
+      "column": 5
+    }
+  },
+  {
+    "name": "event schema and roles > rejects %s with ROLE_NOT_ALLOWED",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 59,
+      "column": 5
+    }
+  },
+  {
+    "name": "task_registered > registers a task in state planned",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 65,
+      "column": 3
+    }
+  },
+  {
+    "name": "task_registered > rejects a duplicate task",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 71,
+      "column": 3
+    }
+  },
+  {
+    "name": "contract_registered > derives ref and metadata from the text only",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 77,
+      "column": 3
+    }
+  },
+  {
+    "name": "contract_registered > rejects an unknown task",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 86,
+      "column": 3
+    }
+  },
+  {
+    "name": "contract_registered > rejects an invalid document and reports its issues",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 90,
+      "column": 3
+    }
+  },
+  {
+    "name": "contract_registered > rejects process status fields in the frontmatter (TASK-0004 contradiction)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 96,
+      "column": 3
+    }
+  },
+  {
+    "name": "contract_registered > rejects %s through the declared hash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 105,
+      "column": 5
+    }
+  },
+  {
+    "name": "contract_registered > rejects metadata for another task",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 109,
+      "column": 3
+    }
+  },
+  {
+    "name": "contract_registered > rejects a wrong contract path",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 114,
+      "column": 3
+    }
+  },
+  {
+    "name": "contract_registered > rejects %s with CONTRACT_VERSION_NOT_NEXT",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 122,
+      "column": 5
+    }
+  },
+  {
+    "name": "contract_registered > a new version supersedes the old one and inherits no decision",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 126,
+      "column": 3
+    }
+  },
+  {
+    "name": "approval_recorded > approves the exact hash",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 137,
+      "column": 3
+    }
+  },
+  {
+    "name": "approval_recorded > changes_requested is final for the hash; only a new version can be approved",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 143,
+      "column": 3
+    }
+  },
+  {
+    "name": "approval_recorded > an approval cannot be revised either",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 152,
+      "column": 3
+    }
+  },
+  {
+    "name": "approval_recorded > rejects %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 162,
+      "column": 5
+    }
+  },
+  {
+    "name": "approval_recorded > allows non-blocking findings on an approval",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 166,
+      "column": 3
+    }
+  },
+  {
+    "name": "approval_recorded > reviewer independence (policy different_provider) > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 178,
+      "column": 7
+    }
+  },
+  {
+    "name": "approval_recorded > reviewer independence (policy different_provider) > a human author cannot approve their own contract",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 184,
+      "column": 5
+    }
+  },
+  {
+    "name": "approval_recorded > dependencies (no task acceptance exists in 0001A) > an unresolved dependency blocks approval",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 195,
+      "column": 5
+    }
+  },
+  {
+    "name": "approval_recorded > dependencies (no task acceptance exists in 0001A) > a resolved dependency is still not accepted in 0001A",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 201,
+      "column": 5
+    }
+  },
+  {
+    "name": "approval_recorded > dependencies (no task acceptance exists in 0001A) > reports the first failing dependency in declaration order",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 208,
+      "column": 5
+    }
+  },
+  {
+    "name": "approval_recorded > dependencies (no task acceptance exists in 0001A) > dependencies do not block changes_requested",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 216,
+      "column": 5
+    }
+  },
+  {
+    "name": "projections > unknown inputs project to null",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 225,
+      "column": 3
+    }
+  },
+  {
+    "name": "projections > stores facts, not statuses",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 232,
+      "column": 3
+    }
+  },
+  {
+    "name": "projections > tasks are independent",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/state.test.ts",
+    "location": {
+      "line": 240,
+      "column": 3
+    }
+  },
+  {
+    "name": "required checks > passes when every required check ran with exit code 0",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 32,
+      "column": 3
+    }
+  },
+  {
+    "name": "required checks > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 42,
+      "column": 5
+    }
+  },
+  {
+    "name": "required checks > extra checks do not hurt, but a passing duplicate cannot mask failure",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 46,
+      "column": 3
+    }
+  },
+  {
+    "name": "scope > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 68,
+      "column": 5
+    }
+  },
+  {
+    "name": "scope > a contract cannot whitelist a forbidden path",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 72,
+      "column": 3
+    }
+  },
+  {
+    "name": "scope > an empty diff is in scope",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 77,
+      "column": 3
+    }
+  },
+  {
+    "name": "mutation results > required: %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 96,
+      "column": 5
+    }
+  },
+  {
+    "name": "mutation results > optional: an empty list is fine, a present list is checked",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 100,
+      "column": 3
+    }
+  },
+  {
+    "name": "mutation results > none: mutations are ignored",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 105,
+      "column": 3
+    }
+  },
+  {
+    "name": "mutation results > the verifier's results win over the developer's self-report",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 110,
+      "column": 3
+    }
+  },
+  {
+    "name": "combined failures are sorted deterministically > by code, then subject, null first",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 121,
+      "column": 3
+    }
+  },
+  {
+    "name": "combined failures are sorted deterministically > evaluations are frozen and inputs untouched",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 137,
+      "column": 3
+    }
+  },
+  {
+    "name": "verifier independence is recorded, not required (decision 2) > %s verifies → %s, and the run is verified",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 152,
+      "column": 5
+    }
+  },
+  {
+    "name": "verifier independence is recorded, not required (decision 2) > pure helper agrees",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/verification.test.ts",
+    "location": {
+      "line": 160,
+      "column": 3
+    }
+  },
+  {
+    "name": "red team: differential fuzzing against an independent reference model > seed %i: kernel and reference model agree on every decision and state",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/differential.test.ts",
+    "location": {
+      "line": 388,
+      "column": 55
+    }
+  },
+  {
+    "name": "red team: differential fuzzing against an independent reference model > the generator reaches every task state, run state, event type and the main rejection codes",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/differential.test.ts",
+    "location": {
+      "line": 392,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT verification scope > RT-01 regression: both rename endpoints determine the coordination exception",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 34,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT verification scope > RT-02 documents: the coordination exemption covers every agent's coordination file",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 40,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT verification scope > prefix tricks around the coordination exemption do not bypass the scope",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 45,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT verification scope > RT-03 regression: contradictory duplicate checks cannot mask a failure",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 56,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT verification scope > empty diff with result == start commit is verifiable (R11, contract silent)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 68,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT mutation evidence matrix (FORGE-CORE-0001B §8) > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 88,
+      "column": 17
+    }
+  },
+  {
+    "name": "RT mutation evidence matrix (FORGE-CORE-0001B §8) > duplicate names, empty lists and the verifier list replacing the developer list",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 94,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT mutation evidence matrix (FORGE-CORE-0001B §8) > acknowledgements are a set: order irrelevant, subset and superset rejected",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 104,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT identity and independence (FORGE-CORE-0001A §5) > %s",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 130,
+      "column": 16
+    }
+  },
+  {
+    "name": "RT identity and independence (FORGE-CORE-0001A §5) > human vs human needs only another identity; provider slugs are case-checked by the schema",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 135,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT identity and independence (FORGE-CORE-0001A §5) > RT-05 documents: actor type and role are self-declared; one identity may develop, observe and verify its own run",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 142,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT state machine corners > RT-06 regression: an architecture approval cannot carry a blocking finding",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 162,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT state machine corners > RT-07 documents: a new contract version may be registered while a run is active; the run finishes on a superseded revision",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 170,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT state machine corners > RT-08 documents: a dependency cycle can never be approved and has no own diagnostic",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 180,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT state machine corners > RT-09 documents: after remote_verified no further observation can be recorded (a later force-push is invisible)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 190,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT state machine corners > RT-10 documents: applyEvent trusts the supplied state; a forged state diverges from its own log",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 197,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT JavaScript object attacks > own __proto__, constructor and prototype keys are rejected by strict schemas; the input is never mutated",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 215,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT JavaScript object attacks > frozen and null-prototype inputs are accepted; the log stores own plain copies",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 230,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT JavaScript object attacks > RT-11 documents: inherited properties are read, symbol and non-enumerable extras are silently dropped",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 243,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT JavaScript object attacks > RT-12 documents: a throwing getter or proxy trap escapes applyEvent as an exception (state untouched)",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 255,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT JavaScript object attacks > a getter is evaluated once: the log holds the parsed value, not a later one",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 265,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT trust boundary: witnessed graphs > ancestry follows every parent, terminates on cycles, and missing or false edges are taken at face value",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 276,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT trust boundary: witnessed graphs > the start gate with several refs, a contract commit only behind a merge, and a ref to an unknown commit",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 284,
+      "column": 3
+    }
+  },
+  {
+    "name": "RT trust boundary: witnessed graphs > a remote head that moved backwards or lost the result is not contained",
+    "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge-red-team/findings.test.ts",
+    "location": {
+      "line": 301,
+      "column": 3
+    }
+  }
+]

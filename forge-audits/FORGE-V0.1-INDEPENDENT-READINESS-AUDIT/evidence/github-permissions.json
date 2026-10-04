@@ -1,0 +1,8 @@
+{
+  "forge-codex": {
+    "permission": "write"
+  },
+  "Wuerfelduell": {
+    "permission": "admin"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "introduced-config": {
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "--reporter=json",
+      "--outputFile=/workspace/scratch/4bd741ef363a/evidence/introduced-config.json"
+    ],
+    "exit": 0,
+    "numTotalTests": 19,
+    "numPassedTests": 19,
+    "numPendingTests": 0,
+    "numTodoTests": 0,
+    "success": true,
+    "files": 1,
+    "statuses": {
+      "passed": 19
+    }
+  },
+  "skip-todo": {
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "--reporter=json",
+      "--outputFile=/workspace/scratch/4bd741ef363a/evidence/skip-todo.json"
+    ],
+    "exit": 0,
+    "numTotalTests": 4,
+    "numPassedTests": 1,
+    "numPendingTests": 2,
+    "numTodoTests": 1,
+    "success": true,
+    "files": 1,
+    "statuses": {
+      "skipped": 2,
+      "todo": 1,
+      "passed": 1
+    }
+  },
+  "skip-list": {
+    "command": [
+      "node",
+      "node_modules/vitest/vitest.mjs",
+      "list",
+      "--no-static-parse",
+      "--json=/workspace/scratch/4bd741ef363a/evidence/skip-list.json"
+    ],
+    "exit": 0,
+    "count": 1,
+    "first": [
+      {
+        "name": "active",
+        "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/audit-skip.test.ts"
+      }
+    ]
+  },
+  "deleted-test-file": {
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "--reporter=json",
+      "--outputFile=/workspace/scratch/4bd741ef363a/evidence/deleted-test-file.json"
+    ],
+    "exit": 0,
+    "numTotalTests": 1068,
+    "numPassedTests": 1068,
+    "numPendingTests": 0,
+    "numTodoTests": 0,
+    "success": true,
+    "files": 21,
+    "statuses": {
+      "passed": 1068
+    }
+  },
+  "dynamic-inventory": {
+    "command": [
+      "node",
+      "node_modules/vitest/vitest.mjs",
+      "list",
+      "--no-static-parse",
+      "--json=/workspace/scratch/4bd741ef363a/evidence/dynamic-inventory.json"
+    ],
+    "exit": 0,
+    "count": 1087,
+    "first": [
+      {
+        "name": "replay > equals step-by-step applyEvent",
+        "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts"
+      },
+      {
+        "name": "replay > is deterministic and independent of earlier calls",
+        "file": "/workspace/scratch/4bd741ef363a/experiments/forge/tests/forge/kernel.test.ts"
+      }
+    ]
+  },
+  "redefined-npm-test": {
+    "command": [
+      "npm",
+      "test"
+    ],
+    "exit": 0
+  },
+  "lifecycle-default": {
+    "command": [
+      "npm",
+      "ci",
+      "--offline",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "exit": 0,
+    "marker": true
+  },
+  "lifecycle-ignored": {
+    "command": [
+      "npm",
+      "ci",
+      "--offline",
+      "--no-audit",
+      "--no-fund",
+      "--ignore-scripts"
+    ],
+    "exit": 0,
+    "marker": false
+  },
+  "lock-install-scripts": [
+    {
+      "path": "node_modules/fsevents",
+      "version": "2.3.3"
+    }
+  ]
+}

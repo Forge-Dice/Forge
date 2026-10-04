@@ -1,0 +1,96 @@
+{
+  "deletedObservation": {
+    "ok": false,
+    "rejection": {
+      "code": "RUN_STATE_INVALID",
+      "path": [
+        "body",
+        "runId"
+      ],
+      "subject": "remote_verified",
+      "issues": []
+    }
+  },
+  "verificationAfterDeletedObservationRejected": true,
+  "preReportObservation": {
+    "ok": false,
+    "rejection": {
+      "code": "RUN_STATE_INVALID",
+      "path": [
+        "body",
+        "runId"
+      ],
+      "subject": "running",
+      "issues": []
+    }
+  },
+  "claimedOwner": {
+    "ok": true,
+    "taskState": "accepted"
+  },
+  "blockingCarryForward": {
+    "ok": true,
+    "taskState": "accepted"
+  },
+  "architectureCarryForward": true,
+  "paths": {
+    "src/A.ts": true,
+    "src/a.ts": true,
+    "src/CON.ts": true,
+    "src/NUL": true,
+    "src/a.": true,
+    "src/café.ts": false,
+    "src/café.ts": false,
+    "src/a\\b.ts": false,
+    "src/../a.ts": false
+  },
+  "emptyEvidence": {
+    "passed": true,
+    "mutationSource": "developer_report"
+  },
+  "contractParsing": {
+    "FORGE-CORE-0001A.md": {
+      "ok": true,
+      "ref": {
+        "taskId": "FORGE-CORE-0001A",
+        "contractVersion": 1,
+        "contentHash": "af91442ec38f712076648da97464c887e4925819c13838afe1fd7923b8fc4c69"
+      }
+    },
+    "FORGE-CORE-0001B.md": {
+      "ok": true,
+      "ref": {
+        "taskId": "FORGE-CORE-0001B",
+        "contractVersion": 1,
+        "contentHash": "680db30f45ca77b449fa0565d94db11475135f42c871ad589f5445355f279f6d"
+      }
+    },
+    "FORGE-CORE-0001B.v2.md": {
+      "ok": true,
+      "ref": {
+        "taskId": "FORGE-CORE-0001B",
+        "contractVersion": 2,
+        "contentHash": "7db0e7220ea674b39282b79235a42d51759907c44f1e31b4e7fe56b03e863bd6"
+      }
+    },
+    "FORGE-CORE-0001A-PATCH-0001.md": {
+      "ok": true,
+      "ref": {
+        "taskId": "FORGE-CORE-0001A-PATCH-0001",
+        "contractVersion": 1,
+        "contentHash": "3e9125a53525a982dd23941ba390089a14ef231f863e1243c3104343825181ad"
+      }
+    },
+    "TASK-0004.md": {
+      "ok": false,
+      "issues": [
+        {
+          "code": "FRONTMATTER_MISSING",
+          "path": []
+        }
+      ]
+    }
+  },
+  "metadataFormat2": false,
+  "emptyContractBody": true
+}

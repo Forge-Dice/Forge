@@ -1,0 +1,219 @@
+{
+  "second-parent": {
+    "base": "6e2e7ce7297c0bff1f82424bcc024f058ed34bb2",
+    "contract": "4f10b5be487ee672df57b49d1feb4e7c877e3155",
+    "foreign": "42c70470d3115247cf699db030bde18d824131be",
+    "result": "de0d01bb39b0c6afdac6990b802ca2b909d0ab10",
+    "mergeBase": {
+      "command": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "4f10b5be487ee672df57b49d1feb4e7c877e3155",
+        "de0d01bb39b0c6afdac6990b802ca2b909d0ab10"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "firstParent": {
+      "command": [
+        "git",
+        "rev-list",
+        "--first-parent",
+        "de0d01bb39b0c6afdac6990b802ca2b909d0ab10"
+      ],
+      "exit": 0,
+      "stdout": "de0d01bb39b0c6afdac6990b802ca2b909d0ab10\n42c70470d3115247cf699db030bde18d824131be\n",
+      "stderr": ""
+    },
+    "parents": {
+      "command": [
+        "git",
+        "cat-file",
+        "-p",
+        "de0d01bb39b0c6afdac6990b802ca2b909d0ab10"
+      ],
+      "exit": 0,
+      "stdout": "tree 2e81171448eb9f2ee3821e3d447aa6b2fe3ddba1\nparent 42c70470d3115247cf699db030bde18d824131be\nparent 4f10b5be487ee672df57b49d1feb4e7c877e3155\nauthor Audit <audit@example.invalid> 1791054064 +0200\ncommitter Audit <audit@example.invalid> 1791054064 +0200\n\ninjected second parent\n",
+      "stderr": ""
+    },
+    "contractMergeParentCount": {
+      "command": [
+        "git",
+        "rev-list",
+        "--parents",
+        "-n",
+        "1",
+        "de0d01bb39b0c6afdac6990b802ca2b909d0ab10"
+      ],
+      "exit": 0,
+      "stdout": "de0d01bb39b0c6afdac6990b802ca2b909d0ab10 42c70470d3115247cf699db030bde18d824131be 4f10b5be487ee672df57b49d1feb4e7c877e3155\n",
+      "stderr": ""
+    }
+  },
+  "replace-default": {
+    "command": [
+      "git",
+      "merge-base",
+      "--is-ancestor",
+      "42c70470d3115247cf699db030bde18d824131be",
+      "4f10b5be487ee672df57b49d1feb4e7c877e3155"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "replace-disabled": {
+    "command": [
+      "git",
+      "merge-base",
+      "--is-ancestor",
+      "42c70470d3115247cf699db030bde18d824131be",
+      "4f10b5be487ee672df57b49d1feb4e7c877e3155"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  "replace-refs": {
+    "command": [
+      "git",
+      "for-each-ref",
+      "refs/replace/"
+    ],
+    "exit": 0,
+    "stdout": "c19de06bb4a65346ff41e5ed4003547b0d5d97f7 commit\trefs/replace/4f10b5be487ee672df57b49d1feb4e7c877e3155\n",
+    "stderr": ""
+  },
+  "shallow-clone": {
+    "command": [
+      "git",
+      "clone",
+      "--quiet",
+      "--depth=1",
+      "file:///workspace/scratch/4bd741ef363a/experiments/git-lab",
+      "/workspace/scratch/4bd741ef363a/experiments/git-shallow"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "shallow-status": {
+    "command": [
+      "git",
+      "rev-parse",
+      "--is-shallow-repository"
+    ],
+    "exit": 0,
+    "stdout": "true\n",
+    "stderr": ""
+  },
+  "shallow-ancestry": {
+    "command": [
+      "git",
+      "merge-base",
+      "--is-ancestor",
+      "4f10b5be487ee672df57b49d1feb4e7c877e3155",
+      "de0d01bb39b0c6afdac6990b802ca2b909d0ab10"
+    ],
+    "exit": 128,
+    "stdout": "",
+    "stderr": "fatal: Not a valid commit name 4f10b5be487ee672df57b49d1feb4e7c877e3155\n"
+  },
+  "unshallow": {
+    "command": [
+      "git",
+      "fetch",
+      "--unshallow"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "complete-ancestry": {
+    "command": [
+      "git",
+      "merge-base",
+      "--is-ancestor",
+      "4f10b5be487ee672df57b49d1feb4e7c877e3155",
+      "de0d01bb39b0c6afdac6990b802ca2b909d0ab10"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "special-tree": {
+    "command": [
+      "git",
+      "ls-tree",
+      "-r",
+      "--full-tree",
+      "19fd6fecb106d5480602a3a4eba0eed19d352575"
+    ],
+    "exit": 0,
+    "stdout": "100644 blob ce013625030ba8dba906f756967f9e9ca394464a\tCON\n100755 blob ce013625030ba8dba906f756967f9e9ca394464a\ta.txt\n100644 blob ce013625030ba8dba906f756967f9e9ca394464a\taux.txt\n100644 blob ce013625030ba8dba906f756967f9e9ca394464a\t\"cafe\\314\\201.ts\"\n100644 blob ce013625030ba8dba906f756967f9e9ca394464a\t\"caf\\303\\251.ts\"\n120000 blob ce013625030ba8dba906f756967f9e9ca394464a\tlink\n160000 commit 6e2e7ce7297c0bff1f82424bcc024f058ed34bb2\tmodule\n100644 blob ce013625030ba8dba906f756967f9e9ca394464a\tname \n100644 blob ce013625030ba8dba906f756967f9e9ca394464a\tname.\n100644 blob ce013625030ba8dba906f756967f9e9ca394464a\tsrc/A.ts\n100644 blob ce013625030ba8dba906f756967f9e9ca394464a\tsrc/a.ts\n",
+    "stderr": ""
+  },
+  "mode-diff": {
+    "command": [
+      "git",
+      "diff-tree",
+      "--no-commit-id",
+      "-r",
+      "--raw",
+      "--no-renames",
+      "6e2e7ce7297c0bff1f82424bcc024f058ed34bb2",
+      "19fd6fecb106d5480602a3a4eba0eed19d352575"
+    ],
+    "exit": 0,
+    "stdout": ":000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\tCON\n:100644 100755 ce013625030ba8dba906f756967f9e9ca394464a ce013625030ba8dba906f756967f9e9ca394464a M\ta.txt\n:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\taux.txt\n:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\t\"cafe\\314\\201.ts\"\n:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\t\"caf\\303\\251.ts\"\n:000000 120000 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\tlink\n:000000 160000 0000000000000000000000000000000000000000 6e2e7ce7297c0bff1f82424bcc024f058ed34bb2 A\tmodule\n:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\tname \n:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\tname.\n:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\tsrc/A.ts\n:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\tsrc/a.ts\n",
+    "stderr": ""
+  },
+  "rename-detection": {
+    "command": [
+      "git",
+      "diff-tree",
+      "--no-commit-id",
+      "-r",
+      "--name-status",
+      "-M",
+      "6e2e7ce7297c0bff1f82424bcc024f058ed34bb2",
+      "dc50da786a3732c236b04841ec0eb20b92224f9a"
+    ],
+    "exit": 0,
+    "stdout": "R100\ta.txt\trenamed.txt\n",
+    "stderr": ""
+  },
+  "rename-disabled": {
+    "command": [
+      "git",
+      "diff-tree",
+      "--no-commit-id",
+      "-r",
+      "--name-status",
+      "--no-renames",
+      "6e2e7ce7297c0bff1f82424bcc024f058ed34bb2",
+      "dc50da786a3732c236b04841ec0eb20b92224f9a"
+    ],
+    "exit": 0,
+    "stdout": "D\ta.txt\nA\trenamed.txt\n",
+    "stderr": ""
+  },
+  "null-delimited-raw": {
+    "command": [
+      "git",
+      "diff-tree",
+      "--no-commit-id",
+      "-r",
+      "--raw",
+      "--no-renames",
+      "-z",
+      "6e2e7ce7297c0bff1f82424bcc024f058ed34bb2",
+      "19fd6fecb106d5480602a3a4eba0eed19d352575"
+    ],
+    "exit": 0,
+    "stdout": ":000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000CON\u0000:100644 100755 ce013625030ba8dba906f756967f9e9ca394464a ce013625030ba8dba906f756967f9e9ca394464a M\u0000a.txt\u0000:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000aux.txt\u0000:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000café.ts\u0000:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000café.ts\u0000:000000 120000 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000link\u0000:000000 160000 0000000000000000000000000000000000000000 6e2e7ce7297c0bff1f82424bcc024f058ed34bb2 A\u0000module\u0000:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000name \u0000:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000name.\u0000:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000src/A.ts\u0000:000000 100644 0000000000000000000000000000000000000000 ce013625030ba8dba906f756967f9e9ca394464a A\u0000src/a.ts\u0000",
+    "stderr": ""
+  }
+}
