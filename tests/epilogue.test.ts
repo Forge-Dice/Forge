@@ -11,7 +11,10 @@ import { createWebApp } from "../src/play/web.ts";
 // Optional PublicContent.epilogue: player text rules, bound into the package identity, shown in CLI
 // and web only after a solving accusation.
 
-const CASES: PlayCaseName[] = ["vitrine", "brieföffner", "geige", "hüttenkasse", "nachtzug"];
+// Die Hüttenkasse is left out: its culprit can only be accused after the hut book introduces him
+// (late suspect), so "accuse the solver on a fresh game" does not apply; tests/cases-4-5.test.ts
+// plays it to the epilogue.
+const CASES: PlayCaseName[] = ["vitrine", "brieföffner", "geige", "nachtzug"];
 const SOLVER: Record<PlayCaseName, string> = { vitrine: "Lina Kern", "brieföffner": "Ben", geige: "Ida Reiner", "hüttenkasse": "Tobias Wenger", nachtzug: "Clara Mai" };
 const WRONG: Record<PlayCaseName, string> = { vitrine: "Max Brandt", "brieföffner": "Anna", geige: "Paul Adler", "hüttenkasse": "Lukas Brandl", nachtzug: "Bruno Kessler" };
 
