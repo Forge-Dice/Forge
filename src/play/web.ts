@@ -1,13 +1,21 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
-import { command, loadText, newGame, saveText, type Game } from "./game.ts";
-import { renderPage, type Notice } from "./web-page.ts";
-import { loadVitrinePackage } from "./vitrine.ts";
+import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
+import { accusations, answerText, evidenceText, investigations, known, loadText, newGame, questions, saveText, type Action, type Game } from "./game.ts";
+import { renderCaseList, renderGame, type Feedback } from "./web-page.ts";
+import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./cases.ts";
 
-// `npm run play:web`: "Die leere Vitrine" in the browser, one local player, same session logic as
-// the CLI. The server holds the game in memory; saves are the Session C text, downloaded and uploaded.
+// `npm run play:web`: the playable cases in the browser, one local player, same session logic as
+// the CLI. The server holds one game per case in memory; saves are the Session C text.
 
 const MAX_BODY = 1024 * 1024 + 4096; // one Session C save plus slack for a form body
+
+const ERRORS: Record<string, string> = {
+  ACTION_UNAVAILABLE: "Das geht gerade nicht.",
+  SESSION_CLOSED: "Der Fall ist bereits gelöst.",
+  LIMIT_REACHED: "Das Aktionslimit dieses Falls ist erreicht.",
+  HOST_FAILURE: "Technischer Fehler, die Aktion wurde nicht ausgeführt.",
+};
 
 function readBody(req: IncomingMessage): Promise<string | null> {
   return new Promise((resolve) => {
@@ -25,67 +33,138 @@ function readBody(req: IncomingMessage): Promise<string | null> {
   });
 }
 
-/** Request handler over one in-memory game; exported for tests. */
-export function createWebApp(pkg: ResolvedCasePackage) {
-  let game: Game = newGame(pkg);
-  let notice: Notice | null = { text: "Willkommen. Lies die Fallakte und beginne zu ermitteln.", tone: "info" };
+/** Feedback for one accepted action: what was done, what is new, in the player's words. */
+function feedbackFor(before: Game, after: Game, action: Action, output: SessionOutput): Feedback {
+  const newKnown = after.state.knowledge.known.filter((k) => !before.state.knowledge.known.some((b) => b.ref === k.ref));
+  const labels = (kind: string) => known(after, kind).filter((k) => newKnown.some((n) => n.ref === k.ref)).map((k) => k.label);
+  const news = ["person", "location", "item", "event"].flatMap(labels);
+  const learned = news.length === 0 ? [] : [`Neu bekannt: ${news.join(", ")}.`];
+  switch (output.type) {
+    case "investigate":
+      if (output.observations.length === 0) {
+        return { tone: "info", title: action.label, lines: ["Hier findest du nichts Neues.", ...learned] };
+      }
+      return {
+        tone: "info",
+        title: `${action.label}: ${output.observations.length === 1 ? "ein neuer Fund" : `${output.observations.length} neue Funde`}`,
+        lines: [...output.observations.map((o) => evidenceText(after, o)), ...learned],
+      };
+    case "interrogate":
+      return { tone: "info", title: "Verhör", lines: [answerText(after, output.observation), ...learned] };
+    case "accuse":
+      return output.verdict === "solved"
+        ? { tone: "ok", title: "Die Anklage sitzt.", lines: [`Du hast ${action.label} angeklagt. Der Fall ist gelöst.`] }
+        : {
+            tone: "warn",
+            title: "Diese Anklage löst den Fall nicht.",
+            lines: [`Du hast ${action.label} angeklagt, doch damit ist der Fallauftrag nicht erfüllt. Ermittle weiter und prüfe deine Nachweise.`],
+          };
+  }
+}
 
-  const redirect = (res: ServerResponse): void => void res.writeHead(303, { location: "/" }).end();
+type Slot = { game: Game; feedback: Feedback | null };
+
+/** Request handler over one in-memory game per case; exported for tests. */
+export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}) {
+  const slots = new Map<PlayCaseName, Slot>();
+  const slot = (name: PlayCaseName): Slot => {
+    let s = slots.get(name);
+    if (s === undefined) {
+      const pkg = packages[name] ?? loadPlayPackage(name);
+      s = { game: newGame(pkg, PLAY_CASES[name].clockOrigin), feedback: { tone: "info", title: "Willkommen", lines: ["Lies die Fallakte und beginne zu ermitteln."] } };
+      slots.set(name, s);
+    }
+    return s;
+  };
+  const slugOf = (name: PlayCaseName) => PLAY_CASES[name].dir;
+  const redirect = (res: ServerResponse, to: string): void => void res.writeHead(303, { location: to }).end();
+  const html = (res: ServerResponse, body: string): void =>
+    void res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }).end(body);
+
+  function act(s: Slot, group: string | null, n: string | null, at: string | null): void {
+    const { game } = s;
+    if (at !== String(game.state.events.length)) {
+      s.feedback = { tone: "warn", title: "Die Seite war nicht mehr aktuell.", lines: ["Bitte wähle die Aktion noch einmal."] };
+      return;
+    }
+    const menu = group === "u" ? investigations(game) : group === "f" ? questions(game) : group === "a" ? accusations(game) : [];
+    const action = n !== null && /^[1-9][0-9]{0,3}$/.test(n) ? menu[Number(n) - 1] : undefined;
+    if (action === undefined) return;
+    const result = reduceSession(game.pkg, game.state, action.event);
+    if (!result.ok) {
+      s.feedback = { tone: "warn", title: ERRORS[result.code]!, lines: [] };
+      return;
+    }
+    s.game = { ...game, state: result.state };
+    s.feedback = feedbackFor(game, s.game, action, result.output);
+  }
 
   return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
     const url = new URL(req.url ?? "/", "http://localhost");
     if (req.method === "GET" && url.pathname === "/") {
-      const page = renderPage(game, notice);
-      notice = null;
-      res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }).end(page);
+      const cards = (Object.keys(PLAY_CASES) as PlayCaseName[]).map((name) => {
+        const s = slot(name);
+        const { publicContent } = s.game.pkg;
+        const steps = s.game.state.events.length;
+        const progress = s.game.state.phase === "solved" ? "Gelöst" : steps === 0 ? null : `${steps} Aktionen`;
+        return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress };
+      });
+      return html(res, renderCaseList(cards));
+    }
+    const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
+    const name = match === null ? null : playCaseName(match[1]);
+    if (match === null || name === null) {
+      res.writeHead(404, { "content-type": "text/plain; charset=utf-8" }).end("Nicht gefunden.");
       return;
     }
-    if (req.method === "GET" && url.pathname === "/save") {
-      const saved = saveText(game);
-      if (!saved.ok) {
-        notice = { text: saved.text, tone: "warn" };
-        return redirect(res);
+    const s = slot(name);
+    const home = `/fall/${slugOf(name)}`;
+    const route = `${req.method} ${match[3] ?? ""}`;
+    switch (route) {
+      case "GET ": {
+        const page = renderGame(s.game, slugOf(name), s.feedback);
+        s.feedback = null;
+        return html(res, page);
       }
-      res
-        .writeHead(200, { "content-type": "application/json; charset=utf-8", "content-disposition": 'attachment; filename="vitrine.save.json"' })
-        .end(saved.text);
-      return;
-    }
-    if (req.method === "POST" && url.pathname === "/act") {
-      const form = new URLSearchParams((await readBody(req)) ?? "");
-      const group = form.get("group");
-      const n = form.get("n");
-      if (form.get("at") !== String(game.state.events.length)) {
-        notice = { text: "Die Seite war nicht mehr aktuell. Bitte wähle erneut.", tone: "warn" };
-      } else if ((group === "u" || group === "f" || group === "a") && n !== null && /^[1-9][0-9]{0,3}$/.test(n)) {
-        const before = game.state.events.length;
-        const step = command(game, `${group} ${n}`);
-        game = step.game;
-        const accepted = game.state.events.length > before;
-        notice = { text: step.text, tone: game.state.phase === "solved" ? "ok" : accepted ? "info" : "warn" };
+      case "GET save": {
+        const saved = saveText(s.game);
+        if (!saved.ok) {
+          s.feedback = { tone: "warn", title: saved.text, lines: [] };
+          return redirect(res, home);
+        }
+        res
+          .writeHead(200, { "content-type": "application/json; charset=utf-8", "content-disposition": `attachment; filename="${slugOf(name)}.save.json"` })
+          .end(saved.text);
+        return;
       }
-      return redirect(res);
+      case "POST act": {
+        const form = new URLSearchParams((await readBody(req)) ?? "");
+        act(s, form.get("group"), form.get("n"), form.get("at"));
+        return redirect(res, home);
+      }
+      case "POST load": {
+        const loaded = loadText(s.game.pkg, (await readBody(req)) ?? "", PLAY_CASES[name].clockOrigin);
+        if (loaded.ok) s.game = loaded.game;
+        s.feedback = loaded.ok
+          ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
+          : { tone: "warn", title: loaded.text, lines: ["Lade eine unveränderte Datei, die mit diesem Fall gespeichert wurde."] };
+        return redirect(res, home);
+      }
+      case "POST new":
+        s.game = newGame(s.game.pkg, PLAY_CASES[name].clockOrigin);
+        s.feedback = { tone: "info", title: "Neues Spiel", lines: ["Der Fall beginnt von vorn."] };
+        return redirect(res, home);
+      default:
+        res.writeHead(405, { "content-type": "text/plain; charset=utf-8" }).end("Nicht erlaubt.");
     }
-    if (req.method === "POST" && url.pathname === "/load") {
-      const loaded = loadText(pkg, (await readBody(req)) ?? "");
-      if (loaded.ok) game = loaded.game;
-      notice = loaded.ok ? { text: `Spielstand geladen: ${game.state.events.length} Aktionen.`, tone: "ok" } : { text: loaded.text, tone: "warn" };
-      return redirect(res);
-    }
-    if (req.method === "POST" && url.pathname === "/new") {
-      game = newGame(pkg);
-      notice = { text: "Neues Spiel begonnen.", tone: "info" };
-      return redirect(res);
-    }
-    res.writeHead(404, { "content-type": "text/plain; charset=utf-8" }).end("Nicht gefunden.");
   };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const port = Number(process.env.PORT ?? 4173);
-  const app = createWebApp(loadVitrinePackage());
+  const app = createWebApp();
   // Local only: bound to the loopback interface.
   createServer((req, res) => void app(req, res)).listen(port, "127.0.0.1", () => {
-    console.log(`Die leere Vitrine läuft auf http://localhost:${port}  (Strg+C beendet)`);
+    console.log(`Kriminalfälle laufen auf http://localhost:${port}  (Strg+C beendet)`);
   });
 }

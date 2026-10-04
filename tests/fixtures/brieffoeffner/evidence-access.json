@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "entries": [
+    {
+      "evidenceId": "evidence:cuff-button",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:library"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:fingerprint",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:letter-opener"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:muddy-path",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:garden"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:gloves-dirty",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:garden"
+          }
+        ]
+      }
+    }
+  ]
+}

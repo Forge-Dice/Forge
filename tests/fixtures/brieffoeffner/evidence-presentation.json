@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "entries": [
+    {
+      "evidenceId": "evidence:cuff-button",
+      "text": "Neben dem Schreibtisch liegt ein abgerissener Manschettenknopf von Bens Hemd. Daneben: Claras Blut, noch nicht getrocknet. Der Knopf riss bei der Tat ab.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ben"
+        },
+        {
+          "kind": "event",
+          "id": "event:murder"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:murder",
+            "personId": "person:ben"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:fingerprint",
+      "text": "Auf dem Griff des Brieföffners ist ein Fingerabdruck von Anna. Wann er entstand, zeigt er nicht.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "item",
+          "id": "item:letter-opener"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:muddy-path",
+      "text": "Frische Fußspuren im Gartenbeet, Annas Stiefelprofil. Der Gärtnerzähler zeigt: Sie entstanden um 20:25 Uhr, zur Tatzeit.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "location",
+          "id": "location:garden"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:anna",
+            "locationId": "location:garden",
+            "at": 1500
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:gloves-dirty",
+      "text": "Annas Gartenhandschuhe liegen auf der Bank, voller frischer Erde.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "item",
+          "id": "item:gloves"
+        }
+      ],
+      "reports": []
+    }
+  ]
+}

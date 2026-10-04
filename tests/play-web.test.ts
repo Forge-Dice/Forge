@@ -3,26 +3,28 @@ import type { AddressInfo } from "node:net";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { decodeSessionSave } from "../src/domain/case-session-save.ts";
 import { createWebApp } from "../src/play/web.ts";
-import { loadVitrinePackage } from "../src/play/vitrine.ts";
+import { loadPlayPackage } from "../src/play/cases.ts";
 
-// Browser front end over HTTP, played through the real server and session: Route A to the solution,
-// save and load, stale pages, and no internal id or PlayerRef in any page served.
+// Browser front end over HTTP, played through the real server and session: case selection, Route A
+// to the solution and its closing, both cases, save and load, stale pages, and no internal id or
+// PlayerRef in any page served.
 
-const pkg = loadVitrinePackage();
+const pkg = loadPlayPackage("vitrine");
+const V = "/fall/vitrine";
 let server: Server;
 let base: string;
 const pages: string[] = [];
 
 beforeAll(async () => {
-  const app = createWebApp(pkg);
+  const app = createWebApp({ vitrine: pkg });
   server = createServer((req, res) => void app(req, res));
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });
 afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())));
 
-async function page(): Promise<string> {
-  const html = await (await fetch(`${base}/`)).text();
+async function page(path = V): Promise<string> {
+  const html = await (await fetch(`${base}${path}`)).text();
   pages.push(html);
   return html;
 }
@@ -32,7 +34,7 @@ const unescape = (s: string) => s.replace(/&quot;/g, '"').replace(/&#39;/g, "'")
 /** Buttons of the current page: label -> form fields. */
 function buttons(html: string): Map<string, Record<string, string>> {
   const out = new Map<string, Record<string, string>>();
-  const formRe = /<form method="post" action="\/act"[^>]*>(.*?)<\/form>/g;
+  const formRe = /<form method="post" action="\/fall\/[a-z]+\/act"[^>]*>(.*?)<\/form>/g;
   for (const [, inner] of html.matchAll(formRe)) {
     const fields = Object.fromEntries([...inner!.matchAll(/name="(\w+)" value="([^"]*)"/g)].map(([, k, v]) => [k!, v!]));
     const label = unescape(/<button[^>]*>(.*?)<\/button>/.exec(inner!)![1]!);
@@ -41,16 +43,24 @@ function buttons(html: string): Map<string, Record<string, string>> {
   return out;
 }
 
-async function click(label: string): Promise<string> {
-  const fields = buttons(await page()).get(label);
+async function click(label: string, path = V): Promise<string> {
+  const fields = buttons(await page(path)).get(label);
   if (fields === undefined) throw new Error(`No button "${label}"`);
-  await fetch(`${base}/act`, { method: "POST", body: new URLSearchParams(fields), redirect: "manual" });
-  return page();
+  await fetch(`${base}${path}/act`, { method: "POST", body: new URLSearchParams(fields), redirect: "manual" });
+  return page(path);
 }
 
 const INTERNAL = /\b(case|person|location|item|event|evidence|proposition|conclusion|question|relationship|motive|secret|red-herring):[a-z0-9]/;
 
 describe("play:web", () => {
+  it("the start page offers both cases", async () => {
+    const html = await page("/");
+    expect(html).toContain('href="/fall/vitrine"');
+    expect(html).toContain('href="/fall/brieffoeffner"');
+    expect(html).toContain("Die leere Vitrine");
+    expect(html).toContain("Der Brieföffner");
+  });
+
   it("shows the case file, known entities and actions from PublicContent", async () => {
     const html = await page();
     expect(html).toContain("<title>Die leere Vitrine</title>");
@@ -69,33 +79,37 @@ describe("play:web", () => {
     html = await click("Wo ist der unabhängige Archivnachweis?");
     html = await click("Gegenstand untersuchen: Archivterminal");
     expect(html).toContain("Archivaufnahme");
+    html = await click("Max Brandt");
+    expect(html).toContain("Diese Anklage löst den Fall nicht.");
     html = await click("Lina Kern");
-    expect(html).toContain("Fall gelöst");
+    expect(html).toContain('<section class="closing"><h2>Fall gelöst</h2>');
+    expect(html).toContain("Lina Kern war es.");
+    expect(html).toContain("7 Aktionen gebraucht und 2 Anklagen erhoben");
     expect(html).toContain('class="badge solved"');
     expect([...buttons(html).keys()]).toEqual([]);
   });
 
   it("save downloads the Session C text, load restores it, a broken file is refused", async () => {
-    const res = await fetch(`${base}/save`);
+    const res = await fetch(`${base}${V}/save`);
     expect(res.headers.get("content-disposition")).toContain("vitrine.save.json");
     const text = await res.text();
     const decoded = decodeSessionSave(pkg, text);
     expect(decoded.ok && decoded.state.phase).toBe("solved");
 
-    await fetch(`${base}/new`, { method: "POST", redirect: "manual" });
+    await fetch(`${base}${V}/new`, { method: "POST", redirect: "manual" });
     expect(await page()).toContain("0 Aktionen");
-    await fetch(`${base}/load`, { method: "POST", body: text, redirect: "manual" });
-    expect(await page()).toContain("Spielstand geladen: 6 Aktionen.");
+    await fetch(`${base}${V}/load`, { method: "POST", body: text, redirect: "manual" });
+    expect(await page()).toContain("7 Aktionen wiederhergestellt.");
 
-    await fetch(`${base}/load`, { method: "POST", body: `${text} `, redirect: "manual" });
+    await fetch(`${base}${V}/load`, { method: "POST", body: `${text} `, redirect: "manual" });
     expect(await page()).toContain("Der Spielstand kann nicht geladen werden.");
   });
 
   it("a stale page cannot trigger a different action", async () => {
-    await fetch(`${base}/new`, { method: "POST", redirect: "manual" });
+    await fetch(`${base}${V}/new`, { method: "POST", redirect: "manual" });
     const old = buttons(await page()).get("Ort durchsuchen: Innenhof")!;
     await click("Ort durchsuchen: Galerie");
-    await fetch(`${base}/act`, { method: "POST", body: new URLSearchParams(old), redirect: "manual" });
+    await fetch(`${base}${V}/act`, { method: "POST", body: new URLSearchParams(old), redirect: "manual" });
     const html = await page();
     expect(html).toContain("Die Seite war nicht mehr aktuell.");
     expect(html).not.toContain("Kontaktbogen");
@@ -105,10 +119,19 @@ describe("play:web", () => {
     const before = await page();
     const at = buttons(before).values().next().value!.at!;
     for (const body of ["group=x&n=1", "group=u&n=0", "group=u&n=99999", "group=u&n=1e3", ""]) {
-      await fetch(`${base}/act`, { method: "POST", body: `${body}&at=${at}`, redirect: "manual" });
+      await fetch(`${base}${V}/act`, { method: "POST", body: `${body}&at=${at}`, redirect: "manual" });
     }
     expect(buttons(await page()).values().next().value!.at).toBe(at);
     expect((await fetch(`${base}/nothing`)).status).toBe(404);
+  });
+
+  it("Der Brieföffner is playable in its own slot next to the Vitrine", async () => {
+    const vitrineBefore = await page();
+    const html = await click("Ben", "/fall/brieffoeffner");
+    expect(html).toContain("Ben war es.");
+    expect(await page()).toBe(vitrineBefore);
+    expect(await page("/")).toContain("Gelöst");
+    expect((await fetch(`${base}/fall/nope`)).status).toBe(404);
   });
 
   it("no page ever contains an internal id or a PlayerRef", () => {

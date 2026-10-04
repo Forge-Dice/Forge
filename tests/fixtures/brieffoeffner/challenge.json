@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "solutionHash": "043fe945472d7cec41b7faeea39c07fea6d0f572f25e29f8002fc69f85089010",
+  "allowedClaims": [
+    {
+      "kind": "personResponsibleForEvent",
+      "personId": "person:anna",
+      "eventId": "event:murder"
+    },
+    {
+      "kind": "personResponsibleForEvent",
+      "personId": "person:ben",
+      "eventId": "event:murder"
+    },
+    {
+      "kind": "personResponsibleForEvent",
+      "personId": "person:clara",
+      "eventId": "event:murder"
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "releaseContextHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+  "adapterVersion": "forge-release-proof-v1",
+  "certificateData": {
+    "schemaVersion": 1,
+    "steps": [
+      {
+        "stepId": "search-library",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:library"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-garden",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:garden"
+            }
+          }
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "observed:cuff",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:ben-at-murder",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:cuff-button"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "eventHasParticipant",
+                "event": {
+                  "$playerRefOf": {
+                    "kind": "event",
+                    "id": "event:murder"
+                  }
+                },
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:ben"
+                  }
+                }
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:participation",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "responsible:ben",
+            "allOf": [
+              "observation:cuff"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:ben-responsible",
+              "value": true
+            }
+          }
+        ],
+        "ruleId": "rule:participation",
+        "afterObservations": [
+          "observed:cuff"
+        ]
+      },
+      {
+        "id": "observed:garden",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:anna-in-garden",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:muddy-path"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:anna"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:garden"
+                  }
+                },
+                "at": 1500
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:alibi",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "alibi:anna",
+            "allOf": [
+              "observation:garden"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:anna-responsible",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:alibi",
+        "afterObservations": [
+          "observed:garden"
+        ]
+      }
+    ]
+  }
+}

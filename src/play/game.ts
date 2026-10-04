@@ -8,14 +8,13 @@ import type { InterrogationObservation, PlayerClaim } from "../domain/interrogat
 // and the text to print; file I/O lives in cli.ts. The player sees only PublicContent, released
 // observations and labels of entities they already know. Every action goes through reduceSession.
 
-export type Game = { readonly pkg: ResolvedCasePackage; readonly state: SessionState };
+/** clockOrigin: wall-clock seconds of timeline second 0 (display convention of the case). */
+export type Game = { readonly pkg: ResolvedCasePackage; readonly state: SessionState; readonly clockOrigin: number };
 export type Step = { readonly game: Game; readonly text: string; readonly quit?: true };
 export type Action = { readonly label: string; readonly event: unknown };
 
-/** Display convention of this case: timeline second 0 is 18:00:00 (PublicContent brief). */
-const CLOCK_ORIGIN_SECONDS = 18 * 3600;
 
-export const newGame = (pkg: ResolvedCasePackage): Game => ({ pkg, state: initialSession(pkg) });
+export const newGame = (pkg: ResolvedCasePackage, clockOrigin = 0): Game => ({ pkg, state: initialSession(pkg), clockOrigin });
 
 const HELP = [
   "Befehle:",
@@ -69,7 +68,7 @@ export function command(game: Game, line: string): Step {
       return choose(game, questions(game), pick, "Fragen");
     case "anklage":
     case "a":
-      return choose(game, accusations(game), pick, "Wen klagst du als eigenhändigen Entnehmer an?");
+      return choose(game, accusations(game), pick, `Anklage. ${game.pkg.publicContent.challengeQuestion}`);
     default:
       return say(`Unbekannter Befehl „${word}“. Tippe „hilfe“.`);
   }
@@ -84,7 +83,7 @@ function choose(game: Game, actions: Action[], pick: number | null, title: strin
   if (action === undefined) return { game, text: `Keine Nummer ${pick}.` };
   const result = reduceSession(game.pkg, game.state, action.event);
   if (!result.ok) return { game, text: ERRORS[result.code]! };
-  const next = { pkg: game.pkg, state: result.state };
+  const next = { ...game, state: result.state };
   return { game: next, text: `> ${action.label}\n${outputText(next, result.output)}` };
 }
 
@@ -116,20 +115,18 @@ export function questions(game: Game): Action[] {
   });
 }
 
-/** D8 Vitrine convention: the chosen candidate true, every other candidate false, all four submitted. */
+/** D8 convention: one candidate true, every other candidate of the challenge false, all submitted together. */
 export function accusations(game: Game): Action[] {
   const { pkg } = game;
-  const candidates = pkg.challenge.allowedClaims.filter((c) => c.kind === "personRoleForEvent");
+  const candidates = pkg.challenge.allowedClaims.filter((c) => c.kind === "personRoleForEvent" || c.kind === "personResponsibleForEvent");
   const ref = (kind: "person" | "event", id: string) => pkg.refs.refFor(kind, id)!;
+  const claim = (c: (typeof candidates)[number]) => {
+    const base = { kind: c.kind, person: ref("person", c.personId), event: ref("event", c.eventId) };
+    return c.kind === "personRoleForEvent" ? { ...base, role: c.role } : base;
+  };
   return candidates.map((chosen) => ({
     label: labelOf(game, ref("person", chosen.personId)),
-    event: {
-      type: "accuse",
-      literals: candidates.map((c) => ({
-        claim: { kind: c.kind, person: ref("person", c.personId), event: ref("event", c.eventId), role: c.role },
-        value: c === chosen,
-      })),
-    },
+    event: { type: "accuse", literals: candidates.map((c) => ({ claim: claim(c), value: c === chosen })) },
   }));
 }
 
@@ -142,15 +139,14 @@ function labelOf(game: Game, ref: string): string {
   return isKnown && label ? label.label : "(unbekannt)";
 }
 
-const clock = (at: number) => {
-  const s = CLOCK_ORIGIN_SECONDS + at;
-  return [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((n) => String(n).padStart(2, "0")).join(":");
-};
-
 const ROLES: Record<string, string> = { direct_actor: "eigenhändig handelnde Person", planner: "Planer", facilitator: "Helfer" };
 
 function claimText(game: Game, claim: PlayerClaim | EvidenceClaim): string {
   const l = (ref: string) => labelOf(game, ref);
+  const clock = (at: number) => {
+    const s = game.clockOrigin + at;
+    return [Math.floor(s / 3600) % 24, Math.floor(s / 60) % 60, s % 60].map((n) => String(n).padStart(2, "0")).join(":");
+  };
   switch (claim.kind) {
     case "personAt":
       return `${l(claim.person)} war um ${clock(claim.at)} am Ort „${l(claim.location)}“`;
@@ -197,7 +193,7 @@ export function answerText(game: Game, o: InterrogationObservation): string {
   const head = `${labelOf(game, o.npc)} auf „${question?.text ?? o.questionId}“`;
   if (o.act === "decline") return `${head}: „Dazu sage ich nichts.“`;
   const said = `${head}: „${STANCES[o.stance]}“`;
-  return "statement" in o ? `${said}\n  (Aussage: ${claimText(game, o.statement)})` : said;
+  return "statement" in o ? `${said}\n  (zur Behauptung: ${claimText(game, o.statement)})` : said;
 }
 
 function outputText(game: Game, output: SessionOutput): string {
@@ -241,7 +237,7 @@ export function saveText(game: Game): { ok: true; text: string } | { ok: false; 
 }
 
 /** Player facade: every failure reads the same; the save must be the exact canonical text. */
-export function loadText(pkg: ResolvedCasePackage, text: string): { ok: true; game: Game } | { ok: false; text: string } {
+export function loadText(pkg: ResolvedCasePackage, text: string, clockOrigin = 0): { ok: true; game: Game } | { ok: false; text: string } {
   const loaded = loadSessionSaveForPlayer(pkg, text);
-  return loaded.ok ? { ok: true, game: { pkg, state: loaded.state } } : { ok: false, text: "Der Spielstand kann nicht geladen werden." };
+  return loaded.ok ? { ok: true, game: { pkg, state: loaded.state, clockOrigin } } : { ok: false, text: "Der Spielstand kann nicht geladen werden." };
 }
