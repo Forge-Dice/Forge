@@ -10,6 +10,7 @@ import { QuestionIdSchema } from "./interrogation-authoring.ts";
 import { interrogate, type InterrogationObservation } from "./interrogation.ts";
 import type { ResolvedEntity } from "./player-ref.ts";
 import { initialPlayerKnowledge, recordEvidence, recordInterrogation, type PlayerKnowledge } from "./player-knowledge.ts";
+import { nextHint, type Hint } from "./case-hints.ts";
 
 // Session reducer V1 (MYST-SESSION-0001B). The only door from untrusted player events into the
 // gameplay ports. Every incoming ref must already be in the prefix Known; every released ref must
@@ -52,6 +53,8 @@ export const SessionEventSchema = z.discriminatedUnion("type", [
     type: z.literal("accuse"),
     literals: z.array(z.strictObject({ claim: PlayerConclusionClaimSchema, value: z.boolean() })).max(SESSION_LIMITS.maxLiterals),
   }),
+  // Ruleset mystery-session-v3 only; the reducer rejects it under v1/v2.
+  z.strictObject({ type: z.literal("hint") }),
 ]);
 
 export type PlayerConclusionClaim = z.output<typeof PlayerConclusionClaimSchema>;
@@ -67,7 +70,8 @@ export type SessionState = {
 export type SessionOutput =
   | { readonly type: "investigate"; readonly observations: readonly EvidenceObservation[] }
   | { readonly type: "interrogate"; readonly observation: InterrogationObservation }
-  | { readonly type: "accuse"; readonly verdict: "solved" | "not_solved" };
+  | { readonly type: "accuse"; readonly verdict: "solved" | "not_solved" }
+  | { readonly type: "hint"; readonly hint: Hint };
 export type SessionErrorCode = "ACTION_UNAVAILABLE" | "SESSION_CLOSED" | "LIMIT_REACHED" | "HOST_FAILURE";
 export type SessionResult =
   | { readonly ok: true; readonly state: SessionState; readonly output: SessionOutput }
@@ -153,7 +157,7 @@ export function reduceSession(pkg: ResolvedCasePackage, state: SessionState, inp
     const event = deepFreeze(parsed.data);
 
     const eventIndex = state.events.length;
-    const step = evaluate(pkg, state.knowledge, event, eventIndex);
+    const step = evaluate(pkg, state.knowledge, event, eventIndex, state.events);
 
     const ownBytes = utf8Length(serializeSessionJson(event));
     const saveBytes = envelopeBytes(pkg.identity) + historyBytes(state.events) + ownBytes + eventIndex;
@@ -204,7 +208,7 @@ export function replaySession(pkg: ResolvedCasePackage, events: unknown): Replay
 
 // ---------- Ports, all on a temporary state ----------
 
-function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: SessionEvent, eventIndex: number): Step {
+function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: SessionEvent, eventIndex: number, events: readonly SessionEvent[]): Step {
   const known = new Map(knowledge.known.map((k) => [k.ref, k.kind]));
 
   /** Canonical id of a player ref the prefix already knows, with the expected kind. */
@@ -274,6 +278,13 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
       if (observation.npc !== event.npc || observation.questionId !== event.questionId) throw hostFailure();
       if ("statement" in observation) checkReleased(observation.mentions, claimRefs(observation.statement), new Set([event.npc]));
       return { knowledge: recordInterrogation(knowledge, observation, eventIndex), output: { type: "interrogate", observation }, verdict: null };
+    }
+    case "hint": {
+      // Only v3 offers hints; without a bound witness there is nothing to derive them from.
+      if (pkg.identity.rulesetVersion !== "mystery-session-v3") throw unavailable();
+      const hint = nextHint(pkg, knowledge, events);
+      if (hint === null) throw unavailable();
+      return { knowledge, output: { type: "hint", hint }, verdict: null };
     }
     case "accuse": {
       const literals = event.literals.map(({ claim, value }) => ({ claim: canonicalClaim(claim, own), value }));

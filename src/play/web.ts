@@ -1,7 +1,7 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
-import { accusations, answerText, evidenceText, investigations, known, loadText, newGame, questions, saveText, type Action, type Game } from "./game.ts";
+import { accusations, answerText, evidenceText, hintText, investigations, known, loadText, newGame, questions, saveText, type Action, type Game } from "./game.ts";
 import { renderCaseList, renderGame, type Feedback } from "./web-page.ts";
 import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./cases.ts";
 
@@ -52,6 +52,8 @@ function feedbackFor(before: Game, after: Game, action: Action, output: SessionO
         title: `${action.label}: ${output.observations.length === 1 ? "ein neuer Fund" : `${output.observations.length} neue Funde`}`,
         lines: [...output.observations.map((o) => evidenceText(after, o)), ...learned],
       };
+    case "hint":
+      return { tone: "info", title: "Hinweis", lines: [hintText(after, output.hint)] };
     case "interrogate":
       return { tone: "info", title: "Aussage", lines: [answerText(after, output.observation), ...learned] };
     case "accuse":
@@ -64,6 +66,8 @@ function feedbackFor(before: Game, after: Game, action: Action, output: SessionO
           };
   }
 }
+
+const HINT: Action[] = [{ label: "Hinweis", event: { type: "hint" } }];
 
 type Slot = { game: Game; feedback: Feedback | null; fresh: ReadonlySet<string> };
 
@@ -97,7 +101,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
       s.feedback = { tone: "warn", title: "Die Seite war nicht mehr aktuell.", lines: ["Bitte wähle die Aktion noch einmal."] };
       return;
     }
-    const menu = group === "u" ? investigations(game) : group === "f" ? questions(game) : group === "a" ? accusations(game) : [];
+    const menu = group === "u" ? investigations(game) : group === "f" ? questions(game) : group === "a" ? accusations(game) : group === "h" ? HINT : [];
     const action = n !== null && /^[1-9][0-9]{0,3}$/.test(n) ? menu[Number(n) - 1] : undefined;
     if (action === undefined) return;
     const result = reduceSession(game.pkg, game.state, action.event);

@@ -439,3 +439,28 @@ export function formatCaseCheck(check: CaseCheck): string {
   lines.push(check.ok ? `OK: ${check.checkedFiles.length} Dateien geprüft, Fall lösbar.` : `NICHT OK: ${errors.length} Fehler.`);
   return lines.join("\n");
 }
+
+/**
+ * Binds a case's authored proof (release manifest and proof profile with TO_BE_COMPUTED
+ * placeholders) to a package input, as the case check does. Used by the play host so that
+ * packages under ruleset mystery-session-v3 carry the witness that hints are derived from.
+ */
+export function bindCaseProof(
+  input: { rulesetVersion: RulesetVersion; truth: unknown; solution: unknown; catalogue: unknown; initial: unknown; npcs: Npc[]; access: unknown; presentation: unknown; challenge: unknown; publicContent: unknown },
+  rawManifest: unknown,
+  rawProfile: unknown,
+  salt: string,
+): { profile: unknown; releaseManifest: string } {
+  const c = new Collector();
+  const truth = parseCaseTruth(input.truth);
+  const solution = parseCaseSolution(input.solution, truth);
+  const catalogue = parseQuestionCatalogue(input.catalogue, truth);
+  const index = buildPlayerRefIndex(truth, salt);
+  if (!index.success) throw new Error(`PlayerRef index: ${index.code}`);
+  const contextHash = releaseContextHash(input, truth, solution, catalogue, index.index, salt, c);
+  const manifest = contextHash === null ? null : bindManifest(rawManifest, contextHash, index.index, c);
+  const releaseManifest = manifest === null ? null : serializeSessionJson(manifest);
+  const profile = releaseManifest === null ? null : bindProfile(rawProfile, hashReleaseManifest(releaseManifest), c);
+  if (profile === null || releaseManifest === null || c.problems.length > 0) throw new Error(`Proof not bindable: ${JSON.stringify(c.problems)}`);
+  return { profile, releaseManifest };
+}

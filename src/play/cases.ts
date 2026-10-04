@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { parseCaseTruth } from "../domain/case-truth.ts";
 import { resolveCasePackage, type PackageRefSource, type ResolvedCasePackage, type RulesetVersion } from "../domain/case-package.ts";
 import { buildPlayerRefIndex, playerRefFor, resolvePlayerRef } from "../domain/player-ref.ts";
+import { bindCaseProof } from "../authoring/check-case.ts";
 
 // Trusted host side of the play CLI: loads a playable case from its fixture files and resolves it
 // into one immutable case package. The package input is private (it holds the answer key); the
@@ -15,13 +16,13 @@ export type PlayCase = {
   readonly salt: string;
   /** Display convention: wall-clock seconds of timeline second 0. */
   readonly clockOrigin: number;
-  /** v2 when an NPC of the case may lie. */
+  /** v3: the session accepts hint events (v2 lies included); the proof is bound on load. */
   readonly rulesetVersion: RulesetVersion;
 };
 
 export const PLAY_CASES = {
-  vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v1" },
-  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v2" },
+  vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v3" },
+  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3" },
 } as const satisfies Record<string, PlayCase>;
 export type PlayCaseName = keyof typeof PLAY_CASES;
 
@@ -51,8 +52,10 @@ export function refSource(truthInput: unknown, salt: string): PackageRefSource {
   };
 }
 
+const readFixture = (c: PlayCase, name: string): unknown => JSON.parse(readFileSync(new URL(name, fixtureDir(c)), "utf8"));
+
 export function playPackageInput(c: PlayCase): Record<string, unknown> {
-  const read = (name: string): unknown => JSON.parse(readFileSync(new URL(name, fixtureDir(c)), "utf8"));
+  const read = (name: string): unknown => readFixture(c, name);
   return {
     schemaVersion: 1,
     rulesetVersion: c.rulesetVersion,
@@ -65,7 +68,7 @@ export function playPackageInput(c: PlayCase): Record<string, unknown> {
     initial: read("initial-setup.json"),
     challenge: read("challenge.json"),
     publicContent: read("public-content.json"),
-    // Play needs no certification; proof binding is the case-acceptance runner's business.
+    // Bound in loadPlayPackage: hints (ruleset v3) are derived from the release manifest's witness.
     proof: null,
   };
 }
@@ -73,6 +76,7 @@ export function playPackageInput(c: PlayCase): Record<string, unknown> {
 export function loadPlayPackage(name: PlayCaseName): ResolvedCasePackage {
   const c = PLAY_CASES[name];
   const input = playPackageInput(c);
+  input.proof = bindCaseProof(input as Parameters<typeof bindCaseProof>[0], readFixture(c, "release-manifest.json"), readFixture(c, "proof-profile.json"), c.salt);
   const result = resolveCasePackage(input, refSource(input.truth, c.salt));
   if (!result.ok) throw new Error(`Case package "${name}" rejected: ${JSON.stringify(result.findings)}`);
   return result.package;

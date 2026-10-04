@@ -1,6 +1,6 @@
 import type { EvidenceObservation } from "../domain/evidence-presentation.ts";
 import type { InterrogationObservation } from "../domain/interrogation.ts";
-import { accusations, answerText, evidenceText, investigations, known, questions, type Action, type Game } from "./game.ts";
+import { accusations, answerText, evidenceText, investigations, hintsUsed, known, questions, type Action, type Game } from "./game.ts";
 
 // HTML views of the local browser front end. Pure: (game, feedback) -> page. Every label comes from
 // PublicContent or released observations through the CLI's own helpers; actions are addressed by
@@ -85,7 +85,7 @@ type FormOptions = { cls?: string; hidden?: string | undefined; confirm?: string
 
 // A short visible label gets its context (the verb) as hidden text, so the accessible name stays
 // the full menu label while the visible label is wrapped and never ends a button bare.
-function actionForm(game: Game, slug: string, group: "u" | "f" | "a", index: number, label: string, o: FormOptions = {}): string {
+function actionForm(game: Game, slug: string, group: "u" | "f" | "a" | "h", index: number, label: string, o: FormOptions = {}): string {
   const confirm = o.confirm === undefined ? "" : ` data-confirm="${escape(o.confirm)}"`;
   const hidden = o.hidden === undefined ? "" : `<span class="visually-hidden">${escape(o.hidden)}</span>`;
   return `<form method="post" action="/fall/${slug}/act"${confirm}><input type="hidden" name="group" value="${group}"><input type="hidden" name="n" value="${index + 1}"><input type="hidden" name="at" value="${game.state.events.length}"><button type="submit"${o.cls ? ` class="${o.cls}"` : ""}>${hidden === "" ? escape(label) : `${hidden}<span>${escape(label)}</span>`}</button></form>`;
@@ -160,9 +160,11 @@ function journalEntry(game: Game, kind: string, text: string, eventIndex: number
 
 function journal(game: Game): string {
   const records = game.state.knowledge.observations;
-  if (records.length === 0) return `<p class="muted">Noch keine Funde oder Aussagen. Was du findest und hörst, landet hier.</p>`;
+  const used = hintsUsed(game);
+  const hints = used === 0 ? "" : `<p class="muted hints-used">Hinweise genutzt: ${used}</p>`;
+  if (records.length === 0) return `<p class="muted">Noch keine Funde oder Aussagen. Was du findest und hörst, landet hier.</p>${hints}`;
   // Newest first: what just happened is on top.
-  return `<ol class="journal" reversed>${[...records]
+  return `${hints}<ol class="journal" reversed>${[...records]
     .reverse()
     .map((r) =>
       journalEntry(
@@ -173,6 +175,12 @@ function journal(game: Game): string {
       ),
     )
     .join("")}</ol>`;
+}
+
+/** Graded hint on demand; every hint is a session event and counted in the journal and the closing. */
+function hintCard(game: Game, slug: string): string {
+  const used = hintsUsed(game);
+  return `<section id="hinweis" class="card hint"><h2>Hinweis</h2><p class="muted">Stockt die Ermittlung? Ein Hinweis zeigt die Richtung, wiederholt wird er konkreter.</p><div class="actions">${actionForm(game, slug, "h", 0, "Hinweis holen")}</div><p class="muted">Hinweise genutzt: ${used}</p></section>`;
 }
 
 function knownList(game: Game): string {
@@ -204,7 +212,7 @@ function closing(game: Game, slug: string): string {
 <span class="stamp" aria-hidden="true">Gelöst</span>
 <p class="big">${escape(name === null ? "Deine Anklage trifft zu." : `${name} war es.`)}</p>
 ${publicContent.epilogue === undefined ? "" : `<h3 class="epilogue-title">Auflösung</h3><div class="epilogue">${paragraphs(publicContent.epilogue)}</div>`}
-<dl class="stats"><div><dt>Aktionen</dt><dd>${steps}</dd></div><div><dt>${tries === 1 ? "Anklage" : "Anklagen"}</dt><dd>${tries}</dd></div><div><dt>Nachweise</dt><dd>${evidence.length}</dd></div></dl>
+<dl class="stats"><div><dt>Aktionen</dt><dd>${steps}</dd></div><div><dt>Hinweise</dt><dd>${hintsUsed(game)}</dd></div><div><dt>${tries === 1 ? "Anklage" : "Anklagen"}</dt><dd>${tries}</dd></div><div><dt>Nachweise</dt><dd>${evidence.length}</dd></div></dl>
 <p><strong>${escape(publicContent.challengeQuestion)}</strong> – deine Antwort erfüllt den Fallauftrag.</p>
 <p>Du hast ${steps} Aktionen gebraucht${tries > 1 ? ` und ${tries} Anklagen erhoben` : " und gleich die erste Anklage richtig gestellt"}.</p>
 ${evidence.length === 0 ? "" : `<h3>Deine Nachweise</h3><ul class="chips">${evidence.map((e) => `<li>${escape(e)}</li>`).join("")}</ul>`}
@@ -270,6 +278,7 @@ ${
 </div>
 <aside class="dossier side" aria-label="Bekannt und Spielstand">
 <section id="bekannt" class="card" tabindex="-1"><h2>Bekannt</h2>${knownList(game)}</section>
+${solved || game.pkg.identity.rulesetVersion !== "mystery-session-v3" ? "" : hintCard(game, slug)}
 <section class="card save"><h2>Spielstand</h2>
 <div class="actions"><a class="button" href="/fall/${slug}/save" download="${slug}.save.json">Speichern</a>
 <label class="button" tabindex="0" role="button" id="load-label">Laden<input type="file" id="load" accept=".json,application/json" hidden></label>

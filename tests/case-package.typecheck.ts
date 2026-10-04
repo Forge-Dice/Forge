@@ -24,7 +24,7 @@ pkg.publicContent.title = "x";
 // The descriptor has exactly three fields; no caseId.
 const descriptor: CasePackageIdentity = { schemaVersion: 1, packageHash: "a", rulesetVersion: "mystery-session-v1" };
 // @ts-expect-error unknown ruleset
-const otherRuleset: CasePackageIdentity = { schemaVersion: 1, packageHash: "a", rulesetVersion: "mystery-session-v3" };
+const otherRuleset: CasePackageIdentity = { schemaVersion: 1, packageHash: "a", rulesetVersion: "mystery-session-v9" };
 // @ts-expect-error the descriptor carries no caseId
 const withCase: CasePackageIdentity = { ...descriptor, caseId: "case:x" };
 
