@@ -56,7 +56,7 @@
     busy.hidden = false;
   }
   async function withIndicator(promise) {
-    busyTimer = setTimeout(() => showProgress("Der Fall wird vorbereitet …"), 300);
+    busyTimer = setTimeout(() => showProgress(store.get(LANG) === "en" ? "Preparing the case …" : "Der Fall wird vorbereitet …"), 300);
     try {
       return await promise;
     } finally {
@@ -74,15 +74,24 @@
   };
   const none = async () => null;
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+  // The language choice (/sprache sets a cookie on the server) lives in localStorage here.
+  const LANG = "kriminalfaelle.sprache";
+  const handle = async (method, url, body) => {
+    const lang = store.get(LANG);
+    const res = await app.handle(method, url, body, lang === null ? "" : `sprache=${lang}`);
+    const chosen = /^sprache=([a-z]{2});/.exec(res.headers["set-cookie"] || "");
+    if (chosen) store.set(LANG, chosen[1]);
+    return res;
+  };
 
   async function request(method, url, body) {
-    const res = await app.handle(method, url, body === undefined ? none : async () => body);
+    const res = await handle(method, url, body === undefined ? none : async () => body);
     if (method === "POST" && url === "/eigener-fall" && res.status === 200) {
       try { store.set(CASE_KEY + JSON.parse(res.body).slug, body); } catch {}
     }
     const changed = method === "POST" && /^\/fall\/([a-z0-9-]+)\/(act|new|load)$/.exec(url);
     if (changed) {
-      const saved = await app.handle("GET", `/fall/${changed[1]}/save`, none);
+      const saved = await handle("GET", `/fall/${changed[1]}/save`, none);
       if (saved.status === 200) store.set(KEY + changed[1], saved.body);
     }
     return res;
@@ -163,12 +172,12 @@
     for (const slug of [...app.slugs, ...generated.sort()]) {
       const saved = store.get(KEY + slug);
       if (saved === null) continue;
-      const loaded = await app.handle("POST", `/fall/${slug}/load`, async () => saved);
+      const loaded = await handle("POST", `/fall/${slug}/load`, async () => saved);
       if (loaded.headers["x-load-failed"]) {
         // A save this file cannot load (e.g. written by an older version of it): keep a copy before
         // the next autosave replaces it, and leave the warning for the player on the case page.
         store.set(KEY + slug + ".alt", saved);
-      } else if (loaded.status === 303) await app.handle("GET", `/fall/${slug}`, none);
+      } else if (loaded.status === 303) await handle("GET", `/fall/${slug}`, none);
     }
     // A download address (…/save) renders no page, so the shell would never leave its boot screen.
     const hashed = /^#(\/[^#]*)$/.exec(location.hash)?.[1] ?? "/";

@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "title": "The Vanished Prize Pumpkin",
+  "brief": "Village fair in Unterbrunn, brass band and plum cake. At 15:00 “Otto”, the prize pumpkin, vanishes from the weighing tent: 312 kilos, a village record, one hour before the judging. The fair scale recorded the moment to the second. The mayor speaks of an attack on the village community, the brass band plays a little quieter just in case.\n\nAs far as anyone knows, the fair is attended by: Mayor Alois Hübner, last year's winner Hilde Moosbrugger, fire chief Sepp Gruber, Hilde's granddaughter Lotte Brandl and Resi Huber, the landlady of the beer tent. Find out who rolled Otto out of the tent at 15:00. Not every fib hides the deed, and not every guest is on the list.",
+  "challengeQuestion": "Who rolled the prize pumpkin out of the weighing tent at 15:00?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:alois"
+      },
+      "label": "Alois Hübner",
+      "role": "mayor and prize judge"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:hilde"
+      },
+      "label": "Hilde Moosbrugger",
+      "role": "hobby gardener, last year's winner"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:sepp"
+      },
+      "label": "Sepp Gruber",
+      "role": "chief of the volunteer fire brigade"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:lotte"
+      },
+      "label": "Lotte Brandl",
+      "role": "Hilde's granddaughter, cashier at the cake stand"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:resi"
+      },
+      "label": "Resi Huber",
+      "role": "landlady of the beer tent"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:ferdl"
+      },
+      "label": "Ferdinand Kranz",
+      "role": "pumpkin farmer from Oberbrunn"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:wiegezelt"
+      },
+      "label": "Weighing tent",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:buehne"
+      },
+      "label": "Festival stage",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:kuchenstand"
+      },
+      "label": "Cake stand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:tombola"
+      },
+      "label": "Raffle stand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:bierzelt"
+      },
+      "label": "Beer tent",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:feuerwehr"
+      },
+      "label": "Fire brigade stand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:parkwiese"
+      },
+      "label": "Car park meadow",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kuerbis"
+      },
+      "label": "Prize pumpkin “Otto”",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "label": "Local paper's camera",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:wiegen"
+      },
+      "label": "Weighing of the pumpkins",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:anlieferung"
+      },
+      "label": "Hilde's delivery",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:ankunft"
+      },
+      "label": "Arrival at the car park meadow",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:kuchen"
+      },
+      "label": "Cake sale",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:rede"
+      },
+      "label": "Festive speech",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:tombola"
+      },
+      "label": "Reach into the raffle drum",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:anstich"
+      },
+      "label": "Tapping of the second keg",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:raub"
+      },
+      "label": "Disappearance of the pumpkin at 15:00",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:waage"
+      },
+      "label": "Scale log",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:handschuhe"
+      },
+      "label": "Gardening gloves",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:schleifspur"
+      },
+      "label": "Drag trail",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:parkschein"
+      },
+      "label": "Parking ticket",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:stativ"
+      },
+      "label": "Camera tripod",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:festvideo"
+      },
+      "label": "Festival video",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kuchenbon"
+      },
+      "label": "Till receipt",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:tombolafoto"
+      },
+      "label": "Raffle photo",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:zapfanlage"
+      },
+      "label": "Tap counter",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:resi",
+      "questionId": "question:q01",
+      "text": "Did you notice a stranger today?",
+      "answer": "I certainly did! Ferdl Kranz from Oberbrunn parked his ladder wagon in the car park meadow at 14:40. He never comes here otherwise, he says our beer tastes like a watering can."
+    },
+    {
+      "npc": "person:resi",
+      "questionId": "question:q02",
+      "text": "Did you tap a keg in the beer tent at 15:00?",
+      "answer": "Yes, on the stroke of three, the second keg. In this heat people drink like camels."
+    },
+    {
+      "npc": "person:sepp",
+      "questionId": "question:q03",
+      "text": "Were you at the fire brigade stand at 15:00?",
+      "answer": "Of course! A chief never leaves his post. Never.",
+      "admission": "All right. No, I wasn't at the stand. I was at the raffle. The lawnmower, you see? Mine is so old."
+    },
+    {
+      "npc": "person:alois",
+      "questionId": "question:q04",
+      "text": "Were you on the festival stage at 15:00?",
+      "answer": "But of course! At 15:00 I was giving the festive speech, the heart of the day. I am still moved."
+    },
+    {
+      "npc": "person:alois",
+      "questionId": "question:q05",
+      "text": "Did anyone record your festive speech?",
+      "answer": "Naturally, the local paper films every word. A speech like that belongs in the archive."
+    },
+    {
+      "npc": "person:lotte",
+      "questionId": "question:q06",
+      "text": "Was the mayor in the weighing tent at 15:00?",
+      "answer": "I think so! He talks about that pumpkin all the time. But I didn't really see him."
+    },
+    {
+      "npc": "person:lotte",
+      "questionId": "question:q07",
+      "text": "Were you at the cake stand at 15:00?",
+      "answer": "Yes! I was the cashier. Grandma says I'm allowed because I'm the best at sums."
+    },
+    {
+      "npc": "person:hilde",
+      "questionId": "question:q08",
+      "text": "Were you in the weighing tent at 15:00?",
+      "answer": "No. At three I was at the cake stand. And before you ask, I don't begrudge Otto his record. Much."
+    },
+    {
+      "npc": "person:hilde",
+      "questionId": "question:q09",
+      "text": "Was Sepp Gruber at the raffle at 15:00?",
+      "answer": "What Sepp gets up to is none of my business. I'm no telltale."
+    },
+    {
+      "npc": "person:ferdl",
+      "questionId": "question:q10",
+      "text": "Were you in the car park meadow at 14:40?",
+      "answer": "Me? At your fair? No. I was at home in Oberbrunn watering my Bertha.",
+      "admission": "Oh, all right. I was there, at 14:40, with the wagon. A man's allowed to look at a fair, isn't he?"
+    },
+    {
+      "npc": "person:ferdl",
+      "questionId": "question:q11",
+      "text": "Were you in the weighing tent at 15:00?",
+      "answer": "I'm saying nothing. And I've never even seen this Otto."
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "What a scale, a video, a photo, a till receipt, a tap counter or a parking ticket records with a time counts as fact. What people say can be mistaken, fibbed or plain lies."
+    },
+    {
+      "id": "rule:presence",
+      "text": "The pumpkin was rolled out of the weighing tent at 15:00 by exactly one person. Whoever was provably somewhere else at 15:00 is ruled out."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Since 14:45 the gates of the fairground, car park meadow included, have been shut because of the crowds; nobody came in or out. Anyone provably at the fair today is a possible culprit, even someone on no list. Once everyone else is ruled out, the last person remains."
+    }
+  ],
+  "epilogue": "Behind the stable of the Kranz farm in Oberbrunn, under a tarpaulin and two horse blankets, lies Otto, unharmed and slightly offended. Ferdinand Kranz could not bear that his Bertha, at 298 kilos, was only going to come second. At 14:40 he parked his ladder wagon in the car park meadow, and at 15:00, in the middle of the festive speech, he lifted the tarpaulin behind the tent and rolled Otto across the fairground. Nobody saw it, everyone was listening to the mayor. Or pretending to.\n\nHilde had left her gloves behind at noon when she brought her own pumpkin. Lotte honestly suspected the mayor because he talked about Otto so much. And Sepp only lied because at three he was secretly fishing for the lawnmower at the raffle. Otto wins first prize, Bertha gets a certificate for diligence, and Ferdl has to run the bar at the next fair."
+}

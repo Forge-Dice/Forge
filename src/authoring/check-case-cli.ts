@@ -1,11 +1,12 @@
-import { checkCaseFolder, formatCaseCheck, writeFilledHashes } from "./check-case.ts";
+import { caseLocales, checkCaseFolder, formatCaseCheck, writeFilledHashes } from "./check-case.ts";
 import { loadFolderPackage } from "../play/cases.ts";
 import { DEFAULT_SEEDS, formatPlaytest, playtestCase } from "../play/playtest.ts";
 
 // `npm run check-case -- [--fix] [--ohne-spieltest] <ordner>`: exit code 0 when the case folder is
 // valid and solvable. --fix writes computed hashes into TO_BE_COMPUTED placeholders and over
 // outdated hash values. A valid case is then played by the playtest bot; its balance warnings are
-// printed as hints and never change the exit code.
+// printed as hints and never change the exit code. Locale variants (<ordner>/en/ …) are checked
+// after their base: a pure translation, still solvable.
 
 // Same seeds as `npm run playtest`, so check-case and the stored PLAY_CASES ratings agree.
 const PLAYTEST_SEEDS = DEFAULT_SEEDS;
@@ -33,6 +34,15 @@ if (dirs.length === 0) {
       } catch (error) {
         console.log(`  Hinweis Spieltest: nicht möglich (${(error as Error).message})`);
       }
+    }
+    for (const lang of caseLocales(dir)) {
+      let local = checkCaseFolder(dir, lang);
+      if (fix && local.filled.length > 0) {
+        console.log(`--fix: Hashes eingetragen in ${writeFilledHashes(local).join(", ")}`);
+        local = checkCaseFolder(dir, lang);
+      }
+      console.log(formatCaseCheck(local, lang));
+      if (!local.ok) process.exitCode = 1;
     }
   }
 }

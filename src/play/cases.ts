@@ -1,10 +1,12 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseCaseTruth } from "../domain/case-truth.ts";
 import { resolveCasePackage, type PackageRefSource, type ResolvedCasePackage, type RulesetVersion } from "../domain/case-package.ts";
 import { buildPlayerRefIndex, playerRefFor, resolvePlayerRef } from "../domain/player-ref.ts";
 import { bindCaseProof } from "../authoring/check-case.ts";
-import { difficultyText, type Difficulty } from "./difficulty.ts";
+import { difficultyDots, type Difficulty } from "./difficulty.ts";
+import { DEFAULT_LANG, MESSAGES, type Lang } from "./messages.ts";
+import { loadText, switchLang, type Game } from "./game.ts";
 import { registerPar } from "./score.ts";
 
 // Trusted host side of the play CLI: loads a playable case from its fixture files and resolves it
@@ -65,19 +67,34 @@ export function refSource(truthInput: unknown, salt: string): PackageRefSource {
   };
 }
 
-const readFixture = (c: PlayCase, name: string): unknown => JSON.parse(readFileSync(new URL(name, fixtureDir(c)), "utf8"));
+/**
+ * Player text files a locale variant replaces (in tests/fixtures/<case>/<lang>/). Truth, solution,
+ * access, NPCs and proof stay shared, so every language plays the same case with the same refs.
+ */
+export const LOCALE_FILES = ["public-content.json", "evidence-presentation.json"] as const;
+
+const readFixture = (c: PlayCase, name: string, lang: Lang = DEFAULT_LANG): unknown => {
+  const localized = new URL(`${lang}/${name}`, fixtureDir(c));
+  const url = lang !== DEFAULT_LANG && (LOCALE_FILES as readonly string[]).includes(name) && existsSync(localized) ? localized : new URL(name, fixtureDir(c));
+  return JSON.parse(readFileSync(url, "utf8"));
+};
+
+/** Languages a case has player text for: the default plus every locale folder. */
+export const caseLangs = (c: PlayCase): Lang[] => [DEFAULT_LANG, ...(["en"] as const).filter((l) => existsSync(new URL(`${l}/public-content.json`, fixtureDir(c))))];
 
 /** The case list of the CLI: name, title and measured difficulty, one case per line. */
-export function caseListText(): string {
+export function caseListText(lang: Lang = DEFAULT_LANG): string {
+  const m = MESSAGES[lang];
   const rows = (Object.entries(PLAY_CASES) as [PlayCaseName, PlayCase][]).map(([name, c]) => {
-    const title = (readFixture(c, "public-content.json") as { title: string }).title;
-    return `  ${name.padEnd(12)} ${c.difficulty === undefined ? "(nicht gemessen)".padEnd(17) : difficultyText(c.difficulty).padEnd(17)} ${title}`;
+    const title = (readFixture(c, "public-content.json", lang) as { title: string }).title;
+    const difficulty = c.difficulty === undefined ? m.cli.notMeasured : `${difficultyDots(c.difficulty)} ${m.difficulty[c.difficulty]}`;
+    return `  ${name.padEnd(12)} ${difficulty.padEnd(17)} ${title}`;
   });
-  return ["Fälle (Schwierigkeit gemessen mit npm run playtest):", ...rows].join("\n");
+  return [m.cli.caseListHead, ...rows].join("\n");
 }
 
-export function playPackageInput(c: PlayCase): Record<string, unknown> {
-  return packageInputFrom((name) => readFixture(c, name), c.npcs, c.rulesetVersion);
+export function playPackageInput(c: PlayCase, lang: Lang = DEFAULT_LANG): Record<string, unknown> {
+  return packageInputFrom((name) => readFixture(c, name, lang), c.npcs, c.rulesetVersion);
 }
 
 function packageInputFrom(read: (name: string) => unknown, npcs: readonly string[], rulesetVersion: RulesetVersion): Record<string, unknown> {
@@ -105,11 +122,33 @@ function bindAndResolve(read: (name: string) => unknown, input: Record<string, u
   return result.package;
 }
 
-export function loadPlayPackage(name: PlayCaseName): ResolvedCasePackage {
+export function loadPlayPackage(name: PlayCaseName, lang: Lang = DEFAULT_LANG): ResolvedCasePackage {
   const c = PLAY_CASES[name];
-  const pkg = bindAndResolve((file) => readFixture(c, file), playPackageInput(c), c.salt, name);
+  const pkg = bindAndResolve((file) => readFixture(c, file), playPackageInput(c, lang), c.salt, name);
   if (c.par !== undefined) registerPar(pkg, c.par);
   return pkg;
+}
+
+/**
+ * Loads a save in the player's language. A save names its package, and each language is its own
+ * package, so a save made in another language is loaded there and replayed in this one.
+ */
+export function loadSaveInLang(
+  name: PlayCaseName,
+  lang: Lang,
+  text: string,
+  packages: (lang: Lang) => ResolvedCasePackage = (l) => loadPlayPackage(name, l),
+): { ok: true; game: Game } | { ok: false; text: string } {
+  const { clockOrigin } = PLAY_CASES[name];
+  const pkg = packages(lang);
+  const direct = loadText(pkg, text, clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
+  if (direct.ok) return direct;
+  for (const other of caseLangs(PLAY_CASES[name]).filter((l) => l !== lang)) {
+    const loaded = loadText(packages(other), text, clockOrigin);
+    const moved = loaded.ok ? switchLang(loaded.game, pkg, lang) : null;
+    if (moved !== null) return { ok: true, game: moved };
+  }
+  return direct;
 }
 
 /** Any case folder (already passed check-case) as a package under the play ruleset (hints on). */

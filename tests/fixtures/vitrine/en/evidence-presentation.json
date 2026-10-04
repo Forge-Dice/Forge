@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "entries": [
+    {
+      "evidenceId": "evidence:d01",
+      "text": "The stamp in the visitor book: Max Brandt entered the Gallery at 18:02. The stamp does not reveal where he was at 18:04.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:galerie"
+        },
+        {
+          "kind": "person",
+          "id": "person:max"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:galerie",
+            "at": 120
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d02",
+      "text": "The display case sensor log: glass lifted at 18:04:00. The sensor does not show who lifted it.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e04"
+        },
+        {
+          "kind": "item",
+          "id": "item:medaille"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e04",
+            "itemId": "item:medaille"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d03",
+      "text": "A contact sheet from the Courtyard photo shoot, without timestamps. Nora Weiss can be seen in several of the pictures. She has the complete footage herself.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e05"
+        },
+        {
+          "kind": "person",
+          "id": "person:nora"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e05",
+            "personId": "person:nora"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d04",
+      "text": "The complete footage of the photo shoot, frame by frame with timestamps: at 18:04:00, Max Brandt and Nora Weiss are standing in the Courtyard, Max holding a glass of sparkling wine.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:hof"
+        },
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "person",
+          "id": "person:nora"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:nora",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d05",
+      "text": "The archive camera shows Oskar Falk at 18:04:00 at the desk in the Archive, bent over an inventory ledger.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:archiv"
+        },
+        {
+          "kind": "person",
+          "id": "person:oskar"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:oskar",
+            "locationId": "location:archiv",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d06",
+      "text": "Recording from the Workshop, 18:05: Lina Kern is standing at a closed transport case and places her hand on the lid. What lies inside cannot be seen.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e07"
+        },
+        {
+          "kind": "item",
+          "id": "item:kassette"
+        },
+        {
+          "kind": "location",
+          "id": "location:werkstatt"
+        },
+        {
+          "kind": "person",
+          "id": "person:lina"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e07",
+            "personId": "person:lina"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e07",
+            "itemId": "item:kassette"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lina",
+            "locationId": "location:werkstatt",
+            "at": 300
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d07",
+      "text": "The receipt in the key log: at 18:03, Oskar Falk handed the display case key to Lina Kern. Both of them signed.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e03"
+        },
+        {
+          "kind": "item",
+          "id": "item:schluessel"
+        },
+        {
+          "kind": "location",
+          "id": "location:archiv"
+        },
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "person",
+          "id": "person:oskar"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e03",
+            "personId": "person:lina"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e03",
+            "itemId": "item:schluessel"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e03",
+            "personId": "person:oskar"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lina",
+            "locationId": "location:archiv",
+            "at": 180
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:d08",
+      "text": "The closing list in the Foyer names exactly four people who stayed in the building after closing: Max Brandt, Lina Kern, Nora Weiss and Oskar Falk.",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:e01"
+        },
+        {
+          "kind": "person",
+          "id": "person:lina"
+        },
+        {
+          "kind": "person",
+          "id": "person:max"
+        },
+        {
+          "kind": "person",
+          "id": "person:nora"
+        },
+        {
+          "kind": "person",
+          "id": "person:oskar"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e01",
+            "personId": "person:max"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e01",
+            "personId": "person:lina"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e01",
+            "personId": "person:nora"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e01",
+            "personId": "person:oskar"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    }
+  ]
+}

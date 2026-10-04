@@ -19,7 +19,14 @@ afterAll(() => rmSync(scratch, { recursive: true, force: true }));
 
 const digest = (dir: string) =>
   createHash("sha256")
-    .update(readdirSync(dir).sort().map((f) => f + readFileSync(join(dir, f), "utf8")).join("\0"))
+    .update(
+      // Recursive: locale variants (en/) are part of a case folder.
+      (readdirSync(dir, { recursive: true }) as string[])
+        .filter((f) => f.endsWith(".json"))
+        .sort()
+        .map((f) => f + readFileSync(join(dir, f), "utf8"))
+        .join("\0"),
+    )
     .digest("hex");
 const fixtureDigests = Object.fromEntries(readdirSync(FIXTURES).map((d) => [d, digest(join(FIXTURES, d))]));
 const geige = caseSources().find((s) => s.key === "fixtures/geige")!;

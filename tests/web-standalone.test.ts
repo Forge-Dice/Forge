@@ -131,9 +131,27 @@ describe("standalone browser build", () => {
     expect(end, /<section id="notice"[\s\S]*?<\/section>/.exec(end)?.[0]).toContain("Lina Kern war es.");
   });
 
+  it("plays in English like the server: the locale variants are embedded", async () => {
+    const server = createWebHandler();
+    const both = async (method: string, url: string): Promise<WebResponse> => {
+      const [a, b] = await Promise.all([server(method, url, body(undefined), "sprache=en"), bundled(method, url, body(undefined), "sprache=en")]);
+      expect(b).toEqual(a);
+      return a;
+    };
+    expect((await both("GET", "/sprache?l=en&zurueck=%2F")).headers["set-cookie"]).toMatch(/^sprache=en;/);
+    for (const c of Object.values(PLAY_CASES)) {
+      await both("POST", `/fall/${c.dir}/new`); // earlier tests played on in the bundle
+      const page = (await both("GET", `/fall/${c.dir}`)).body;
+      expect(page).toContain('<html lang="en">');
+      expect(page).toContain(">Investigate</h2>");
+    }
+    // The bundle's case list also lists the random cases earlier tests opened there.
+    expect((await bundled("GET", "/", body(undefined), "sprache=en")).body).toContain("<h1>Detective Cases</h1>");
+  });
+
   it("loads an exported case file exactly like the server and refuses a tampered one", async () => {
     const dir = new URL("./fixtures/geige/", import.meta.url).pathname;
-    const share = exportCaseFiles(Object.fromEntries(readdirSync(dir).map((f) => [f, readFileSync(dir + f, "utf8")])));
+    const share = exportCaseFiles(Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, readFileSync(dir + f, "utf8")])));
     const server = createWebHandler();
     const [a, b] = await Promise.all([server("POST", "/eigener-fall", body(share)), bundled("POST", "/eigener-fall", body(share))]);
     expect(b).toEqual(a);
@@ -151,7 +169,7 @@ describe("standalone browser build", () => {
 
   it("refuses the import attacks in the bundle as the server does", async () => {
     const dir = new URL("./fixtures/geige/", import.meta.url).pathname;
-    const files = Object.fromEntries(readdirSync(dir).map((f) => [f, readFileSync(dir + f, "utf8")]));
+    const files = Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, readFileSync(dir + f, "utf8")]));
     const deep = files["release-manifest.json"]!.replace(/\}\s*$/, `,"x":${"[".repeat(100_000)}${"]".repeat(100_000)}}`);
     const server = createWebHandler();
     for (const text of [exportCaseFiles({ ...files, "release-manifest.json": deep }), exportCaseFiles({ ...files, "zz.json": "{}" }), "x".repeat(2 * 1024 * 1024)]) {

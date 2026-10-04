@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "title": "The Letter Opener",
+  "brief": "A dinner at the family's country house, rain against the windows. Shortly after 20:25 Clara is found dead in the library, killed with the letter opener from her own desk. Apart from her, only three people were in the house that evening: her niece Anna, her business partner Ben and the butler Dorian.\n\nFind out who is responsible for Clara's death. Search the library, the garden and the kitchen, examine what you find, and question Anna and Ben. If you think someone is lying, confront them with a find. Not every trace leads to the culprit, and keeping silent is not a confession.",
+  "challengeQuestion": "Who is responsible for Clara's death?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:anna"
+      },
+      "label": "Anna",
+      "role": "the lady of the house's niece"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:ben"
+      },
+      "label": "Ben",
+      "role": "business partner"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:clara"
+      },
+      "label": "Clara",
+      "role": "the victim"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:library"
+      },
+      "label": "Library",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:garden"
+      },
+      "label": "Garden",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:letter-opener"
+      },
+      "label": "Letter opener",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:gloves"
+      },
+      "label": "Gardening gloves",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:murder"
+      },
+      "label": "Clara's death at 20:25",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:argument"
+      },
+      "label": "Argument about the will",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:walk"
+      },
+      "label": "Anna's gardening",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:cuff-button"
+      },
+      "label": "Cuff button",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:fingerprint"
+      },
+      "label": "Fingerprint",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:muddy-path"
+      },
+      "label": "Footprints in the flowerbed",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:dorian"
+      },
+      "label": "Dorian",
+      "role": "butler"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:kitchen"
+      },
+      "label": "Kitchen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:tray"
+      },
+      "label": "Silver tray",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:tea"
+      },
+      "label": "Tea in the library",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:tray"
+      },
+      "label": "Tea tray",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kitchen-log"
+      },
+      "label": "Silver ledger",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:anna",
+      "questionId": "question:q01",
+      "text": "Was Ben present at Clara's death?",
+      "answer": "I think so. Ben was nearby, I have a feeling about it."
+    },
+    {
+      "npc": "person:anna",
+      "questionId": "question:q02",
+      "text": "Were you present at Clara's death?",
+      "answer": "I ... I don't know. I don't even know exactly when it happened."
+    },
+    {
+      "npc": "person:anna",
+      "questionId": "question:q04",
+      "text": "Were you in the Garden at 20:25?",
+      "answer": "Yes, at 20:25 I was outside in the garden."
+    },
+    {
+      "npc": "person:anna",
+      "questionId": "question:q05",
+      "text": "Were you in the Library at 20:25?",
+      "answer": "No, I wasn't in the library then."
+    },
+    {
+      "npc": "person:ben",
+      "questionId": "question:q01",
+      "text": "Were you present at Clara's death?",
+      "answer": "No. I wasn't there, I swear to you.",
+      "admission": "All right. Yes, I was there when Clara died."
+    },
+    {
+      "npc": "person:ben",
+      "questionId": "question:q02",
+      "text": "Was Anna present at Clara's death?",
+      "answer": "Yes, Anna was there. Ask her yourself."
+    },
+    {
+      "npc": "person:ben",
+      "questionId": "question:q03",
+      "text": "Was Clara killed with the letter opener?",
+      "answer": "I won't say a word about that without my lawyer."
+    },
+    {
+      "npc": "person:ben",
+      "questionId": "question:q04",
+      "text": "Was Anna in the Garden at 20:25?",
+      "answer": "Yes, Anna was in the garden at 20:25."
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "What a find shows by itself counts as fact. Statements by people can be mistaken or lies."
+    },
+    {
+      "id": "rule:alibi",
+      "text": "Whoever was in the garden or in the kitchen at 20:25 took no part in Clara's death and is not responsible."
+    },
+    {
+      "id": "rule:participation",
+      "text": "Whoever, confronted with a find, admits to having been present at Clara's death is responsible."
+    }
+  ],
+  "epilogue": "Ben breaks down when you confront him with the cuff button. \"She wanted to ruin me,\" he says, and his voice fails. He owed Clara money he could not pay back, and that evening the two of them argued in the library about the will. At 20:25 he reached for the letter opener on the desk. Under questioning he lied: he had not been there, it had been Anna.\n\nAnna had nothing to do with Clara's death. She was working in the garden at the time, and the trail camera recorded her. Her fingerprint on the handle of the letter opener was a false lead: she had opened letters with it that afternoon. Dorian was innocent too. He had brought the two of them tea at 20:20 and was counting the silver in the kitchen at the time of the crime."
+}

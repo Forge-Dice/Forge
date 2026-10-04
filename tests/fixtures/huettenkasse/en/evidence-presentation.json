@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:huettenkasse",
+  "truthHash": "7eb089891564275ca1e43ee76a8404bc99768a906729973fd1df2c668701e070",
+  "entries": [
+    {
+      "evidenceId": "evidence:schrank",
+      "text": "The cash cabinet behind the counter is open, and the hut's cash box is gone. On top lies the hut book, open at today's page.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:stube"
+        },
+        {
+          "kind": "item",
+          "id": "item:kasse"
+        },
+        {
+          "kind": "item",
+          "id": "item:buch"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:abdruck",
+      "text": "In front of the cabinet a boot print is drying, with a coarse mountain-guide tread, exactly like Lukas Brandl's boots. It does not reveal when it was made.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lukas"
+        },
+        {
+          "kind": "location",
+          "id": "location:stube"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:eintrag",
+      "text": "Below the names of the evening's guests there is one last entry, in hurried handwriting: “21:40, Tobias Wenger, winter room, ski tour to the glacier.” So he was in the hut tonight, even though no one saw him at dinner.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:tobias"
+        },
+        {
+          "kind": "location",
+          "id": "location:winterraum"
+        },
+        {
+          "kind": "event",
+          "id": "event:eintrag"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:tobias",
+            "locationId": "location:winterraum",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:funkbuch",
+      "text": "On the table in the radio room lies the radio logbook, next to a cold cup of tea. The last entry breaks off mid-sentence; the radio itself stores every connection.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:funkraum"
+        },
+        {
+          "kind": "item",
+          "id": "item:funkgeraet"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:funkprotokoll",
+      "text": "The radio shows the last connection: 23:05 to 23:15, Mountain Rescue Valley. Lukas Brandl reports the weather conditions; from 23:08 Dr. Johanna Pichler talks about a patient. Both voices can be heard the whole time.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lukas"
+        },
+        {
+          "kind": "person",
+          "id": "person:johanna"
+        },
+        {
+          "kind": "location",
+          "id": "location:funkraum"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lukas",
+            "locationId": "location:funkraum",
+            "at": 7800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:johanna",
+            "locationId": "location:funkraum",
+            "at": 7800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:stativ",
+      "text": "Gerd's camera is still on its tripod on the terrace, covered in snow. It was running in interval mode.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:terrasse"
+        },
+        {
+          "kind": "item",
+          "id": "item:kamera"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:sternserie",
+      "text": "Frame 214 of the interval series, timestamp 23:10:00: Gerd Sailer and Mira Hofer stand on the terrace in front of the starry sky, both wearing headlamps.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:gerd"
+        },
+        {
+          "kind": "person",
+          "id": "person:mira"
+        },
+        {
+          "kind": "location",
+          "id": "location:terrasse"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:gerd",
+            "locationId": "location:terrasse",
+            "at": 7800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:mira",
+            "locationId": "location:terrasse",
+            "at": 7800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:felle",
+      "text": "In the winter room, wet climbing skins hang over the stove, next to an empty sleeping bag. The skins are still dripping; the bed is cold.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:winterraum"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:banderole",
+      "text": "A strip of paper sticks out from under the sleeping bag in the winter room: a money band with Rosa's stamp “Hut's cash box”, dated today.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:winterraum"
+        },
+        {
+          "kind": "item",
+          "id": "item:kasse"
+        }
+      ],
+      "reports": []
+    }
+  ]
+}

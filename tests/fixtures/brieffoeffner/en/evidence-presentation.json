@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "truthHash": "24accd1071c10c9b3539b46ab1034c22293f64d0b84fcf3fc861d7bca2610f96",
+  "entries": [
+    {
+      "evidenceId": "evidence:cuff-button",
+      "text": "Next to the desk lies a torn-off mother-of-pearl cuff button, clearly from Ben's shirt. It does not show when it came off: Ben had already been in the library once that evening.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ben"
+        },
+        {
+          "kind": "location",
+          "id": "location:library"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:fingerprint",
+      "text": "There is a fingerprint of Anna's on the handle of the letter opener. It does not show when it was left.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "item",
+          "id": "item:letter-opener"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:muddy-path",
+      "text": "Fresh footprints in the flowerbed, the tread of Anna's boots. The trail camera at the garden fence recorded her: 20:25, exactly at the time of the crime.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "location",
+          "id": "location:garden"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:anna",
+            "locationId": "location:garden",
+            "at": 1500
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:tray",
+      "text": "On the library table stands Dorian's silver tray with two teacups, one of them knocked over. According to the tea list he served here at 20:20, five minutes before the crime.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:dorian"
+        },
+        {
+          "kind": "location",
+          "id": "location:library"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:dorian",
+            "locationId": "location:library",
+            "at": 1200
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:kitchen-log",
+      "text": "In the kitchen's silver ledger is Dorian's entry from 20:25: he was counting the silver, and the cook countersigned next to it.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:dorian"
+        },
+        {
+          "kind": "location",
+          "id": "location:kitchen"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:dorian",
+            "locationId": "location:kitchen",
+            "at": 1500
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    }
+  ]
+}

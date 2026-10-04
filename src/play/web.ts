@@ -13,18 +13,20 @@ import {
   investigations,
   known,
   loadText,
+  msg,
   newGame,
   questions,
   saveText,
-  SESSION_ERRORS,
+  switchLang,
   type Action,
   type Game,
 } from "./game.ts";
 import { renderCaseList, renderGame, renderHelp, type Feedback } from "./web-page.ts";
-import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./cases.ts";
+import { PLAY_CASES, loadPlayPackage, loadSaveInLang, playCaseName, type PlayCaseName } from "./cases.ts";
+import { DEFAULT_LANG, MESSAGES, parseLang, type Lang } from "./messages.ts";
 import { generateCase, generatedClockOrigin, generatedPackage } from "../authoring/case-generator.ts";
 import { generateCaseOfDifficulty } from "../authoring/case-difficulty.ts";
-import { difficultyText, type Difficulty } from "./difficulty.ts";
+import { difficultyDots, type Difficulty } from "./difficulty.ts";
 import { importCaseText, MAX_SHARE_BYTES } from "./case-share.ts";
 import { renderImport } from "./import-page.ts";
 
@@ -34,6 +36,23 @@ import { renderImport } from "./import-page.ts";
 const MAX_GENERATED = 20;
 const MAX_IMPORTED = 20;
 const MAX_BODY = Math.max(1024 * 1024, MAX_SHARE_BYTES) + 4096; // one Session C save or case file plus slack
+
+// The language (de default, en) is the player's choice, remembered in a cookie; switching keeps
+// the game (its events replay on the other language's package). Generated cases exist only in
+// German: there the language changes the frame, not the case text.
+const LANG_COOKIE = "sprache";
+
+/** The remembered language from a Cookie header: the cookie set by /sprache, else German. */
+export function langOfCookie(cookie: string | undefined): Lang {
+  const pair = (cookie ?? "").split(";").map((c) => c.trim().split("=")).find(([k]) => k === LANG_COOKIE);
+  return parseLang(pair?.[1]) ?? DEFAULT_LANG;
+}
+
+/** The game with its frame in another language (same package). */
+const withLang = (game: Game, lang: Lang): Game => {
+  const { lang: _, ...rest } = game;
+  return lang === DEFAULT_LANG ? rest : { ...rest, lang };
+};
 
 function readBody(req: IncomingMessage): Promise<string | null> {
   return new Promise((resolve) => {
@@ -55,45 +74,42 @@ function readBody(req: IncomingMessage): Promise<string | null> {
 
 /** Feedback for one accepted action: what was done, what is new, in the player's words. */
 function feedbackFor(before: Game, after: Game, action: Action, output: SessionOutput, unlockedCount = 0): Feedback {
+  const m = msg(after).web;
   const newKnown = after.state.knowledge.known.filter((k) => !before.state.knowledge.known.some((b) => b.ref === k.ref));
   const labels = (kind: string) => known(after, kind).filter((k) => newKnown.some((n) => n.ref === k.ref)).map((k) => k.label);
   const news = ["person", "location", "item", "event"].flatMap(labels);
   const learned = [
-    ...(news.length === 0 ? [] : [`Neu bekannt: ${news.join(", ")}.`]),
-    ...(unlockedCount === 0 ? [] : [unlockedCount === 1 ? "Eine neue Spur ist offen." : `${unlockedCount} neue Spuren sind offen.`]),
+    ...(news.length === 0 ? [] : [m.newKnown(news.join(", "))]),
+    ...(unlockedCount === 0 ? [] : [m.newLeads(unlockedCount)]),
   ];
   switch (output.type) {
     case "investigate":
       if (output.observations.length === 0) {
-        return { tone: "info", title: action.label, lines: ["Hier findest du nichts Neues.", ...learned] };
+        return { tone: "info", title: action.label, lines: [m.nothingHere, ...learned] };
       }
       return {
         tone: "info",
-        title: `${action.label}: ${output.observations.length === 1 ? "ein neuer Fund" : `${output.observations.length} neue Funde`}`,
+        title: `${action.label}: ${m.newFinds(output.observations.length)}`,
         lines: [...output.observations.map((o) => evidenceText(after, o)), ...learned],
       };
     case "hint":
-      return { tone: "info", title: "Hinweis", lines: [hintText(after, output.hint)] };
+      return { tone: "info", title: m.hint, lines: [hintText(after, output.hint)] };
     case "interrogate":
-      return { tone: "info", title: "Aussage", lines: [answerText(after, output.observation), ...learned] };
+      return { tone: "info", title: m.statement, lines: [answerText(after, output.observation), ...learned] };
     case "confront":
       return {
         tone: output.observation.act === "admit" ? "ok" : "info",
-        title: output.observation.act === "admit" ? "Konfrontation: die Aussage bricht ein" : "Konfrontation",
+        title: output.observation.act === "admit" ? m.confrontationBreaks : m.confrontation,
         lines: [confrontationText(after, output.observation), ...learned],
       };
     case "accuse":
       return output.verdict === "solved"
-        ? { tone: "ok", title: "Die Anklage sitzt.", lines: [`Du hast ${action.label} angeklagt. Der Fall ist gelöst.`] }
-        : {
-            tone: "warn",
-            title: "Diese Anklage löst den Fall nicht.",
-            lines: [`Du hast ${action.label} angeklagt, doch damit ist der Fallauftrag nicht erfüllt. Ermittle weiter und prüfe deine Nachweise.`],
-          };
+        ? { tone: "ok", title: m.accuseSolvedTitle, lines: [m.accuseSolved(action.label)] }
+        : { tone: "warn", title: m.accuseWrongTitle, lines: [m.accuseWrong(action.label)] };
   }
 }
 
-const HINT: Action[] = [{ label: "Hinweis", event: { type: "hint" } }];
+const HINT = (game: Game): Action[] => [{ label: msg(game).web.hint, event: { type: "hint" } }];
 
 /** Slug of a generated case: its seed and, for a wished difficulty, the level. */
 const zufallSlug = (seed: number, level: Difficulty | null): string => `zufall-${seed}${level === null ? "" : `-stufe-${level}`}`;
@@ -129,7 +145,8 @@ function unlocked(before: Game, after: Game): Set<string> {
 }
 
 export type WebResponse = { readonly status: number; readonly headers: Readonly<Record<string, string>>; readonly body: string };
-export type WebHandler = (method: string, url: string, body: () => Promise<string | null>) => Promise<WebResponse>;
+/** cookie: the request's Cookie header (the language choice); the response may set it. */
+export type WebHandler = (method: string, url: string, body: () => Promise<string | null>, cookie?: string) => Promise<WebResponse>;
 
 /**
  * The whole front end as a function of (method, url, body) over one in-memory game per case. The
@@ -149,13 +166,28 @@ export function createWebHandler(
     readonly maxGenerated?: number;
   } = {},
 ): WebHandler {
+  // Given packages are the German ones; other languages load their locale variant on demand.
+  const loaded = new Map<string, ResolvedCasePackage>();
+  const pkgFor = (name: PlayCaseName, lang: Lang): ResolvedCasePackage => {
+    const given = lang === DEFAULT_LANG ? packages[name] : undefined;
+    if (given !== undefined) return given;
+    const key = `${name}|${lang}`;
+    let pkg = loaded.get(key);
+    if (pkg === undefined) loaded.set(key, (pkg = loadPlayPackage(name, lang)));
+    return pkg;
+  };
+  const start = (name: PlayCaseName, lang: Lang): Game => newGame(pkgFor(name, lang), PLAY_CASES[name].clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
   const slots = new Map<PlayCaseName, Slot>();
-  const slot = (name: PlayCaseName): Slot => {
+  const slot = (name: PlayCaseName, lang: Lang): Slot => {
     let s = slots.get(name);
     if (s === undefined) {
-      const pkg = packages[name] ?? loadPlayPackage(name);
-      s = { game: newGame(pkg, PLAY_CASES[name].clockOrigin), feedback: { tone: "info", title: "Willkommen", lines: ["Lies die Fallakte und beginne zu ermitteln."] }, fresh: new Set() };
+      const m = MESSAGES[lang].web;
+      s = { game: start(name, lang), feedback: { tone: "info", title: m.welcome, lines: [m.welcomeLine] }, fresh: new Set() };
       slots.set(name, s);
+    } else if ((s.game.lang ?? DEFAULT_LANG) !== lang) {
+      // Same case, other language: the player's events replay on that language's package.
+      s.game = switchLang(s.game, pkgFor(name, lang), lang) ?? start(name, lang);
+      [s.feedback, s.fresh] = [null, new Set()];
     }
     return s;
   };
@@ -169,20 +201,69 @@ export function createWebHandler(
   const extras = new Map<string, { version: string; slot: Slot }>();
   // Imported cases ("Eigenen Fall laden"), keyed by eigen-<digest>; the oldest is dropped beyond MAX_IMPORTED.
   const imported = new Map<string, { slot: Slot; clockOrigin: number; title: string }>();
-  type Target = { readonly slot: Slot; readonly slug: string; readonly clockOrigin: number; readonly seed: number | null; readonly level?: Difficulty | null };
-  const target = (slug: string | undefined): Target | null => {
+  type Target = {
+    readonly slot: Slot;
+    readonly slug: string;
+    readonly clockOrigin: number;
+    /** The seed of a generated case, null otherwise. */
+    readonly seed: number | null;
+    /** The wished difficulty of a generated case, null for any. */
+    readonly level?: Difficulty | null;
+    /** A fresh game and a loaded save, both in the request's language. */
+    readonly restart: () => Game;
+    readonly load: (text: string) => ReturnType<typeof loadText>;
+  };
+  const target = (slug: string | undefined, lang: Lang): Target | null => {
     const name = playCaseName(slug);
-    if (name !== null) return { slot: slot(name), slug: slugOf(name), clockOrigin: PLAY_CASES[name].clockOrigin, seed: null };
+    if (name !== null) {
+      return {
+        slot: slot(name, lang),
+        slug: slugOf(name),
+        clockOrigin: PLAY_CASES[name].clockOrigin,
+        seed: null,
+        restart: () => start(name, lang),
+        load: (text) => loadSaveInLang(name, lang, text, (l) => pkgFor(name, l)),
+      };
+    }
     const own = slug === undefined ? undefined : imported.get(slug);
-    if (own !== undefined) return { slot: own.slot, slug: slug!, clockOrigin: own.clockOrigin, seed: null };
+    if (own !== undefined) {
+      // Its own (author's) case text in the request's language frame, like a generated case.
+      const s = own.slot;
+      if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = withLang(s.game, lang);
+      return {
+        slot: s,
+        slug: slug!,
+        clockOrigin: own.clockOrigin,
+        seed: null,
+        restart: () => withLang(newGame(s.game.pkg, own.clockOrigin), lang),
+        load: (text) => {
+          const loaded = loadText(s.game.pkg, text, own.clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
+          return loaded.ok ? loaded : { ok: false, text: MESSAGES[lang].loadFailed };
+        },
+      };
+    }
     const extra = slug === undefined || options.extraCase === undefined ? null : options.extraCase(slug);
     if (extra !== null) {
+      // The editor's working copy: its own (German) case text in the request's language frame.
       let e = extras.get(slug!);
       if (e === undefined || e.version !== extra.version) {
-        e = { version: extra.version, slot: { game: newGame(extra.pkg, extra.clockOrigin), feedback: { tone: "info", title: "Probespiel", lines: ["Der gespeicherte Stand deiner Arbeitskopie."] }, fresh: new Set() } };
+        const m = MESSAGES[lang].web;
+        e = { version: extra.version, slot: { game: withLang(newGame(extra.pkg, extra.clockOrigin), lang), feedback: { tone: "info", title: m.trialTitle, lines: [m.trialLine] }, fresh: new Set() } };
         extras.set(slug!, e);
       }
-      return { slot: e.slot, slug: slug!, clockOrigin: extra.clockOrigin, seed: null };
+      const s = e.slot;
+      if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = withLang(s.game, lang);
+      return {
+        slot: s,
+        slug: slug!,
+        clockOrigin: extra.clockOrigin,
+        seed: null,
+        restart: () => withLang(newGame(extra.pkg, extra.clockOrigin), lang),
+        load: (text) => {
+          const loaded = loadText(extra.pkg, text, extra.clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
+          return loaded.ok ? loaded : { ok: false, text: MESSAGES[lang].loadFailed };
+        },
+      };
     }
     const m = /^zufall-(0|[1-9][0-9]{0,8})(?:-stufe-([1-5]))?$/.exec(slug ?? "");
     if (m === null) return null;
@@ -192,16 +273,30 @@ export function createWebHandler(
     let g = generated.get(key);
     if (g === undefined) {
       const wished =
-        wishedLevel === null ? null : generateCaseOfDifficulty(seed, wishedLevel, (k, max) => options.progress?.(`Der Spieltest prüft Kandidat ${k + 1} (höchstens ${max}) für Stufe ${wishedLevel} …`));
+        wishedLevel === null ? null : generateCaseOfDifficulty(seed, wishedLevel, (k, max) => options.progress?.(MESSAGES[lang].web.levelProgress(k + 1, max, wishedLevel)));
       const generatedCase = wished?.generated ?? generateCase(seed);
       const clockOrigin = generatedClockOrigin(generatedCase);
-      const game = newGame(generatedPackage(generatedCase), clockOrigin);
-      const level = wished === null ? [] : [`Gewünscht: Stufe ${wished.wished}. Gemessen vom Spieltest: ${difficultyText(wished.rating)}.`];
-      g = { slot: { game, feedback: { tone: "info", title: `Zufallsfall ${seed}`, lines: ["Ein erzeugter Fall. Lies die Fallakte und beginne zu ermitteln.", ...level] }, fresh: new Set() }, clockOrigin, seed };
+      const game = withLang(newGame(generatedPackage(generatedCase), clockOrigin), lang);
+      const all = MESSAGES[lang];
+      const level = wished === null ? [] : [all.web.levelWished(wished.wished, `${difficultyDots(wished.rating)} ${all.difficulty[wished.rating]}`)];
+      g = { slot: { game, feedback: { tone: "info", title: all.web.randomCase(seed), lines: [all.web.randomWelcome, ...level] }, fresh: new Set() }, clockOrigin, seed };
       generated.set(key, g);
       if (generated.size > maxGenerated) generated.delete(generated.keys().next().value!);
     }
-    return { slot: g.slot, slug: key, clockOrigin: g.clockOrigin, seed, level: wishedLevel };
+    const { slot: s, clockOrigin } = g;
+    if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = withLang(s.game, lang);
+    return {
+      slot: s,
+      slug: key,
+      clockOrigin,
+      seed,
+      level: wishedLevel,
+      restart: () => withLang(newGame(s.game.pkg, clockOrigin), lang),
+      load: (text) => {
+        const loaded = loadText(s.game.pkg, text, clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
+        return loaded.ok ? loaded : { ok: false, text: MESSAGES[lang].loadFailed };
+      },
+    };
   };
   const redirect = (to: string): WebResponse => ({ status: 303, headers: { location: to }, body: "" });
   const html = (body: string): WebResponse => ({ status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }, body });
@@ -214,26 +309,27 @@ export function createWebHandler(
   /** Loads a save into a case; the feedback says how it went. */
   function loadInto(t: Target, text: string): boolean {
     const s = t.slot;
-    const loaded = loadText(s.game.pkg, text, t.clockOrigin);
+    const loaded = t.load(text);
     if (loaded.ok) [s.game, s.fresh] = [loaded.game, new Set()];
+    const m = msg(s.game).web;
     s.feedback = loaded.ok
-      ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
-      : { tone: "warn", title: loaded.text, lines: ["Lade eine unveränderte Datei, die mit diesem Fall gespeichert wurde."] };
+      ? { tone: "ok", title: m.loadedTitle, lines: [m.loadedLine(s.game.state.events.length)] }
+      : { tone: "warn", title: loaded.text, lines: [m.loadHelp] };
     return loaded.ok;
   }
 
   function act(s: Slot, group: string | null, n: string | null, at: string | null): void {
     const { game } = s;
     if (at !== pageToken(game)) {
-      s.feedback = { tone: "warn", title: "Die Seite war nicht mehr aktuell.", lines: ["Bitte wähle die Aktion noch einmal."] };
+      s.feedback = { tone: "warn", title: msg(game).web.stale, lines: [msg(game).web.staleLine] };
       return;
     }
-    const menu = group === "u" ? investigations(game) : group === "f" ? questions(game) : group === "v" ? confrontations(game) : group === "a" ? accusations(game) : group === "h" ? HINT : [];
+    const menu = group === "u" ? investigations(game) : group === "f" ? questions(game) : group === "v" ? confrontations(game) : group === "a" ? accusations(game) : group === "h" ? HINT(game) : [];
     const action = n !== null && /^[1-9][0-9]{0,3}$/.test(n) ? menu[Number(n) - 1] : undefined;
     if (action === undefined) return;
     const result = reduceSession(game.pkg, game.state, action.event);
     if (!result.ok) {
-      const title = group === "h" && result.code === "ACTION_UNAVAILABLE" ? hintUnavailableText(game) : SESSION_ERRORS[result.code]!;
+      const title = group === "h" && result.code === "ACTION_UNAVAILABLE" ? hintUnavailableText(game) : msg(game).errors[result.code]!;
       s.feedback = { tone: "warn", title, lines: [] };
       return;
     }
@@ -244,19 +340,21 @@ export function createWebHandler(
     s.feedback = solved ? null : feedbackFor(game, s.game, action, result.output, s.fresh.size);
   }
 
-  return async (method, rawUrl, readBody) => {
+  return async (method, rawUrl, readBody, cookie) => {
+    const lang = langOfCookie(cookie);
+    const m = MESSAGES[lang].web;
     let url: URL;
     try {
       url = new URL(rawUrl, "http://localhost");
     } catch {
-      return text(400, "Ungültige Anfrage.");
+      return text(400, m.badRequest);
     }
     if (method === "GET" && url.pathname === "/") {
       const cards = (Object.keys(PLAY_CASES) as PlayCaseName[]).map((name) => {
-        const s = slot(name);
+        const s = slot(name, lang);
         const { publicContent } = s.game.pkg;
         const steps = s.game.state.events.length;
-        const progress = s.game.state.phase === "solved" ? "Gelöst" : steps === 0 ? null : `${steps} Aktionen`;
+        const progress = s.game.state.phase === "solved" ? m.solvedBadge : steps === 0 ? null : m.actions(steps);
         return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress, difficulty: PLAY_CASES[name].difficulty };
       });
       const recent = [...generated].reverse().map(([key, g]) => {
@@ -264,11 +362,11 @@ export function createWebHandler(
         const level = /-stufe-([1-5])$/.exec(key)?.[1];
         return {
           slug: key,
-          title: `${g.slot.game.pkg.publicContent.title} (Seed ${g.seed}${level === undefined ? "" : `, Stufe ${level}`})`,
-          progress: g.slot.game.state.phase === "solved" ? "Gelöst" : steps === 0 ? null : `${steps} Aktionen`,
+          title: `${g.slot.game.pkg.publicContent.title} (Seed ${g.seed}${level === undefined ? "" : m.levelTag(level)})`,
+          progress: g.slot.game.state.phase === "solved" ? m.solvedBadge : steps === 0 ? null : m.actions(steps),
         };
       });
-      const page = renderCaseList(cards, options.editorLink === true, { recent, feedback: homeFeedback });
+      const page = renderCaseList(cards, options.editorLink === true, { recent, feedback: homeFeedback }, lang);
       homeFeedback = null;
       return html(page);
     }
@@ -277,29 +375,36 @@ export function createWebHandler(
       // is matched by its package. Answers with the page to open (the list posts by script).
       const { seed, level, text: saved } = unwrapSave((await readBody()) ?? "");
       if (seed !== null) {
-        const t = target(zufallSlug(seed, level))!;
+        const t = target(zufallSlug(seed, level), lang)!;
         loadInto(t, saved);
         return text(200, `/fall/${t.slug}`);
       }
       for (const name of Object.keys(PLAY_CASES) as PlayCaseName[]) {
-        const t = target(slugOf(name))!;
-        if (loadText(t.slot.game.pkg, saved, t.clockOrigin).ok) {
+        const t = target(slugOf(name), lang)!;
+        if (t.load(saved).ok) {
           loadInto(t, saved);
           return text(200, `/fall/${t.slug}`);
         }
       }
-      homeFeedback = { tone: "warn", title: "Diese Datei passt zu keinem Fall.", lines: ["Lade eine unveränderte Datei, die mit „Speichern“ heruntergeladen wurde."] };
+      homeFeedback = { tone: "warn", title: m.noCaseFits, lines: [m.noCaseFitsLine] };
       return text(200, "/");
     }
-    if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp());
+    if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp(lang));
+    if (method === "GET" && url.pathname === "/sprache") {
+      // Only local paths: never redirect to another host.
+      const back = url.searchParams.get("zurueck") ?? "/";
+      const to = back.startsWith("/") && !back.startsWith("//") && !back.includes("\\") ? back : "/";
+      const chosen = parseLang(url.searchParams.get("l")) ?? DEFAULT_LANG;
+      return { status: 303, headers: { location: to, "set-cookie": `${LANG_COOKIE}=${chosen}; Path=/; Max-Age=31536000; SameSite=Lax` }, body: "" };
+    }
     if (method === "GET" && url.pathname === "/eigener-fall") return html(renderImport([...imported].map(([slug, c]) => ({ slug, title: c.title }))));
     if (method === "POST" && url.pathname === "/eigener-fall") {
       const body = await readBody();
       const result = body === null ? { ok: false as const, title: "Die Datei ist zu groß.", problems: [] } : importCaseText(body);
       if (!result.ok) return json(422, { ok: false, title: result.title, problems: result.problems });
       if (!imported.has(result.slug)) {
-        const game = newGame(result.pkg, result.clockOrigin);
-        imported.set(result.slug, { slot: { game, feedback: { tone: "info", title: "Eigener Fall", lines: ["Geprüft und geladen. Lies die Fallakte und beginne zu ermitteln."] }, fresh: new Set() }, clockOrigin: result.clockOrigin, title: result.title });
+        const game = withLang(newGame(result.pkg, result.clockOrigin), lang);
+        imported.set(result.slug, { slot: { game, feedback: { tone: "info", title: m.ownCaseTitle, lines: [m.ownCaseLine] }, fresh: new Set() }, clockOrigin: result.clockOrigin, title: result.title });
         if (imported.size > MAX_IMPORTED) imported.delete(imported.keys().next().value!);
       }
       return json(200, { ok: true, slug: result.slug, title: result.title });
@@ -311,13 +416,13 @@ export function createWebHandler(
       const raw = (form.get("seed") ?? "").trim();
       const level = (form.get("stufe") ?? "").trim();
       const seed = raw === "" ? Math.floor(Math.random() * 1_000_000) : /^[0-9]{1,9}$/.test(raw) ? Number(raw) : null;
-      if (seed === null) return text(400, "Der Seed muss eine ganze Zahl sein.");
-      if (level !== "" && !/^[1-5]$/.test(level)) return text(400, "Die Schwierigkeit muss eine Stufe von 1 bis 5 sein.");
+      if (seed === null) return text(400, m.badSeed);
+      if (level !== "" && !/^[1-5]$/.test(level)) return text(400, m.badLevel);
       return redirect(`/fall/zufall-${seed}${level === "" ? "" : `-stufe-${level}`}`);
     }
     const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
-    const t = match === null ? null : target(match[1]);
-    if (match === null || t === null) return text(404, "Nicht gefunden.");
+    const t = match === null ? null : target(match[1], lang);
+    if (match === null || t === null) return text(404, m.notFound);
     const s = t.slot;
     const home = `/fall/${t.slug}`;
     const route = `${method} ${match[3] ?? ""}`;
@@ -341,7 +446,7 @@ export function createWebHandler(
       }
       case "POST act": {
         const body = await readBody();
-        if (body === null) return text(413, "Zu groß.");
+        if (body === null) return text(413, m.tooLarge);
         const form = new URLSearchParams(body);
         act(s, form.get("group"), form.get("n"), form.get("at"));
         return redirect(home);
@@ -349,19 +454,19 @@ export function createWebHandler(
       case "POST load": {
         // A generated case's save opens its own seed, wherever it was chosen.
         const body = await readBody();
-        if (body === null) return text(413, "Zu groß.");
+        if (body === null) return text(413, m.tooLarge);
         const { seed, level, text: saved } = unwrapSave(body);
-        const into = seed === null || (seed === t.seed && level === (t.level ?? null)) ? t : target(zufallSlug(seed, level))!;
+        const into = seed === null || (seed === t.seed && level === (t.level ?? null)) ? t : target(zufallSlug(seed, level), lang)!;
         const to = `/fall/${into.slug}`;
         // The browser build's shell restores saves silently and needs to tell a failed load apart.
         return loadInto(into, saved) ? redirect(to) : { status: 303, headers: { location: to, "x-load-failed": "1" }, body: "" };
       }
       case "POST new":
-        [s.game, s.fresh] = [newGame(s.game.pkg, t.clockOrigin), new Set()];
-        s.feedback = { tone: "info", title: "Neues Spiel", lines: ["Der Fall beginnt von vorn."] };
+        [s.game, s.fresh] = [t.restart(), new Set()];
+        s.feedback = { tone: "info", title: m.newGameTitle, lines: [m.newGameLine] };
         return redirect(home);
       default:
-        return text(405, "Nicht erlaubt.");
+        return text(405, m.notAllowed);
     }
   };
 }
@@ -396,12 +501,12 @@ export function createWebApp(
     // Every failure ends in a response: a thrown error must never become an unhandled rejection.
     try {
       // Checked before the editor routes too: they write case files.
-      if (!trusted(req)) return void res.writeHead(403, plain).end("Nicht erlaubt.");
+      if (!trusted(req)) return void res.writeHead(403, plain).end(MESSAGES[langOfCookie(req.headers.cookie)].web.notAllowed);
       if (extra !== null && (await extra.routes(req, res, new URL(req.url ?? "/", "http://localhost")))) return;
-      const out = await handle(req.method ?? "GET", req.url ?? "/", () => readBody(req));
+      const out = await handle(req.method ?? "GET", req.url ?? "/", () => readBody(req), req.headers.cookie);
       res.writeHead(out.status, out.headers).end(out.body);
     } catch {
-      if (!res.headersSent) res.writeHead(500, plain).end("Interner Fehler.");
+      if (!res.headersSent) res.writeHead(500, plain).end(MESSAGES[langOfCookie(req.headers.cookie)].web.internalError);
       else res.destroy();
     }
   };

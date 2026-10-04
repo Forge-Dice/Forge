@@ -18,7 +18,15 @@ const FIXTURES = new URL("./fixtures/", import.meta.url).pathname;
 const scratch = mkdtempSync(join(tmpdir(), "case-editor-structure-"));
 afterAll(() => rmSync(scratch, { recursive: true, force: true }));
 const digest = (dir: string) =>
-  createHash("sha256").update(readdirSync(dir).sort().map((f) => f + readFileSync(join(dir, f), "utf8")).join("\0")).digest("hex");
+  createHash("sha256")
+    .update(
+      (readdirSync(dir, { recursive: true }) as string[])
+        .filter((f) => f.endsWith(".json"))
+        .sort()
+        .map((f) => f + readFileSync(join(dir, f), "utf8"))
+        .join("\0"),
+    )
+    .digest("hex");
 const fixtureDigests = Object.fromEntries(readdirSync(FIXTURES).map((d) => [d, digest(join(FIXTURES, d))]));
 const geige = caseSources().find((s) => s.key === "fixtures/geige")!;
 const json = (dir: string, file: string) => JSON.parse(readFileSync(join(dir, file), "utf8"));

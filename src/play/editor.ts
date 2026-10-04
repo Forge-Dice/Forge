@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { checkCaseFolder, writeFilledHashes, type CaseCheck } from "../authoring/check-case.ts";
 import { generateCase, writeGeneratedCase } from "../authoring/case-generator.ts";
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
@@ -227,7 +227,9 @@ export class CaseWorkspace {
     if (!existsSync(target)) {
       mkdirSync(this.root, { recursive: true });
       // Dereferenced: a symlink in the source must not let a save write outside the working folder.
-      cpSync(source.dir, target, { recursive: true, dereference: true });
+      // The editor works on the German case; locale variants (en/ …) are translated separately and
+      // would go stale under structural edits, so the working copy leaves them out.
+      cpSync(source.dir, target, { recursive: true, dereference: true, filter: (from) => !/^[a-z]{2}$/.test(relative(source.dir, from)) });
     }
     return name;
   }

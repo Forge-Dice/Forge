@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "title": "The Club Cashbox",
+  "brief": "Your first case, to get to know the game. At the sports club, the club cashbox disappeared from the Clubhouse at 17:00. Only three members were there that afternoon: Jonas the groundskeeper, Mila the coach and Kurt the goalkeeper.\n\nHere is how it works: search the Clubhouse and the Pitch. Question Jonas and Mila. If a statement does not match something you found, confront the person with it. Then read the rules in the case file and make your accusation.",
+  "challengeQuestion": "Who took the club cashbox?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:jonas"
+      },
+      "label": "Jonas",
+      "role": "groundskeeper"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:mila"
+      },
+      "label": "Mila",
+      "role": "coach"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:kurt"
+      },
+      "label": "Kurt",
+      "role": "goalkeeper"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:clubhouse"
+      },
+      "label": "Clubhouse",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:field"
+      },
+      "label": "Pitch",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:cashbox"
+      },
+      "label": "Club cashbox",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:theft"
+      },
+      "label": "Disappearance of the cashbox at 17:00",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:training"
+      },
+      "label": "Training session",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:shoeprint"
+      },
+      "label": "Stud print",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:training-list"
+      },
+      "label": "Training list",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:jonas",
+      "questionId": "question:q01",
+      "text": "Were you in the Clubhouse at 17:00?"
+    },
+    {
+      "npc": "person:mila",
+      "questionId": "question:q01",
+      "text": "Was Jonas in the Clubhouse at 17:00?"
+    },
+    {
+      "npc": "person:mila",
+      "questionId": "question:q02",
+      "text": "Were you on the Pitch at 17:00?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "What a piece of evidence itself shows counts as fact. Statements by people can be mistaken or lies."
+    },
+    {
+      "id": "rule:alibi",
+      "text": "Whoever was on the Pitch at 17:00 did not take the cashbox."
+    },
+    {
+      "id": "rule:confession",
+      "text": "Whoever, when confronted with a piece of evidence, admits to having been in the Clubhouse at 17:00 took the cashbox."
+    }
+  ],
+  "epilogue": "Jonas gives up when you confront him with the stud print. He had gambling debts and knew that the cash cabinet stood open after training. The cashbox is under the tarpaulin in the equipment shed.\n\nMila and Kurt were on the pitch the whole time, as the training list proves. Well done: you searched, asked questions, disproved a lie with a find and applied the rules. That is exactly how the other cases work too."
+}

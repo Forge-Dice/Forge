@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:nachtzug",
+  "truthHash": "c8807cc498002fcdae7a65f7b5df1435cce251658b09f0b4b8d52ef5a986c6a9",
+  "entries": [
+    {
+      "evidenceId": "evidence:kassenjournal",
+      "text": "The dining car’s cash register journal, two entries after midnight: 00:50 Clara Mai, one chamomile tea. 01:05 Bruno Kessler, two glasses of Zweigelt, paid by card. After that the dining car closed.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:clara"
+        },
+        {
+          "kind": "person",
+          "id": "person:bruno"
+        },
+        {
+          "kind": "location",
+          "id": "location:speisewagen"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:clara",
+            "locationId": "location:speisewagen",
+            "at": 3000
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:bruno",
+            "locationId": "location:speisewagen",
+            "at": 3900
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:riegelvermerk",
+      "text": "Lock notice for the connecting door between the couchette car and the sleeping car: locked 01:00, unlocked again 01:30, signed J. Novak. The slip is stuck to the door, and the same entry is in the duty log.",
+      "mentions": [
+        {
+          "kind": "item",
+          "id": "item:tuer"
+        },
+        {
+          "kind": "event",
+          "id": "event:verriegelung"
+        },
+        {
+          "kind": "person",
+          "id": "person:janek"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:verriegelung",
+            "itemId": "item:tuer"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:abfertigung",
+      "text": "Dispatch report Villach Hbf: stop 01:18 to 01:22, train dispatched at 01:20:00 at the key switch on platform 3 by J. Novak. The switch is outside on the platform.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:janek"
+        },
+        {
+          "kind": "location",
+          "id": "location:bahnsteig"
+        },
+        {
+          "kind": "event",
+          "id": "event:halt"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:janek",
+            "locationId": "location:bahnsteig",
+            "at": 4800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:bildschirmfoto",
+      "text": "Felix holds out his phone to you, visibly nervous. A screenshot of his video call, 01:12: he is lying on his couchette in the couchette car, behind him the curtain with the railway’s coat of arms.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:felix"
+        },
+        {
+          "kind": "location",
+          "id": "location:liegewagen"
+        },
+        {
+          "kind": "event",
+          "id": "event:anruf"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:felix",
+            "locationId": "location:liegewagen",
+            "at": 4320
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:terminalhinweis",
+      "text": "At the end of the corridor hangs the sleeping car’s door terminal. It records when each compartment door opens and closes.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:schlafwagen"
+        },
+        {
+          "kind": "item",
+          "id": "item:terminal"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:tuerlog",
+      "text": "Door log: compartment 6 locked from the inside 00:40 to 02:10, no opening in between. Compartment 7 opened 01:19, closed 01:21.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:dora"
+        },
+        {
+          "kind": "location",
+          "id": "location:abteil6"
+        },
+        {
+          "kind": "location",
+          "id": "location:abteil7"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:dora",
+            "locationId": "location:abteil6",
+            "at": 4800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:korken",
+      "text": "On the carpet in compartment 7 lies a cork with the label of the Zweigelt from the dining car. Bruno Kessler drinks this wine. There is no telling from the cork when it got here.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:bruno"
+        },
+        {
+          "kind": "location",
+          "id": "location:abteil7"
+        }
+      ],
+      "reports": []
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
@@ -170,20 +171,38 @@ function npcNames(files: CaseFiles, c: Collector): string[] {
   return snapshots.filter((n) => profiles.includes(n)).sort();
 }
 
-export function checkCaseFolder(dir: string): CaseCheck {
-  return checkCaseFiles(existsSync(dir) ? folderFiles(dir) : null, dir);
+/** Player text files a locale variant (<ordner>/<sprache>/) replaces; everything else is shared. */
+const LOCALE_KEYS = ["publicContent", "presentation"] as const satisfies readonly (keyof typeof FILES)[];
+const isLocaleKey = (key: string): key is (typeof LOCALE_KEYS)[number] => (LOCALE_KEYS as readonly string[]).includes(key);
+
+/** Locale variants of a case folder: subfolders with their own public-content.json. */
+export const caseLocales = (dir: string): string[] =>
+  existsSync(dir) ? readdirSync(dir).filter((f) => /^[a-z]{2}$/.test(f) && existsSync(join(dir, f, FILES.publicContent))).sort() : [];
+
+/**
+ * Checks a case folder; with `lang`, its locale variant: the player text files from <ordner>/<lang>/
+ * and the shared rest. A variant must be a pure translation (same entities, questions, rules and
+ * reports as the base, only texts differ) and is checked for solvability like the base. Its release
+ * manifest and proof profile are the base's; their bound hashes cover the base text, so they are
+ * recomputed for the variant and never written back.
+ */
+export function checkCaseFolder(dir: string, lang?: string): CaseCheck {
+  return checkCaseFiles(existsSync(dir) ? folderFiles(dir) : null, dir, lang);
 }
 
 /** check-case on any case files; `dir` names them in the result (a folder, or an imported file). */
-export function checkCaseFiles(files: CaseFiles | null, dir: string): CaseCheck {
+export function checkCaseFiles(files: CaseFiles | null, dir: string, lang?: string): CaseCheck {
   const c = new Collector();
+  const localeFile = (file: string) => (lang !== undefined && Object.entries(FILES).some(([k, f]) => f === file && isLocaleKey(k)) ? `${lang}/${file}` : file);
   let play: CaseCheck["play"];
   const finish = (routes: readonly RouteReport[] = []): CaseCheck => ({
     ...(play === undefined ? {} : { play }),
     dir,
-    problems: c.problems,
-    filled: c.filled,
-    checkedFiles: c.checked,
+    problems: c.problems.map((p) => ({ ...p, file: localeFile(p.file) })),
+    filled: c.filled
+      .filter((f) => lang === undefined || (f.file !== FILES.releaseManifest && f.file !== FILES.proofProfile))
+      .map((f) => ({ ...f, file: localeFile(f.file) })),
+    checkedFiles: c.checked.map(localeFile),
     solvability: routes[0]?.report ?? null,
     routes,
     ok: c.problems.every((p) => p.severity !== "error") && routes.length > 0 && routes.every((r) => r.report.status === "pass"),
@@ -192,7 +211,20 @@ export function checkCaseFiles(files: CaseFiles | null, dir: string): CaseCheck 
     c.error(dir, "(Ordner)", "Ordner nicht gefunden");
     return finish();
   }
-  const raw = Object.fromEntries(Object.entries(FILES).map(([key, file]) => [key, readJson(files, file, c)])) as Record<keyof typeof FILES, unknown>;
+  const raw = Object.fromEntries(
+    Object.entries(FILES).map(([key, file]) => [key, readJson(files, lang !== undefined && isLocaleKey(key) ? `${lang}/${file}` : file, c)]),
+  ) as Record<keyof typeof FILES, unknown>;
+  if (lang !== undefined) {
+    const source = readJson(files, `${lang}/${SOURCE_FILE}`, c);
+    for (const key of LOCALE_KEYS) {
+      const base = readJson(files, FILES[key], new Collector());
+      checkTranslation(base, raw[key], FILES[key], c);
+      // The variant records which German text it translates: an edit of the base text shows up here.
+      if (base !== undefined && source !== undefined) checkSource(`${lang}/${SOURCE_FILE}`, source, key, textDigest(base), c);
+    }
+    raw.releaseManifest = unbind(raw.releaseManifest, []);
+    raw.proofProfile = unbind(raw.proofProfile, ["bindings"]);
+  }
   const npcs = npcNames(files, c).map((name) => ({ name, snapshot: readJson(files, `npc-${name}.json`, c), profile: readJson(files, `interrogation-${name}.json`, c) }));
   const caseConfig = files.read("case.json") !== undefined ? readJson(files, "case.json", c) : {};
   const salt = (caseConfig as { refSalt?: unknown }).refSalt ?? DEFAULT_CHECK_SALT;
@@ -307,6 +339,80 @@ export function checkCaseFiles(files: CaseFiles | null, dir: string): CaseCheck 
 }
 
 // ---------- Helpers ----------
+
+/** A copy of a raw file with its release hash back to the placeholder (locale variants). */
+function unbind(raw: unknown, path: string[]): unknown {
+  if (typeof raw !== "object" || raw === null) return raw;
+  const copy = structuredClone(raw) as Record<string, unknown>;
+  const holder = path.reduce<Record<string, unknown> | undefined>((o, k) => (typeof o?.[k] === "object" ? (o[k] as Record<string, unknown>) : undefined), copy);
+  for (const key of ["releaseContextHash", "releaseHash"]) if (holder !== undefined && typeof holder[key] === "string") holder[key] = "TO_BE_COMPUTED_FROM_LOCALE";
+  return copy;
+}
+
+/** <ordner>/<lang>/source.json: digests of the base texts the variant was translated from. */
+const SOURCE_FILE = "source.json";
+
+/** Digest of a file's player texts only (TEXT_FIELDS, in document order). */
+function textDigest(raw: unknown): string {
+  const texts: string[] = [];
+  const walk = (v: unknown, key: string): void => {
+    if (Array.isArray(v)) v.forEach((x) => walk(x, key === VOICE_LINES ? key : ""));
+    else if (typeof v === "object" && v !== null) for (const [k, x] of Object.entries(v)) walk(x, key === VOICE_LINES ? key : k);
+    else if (typeof v === "string" && (TEXT_FIELDS.has(key) || key === VOICE_LINES)) texts.push(v);
+  };
+  walk(raw, "");
+  return createHash("sha256").update(JSON.stringify(texts)).digest("hex");
+}
+
+function checkSource(file: string, source: unknown, key: string, digest: string, c: Collector): void {
+  const given = typeof source === "object" && source !== null ? (source as Record<string, unknown>)[key] : undefined;
+  if (typeof given === "string" && PLACEHOLDER.test(given)) {
+    c.filled.push({ file, field: key, value: digest });
+  } else if (given !== digest) {
+    c.warning(file, key, `der Grundtext (${FILES[key as keyof typeof FILES]}) hat sich seit der Übersetzung geändert: Übersetzung nachziehen, dann --fix`);
+    c.filled.push({ file, field: key, value: digest, stale: true });
+  }
+}
+
+/** Fields that hold player text; a translation may change only these. */
+const TEXT_FIELDS = new Set(["title", "brief", "challengeQuestion", "label", "role", "text", "answer", "admission", "epilogue"]);
+/** An NPC voice (voices[].lines): per reply kind a list of wordings; a translation may reword and recount them. */
+const VOICE_LINES = "lines";
+const INTERNAL_ID = /\b(person|event|item|location|question|evidence|rule|case):[a-z0-9]/;
+
+/** A locale file is the base file with other texts: same structure, same ids, same claims. */
+function checkTranslation(base: unknown, translated: unknown, file: string, c: Collector): void {
+  if (base === undefined || translated === undefined) return;
+  const walk = (b: unknown, t: unknown, path: string): void => {
+    if (Array.isArray(b) && Array.isArray(t)) {
+      if (b.length !== t.length) return c.error(file, path || "(Datei)", `Übersetzung hat ${t.length} statt ${b.length} Einträge`);
+      b.forEach((x, i) => walk(x, t[i], `${path}[${i}]`));
+    } else if (typeof b === "object" && b !== null && typeof t === "object" && t !== null && !Array.isArray(b) && !Array.isArray(t)) {
+      const keys = new Set([...Object.keys(b), ...Object.keys(t)]);
+      for (const k of keys) {
+        const at = path === "" ? k : `${path}.${k}`;
+        const [bv, tv] = [(b as Record<string, unknown>)[k], (t as Record<string, unknown>)[k]];
+        if (TEXT_FIELDS.has(k) && typeof bv === "string" && typeof tv === "string") {
+          if (tv.trim() === "") c.error(file, at, "Übersetzung ist leer");
+          else if (INTERNAL_ID.test(tv)) c.error(file, at, "Übersetzung enthält eine interne ID");
+        } else if (k === VOICE_LINES && /^voices\[\d+\]$/.test(path)) {
+          voiceLines(bv, tv, at);
+        } else walk(bv, tv, at);
+      }
+    } else if (JSON.stringify(b) !== JSON.stringify(t)) {
+      c.error(file, path || "(Datei)", "weicht vom Grundfall ab: eine Übersetzung ändert nur Texte");
+    }
+  };
+  const voiceLines = (b: unknown, t: unknown, path: string): void => {
+    const kinds = (v: unknown) => (typeof v === "object" && v !== null && !Array.isArray(v) ? Object.keys(v).sort().join(",") : null);
+    if (kinds(b) === null || kinds(b) !== kinds(t)) return c.error(file, path, "weicht vom Grundfall ab: eine Übersetzung ändert nur Texte");
+    for (const [k, lines] of Object.entries(t as Record<string, unknown>)) {
+      if (!Array.isArray(lines) || lines.length === 0 || !lines.every((x) => typeof x === "string" && x.trim() !== "")) c.error(file, `${path}.${k}`, "Übersetzung ist leer");
+      else if (lines.some((x) => INTERNAL_ID.test(x as string))) c.error(file, `${path}.${k}`, "Übersetzung enthält eine interne ID");
+    }
+  };
+  walk(base, translated, "");
+}
 
 const PACKAGE_FILES: Record<string, string> = {
   truth: FILES.truth,
@@ -571,8 +677,8 @@ export function witnessAccusation(pkg: ResolvedCasePackage, manifest: Manifest, 
 }
 
 /** Human-readable report; one line per problem with file and field. */
-export function formatCaseCheck(check: CaseCheck): string {
-  const lines = [`Prüfe Fall-Ordner ${check.dir}`];
+export function formatCaseCheck(check: CaseCheck, lang?: string): string {
+  const lines = [lang === undefined ? `Prüfe Fall-Ordner ${check.dir}` : `Prüfe Sprachfassung ${lang} von ${check.dir}`];
   const errors = check.problems.filter((p) => p.severity === "error");
   const warnings = check.problems.filter((p) => p.severity === "warning");
   for (const p of errors) lines.push(`  FEHLER  ${p.file} › ${p.field}: ${p.message}`);
