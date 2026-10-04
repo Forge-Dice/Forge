@@ -230,8 +230,13 @@ export function playRun(pkg: ResolvedCasePackage, style: Style, seed: number, pr
         const hint = result.output.hint;
         if (hint.kind === "accuse") {
           if (accuseRight()) break;
-        } else if (hint.target !== null && (hint.kind !== "interrogate" || hint.questionId !== null)) {
-          const event = hint.kind === "interrogate" ? { type: "interrogate", npc: hint.target, questionId: hint.questionId } : { type: "investigate", action: hint.kind, target: hint.target };
+        } else if (hint.target !== null && (hint.kind !== "interrogate" || hint.questionId !== null) && (hint.kind !== "confront" || hint.evidence !== null)) {
+          const event =
+            hint.kind === "interrogate"
+              ? { type: "interrogate", npc: hint.target, questionId: hint.questionId }
+              : hint.kind === "confront"
+                ? { type: "confront", npc: hint.target, questionId: hint.questionId, evidence: hint.evidence }
+                : { type: "investigate", action: hint.kind, target: hint.target };
           explore({ label: "", event });
           continue;
         } else if (hint.level < 3 && hint.target !== null) {
