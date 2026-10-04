@@ -36,6 +36,7 @@ import {
   type WitnessReplay,
 } from "../domain/case-solvability.ts";
 import { refSource } from "../play/cases.ts";
+import { accusations } from "../play/game.ts";
 
 // Author tool behind `npm run check-case -- <ordner>`: loads a case folder, runs every real parser
 // and binding check per file, resolves the package with its proof and runs the solvability check
@@ -540,17 +541,15 @@ export function witnessAccusation(pkg: ResolvedCasePackage, manifest: Manifest, 
   const isKnown = (id: string) => knownRef.has(pkg.refs.refFor("person", id)!);
   const unknown = [...accused].filter((id) => !isKnown(id));
   if (unknown.length > 0) return `nach dem Lösungsweg ist ${unknown.join(", ")} dem Spieler noch unbekannt und kann nicht angeklagt werden`;
-  const ref = (kind: "person" | "event", id: string) => pkg.refs.refFor(kind, id)!;
-  const literals = pkg.challenge.allowedClaims
-    .filter((c) => c.kind === "personRoleForEvent" || c.kind === "personResponsibleForEvent")
-    .filter((c) => isKnown(c.personId))
-    .map((c) => {
-      const base = { kind: c.kind, person: ref("person", c.personId), event: ref("event", c.eventId) };
-      return { claim: c.kind === "personRoleForEvent" ? { ...base, role: c.role } : base, value: accused.has(c.personId) };
-    });
-  const result = reduceSession(pkg, state, { type: "accuse", literals });
-  if (!result.ok) return `die Anklage nach dem Lösungsweg wird abgelehnt (${result.code})`;
-  return result.output.type === "accuse" && result.output.verdict === "solved" ? null : "die Anklage nach dem Lösungsweg löst den Fall nicht";
+  // Accuse exactly the way the game offers it (one chosen claim true, the other known ones false):
+  // a case that only an accusation the game cannot build would solve is not solvable in play.
+  const offered = accusations({ pkg, state, clockOrigin: 0 });
+  if (offered.length === 0) return "nach dem Lösungsweg bietet das Spiel keine Anklage an";
+  const solves = offered.some((a) => {
+    const result = reduceSession(pkg, state, a.event);
+    return result.ok && result.output.type === "accuse" && result.output.verdict === "solved";
+  });
+  return solves ? null : "keine Anklage, die das Spiel nach dem Lösungsweg anbietet, löst den Fall";
 }
 
 /** Human-readable report; one line per problem with file and field. */

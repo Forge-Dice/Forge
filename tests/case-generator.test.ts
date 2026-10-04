@@ -159,7 +159,7 @@ describe("Zufallsfall in the browser", () => {
       expect(page).toContain('action="/fall/zufall-42/act"');
       const act = await fetch(`${base}/fall/zufall-42/act`, { method: "POST", body: new URLSearchParams({ group: "u", n: "1", at: "0" }), redirect: "manual" });
       expect(act.status).toBe(303);
-      expect(await (await fetch(`${base}/fall/zufall-42`)).text()).toContain('name="at" value="1"');
+      expect(await (await fetch(`${base}/fall/zufall-42`)).text()).toMatch(/name="at" value="1-[0-9a-f]{8}"/);
       expect((await fetch(`${base}/fall/zufall-1234567890`)).status).toBe(404);
     } finally {
       await new Promise<void>((resolve) => server.close(() => resolve()));

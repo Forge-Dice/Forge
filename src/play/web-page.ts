@@ -1,6 +1,6 @@
 import { rulesetAllows } from "../domain/case-package.ts";
 import { DIFFICULTY_NAMES, difficultyDots, type Difficulty } from "./difficulty.ts";
-import { accusations, confrontations, hintsUsed, investigations, known, questions, recordText, type Action, type Game } from "./game.ts";
+import { accusations, confrontations, pageToken, hintsUsed, investigations, known, questions, recordText, type Action, type Game } from "./game.ts";
 
 // HTML views of the local browser front end. Pure: (game, feedback) -> page. Every label comes from
 // PublicContent or released observations through the CLI's own helpers; actions are addressed by
@@ -94,7 +94,7 @@ type FormOptions = { cls?: string; hidden?: string | undefined; confirm?: string
 function actionForm(game: Game, slug: string, group: "u" | "f" | "v" | "a" | "h", index: number, label: string, o: FormOptions = {}): string {
   const confirm = o.confirm === undefined ? "" : ` data-confirm="${escape(o.confirm)}"`;
   const hidden = o.hidden === undefined ? "" : `<span class="visually-hidden">${escape(o.hidden)}</span>`;
-  return `<form method="post" action="/fall/${slug}/act"${confirm}><input type="hidden" name="group" value="${group}"><input type="hidden" name="n" value="${index + 1}"><input type="hidden" name="at" value="${game.state.events.length}"><button type="submit"${o.cls ? ` class="${o.cls}"` : ""}>${hidden === "" ? escape(label) : `${hidden}<span>${escape(label)}</span>`}</button></form>`;
+  return `<form method="post" action="/fall/${slug}/act"${confirm}><input type="hidden" name="group" value="${group}"><input type="hidden" name="n" value="${index + 1}"><input type="hidden" name="at" value="${pageToken(game)}"><button type="submit"${o.cls ? ` class="${o.cls}"` : ""}>${hidden === "" ? escape(label) : `${hidden}<span>${escape(label)}</span>`}</button></form>`;
 }
 
 /** Keys of what the player already did, to mark repeated actions (never rendered). */
