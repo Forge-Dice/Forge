@@ -123,7 +123,13 @@ export type WebHandler = (method: string, url: string, body: () => Promise<strin
  * The whole front end as a function of (method, url, body) over one in-memory game per case. The
  * node server below and the single-file browser build (web-standalone.ts) both run exactly this.
  */
-export function createWebHandler(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, options: { readonly editorLink?: boolean } = {}): WebHandler {
+/** A case served beside the fixed ones (the editor's "Probespielen"); `version` resets its game when it changes. */
+export type ExtraCase = { readonly pkg: ResolvedCasePackage; readonly clockOrigin: number; readonly version: string };
+
+export function createWebHandler(
+  packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {},
+  options: { readonly editorLink?: boolean; readonly extraCase?: (slug: string) => ExtraCase | null } = {},
+): WebHandler {
   // Given packages are the German ones; other languages load their locale variant on demand.
   const loaded = new Map<string, ResolvedCasePackage>();
   const pkgFor = (name: PlayCaseName, lang: Lang): ResolvedCasePackage => {
@@ -153,6 +159,7 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
   // Generated cases ("Zufallsfall"): one slot per seed, created on first visit; the oldest is
   // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
   const generated = new Map<number, { slot: Slot; clockOrigin: number }>();
+  const extras = new Map<string, { version: string; slot: Slot }>();
   type Target = {
     readonly slot: Slot;
     readonly slug: string;
@@ -170,6 +177,28 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
         clockOrigin: PLAY_CASES[name].clockOrigin,
         restart: () => start(name, lang),
         load: (text) => loadSaveInLang(name, lang, text, (l) => pkgFor(name, l)),
+      };
+    }
+    const extra = slug === undefined || options.extraCase === undefined ? null : options.extraCase(slug);
+    if (extra !== null) {
+      // The editor's working copy: its own (German) case text in the request's language frame.
+      let e = extras.get(slug!);
+      if (e === undefined || e.version !== extra.version) {
+        const m = MESSAGES[lang].web;
+        e = { version: extra.version, slot: { game: withLang(newGame(extra.pkg, extra.clockOrigin), lang), feedback: { tone: "info", title: m.trialTitle, lines: [m.trialLine] }, fresh: new Set() } };
+        extras.set(slug!, e);
+      }
+      const s = e.slot;
+      if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = withLang(s.game, lang);
+      return {
+        slot: s,
+        slug: slug!,
+        clockOrigin: extra.clockOrigin,
+        restart: () => withLang(newGame(extra.pkg, extra.clockOrigin), lang),
+        load: (text) => {
+          const loaded = loadText(extra.pkg, text, extra.clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
+          return loaded.ok ? loaded : { ok: false, text: MESSAGES[lang].loadFailed };
+        },
       };
     }
     const m = /^zufall-(0|[1-9][0-9]{0,8})$/.exec(slug ?? "");
@@ -328,8 +357,11 @@ function trusted(req: IncomingMessage): boolean {
 export type NodeRoutes = (req: IncomingMessage, res: ServerResponse, url: URL) => Promise<boolean>;
 
 /** Node request handler around createWebHandler; exported for tests. */
-export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, extra: { readonly routes: NodeRoutes; readonly editorLink: boolean } | null = null) {
-  const handle = createWebHandler(packages, { editorLink: extra?.editorLink === true });
+export function createWebApp(
+  packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {},
+  extra: { readonly routes: NodeRoutes; readonly editorLink: boolean; readonly extraCase?: (slug: string) => ExtraCase | null } | null = null,
+) {
+  const handle = createWebHandler(packages, { editorLink: extra?.editorLink === true, ...(extra?.extraCase === undefined ? {} : { extraCase: extra.extraCase }) });
   const plain = { "content-type": "text/plain; charset=utf-8", connection: "close" };
   return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
     // Every failure ends in a response: a thrown error must never become an unhandled rejection.

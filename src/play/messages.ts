@@ -185,6 +185,8 @@ const de = {
     openRandom: "Zufallsfall öffnen",
     randomCase: (seed: number) => `Zufallsfall ${seed}`,
     randomWelcome: "Ein erzeugter Fall. Lies die Fallakte und beginne zu ermitteln.",
+    trialTitle: "Probespiel",
+    trialLine: "Der gespeicherte Stand deiner Arbeitskopie.",
     badSeed: "Der Seed muss eine ganze Zahl sein.",
     // game page
     groups: { person: "Personen", location: "Orte", item: "Gegenstände", event: "Ereignisse", evidence: "Nachweise" } as Record<string, string>,
@@ -479,6 +481,8 @@ const en: Messages = {
     openRandom: "Open random case",
     randomCase: (seed) => `Random case ${seed}`,
     randomWelcome: "A generated case; its text is German. Read the case file and start investigating.",
+    trialTitle: "Test play",
+    trialLine: "The saved state of your working copy; its text is German.",
     badSeed: "The seed must be a whole number.",
     groups: { person: "People", location: "Places", item: "Objects", event: "Events", evidence: "Evidence" },
     nothingToInvestigate: "Nothing to investigate right now.",

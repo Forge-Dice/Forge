@@ -1,10 +1,13 @@
 import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { checkCaseFolder, writeFilledHashes, type CaseCheck } from "../authoring/check-case.ts";
 import { generateCase, writeGeneratedCase } from "../authoring/case-generator.ts";
-import { PLAY_CASES } from "./cases.ts";
+import type { ResolvedCasePackage } from "../domain/case-package.ts";
+import { PLAY_CASES, loadFolderPackage } from "./cases.ts";
+import { playtestCase, type CaseReport } from "./playtest.ts";
+import { applyStructure, undoStructure, type StructureOp, type StructureResult } from "./editor-structure.ts";
 
 // Case editor behind `/editor` of play:web. A case is edited in a local working folder (a copy of a
 // fixture, a generated folder, or a fresh generated case); the sources are only ever read. Every
@@ -189,10 +192,13 @@ export function applyEdits(dir: string, edits: readonly Edit[]): ApplyResult {
 
 /** check-case with automatic hash maintenance: placeholders and stale hashes are rewritten, then rechecked. */
 export function checkAndFix(dir: string): CaseCheck {
-  const first = checkCaseFolder(dir);
-  if (first.filled.length === 0) return first;
-  writeFilledHashes(first);
-  return checkCaseFolder(dir);
+  // Hashes chain (truth -> solution and catalogue -> profiles -> release): one pass per link.
+  let check = checkCaseFolder(dir);
+  for (let pass = 0; pass < 6 && check.filled.length > 0; pass++) {
+    writeFilledHashes(check);
+    check = checkCaseFolder(dir);
+  }
+  return check;
 }
 
 // ---------- Working folder ----------
@@ -221,7 +227,9 @@ export class CaseWorkspace {
     if (!existsSync(target)) {
       mkdirSync(this.root, { recursive: true });
       // Dereferenced: a symlink in the source must not let a save write outside the working folder.
-      cpSync(source.dir, target, { recursive: true, dereference: true });
+      // The editor works on the German case; locale variants (en/ …) are translated separately and
+      // would go stale under structural edits, so the working copy leaves them out.
+      cpSync(source.dir, target, { recursive: true, dereference: true, filter: (from) => !/^[a-z]{2}$/.test(relative(source.dir, from)) });
     }
     return name;
   }
@@ -234,7 +242,7 @@ export class CaseWorkspace {
     return name;
   }
   /** Live check: the edits on a scratch copy; the working folder is untouched. */
-  preview(name: string, edits: readonly Edit[]): { check: CaseCheck; apply: ApplyResult } | null {
+  preview<T = undefined>(name: string, edits: readonly Edit[], inspect?: (dir: string, check: CaseCheck) => T): { check: CaseCheck; apply: ApplyResult; inspected?: T } | null {
     const dir = this.dirOf(name);
     if (dir === null) return null;
     const scratch = mkdtempSync(join(tmpdir(), "case-editor-"));
@@ -242,16 +250,81 @@ export class CaseWorkspace {
       const copy = join(scratch, name);
       cpSync(dir, copy, { recursive: true });
       const apply = applyEdits(copy, edits);
-      return { check: { ...checkAndFix(copy), dir }, apply };
+      const check = checkAndFix(copy);
+      return { check: { ...check, dir }, apply, ...(inspect === undefined ? {} : { inspected: inspect(copy, check) }) };
     } finally {
       rmSync(scratch, { recursive: true, force: true });
     }
+  }
+  private history(name: string): string {
+    return join(this.root, ".history", name);
+  }
+  /** A structural edit on the saved working copy (one undo level), then hash maintenance. */
+  structure(name: string, op: StructureOp): StructureResult | null {
+    const dir = this.dirOf(name);
+    if (dir === null) return null;
+    const result = applyStructure(dir, op, this.history(name));
+    if (result.ok) checkAndFix(dir);
+    return result;
+  }
+  undo(name: string): boolean {
+    const dir = this.dirOf(name);
+    return dir !== null && undoStructure(dir, this.history(name));
+  }
+  canUndo(name: string): boolean {
+    return existsSync(join(this.history(name), "truth.json"));
+  }
+  /** The saved working copy as a playable package, cached by content; null while it is invalid. */
+  probe(name: string): Probe | null {
+    const dir = this.dirOf(name);
+    if (dir === null) return null;
+    const version = folderDigest(dir);
+    const cached = probes.get(dir);
+    if (cached?.version === version) return cached.value;
+    const pkg = folderPackage(dir, checkCaseFolder(dir));
+    const value = pkg === null ? null : { pkg, clockOrigin: clockOriginOf(dir), version };
+    probes.set(dir, { version, value });
+    return value;
   }
   save(name: string, edits: readonly Edit[]): { check: CaseCheck; apply: ApplyResult } | null {
     const dir = this.dirOf(name);
     if (dir === null) return null;
     const apply = applyEdits(dir, edits);
     return { check: checkAndFix(dir), apply };
+  }
+}
+
+// ---------- Playtest and trial play of a working copy ----------
+
+const probes = new Map<string, { version: string; value: Probe | null }>();
+export type Probe = { readonly pkg: ResolvedCasePackage; readonly clockOrigin: number; readonly version: string };
+
+export function folderDigest(dir: string): string {
+  const h = createHash("sha256");
+  for (const f of readdirSync(dir).filter((f) => f.endsWith(".json")).sort()) h.update(`${f}\0${readFileSync(join(dir, f), "utf8")}\0`);
+  return h.digest("hex");
+}
+
+/** The playable package of a valid folder (the playtest and trial play run on it), else null. */
+export function folderPackage(dir: string, check: CaseCheck): ResolvedCasePackage | null {
+  if (!check.ok || check.play === undefined) return null;
+  try {
+    return loadFolderPackage(dir, check.play.npcs, check.play.salt);
+  } catch {
+    return null;
+  }
+}
+
+export const EDITOR_PLAYTEST_SEEDS = 4;
+
+/** The playtest bot on a folder: difficulty and balance warnings, or why it cannot run. */
+export function playtestFolder(dir: string, check: CaseCheck): { report: CaseReport | null; reason: string } {
+  const pkg = folderPackage(dir, check);
+  if (pkg === null) return { report: null, reason: check.ok ? "Der Fall lässt sich nicht als Spiel laden." : "Erst wenn der Fall gültig ist, spielt der Bot ihn." };
+  try {
+    return { report: playtestCase(pkg, EDITOR_PLAYTEST_SEEDS), reason: "" };
+  } catch (error) {
+    return { report: null, reason: `Spieltest nicht möglich: ${(error as Error).message}` };
   }
 }
 
