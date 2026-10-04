@@ -1,0 +1,15 @@
+{
+  "observed_on": "2026-10-04",
+  "canonical_repository": "Forge-Dice/Forge",
+  "repository_id": 1401864629,
+  "visibility": "public",
+  "default_branch": "main",
+  "permissions": {
+    "Wuerfelduell": "admin",
+    "forge-codex": "write"
+  },
+  "source": "Authenticated read-only GitHub metadata and collaborator permission responses.",
+  "mutation_calls_executed": 0,
+  "canonical_rulesets_live_verified": false,
+  "canonical_actions_policy_live_verified": false
+}

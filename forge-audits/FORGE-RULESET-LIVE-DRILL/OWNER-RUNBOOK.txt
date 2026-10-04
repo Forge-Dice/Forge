@@ -1,0 +1,303 @@
+FORGE RULESET LIVE DRILL — EXACT OWNER RUNBOOK
+Stand: 2026-10-04. Dieses Paket hat KEINE Live-Tests ausgeführt.
+Nur frische, entbehrliche Forge-Dice/forge-ruleset-drill-* Repositories.
+Forge-Dice/Forge und Repository-ID 1401864629 sind im Runner verboten.
+Python >= 3.11; git mit credential manager oder askpass; HTTPS zu api.github.com und github.com.
+
+0. VOR JEDEM PHASENWECHSEL
+Nicht parallel testen. Genau einen Test auslösen, Resultat und Ref-SHA sichern,
+dann erst den nächsten. HTTP 204 bei Dispatch/Re-run ist keine Ausführungsgarantie.
+Bei STOP_UNEXPECTED_ALLOW, UNEXPECTED_ALLOW oder einem unerwartet gestarteten
+Canary-Job: keine weiteren normalen Befehle; sofort Schritt STOP ausführen.
+INCONCLUSIVE ist ebenfalls kein PASS. Keine stillen Schema-/Bypass-Fallbacks.
+Merge verwendet die dokumentierte API PUT /pulls/{n}/merge-async mit sha,
+merge_action=direct_merge, merge_method=merge und bypass_rules=true. Das fordert
+nur einen tatsächlich berechtigten R3-Bypass an; bypassfreie R2/R1 gelten weiter.
+HTTP 202 ist PENDING. Die UUID wird gespeichert; normale Folgemutationen sind
+verriegelt, bis der konkrete Request final merged oder failed meldet:
+  python3 drill.py --work live-work --actor owner merge-result MERGE-SCENARIO
+MERGE-SCENARIO durch die konkrete Case-ID ersetzen. Bei pending später erneut
+nur diesen GET-Befehl ausführen. Keine zweite Merge-Anfrage senden. Ein finales
+failed braucht den echten Ruleset-/Checkgrund; generische Fehler sind INCONCLUSIVE.
+
+1. OFFLINE VORBEREITEN
+Im entpackten Paket:
+  python3 tests/selftest_drill.py
+  python3 drill.py prepare --repo Forge-Dice/forge-ruleset-drill-20261004-a --run-id drill-20261004-a --out live-work
+  python3 drill.py --work live-work plan
+
+Owner erstellt in GitHub genau das neue öffentliche Repository ohne README,
+Template, Fork, importierte Branches oder Tags. Actions zunächst deaktivieren.
+Automatisches Löschen von Head-Branches und Auto-Merge ausschalten. Kein
+Self-hosted Runner, keine hinzugefügten Secrets, keine Deploy Keys/Write Apps.
+forge-codex zunächst KEIN write-Zugriff; geerbten Org-Basiszugriff prüfen.
+Repository- und geerbte Schutz-/Actions-Policies vollständig dokumentieren.
+
+Owner sieht alle Dateien in live-work/seed durch. Dieses Verzeichnis enthält
+fünf trusted Workflow-Fixtures. Die Token-Probe ist ausdrücklich LAB ONLY und
+darf nie in Forge-Dice/Forge installiert werden. Das ist kein Produktiv-Verifier.
+Die initiale Erstellung von main im leeren Testrepo ist SETUP, kein Ref-Test:
+  git -C live-work/seed init --initial-branch=main
+  git -C live-work/seed add --all
+  git -C live-work/seed -c user.name='Forge Drill Owner' -c user.email='drill@example.invalid' commit -m 'Trusted isolated ruleset drill seed'
+  git -C live-work/seed remote add origin https://github.com/Forge-Dice/forge-ruleset-drill-20261004-a.git
+  git -C live-work/seed push origin main:refs/heads/main
+Git muss hierbei als Wuerfelduell authentifiziert sein. Commit-author beweist das nicht.
+
+Owner-Terminal: FORGE_OWNER_TOKEN privat im Prozessumfeld setzen, nicht in
+Kommandozeile, Datei, Screenshots oder Logs schreiben. Es gehört Wuerfelduell,
+selektiert nur die Drill-Repositories und hat Administration, Contents, Workflows,
+Actions, Pull requests und Commit statuses mit erforderlichen Schreibrechten.
+Codex-Terminal getrennt: nur FORGE_CODEX_TOKEN, authentifiziert forge-codex,
+Contents/Workflows/Actions/Pull requests write, KEINE Administration, keine
+zusätzliche Bypass-Rolle. Beide Token benötigen die geltende Org-Freigabe.
+
+  python3 drill.py --work live-work --actor owner bind
+  python3 drill.py --work live-work --actor owner snapshot
+  python3 drill.py --work live-work --actor owner --execute seed
+
+2. TRUSTED CANARY-KONTROLLEN VOR DEVELOPER-ZUGRIFF
+Owner aktiviert Actions in Settings / Actions / General; nur lokale Actions,
+Default-Token read-only, Create/approve pull requests ausgeschaltet. Die Fixtures
+nutzen keine externen Actions. Noch keine eigene Execution-Policy und keine
+Ref-Rulesets aktivieren. Keine geerbte Policy aufweichen.
+  python3 drill.py --work live-work --actor owner --execute control-canaries
+  python3 drill.py --work live-work --actor owner observe-actions
+In GitHub für die owner-authored Fixtures die tatsächlichen Starts der drei
+Kontrollen push / pull_request / workflow_dispatch nachweisen: CONTROL_SENTINEL
+im Job-Log, passender Event/Ref/SHA/Actor. Nur Owner-Code wird hier ausgeführt.
+Falls eine geerbte Policy die Kontrollen verhindert: protokollieren; nicht
+organisationsweit lockern. Ohne passenden Kontrollnachweis bleibt der betroffene
+Negativevent INCONCLUSIVE. Nur vorhandene PR schließen; Branch erhalten.
+  python3 drill.py --work live-work --actor owner --execute disable-actions
+
+3. EXTERNAL ACTIONS EXECUTION POLICY
+  python3 drill.py --work live-work --actor owner --execute install POLICY
+  python3 drill.py --work live-work --actor owner snapshot
+Readback muss exakt zwei User-IDs, nur pull_request_target, ~ALL Workflow-Pfade,
+exclude=[] und active zeigen. Geerbte Policies ebenfalls sichern.
+  python3 drill.py --work live-work --actor owner --execute enable-actions
+  python3 drill.py --work live-work --actor owner --execute probe TOKEN-CONTROL --mode CONTROL
+Letzten Actions-Probe-Run im GitHub UI bestimmen. Echte numerische RUN_ID einsetzen:
+  python3 drill.py --work live-work --actor owner collect RUN_ID
+Im Log FORGE_PROBE_RESULT mit PASS_TOKEN_CONTROL sichern: GITHUB_TOKEN hat
+create + FF update im einmaligen Kontrollref geschafft. Kein PAT-Ersatz.
+Noch KEINEN weiteren Probe-PR eröffnen, bis der letzte fertig und geprüft ist.
+Nach Log-/Run-Evidenz den jeweiligen Probe-PR im UI schließen, Source-Branch
+behalten. Dies gilt für CONTROL sowie jede M0/M1-Probe; ein späterer erneuter
+Probe-Aufruf desselben Case kann sonst auf eine bereits offene PR treffen.
+
+4. BYPASSFREIE REF-SCHUTZREGELN
+  python3 drill.py --work live-work --actor owner --execute install R1
+  python3 drill.py --work live-work --actor owner --execute install R7
+  python3 drill.py --work live-work --actor owner snapshot
+Zuerst R1 gegenüber Actions mit contents:write isolieren, bevor R4/R5 greifen:
+  python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CODEX-NFF --mode M1
+Resultat sammeln: PASS_RULE_DENIAL, identischer Before/After-SHA, keine Folgeoperation.
+Danach erst:
+  python3 drill.py --work live-work --actor owner --execute probe ACTIONS-OWNER-DELETE --mode M1
+Danach erst:
+  python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-CREATE --mode M1
+Die letzten beiden ebenfalls einzeln auswerten. Keine weitere Mutation bei STOP.
+
+5. WRITER-NAMESPACES UND MAIN-MERGE-AKTEUR
+  python3 drill.py --work live-work --actor owner --execute install R4
+  python3 drill.py --work live-work --actor owner --execute install R5
+  python3 drill.py --work live-work --actor owner --execute install R6
+  python3 drill.py --work live-work --actor owner --execute install R3
+  python3 drill.py --work live-work --actor owner snapshot
+R1/R7/R2/R6 niemals einen allgemeinen Admin-/Write-/App-Bypass geben.
+Jetzt forge-codex ausschließlich write gewähren, nicht maintain/admin.
+Snapshot wiederholen. Owner und Codex aus ihren getrennten Terminals:
+  python3 drill.py --work live-work --actor owner --execute run R1-FF-owner
+  python3 drill.py --work live-work --actor codex --execute run R1-FF-codex
+R3 isoliert vor R2: Owner-FF gegen dedizierten main-Stellvertreter muss blockieren:
+  python3 drill.py --work live-work --actor owner --execute run R3-MAIN-FF-owner
+Owner/Codex müssen ihre eigenen Namespace-Create-Tests bestehen.
+
+6. NATIVE CHECK-BINDUNG VOR R2
+Codex eröffnet im Codex-Terminal:
+  python3 drill.py --work live-work --actor codex --execute pr bind
+forge-gate muss ausgeführt grün, forge-verify mit OWNER_RECHECK_REQUIRED rot sein.
+Owner sichert den echten Run, verwendet dessen numerische RUN_ID:
+  python3 drill.py --work live-work --actor owner collect RUN_ID
+  python3 drill.py --work live-work --actor owner --execute rerun RUN_ID
+Auf vollständige Beendigung warten; erneut sammeln:
+  python3 drill.py --work live-work --actor owner collect RUN_ID
+  python3 drill.py --work live-work --actor owner bind-checks RUN_ID
+Keinen RUN_ID-Platzhalter wörtlich ausführen. Beide Jobs müssen wirklich laufen,
+success melden und als GitHub-Actions-Checks genau am aktuellen PR-Head hängen.
+Original actor.id bleibt Codex; triggering_actor.id muss 315180734 sein.
+Bei NATIVE_HEAD_CHECK_BINDING_NOT_PROVEN: STOP / NO-GO. Keine Custom-Check-
+Publikation hinzufügen, keine App-Pins entfernen, keine R2-Checkpflicht abschwächen.
+Nach erfolgreicher Bindung werden beide R2.json-Dateien mit echter App-ID erneuert.
+  python3 drill.py --work live-work --actor owner --execute install R2
+  python3 drill.py --work live-work --actor owner coverage
+  python3 drill.py --work live-work --actor owner snapshot
+Coverage mit dem Bericht abgleichen: keine aktive ~ALL-Writer-Bypass-Regel,
+keine ungeschützte R6-Exclude-Lücke. Keine lokale Glob-Simulation als Live-Beweis.
+
+7. REF-MATRIX AUSFÜHREN
+CASE-COMMANDS.txt enthält jeden Ref-Test als exakten Befehl, nach Akteur getrennt.
+Die sechs ROOT_FIRST-Fälle werden ausschließlich in Schritt 8 ausgeführt.
+Alle anderen Owner/Codex-Ref-Fälle bei sämtlichen sieben aktiven Regeln einzeln
+ausführen. Bereits isoliert getestete FF/NFF-Fälle können nochmals laufen:
+FF ist ein neuer Commit; ein DENY-Test muss den Ref weiterhin unverändert lassen.
+Keine Batch-Pushes, Wildcard-Refspecs, +Refspecs oder Push--mirror verwenden.
+Der NFF-Test nutzt nur auf gelisteten Wegwerfrefs PATCH force:true. Das ist die
+beabsichtigte verbotene Operation. Es gibt KEIN Force-Push-Aufräumen.
+Nach jedem Block snapshot; HTTP 403 wegen Token-Rechten ist kein Rule-PASS.
+
+8. ROOT-PATTERNS OHNE GIT-PREFIX-KOLLISION
+EIN ZWEITES frisches Repo Forge-Dice/forge-ruleset-drill-20261004-root anlegen.
+  python3 drill.py prepare --repo Forge-Dice/forge-ruleset-drill-20261004-root --run-id root-20261004-a --out root-work
+Die selben SETUP-Kommandos aus Schritt 1 verwenden, mit root-work/seed und dem
+root-Repository-URL. Actions bleiben deaktiviert. NUR main initialisieren.
+  python3 drill.py --work root-work --actor owner bind
+  python3 drill.py --work root-work --actor owner --execute install POLICY
+  python3 drill.py --work root-work --actor owner --execute install R1
+  python3 drill.py --work root-work --actor owner --execute install R6
+forge-codex write gewähren; noch KEINE descendant refs und KEIN seed anlegen.
+  python3 drill.py --work root-work --actor owner snapshot
+  python3 drill.py --work root-work --actor owner --execute run R6-ROOT-owner-forge-run-codex
+  python3 drill.py --work root-work --actor owner --execute run R6-ROOT-owner-forge-owner
+  python3 drill.py --work root-work --actor owner --execute run R6-ROOT-owner-forge-contract
+  python3 drill.py --work root-work --actor codex --execute run R6-ROOT-codex-forge-run-codex
+  python3 drill.py --work root-work --actor codex --execute run R6-ROOT-codex-forge-owner
+  python3 drill.py --work root-work --actor codex --execute run R6-ROOT-codex-forge-contract
+Alle sechs müssen aufgrund R6 blockieren, nicht aufgrund bereits vorhandener
+forge/.../child Branches. R2–R5 und R7 treffen diese Root-Branch-Refs nicht;
+für diese isolierte Teilprüfung sind R1+R6 die gleichen effektiven Branch-Regeln
+wie im vollständigen Modell. Root-Snapshot und Evidence separat mitliefern.
+Keine Regel abschalten, keine Branches löschen, um diesen Test im Primärrepo
+nachträglich zu erzwingen. Auch dieses Repo bleibt erhalten.
+
+9. PR / MERGE / SELBST-PR / NEGATIVE QUALITÄT
+Jede Scenario-PR in CASE-COMMANDS.txt mit dem dort genannten author eröffnen.
+Für green-* und outdated-advance: ersten Run erfassen, Owner Re-run ALL JOBS,
+beide Checks auswerten. Keine zählende GitHub-Approval abgeben.
+Danach exakten MERGE-... Befehl ausführen. green-codex-owner und green-owner-owner
+müssen als Owner mergen; green-codex-codex und green-owner-codex als Codex DENY,
+obwohl dieselben Qualitätsbedingungen grün sind. Owner-eigene PR muss bei 0
+Approvals und require_last_push_approval=false ohne Fremd-Approval mergen können.
+Die API fordert den PR-only-Bypass ausdrücklich mit bypass_rules=true an.
+Falls der Owner-Merge dennoch blockiert: dessen finalen Grund sichern, nicht auf
+always-Bypass umstellen. Ein separater Owner-UI-Fall darf zusätzlich zeigen,
+ob 'For pull requests only' dort korrekt bedient wird; er ersetzt keinen
+gescheiterten API-Pfad. R2 muss bei beiden Wegen wirksam sein.
+
+missing-gate / missing-verify: Die Fixture benennt nur den jeweiligen Check um.
+Der andere Pflichtcheck wird per Owner-Re-run grün erzeugt; dann Merge DENY.
+fail-gate: echter ausgeführter Gate-Failure; verify ebenfalls blockiert, Merge DENY.
+fail-verify: Gate grün, echter Verify-Failure, Merge DENY.
+wrong-source: Fixture erzeugt KEINEN der beiden Pflichtnamen mit GitHub Actions.
+  python3 drill.py --work live-work --actor codex --execute pr wrong-source
+  python3 drill.py --work live-work --actor owner --execute wrong-source-statuses
+Beide gleichnamigen Commit-Statuses von Owner-PAT grün sehen; Merge bleibt DENY:
+  python3 drill.py --work live-work --actor owner --execute run MERGE-wrong-source
+
+swapped-owner: Owner eröffnet PR aus Codex-Branch. GitHub-PR-Erstellung darf
+gelingen; Forge-Gate muss AUTHOR_NAMESPACE_MISMATCH liefern, Merge DENY.
+swapped-codex: spiegelverkehrter Fall; ebenfalls Gate rot und Merge DENY.
+Das sind keine behaupteten Ruleset-PR-Create-ACLs.
+
+10. STALE HEAD / STRICT UP-TO-DATE
+stale-PR eröffnen; H1 per Owner-Re-run grün erzeugen; Run-ID/Checks sichern.
+Codex aktualisiert denselben Source-Ref ausschließlich fast-forward:
+  python3 drill.py --work live-work --actor codex --execute ff-head stale
+Owner startet ABSICHTLICH den alten H1-Run vollständig neu. Fixture muss
+STALE_HEAD erkennen; aktuelle H2 darf dadurch nicht mergefähig werden:
+  python3 drill.py --work live-work --actor owner --execute rerun OLD_H1_RUN_ID
+  python3 drill.py --work live-work --actor owner --execute run MERGE-stale
+Neuer H2-Run + Owner-Re-run kann später grün werden; diesen negativen Testref
+nicht mergen und nichts zurückschreiben.
+
+outdated-PR zunächst grün machen und offen lassen. outdated-advance als Owner
+eröffnen, dessen Checks grün machen und per Owner mergen:
+  python3 drill.py --work live-work --actor owner --execute pr outdated-advance
+  python3 drill.py --work live-work --actor owner --execute run MERGE-outdated-advance
+Der zweite Befehl kommt erst NACH Owner-Re-run/Checkprüfung. Ursprüngliche
+outdated-PR muss jetzt mergeable_state=behind zeigen; deren Merge ist DENY:
+  python3 drill.py --work live-work --actor owner --execute run MERGE-outdated
+Falls GitHub diesen Zustand nicht erzeugt: Test INCONCLUSIVE, nicht als strict-
+Nachweis zählen. Keine geschützte Base direkt aktualisieren.
+
+11. ACTIONS EXECUTION POLICY DRILL
+Mit finalen sieben Regeln aktiv, im Codex-Terminal:
+  python3 drill.py --work live-work --actor codex --execute push-workflows
+Ref-FF MUSS angenommen werden: Namespace- und Workflows-write-Rechte sind
+vorhanden. Drei veränderte plus ein neu benannter Workflow enthalten nur
+UNTRUSTED_SENTINEL-Canaries. Kein solcher Workflow-Job darf starten.
+Owner sammelt sofort Policy insights/blocked checks und alle zugehörigen Jobs.
+Danach erst weitere Ereignisse auslösen:
+  python3 drill.py --work live-work --actor codex --execute workflow-pr
+Es müssen blockierte pull_request-Canaries und erlaubte trusted PR-target-
+Jobs getrennt erkennbar sein. Trusted Gate lehnt Workflow-Pfadänderungen in
+dieser Fixture nicht fachlich ab: sie ist ein Plattform-Test, kein Verifier.
+Die Canary-PR niemals mergen; der Produktiv-Verifier muss solche Pfade ablehnen.
+  python3 drill.py --work live-work --actor codex --execute dispatch
+Die Definition existiert auf default main UND auf der ausgewählten Codex-Ref.
+HTTP 204 kann vorkommen; nur belegte Event-Policy-Blockierung vor Job-Start zählt.
+  python3 drill.py --work live-work --actor owner observe-actions
+Für jeden Event sind Event/Actor/Workflow-Pfad/SHA/Zeit und Blockierungsgrund,
+keine job.started_at und kein UNTRUSTED_SENTINEL erforderlich. Kein Run-Eintrag
+allein beweist nichts. Policy insights im UI sichern; deren Export-API ist nicht
+als bekannt behauptet. Nach zwei Minuten kontrollieren, nach 15 Minuten ohne
+nachweisbare Blockierung: INCONCLUSIVE. Keine fehlgeschlagenen untrusted Jobs
+oder 'skipped' Jobs als 'nie gestartet' ausgeben.
+
+Owner-Re-run ist der erlaubte trusted pull_request_target-Pfad. Owner und Codex
+dürfen beide technisch Re-run anfordern. Ein Codex-Re-run derselben trusted PR
+muss Verify wegen triggering_actor.id ungleich 315180734 rot halten. Danach
+Owner-Re-run aller Jobs: Verify grün bei passendem aktuellem Head/Base.
+Eine Rechteeskalation des Originaltokens wird nicht behauptet.
+
+12. ACTIONS ALS REF-/MERGE-AKTEUR
+CASE-COMMANDS.txt enthält für jeden ACTIONS-* Fall einen konkreten Probe-Aufruf.
+Zuerst zugehörige green-codex-actions Scenario-PR eröffnen und Owner-Re-run grün
+machen, bevor ACTIONS-MERGE im M1-Modus startet. Proben einzeln starten, Log
+FORGE_PROBE_RESULT und collect RUN_ID sichern. M1 erwartet PASS_RULE_DENIAL.
+Danach M0-Runde: PASS_PERMISSION_DENIAL beweist permissions={}, ersetzt M1 nicht.
+ACTIONS-PR nur M0. PR-Erstellung ist keine Ref-Ruleset-Regel; globaler Toggle
+Create/approve pull requests bleibt ausgeschaltet. M1-Tokenprobe enthält
+contents:write/pull-requests:write ausschließlich als trusted Laborcode.
+Kein Head-Checkout, kein Head-Script, keine Runtime-Imports aus PR-Code.
+
+13. ABSCHLUSS
+  python3 drill.py --work live-work --actor owner snapshot
+  python3 drill.py --work live-work --actor owner coverage
+  python3 drill.py --work root-work --actor owner snapshot
+Gesamte PASS-Checkliste aus dem HTML-Bericht abarbeiten. Alle 91 Fälle über
+Primär- und Root-Fenster, beide Actions-Modi sowie die separaten Policy-/Re-run-
+Nachweise ablegen. API-, UI- und Fixture-Nachweise getrennt kennzeichnen.
+R1-FF-owner, R1-FF-codex, green-* und der Main-Stellvertreter sind LAB-Nachweise,
+keine Live-Verifikation des kanonischen main. Keine Übertragung auf Forge.
+PRs schließen ist erlaubt. Branches/Tags nicht löschen; kein Force-Push-Aufräumen.
+Owner kann nach Evidenzsicherung beide gesamten Testrepos manuell archivieren.
+
+STOP — CONTAINMENT, KEIN ROLLBACK
+1. Neue Tests sofort unterlassen. Before/After-SHA, HTTP/Git-Antwort, Zeit,
+   Request-ID, PR/Run-ID und lokalen STOP-Datensatz sichern. Bei laufendem
+   untrusted Job erst sofort abbrechen; umfangreicher Logexport darf dies nicht
+   verzögern. Keine Credentials abbilden.
+2. Owner, identitätsgeprüft, im unveränderten gebundenen Drill-Workspace:
+     python3 drill.py --work live-work --actor owner --execute freeze
+   (Root-Vorfall: --work root-work.) Das deaktiviert weitere Actions,
+   setzt R3 bypass_actors=[] bei weiter aktiver creation/update-Sperre und
+   fordert Cancellation laufender/queued Runs an. Es bleibt keine Main-Merge-
+   Ausnahme für bereits grüne Heads. Keine Ref-Operation als Reparatur.
+3. Owner kontrolliert im UI, dass Aktionen tatsächlich beendet sind und der
+   Main-Update-Fence aktiv/bypassfrei ist. Wenn Cancel nicht reicht: konkrete
+   Run-Cancellation im UI oder aktuelle REST force-cancel verwenden; keine
+   Rule/Policy zum Beenden lockern.
+4. Read-only Snapshot/collect bleiben verfügbar. Den ursprünglichen Vorfall,
+   Source/Target/Heads, alle Rule-Versionen und Job-Logs sichern.
+5. Genau den falschen Feldwert anhand Recovery-Tabelle korrigieren, während
+   Actions und Merges eingefroren bleiben. STOP wird nicht automatisch gelöscht.
+   Einen neuen isolierten Run mit frischen Testrefs/Repo starten. Den alten
+   betroffenen Ref nicht zurücksetzen, neu erzeugen, löschen oder umbenennen.
+6. Niemals automatisch R1/R2/R7, Event-/Actor-Policy oder App-Pins entfernen;
+   kein always-Bypass für main/Owner, kein allgemeiner Admin-/Write-Bypass,
+   keine organisationsweite Policy-Änderung, kein Wiederanschalten der Runs.
+
+ENDE. KEINE ÄNDERUNG AN FORGE-DICE/FORGE. KEINE PRODUKTIVAKTIVIERUNG.

@@ -1,0 +1,75 @@
+name: FORGE trusted ruleset fixture
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+permissions: {}
+concurrency:
+  group: forge-drill-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  gate:
+    name: ${{ (contains(github.head_ref, '/missing-gate') || contains(github.head_ref, '/wrong-source')) && 'fixture-unused-gate' || 'forge-gate' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions: {}
+    env:
+      EXPECTED_REPO: __REPO__
+      DRILL_RUN: __RUN__
+      WORKFLOW_SHA: ${{ github.workflow_sha }}
+      WORKFLOW_REF: ${{ github.workflow_ref }}
+    steps:
+      - name: Executed trusted gate fixture
+        run: |
+          python3 - <<'PY'
+          import json, os
+          e=json.load(open(os.environ['GITHUB_EVENT_PATH']))
+          p=e['pull_request']; head=p['head']['ref']; author=p['user']['id']
+          assert os.environ['GITHUB_REPOSITORY']==os.environ['EXPECTED_REPO']
+          assert os.environ['GITHUB_EVENT_NAME']=='pull_request_target'
+          prefix='forge/owner/' if head.startswith('forge/owner/') or head.startswith('forge/contract/') else 'forge/run/codex/'
+          assert head.startswith(('forge/owner/','forge/contract/','forge/run/codex/')), 'INVALID_NAMESPACE'
+          assert author==(315180734 if prefix=='forge/owner/' else 337272506), 'AUTHOR_NAMESPACE_MISMATCH'
+          print(json.dumps({'fixture':'forge-gate','executed':True,'pr':p['number'],
+            'head':p['head']['sha'],'base':p['base']['sha'],'workflow_sha':os.environ['WORKFLOW_SHA'],
+            'workflow_ref':os.environ['WORKFLOW_REF'],'author_id':author}))
+          assert not head.endswith('/fail-gate'), 'INTENTIONAL_GATE_FAILURE'
+          # Fixture only: no head code, workflow, test, configuration, or dependencies execute.
+          PY
+  verify:
+    needs: gate
+    if: always()
+    name: ${{ (contains(github.head_ref, '/missing-verify') || contains(github.head_ref, '/wrong-source')) && 'fixture-unused-verify' || 'forge-verify' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions: {}
+    env:
+      EXPECTED_REPO: __REPO__
+      GATE_RESULT: ${{ needs.gate.result }}
+      TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+      WORKFLOW_SHA: ${{ github.workflow_sha }}
+    steps:
+      - name: Executed trusted verify fixture
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          assert os.environ['GITHUB_REPOSITORY']==os.environ['EXPECTED_REPO']
+          assert os.environ['GITHUB_EVENT_NAME']=='pull_request_target'
+          e=json.load(open(os.environ['GITHUB_EVENT_PATH'])); p=e['pull_request']
+          assert os.environ['GATE_RESULT']=='success', 'GATE_NOT_SUCCESS'
+          assert int(os.environ['GITHUB_RUN_ATTEMPT'])>1, 'OWNER_RECHECK_REQUIRED'
+          repo=os.environ['EXPECTED_REPO']; rid=os.environ['GITHUB_RUN_ID']; attempt=os.environ['GITHUB_RUN_ATTEMPT']
+          def read(path):
+            req=urllib.request.Request('https://api.github.com'+path,headers={'Accept':'application/vnd.github+json',
+              'X-GitHub-Api-Version':'2026-03-10','User-Agent':'forge-drill-fixture'})
+            return json.load(urllib.request.urlopen(req,timeout=20))
+          # Public metadata reads; no GITHUB_TOKEN or secret is passed to this fixture.
+          r=read('/repos/'+repo+'/actions/runs/'+rid+'/attempts/'+attempt)
+          assert r['triggering_actor']['id']==315180734, 'OWNER_ID_REQUIRED'
+          live=read('/repos/'+repo+'/pulls/'+str(p['number']))
+          assert live['head']['sha']==p['head']['sha'], 'STALE_HEAD'
+          assert live['base']['sha']==p['base']['sha'], 'STALE_BASE'
+          assert not p['head']['ref'].endswith('/fail-verify'), 'INTENTIONAL_VERIFY_FAILURE'
+          print(json.dumps({'fixture':'forge-verify','executed':True,'pr':p['number'],
+            'head':p['head']['sha'],'base':p['base']['sha'],'workflow_sha':os.environ['WORKFLOW_SHA'],
+            'actor_id':r['actor']['id'],'triggering_actor_id':r['triggering_actor']['id'],'attempt':int(attempt)}))
+          PY

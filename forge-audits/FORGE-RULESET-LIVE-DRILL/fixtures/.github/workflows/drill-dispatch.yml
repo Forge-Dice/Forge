@@ -1,0 +1,10 @@
+name: FORGE workflow_dispatch canary
+on:
+  workflow_dispatch:
+permissions: {}
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - run: echo CONTROL_SENTINEL_DISPATCH___RUN__

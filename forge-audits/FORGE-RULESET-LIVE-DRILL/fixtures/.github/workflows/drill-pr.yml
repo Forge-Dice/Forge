@@ -1,0 +1,9 @@
+name: FORGE pull_request canary
+on: [pull_request]
+permissions: {}
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - run: echo CONTROL_SENTINEL_PR___RUN__

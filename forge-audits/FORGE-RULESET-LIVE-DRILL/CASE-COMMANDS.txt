@@ -1,0 +1,278 @@
+FORGE LIVE DRILL — EXACT CASE COMMAND INVENTORY
+NOT EXECUTED. Follow OWNER-RUNBOOK.txt phase gates. One case, one observation, then next.
+Do not run this file as a shell script. RUN_ID values come from GitHub. Never run all cases unattended.
+
+ACTOR OWNER — final seven-ruleset REF tests, isolated token terminal
+
+# ALLOW refs/heads/forge/owner/drill-20261004-a/create/one
+python3 drill.py --work live-work --actor owner --execute run R5-CREATE-owner-one
+# ALLOW refs/heads/forge/owner/drill-20261004-a/create/a/b/c
+python3 drill.py --work live-work --actor owner --execute run R5-CREATE-owner-a-b-c
+# ALLOW refs/heads/forge/owner/drill-20261004-a/ff
+python3 drill.py --work live-work --actor owner --execute run R1-FF-owner
+# DENY refs/heads/forge/owner/drill-20261004-a/nff
+python3 drill.py --work live-work --actor owner --execute run R1-NFF-owner
+# DENY refs/heads/forge/owner/drill-20261004-a/delete
+python3 drill.py --work live-work --actor owner --execute run R1-DELETE-owner
+# ALLOW refs/heads/forge/contract/drill-20261004-a/v2
+python3 drill.py --work live-work --actor owner --execute run R5-CONTRACT-CREATE
+# ALLOW refs/heads/forge/contract/drill-20261004-a/ff
+python3 drill.py --work live-work --actor owner --execute run R5-CONTRACT-FF
+# DENY refs/heads/forge/contract/drill-20261004-a/nff
+python3 drill.py --work live-work --actor owner --execute run R1-CONTRACT-NFF
+# DENY refs/heads/forge/contract/drill-20261004-a/delete
+python3 drill.py --work live-work --actor owner --execute run R1-CONTRACT-DELETE
+# DENY refs/heads/forge/run/codex/drill-20261004-a/cross-create-owner
+python3 drill.py --work live-work --actor owner --execute run CROSS-owner-codex-R4-CREATE
+# DENY refs/heads/forge/run/codex/drill-20261004-a/cross-update-owner
+python3 drill.py --work live-work --actor owner --execute run CROSS-owner-codex-R4-FF
+# DENY refs/heads/forge/run/claude/drill-20261004-a
+python3 drill.py --work live-work --actor owner --execute run R6-CREATE-owner-forge-run-claude-drill-20261004-a
+# DENY refs/heads/forge/stray/drill-20261004-a
+python3 drill.py --work live-work --actor owner --execute run R6-CREATE-owner-forge-stray-drill-20261004-a
+# DENY refs/heads/forge/run/codexevil/drill-20261004-a
+python3 drill.py --work live-work --actor owner --execute run R6-CREATE-owner-forge-run-codexevil-drill-20261004-a
+# DENY refs/heads/Forge/run/codex/drill-20261004-a
+python3 drill.py --work live-work --actor owner --execute run R6-CREATE-owner-Forge-run-codex-drill-20261004-a
+# DENY refs/heads/forge/ownerevil/drill-20261004-a
+python3 drill.py --work live-work --actor owner --execute run R6-CREATE-owner-forge-ownerevil-drill-20261004-a
+# DENY refs/heads/forge/contractevil/drill-20261004-a
+python3 drill.py --work live-work --actor owner --execute run R6-CREATE-owner-forge-contractevil-drill-20261004-a
+# DENY refs/heads/forge/stray/drill-20261004-a/seeded-legacy-owner
+python3 drill.py --work live-work --actor owner --execute run R6-FF-owner
+# DENY refs/heads/forge/stray/drill-20261004-a/delete-owner
+python3 drill.py --work live-work --actor owner --execute run R1-STRAY-DELETE-owner
+# DENY refs/heads/forge/drill-main/drill-20261004-a/create-owner
+python3 drill.py --work live-work --actor owner --execute run R3-MAIN-CREATE-owner
+# DENY refs/heads/forge/drill-main/drill-20261004-a/ff-owner
+python3 drill.py --work live-work --actor owner --execute run R3-MAIN-FF-owner
+# DENY refs/heads/forge/drill-main/drill-20261004-a/nff-owner
+python3 drill.py --work live-work --actor owner --execute run R3-MAIN-NFF-owner
+# DENY refs/heads/forge/drill-main/drill-20261004-a/delete-owner
+python3 drill.py --work live-work --actor owner --execute run R3-MAIN-DELETE-owner
+# DENY refs/tags/forge-drill/drill-20261004-a/create-owner
+python3 drill.py --work live-work --actor owner --execute run R7-TAG-CREATE-owner
+# DENY refs/tags/forge-drill/drill-20261004-a/ff-owner
+python3 drill.py --work live-work --actor owner --execute run R7-TAG-FF-owner
+# DENY refs/tags/forge-drill/drill-20261004-a/nff-owner
+python3 drill.py --work live-work --actor owner --execute run R7-TAG-NFF-owner
+# DENY refs/tags/forge-drill/drill-20261004-a/delete-owner
+python3 drill.py --work live-work --actor owner --execute run R7-TAG-DELETE-owner
+
+ACTOR CODEX — final seven-ruleset REF tests, isolated token terminal
+
+# ALLOW refs/heads/forge/run/codex/drill-20261004-a/create/one
+python3 drill.py --work live-work --actor codex --execute run R4-CREATE-codex-one
+# ALLOW refs/heads/forge/run/codex/drill-20261004-a/create/a/b/c
+python3 drill.py --work live-work --actor codex --execute run R4-CREATE-codex-a-b-c
+# ALLOW refs/heads/forge/run/codex/drill-20261004-a/ff
+python3 drill.py --work live-work --actor codex --execute run R1-FF-codex
+# DENY refs/heads/forge/run/codex/drill-20261004-a/nff
+python3 drill.py --work live-work --actor codex --execute run R1-NFF-codex
+# DENY refs/heads/forge/run/codex/drill-20261004-a/delete
+python3 drill.py --work live-work --actor codex --execute run R1-DELETE-codex
+# DENY refs/heads/forge/owner/drill-20261004-a/cross-create-codex
+python3 drill.py --work live-work --actor codex --execute run CROSS-codex-owner-R5-CREATE
+# DENY refs/heads/forge/owner/drill-20261004-a/cross-update-codex
+python3 drill.py --work live-work --actor codex --execute run CROSS-codex-owner-R5-FF
+# DENY refs/heads/forge/contract/drill-20261004-a/cross-create-codex
+python3 drill.py --work live-work --actor codex --execute run CROSS-codex-contract-R5-CREATE
+# DENY refs/heads/forge/contract/drill-20261004-a/cross-update-codex
+python3 drill.py --work live-work --actor codex --execute run CROSS-codex-contract-R5-FF
+# DENY refs/heads/forge/run/claude/drill-20261004-a
+python3 drill.py --work live-work --actor codex --execute run R6-CREATE-codex-forge-run-claude-drill-20261004-a
+# DENY refs/heads/forge/stray/drill-20261004-a
+python3 drill.py --work live-work --actor codex --execute run R6-CREATE-codex-forge-stray-drill-20261004-a
+# DENY refs/heads/forge/run/codexevil/drill-20261004-a
+python3 drill.py --work live-work --actor codex --execute run R6-CREATE-codex-forge-run-codexevil-drill-20261004-a
+# DENY refs/heads/Forge/run/codex/drill-20261004-a
+python3 drill.py --work live-work --actor codex --execute run R6-CREATE-codex-Forge-run-codex-drill-20261004-a
+# DENY refs/heads/forge/ownerevil/drill-20261004-a
+python3 drill.py --work live-work --actor codex --execute run R6-CREATE-codex-forge-ownerevil-drill-20261004-a
+# DENY refs/heads/forge/contractevil/drill-20261004-a
+python3 drill.py --work live-work --actor codex --execute run R6-CREATE-codex-forge-contractevil-drill-20261004-a
+# DENY refs/heads/forge/stray/drill-20261004-a/seeded-legacy-codex
+python3 drill.py --work live-work --actor codex --execute run R6-FF-codex
+# DENY refs/heads/forge/stray/drill-20261004-a/delete-codex
+python3 drill.py --work live-work --actor codex --execute run R1-STRAY-DELETE-codex
+# DENY refs/heads/forge/drill-main/drill-20261004-a/create-codex
+python3 drill.py --work live-work --actor codex --execute run R3-MAIN-CREATE-codex
+# DENY refs/heads/forge/drill-main/drill-20261004-a/ff-codex
+python3 drill.py --work live-work --actor codex --execute run R3-MAIN-FF-codex
+# DENY refs/heads/forge/drill-main/drill-20261004-a/nff-codex
+python3 drill.py --work live-work --actor codex --execute run R3-MAIN-NFF-codex
+# DENY refs/heads/forge/drill-main/drill-20261004-a/delete-codex
+python3 drill.py --work live-work --actor codex --execute run R3-MAIN-DELETE-codex
+# DENY refs/tags/forge-drill/drill-20261004-a/create-codex
+python3 drill.py --work live-work --actor codex --execute run R7-TAG-CREATE-codex
+# DENY refs/tags/forge-drill/drill-20261004-a/ff-codex
+python3 drill.py --work live-work --actor codex --execute run R7-TAG-FF-codex
+# DENY refs/tags/forge-drill/drill-20261004-a/nff-codex
+python3 drill.py --work live-work --actor codex --execute run R7-TAG-NFF-codex
+# DENY refs/tags/forge-drill/drill-20261004-a/delete-codex
+python3 drill.py --work live-work --actor codex --execute run R7-TAG-DELETE-codex
+
+PR SCENARIOS (bind was already opened in phase P6)
+
+python3 drill.py --work live-work --actor codex --execute pr green-codex-owner
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr green-codex-codex
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr green-codex-actions
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor owner --execute pr green-owner-owner
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor owner --execute pr green-owner-codex
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr missing-gate
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr missing-verify
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr fail-gate
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr fail-verify
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr wrong-source
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr stale
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr outdated
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor owner --execute pr outdated-advance
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor owner --execute pr swapped-owner
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+python3 drill.py --work live-work --actor codex --execute pr swapped-codex
+# Collect initial run, Owner rerun all jobs, collect again. Apply specific negative-fixture instructions where relevant.
+
+MERGE CASES — all quality/preconditions from report first. 202 is PENDING.
+
+python3 drill.py --work live-work --actor owner --execute run MERGE-green-codex-owner
+python3 drill.py --work live-work --actor owner merge-result MERGE-green-codex-owner
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor codex --execute run MERGE-green-codex-codex
+python3 drill.py --work live-work --actor owner merge-result MERGE-green-codex-codex
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-green-owner-owner
+python3 drill.py --work live-work --actor owner merge-result MERGE-green-owner-owner
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor codex --execute run MERGE-green-owner-codex
+python3 drill.py --work live-work --actor owner merge-result MERGE-green-owner-codex
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-missing-gate
+python3 drill.py --work live-work --actor owner merge-result MERGE-missing-gate
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-missing-verify
+python3 drill.py --work live-work --actor owner merge-result MERGE-missing-verify
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-fail-gate
+python3 drill.py --work live-work --actor owner merge-result MERGE-fail-gate
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-fail-verify
+python3 drill.py --work live-work --actor owner merge-result MERGE-fail-verify
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-wrong-source
+python3 drill.py --work live-work --actor owner merge-result MERGE-wrong-source
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-stale
+python3 drill.py --work live-work --actor owner merge-result MERGE-stale
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-outdated
+python3 drill.py --work live-work --actor owner merge-result MERGE-outdated
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-outdated-advance
+python3 drill.py --work live-work --actor owner merge-result MERGE-outdated-advance
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-swapped-owner
+python3 drill.py --work live-work --actor owner merge-result MERGE-swapped-owner
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+python3 drill.py --work live-work --actor owner --execute run MERGE-swapped-codex
+python3 drill.py --work live-work --actor owner merge-result MERGE-swapped-codex
+# merge-result only if the first call returns PENDING and stores its UUID; repeat read-only until final.
+
+GENUINE ACTIONS TOKEN CASES — one completed, inspected probe at a time
+
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CODEX-CREATE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CODEX-CREATE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-OWNER-CREATE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-OWNER-CREATE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CONTRACT-CREATE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CONTRACT-CREATE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-STRAY-CREATE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-STRAY-CREATE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CODEX-FF --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CODEX-FF --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-OWNER-FF --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-OWNER-FF --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CONTRACT-FF --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CONTRACT-FF --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CODEX-NFF --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-CODEX-NFF --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-OWNER-DELETE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-OWNER-DELETE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MAIN-CREATE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MAIN-CREATE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MAIN-FF --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MAIN-FF --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MAIN-NFF --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MAIN-NFF --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MAIN-DELETE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MAIN-DELETE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-CREATE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-CREATE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-FF --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-FF --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-NFF --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-NFF --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-DELETE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-TAG-DELETE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MERGE --mode M1
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-MERGE --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+# Inspect trusted FORGE_PROBE_RESULT; collect its real RUN_ID before next probe.
+python3 drill.py --work live-work --actor owner --execute probe ACTIONS-PR --mode M0
+# Inspect permissions denial; this does not replace M1 ruleset proof.
+
+ROOT WINDOW — only root-work before descendant refs, R1+R6 active
+
+python3 drill.py --work root-work --actor owner --execute run R6-ROOT-owner-forge-run-codex
+python3 drill.py --work root-work --actor codex --execute run R6-ROOT-codex-forge-run-codex
+python3 drill.py --work root-work --actor owner --execute run R6-ROOT-owner-forge-owner
+python3 drill.py --work root-work --actor codex --execute run R6-ROOT-codex-forge-owner
+python3 drill.py --work root-work --actor owner --execute run R6-ROOT-owner-forge-contract
+python3 drill.py --work root-work --actor codex --execute run R6-ROOT-codex-forge-contract

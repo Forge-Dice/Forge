@@ -1,0 +1,37 @@
+{
+  "name": "forge-trusted-pr-target-only",
+  "enforcement": "active",
+  "conditions": {
+    "workflow_path": {
+      "include": [
+        "~ALL"
+      ],
+      "exclude": []
+    }
+  },
+  "rules": [
+    {
+      "type": "restrict_actions_actors",
+      "parameters": {
+        "allowed_actors": [
+          {
+            "id": 315180734,
+            "type": "User"
+          },
+          {
+            "id": 337272506,
+            "type": "User"
+          }
+        ]
+      }
+    },
+    {
+      "type": "restrict_action_events",
+      "parameters": {
+        "allowed_events": [
+          "pull_request_target"
+        ]
+      }
+    }
+  ]
+}

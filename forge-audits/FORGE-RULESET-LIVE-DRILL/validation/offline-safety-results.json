@@ -1,0 +1,11 @@
+{
+  "validation_kind": "OFFLINE_EXECUTED",
+  "command": "python3 forge-live-drill/tests/selftest_drill.py",
+  "tests_run": 29,
+  "failures": 0,
+  "errors": 0,
+  "result": "OK",
+  "github_mutations_executed": 0,
+  "live_enforcement_verified": false,
+  "note": "Safety harness, identity/ref guards, immutable main binding, STOP without rollback, async pending/failure/allow classification and server pagination. These tests do not establish GitHub server behavior."
+}

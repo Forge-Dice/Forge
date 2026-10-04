@@ -1,0 +1,41 @@
+name: FORGE trusted token probe LAB ONLY
+on:
+  pull_request_target:
+    types: [opened, reopened]
+permissions: {}
+concurrency:
+  group: forge-drill-token-probe
+  cancel-in-progress: false
+jobs:
+  permission_probe:
+    if: startsWith(github.head_ref, 'forge/owner/__RUN__/actions-trigger/M0/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions: {}
+    env:
+      PROBE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      EXPECTED_REPO: __REPO__
+      WORKFLOW_SHA: ${{ github.workflow_sha }}
+    steps:
+      - name: Fixed trusted permission probe without checkout
+        run: |
+          python3 - <<'PY'
+__INLINE_PROBE__
+          PY
+  rule_probe:
+    if: startsWith(github.head_ref, 'forge/owner/__RUN__/actions-trigger/') && !contains(github.head_ref, '/actions-trigger/M0/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      PROBE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      EXPECTED_REPO: __REPO__
+      WORKFLOW_SHA: ${{ github.workflow_sha }}
+    steps:
+      - name: Fixed trusted probe without checkout
+        run: |
+          python3 - <<'PY'
+__INLINE_PROBE__
+          PY

@@ -1,0 +1,61 @@
+{
+  "name": "forge-deny-other-branches",
+  "target": "branch",
+  "enforcement": "active",
+  "bypass_actors": [],
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "~ALL"
+      ],
+      "exclude": [
+        "refs/heads/main",
+        "refs/heads/forge/drill-base/drill-20261004-a/bind",
+        "refs/heads/forge/drill-base/drill-20261004-a/green-codex-owner",
+        "refs/heads/forge/drill-base/drill-20261004-a/green-codex-codex",
+        "refs/heads/forge/drill-base/drill-20261004-a/green-codex-actions",
+        "refs/heads/forge/drill-base/drill-20261004-a/green-owner-owner",
+        "refs/heads/forge/drill-base/drill-20261004-a/green-owner-codex",
+        "refs/heads/forge/drill-base/drill-20261004-a/missing-gate",
+        "refs/heads/forge/drill-base/drill-20261004-a/missing-verify",
+        "refs/heads/forge/drill-base/drill-20261004-a/fail-gate",
+        "refs/heads/forge/drill-base/drill-20261004-a/fail-verify",
+        "refs/heads/forge/drill-base/drill-20261004-a/wrong-source",
+        "refs/heads/forge/drill-base/drill-20261004-a/stale",
+        "refs/heads/forge/drill-base/drill-20261004-a/outdated",
+        "refs/heads/forge/drill-base/drill-20261004-a/outdated-advance",
+        "refs/heads/forge/drill-base/drill-20261004-a/swapped-owner",
+        "refs/heads/forge/drill-base/drill-20261004-a/swapped-codex",
+        "refs/heads/forge/drill-base/drill-20261004-a/actions-policy",
+        "refs/heads/forge/drill-base/drill-20261004-a/actions-probe",
+        "refs/heads/forge/drill-base/drill-20261004-a/actions-pr",
+        "refs/heads/forge/drill-main/drill-20261004-a/ff-owner",
+        "refs/heads/forge/drill-main/drill-20261004-a/ff-codex",
+        "refs/heads/forge/drill-main/drill-20261004-a/nff-owner",
+        "refs/heads/forge/drill-main/drill-20261004-a/nff-codex",
+        "refs/heads/forge/drill-main/drill-20261004-a/delete-owner",
+        "refs/heads/forge/drill-main/drill-20261004-a/delete-codex",
+        "refs/heads/forge/drill-main/drill-20261004-a/create-owner",
+        "refs/heads/forge/drill-main/drill-20261004-a/create-codex",
+        "refs/heads/forge/drill-main/drill-20261004-a/actions-create",
+        "refs/heads/forge/drill-main/drill-20261004-a/actions-ff",
+        "refs/heads/forge/drill-main/drill-20261004-a/actions-nff",
+        "refs/heads/forge/drill-main/drill-20261004-a/actions-delete",
+        "refs/heads/forge/run/codex/**/*",
+        "refs/heads/forge/owner/**/*",
+        "refs/heads/forge/contract/**/*"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "creation"
+    },
+    {
+      "type": "update",
+      "parameters": {
+        "update_allows_fetch_and_merge": false
+      }
+    }
+  ]
+}
