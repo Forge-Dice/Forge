@@ -5,7 +5,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { generateCase, generatedPackage, writeGeneratedCase } from "../src/authoring/case-generator.ts";
 import { checkCaseFolder } from "../src/authoring/check-case.ts";
 import { initialSession, reduceSession, type SessionState } from "../src/domain/case-session.ts";
-import { accusations, command, newGame } from "../src/play/game.ts";
+import { accusations, command, newGame, questions } from "../src/play/game.ts";
 
 const scratch = mkdtempSync(join(tmpdir(), "generated-"));
 afterAll(() => rmSync(scratch, { recursive: true, force: true }));
@@ -70,3 +70,33 @@ describe("generated cases are playable", () => {
     expect(confronted.ok && confronted.output.type === "confront" && confronted.output.observation.act).toBe("admit");
   });
 });
+
+describe("review fixes", () => {
+  it("writing into a folder that already holds files is refused unless forced; forcing drops stale NPC files", () => {
+    const dir = join(scratch, "reuse");
+    writeGeneratedCase(generateCase(0), dir);
+    expect(() => writeGeneratedCase(generateCase(1), dir)).toThrow(/nicht leer/);
+    writeGeneratedCase(generateCase(1), dir, { force: true });
+    expect(checkCaseFolder(dir).ok).toBe(true);
+  });
+
+  it("seeds above 2^32-1 are rejected instead of wrapping onto another seed's case", () => {
+    expect(() => generateCase(2 ** 32 + 5)).toThrow(RangeError);
+    expect(() => generateCase(2 ** 32 - 1)).not.toThrow();
+  });
+
+  it.each(SEEDS.slice(0, 5))("seed %i: the innocent knows they were not at the murder (q02)", (seed) => {
+    const generated = generateCase(seed);
+    const pkg = generatedPackage(generated);
+    const game = newGame(pkg);
+    const ask = questions(game).find((q) => (q.event as { questionId: string }).questionId === "question:q02" && q.label.startsWith(innocentLabel(pkg, generated)));
+    const result = reduceSession(pkg, game.state, ask!.event);
+    expect(result.ok && result.output.type === "interrogate" && result.output.observation.act === "answer" && result.output.observation.stance).toBe("denies");
+  });
+});
+
+function innocentLabel(pkg: ReturnType<typeof generatedPackage>, generated: ReturnType<typeof generateCase>): string {
+  const npcFile = Object.keys(generated.files).find((f) => f.startsWith("interrogation-") && (generated.files[f] as { rules: { act: string; questionId: string }[] }).rules.some((r) => r.questionId === "question:q05"))!;
+  const npcId = (generated.files[npcFile] as { npcId: string }).npcId;
+  return pkg.publicContent.labels.find((l) => l.entity.id === npcId)!.label;
+}
