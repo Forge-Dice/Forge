@@ -1,5 +1,6 @@
 import { rulesetAllows, type PublicContent, type ResolvedCasePackage } from "../domain/case-package.ts";
 import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
+import { scoreOf, starsText, type Score } from "./score.ts";
 import { hintCount, hintsExhausted, type Hint } from "../domain/case-hints.ts";
 import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
 import type { EvidenceObservation, PlayerClaim as EvidenceClaim } from "../domain/evidence-presentation.ts";
@@ -346,8 +347,10 @@ function outputText(game: Game, output: SessionOutput): string {
     case "accuse": {
       if (output.verdict !== "solved") return m.notSolved;
       const solved = m.solved(hintsUsed(game));
+      const score = scoreOf(game.pkg, game.state);
+      const scored = score === null ? solved : `${solved}\n${scoreLine(game, score)}`;
       // The epilogue is shown only here, after a solving accusation.
-      return game.pkg.publicContent.epilogue === undefined ? solved : `${solved}\n\n${m.resolutionHeading}\n${game.pkg.publicContent.epilogue}`;
+      return game.pkg.publicContent.epilogue === undefined ? scored : `${scored}\n\n${m.resolutionHeading}\n${game.pkg.publicContent.epilogue}`;
     }
   }
 }
@@ -412,4 +415,10 @@ export function switchLang(game: Game, pkg: ResolvedCasePackage, lang: Lang): Ga
     state = result.state;
   }
   return { pkg, state, clockOrigin: game.clockOrigin, ...(lang === "de" ? {} : { lang }) };
+}
+
+/** The score in the game's language; German reads exactly like score.ts's scoreText. */
+export function scoreLine(game: Pick<Game, "lang">, s: Score): string {
+  const m = msg(game).score;
+  return m.line(s.points, starsText(s.rank.stars), m.ranks[s.rank.stars]!, m.details(s.actions, s.par, s.hints, s.wrongAccusations));
 }

@@ -1,4 +1,5 @@
 import { rulesetAllows } from "../domain/case-package.ts";
+import { scoreOf, starsText } from "./score.ts";
 import { difficultyDots, type Difficulty } from "./difficulty.ts";
 import { accusations, confrontations, hintsUsed, investigations, pageToken, known, msg, questions, recordText, type Action, type Game } from "./game.ts";
 import { DEFAULT_LANG, MESSAGES, type Lang, type Messages } from "./messages.ts";
@@ -77,7 +78,7 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false, e
     .map((c, i) => {
       const solved = c.progress === m.solvedBadge;
       const badge = c.progress === null ? `<span class="badge">${c.slug === "lernfall" ? m.learnBadge : m.newBadge}</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
-      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">${m.fileNo(String(i + 1).padStart(3, "0"))}</span><h2>${escape(c.title)}</h2>${difficultyTag(c.difficulty, MESSAGES[lang])}<p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">${m.openFile}</span></span>${
+      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">${m.fileNo(String(i + 1).padStart(3, "0"))}</span><h2>${escape(c.title)}</h2>${difficultyTag(c.difficulty, MESSAGES[lang])}<p>${escape(c.teaser)}</p><span class="best" data-best="${escape(c.slug)}" hidden></span><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">${m.openFile}</span></span>${
         solved ? `<span class="stamp small" aria-hidden="true">${m.solvedBadge}</span>` : ""
       }</a></li>`;
     })
@@ -98,7 +99,7 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false, e
 </div>
 <p class="hint">${escape(m.casesHint)}</p></main>
 ${extras.feedback ? notice(extras.feedback, MESSAGES[lang]) : ""}
-<script>${HOME_SCRIPT}</script>`,
+<script>${homeScript(MESSAGES[lang])}</script>`,
     "page-cases",
     "",
     lang,
@@ -242,6 +243,15 @@ function accusedName(game: Game): string | null {
   return known(game, "person").find((k) => k.ref === ref)?.label ?? null;
 }
 
+/** Points and rank of the solved case; the page script keeps the best per case in localStorage. */
+function scoreBlock(game: Game, slug: string): string {
+  const score = scoreOf(game.pkg, game.state);
+  if (score === null) return "";
+  const m = msg(game).score;
+  const rank = m.ranks[score.rank.stars]!;
+  return `<p class="score" data-score="${score.points}" data-stars="${score.rank.stars}" data-rank="${escape(rank)}" data-slug="${escape(slug)}"><span class="score-stars" aria-hidden="true">${starsText(score.rank.stars)}</span> <strong>${m.points(score.points)}</strong>, ${escape(m.rank(rank))}<span class="best-note" hidden></span><br><small>${escape(m.details(score.actions, score.par, score.hints, score.wrongAccusations))}</small></p>`;
+}
+
 function closing(game: Game, slug: string): string {
   const { publicContent } = game.pkg;
   const name = accusedName(game);
@@ -253,6 +263,7 @@ function closing(game: Game, slug: string): string {
 <span class="stamp" aria-hidden="true">${m.solvedBadge}</span>
 <p class="big">${escape(name === null ? m.yourAccusation : m.itWas(name))}</p>
 ${publicContent.epilogue === undefined ? "" : `<h3 class="epilogue-title">${m.resolution}</h3><div class="epilogue">${paragraphs(publicContent.epilogue)}</div>`}
+${scoreBlock(game, slug)}
 <dl class="stats"><div><dt>${m.statActions}</dt><dd>${steps}</dd></div><div><dt>${m.statHints}</dt><dd>${hintsUsed(game)}</dd></div><div><dt>${m.statAccusations(tries)}</dt><dd>${tries}</dd></div><div><dt>${m.statEvidence}</dt><dd>${evidence.length}</dd></div></dl>
 <p><strong>${escape(publicContent.challengeQuestion)}</strong> – ${m.answerFulfils}</p>
 <p>${m.took(steps, tries)}</p>
@@ -345,7 +356,17 @@ ${intro(all)}
 }
 
 // The case list: a chosen save file is posted as text and the server opens the matching case.
-const HOME_SCRIPT = `(() => {
+const homeScript = (all: Messages): string => {
+  const js = (text: unknown) => JSON.stringify(text).replace(/</g, "\\u003c");
+  return `(() => {
+// Best score per case, written by the closing page of that case.
+document.querySelectorAll("[data-best]").forEach((el) => {
+  let best = null;
+  try { best = JSON.parse(localStorage.getItem("kriminalfaelle.best." + el.dataset.best) || "null"); } catch {}
+  if (!best || typeof best.points !== "number") return;
+  el.textContent = ${js(all.score.best)} + best.points + ${js(all.score.pointsWord)} + " · " + "★".repeat(best.stars) + "☆".repeat(3 - best.stars) + " " + (${js(all.score.ranks)}[best.stars] || best.rank);
+  el.hidden = false;
+});
 const visit = (url) => (typeof window.kfVisit === "function" ? window.kfVisit(url) : (location.href = url));
 const input = document.getElementById("load-any"), label = document.getElementById("load-any-label");
 input.addEventListener("change", async (e) => {
@@ -361,6 +382,7 @@ const close = () => { if (sheet) sheet.hidden = true; };
 if (sheet) { sheet.querySelector("[data-close]").addEventListener("click", close); sheet.focus(); }
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
 })();`;
+};
 
 // ---------- Introduction and help ----------
 
@@ -421,6 +443,17 @@ const script = (slug: string, solved: boolean, hasNotice: boolean, all: Messages
   const m = all.web;
   const js = (text: string) => JSON.stringify(text).replace(/</g, "\\u003c");
   return `(() => {
+// A solved case stores its best score (the case list shows it).
+const scoreEl = document.querySelector(".score[data-score]");
+if (scoreEl) {
+  const key = "kriminalfaelle.best." + scoreEl.dataset.slug, now = { points: Number(scoreEl.dataset.score), stars: Number(scoreEl.dataset.stars), rank: scoreEl.dataset.rank };
+  try {
+    const old = JSON.parse(localStorage.getItem(key) || "null");
+    const note = scoreEl.querySelector(".best-note");
+    if (!old || now.points > old.points) { localStorage.setItem(key, JSON.stringify(now)); if (old) { note.textContent = ${js(all.score.newBest)}; note.hidden = false; } }
+    else { note.textContent = " · " + ${js(all.score.best)} + old.points + ${js(all.score.pointsWord)}; note.hidden = false; }
+  } catch {}
+}
 // The single-file build hosts pages in a frame and provides its own navigation as kfVisit.
 const visit = (url) => (typeof window.kfVisit === "function" ? window.kfVisit(url) : (location.href = url));
 const path = "/fall/${slug}", store = { get(k) { try { return sessionStorage.getItem(path + k); } catch { return null; } }, set(k, v) { try { sessionStorage.setItem(path + k, v); } catch {} }, del(k) { try { sessionStorage.removeItem(path + k); } catch {} } };
@@ -670,6 +703,10 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .closing-wrap { scroll-margin-top: 90px; }
 .closing { position: relative; overflow: hidden; background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 32px; border-top: 6px solid var(--ok); }
 .closing h2 { color: var(--ok); }
+.closing .score { font-size: 18px; margin: 0 0 14px; }
+.closing .score-stars, .case-card .best { color: var(--brass); }
+.closing .score small { color: var(--ink-soft); font-size: 14px; }
+.case-card .best { display: block; font: 600 13px var(--sans); margin: 0 0 8px; color: var(--ok); }
 .closing .big { font-size: clamp(28px, 4vw, 40px); font-weight: 700; line-height: 1.15; margin: 4px 0 18px; max-width: 80%; }
 .stamp { position: absolute; top: 26px; right: 24px; transform: rotate(-12deg); font: 800 26px var(--type); letter-spacing: .2em; text-transform: uppercase; color: rgba(143,45,31,.82); border: 4px double rgba(143,45,31,.82); padding: 6px 14px; border-radius: 6px; mix-blend-mode: multiply; }
 .stamp.small { font-size: 15px; top: 16px; right: 16px; border-width: 3px; padding: 3px 9px; }

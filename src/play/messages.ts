@@ -25,6 +25,17 @@ const de = {
   unknownLabel: "(unbekannt)",
   difficulty: { 1: "sehr leicht", 2: "leicht", 3: "mittel", 4: "schwer", 5: "sehr schwer" } as Record<number, string>,
   q: (s: string) => `„${s}“`,
+  score: {
+    ranks: { 3: "Meisterdetektiv", 2: "Kommissar", 1: "Spürnase" } as Record<number, string>,
+    details: (actions: number, par: number, hints: number, wrong: number) =>
+      `${actions} Aktionen bei Ziel ${par}, ${hints === 0 ? "kein Hinweis" : hints === 1 ? "1 Hinweis" : `${hints} Hinweise`}, ${wrong === 0 ? "keine Fehlanklage" : wrong === 1 ? "1 Fehlanklage" : `${wrong} Fehlanklagen`}`,
+    line: (points: number, stars: string, rank: string, details: string) => `Wertung: ${points} Punkte, ${stars} ${rank} (${details})`,
+    points: (n: number) => `${n} Punkte`,
+    rank: (title: string) => `Rang ${title}`,
+    best: "Bestwert: ",
+    pointsWord: " Punkte",
+    newBest: " · neuer Bestwert!",
+  },
   roles: { direct_actor: "eigenhändig handelnde Person", planner: "Planer", facilitator: "Helfer" } as Record<string, string>,
   claim: {
     personAt: (person: string, clock: string, location: string) => `${person} war um ${clock} am Ort ${location}`,
@@ -348,6 +359,17 @@ const en: Messages = {
   unknownLabel: "(unknown)",
   difficulty: { 1: "very easy", 2: "easy", 3: "medium", 4: "hard", 5: "very hard" },
   q: (s) => `“${s}”`,
+  score: {
+    ranks: { 3: "Master detective", 2: "Inspector", 1: "Sleuth" },
+    details: (actions, par, hints, wrong) =>
+      `${actions} actions against a target of ${par}, ${hints === 0 ? "no hint" : hints === 1 ? "1 hint" : `${hints} hints`}, ${wrong === 0 ? "no wrong accusation" : wrong === 1 ? "1 wrong accusation" : `${wrong} wrong accusations`}`,
+    line: (points, stars, rank, details) => `Score: ${points} points, ${stars} ${rank} (${details})`,
+    points: (n) => `${n} points`,
+    rank: (title) => `rank ${title}`,
+    best: "Best: ",
+    pointsWord: " points",
+    newBest: " · new best!",
+  },
   roles: { direct_actor: "the direct actor", planner: "the planner", facilitator: "a helper" },
   claim: {
     personAt: (person, clock, location) => `${person} was at ${location} at ${clock}`,
