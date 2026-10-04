@@ -57,7 +57,7 @@ export type CaseCheck = {
 /** Placeholder authors leave for hashes the tool computes ("TO_BE_COMPUTED_FROM_FINAL_ARTIFACT"). */
 const PLACEHOLDER = /^TO_BE_COMPUTED/;
 /** Salt used when the folder has no case.json; refs only need to be consistent within one check. */
-export const DEFAULT_CHECK_SALT = "c4ec4ec4ec4ec4ec4ec4ec4ec4ec4ec4";
+const DEFAULT_CHECK_SALT = "c4ec4ec4ec4ec4ec4ec4ec4ec4ec4ec4";
 
 const FILES = {
   truth: "truth.json",
@@ -215,7 +215,7 @@ export function checkCaseFolder(dir: string): CaseCheck {
   // ---- 2. Proof: compute the release context and hashes, fill placeholders, check given values.
   // A case with lies runs under ruleset v2; one without stays v1 with unchanged hashes.
   const lies = parsedNpcs.flatMap((npc) => (npc.profile === null ? [] : profileLies(npc.profile, truth)));
-  const rulesetVersion: RulesetVersion = lies.length > 0 ? "mystery-session-v2" : "mystery-session-v1";
+  const rulesetVersion: RulesetVersion = lies.length > 0 ? "mystery-session-v2" : "mystery-session-v1"; // see RULESET_VERSIONS
   const packageInput = {
     schemaVersion: 1,
     rulesetVersion,
