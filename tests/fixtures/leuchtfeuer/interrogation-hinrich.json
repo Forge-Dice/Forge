@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "catalogueHash": "6fcc3631c42e0ddab2c97f46200552037afd12245d4184c277c98a563cded1a5",
+  "npcId": "person:hinrich",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q04",
+      "act": "answer",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:pegelwartung",
+        "itemId": "item:pegelkamera"
+      },
+      "reveal": [
+        {
+          "kind": "event",
+          "id": "event:pegelwartung"
+        },
+        {
+          "kind": "item",
+          "id": "item:pegelkamera"
+        }
+      ]
+    },
+    {
+      "questionId": "question:q05",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:hinrich",
+        "locationId": "location:laterne",
+        "at": 7200
+      },
+      "reveal": []
+    }
+  ]
+}

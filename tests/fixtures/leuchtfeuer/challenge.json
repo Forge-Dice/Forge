@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "solutionHash": "1eaa66b623fc61fa801b954e9bda99ceb0bf8e66dcd4c6f6e491a9c69208aed1",
+  "allowedClaims": [
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:hinrich",
+      "eventId": "event:sabotage",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:frauke",
+      "eventId": "event:sabotage",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:ole",
+      "eventId": "event:sabotage",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:marlene",
+      "eventId": "event:sabotage",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:jasper",
+      "eventId": "event:sabotage",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:knut",
+      "eventId": "event:sabotage",
+      "role": "direct_actor"
+    }
+  ]
+}

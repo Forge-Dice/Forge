@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "revision": 1,
+  "questions": [
+    {
+      "id": "question:q01",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ole"
+        },
+        {
+          "kind": "location",
+          "id": "location:hafen"
+        }
+      ]
+    },
+    {
+      "id": "question:q02",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ole"
+        },
+        {
+          "kind": "location",
+          "id": "location:oleshaus"
+        }
+      ]
+    },
+    {
+      "id": "question:q03",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:frauke"
+        },
+        {
+          "kind": "location",
+          "id": "location:faehrhaus"
+        }
+      ]
+    },
+    {
+      "id": "question:q04",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hinrich"
+        },
+        {
+          "kind": "location",
+          "id": "location:hafen"
+        }
+      ]
+    },
+    {
+      "id": "question:q05",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hinrich"
+        },
+        {
+          "kind": "location",
+          "id": "location:laterne"
+        }
+      ]
+    },
+    {
+      "id": "question:q06",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:jasper"
+        },
+        {
+          "kind": "location",
+          "id": "location:strand"
+        }
+      ]
+    },
+    {
+      "id": "question:q07",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:knut"
+        },
+        {
+          "kind": "location",
+          "id": "location:laterne"
+        }
+      ]
+    },
+    {
+      "id": "question:q08",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:marlene"
+        },
+        {
+          "kind": "location",
+          "id": "location:vogelwarte"
+        }
+      ]
+    },
+    {
+      "id": "question:q09",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:jasper"
+        },
+        {
+          "kind": "location",
+          "id": "location:faehrhaus"
+        }
+      ]
+    }
+  ]
+}

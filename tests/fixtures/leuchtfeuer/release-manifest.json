@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "releaseContextHash": "51d575de0478f9a7904ef396393018b9ae599a7fc6fce821fdbf523d60dd1edf",
+  "adapterVersion": "forge-release-proof-v1",
+  "certificateData": {
+    "schemaVersion": 1,
+    "steps": [
+      {
+        "stepId": "search-laterne",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:laterne"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-strand",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:strand"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-faehrhaus",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:faehrhaus"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-telefon",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:telefon"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-hafen",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:hafen"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-pegel",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:pegelkamera"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-vogelwarte",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:vogelwarte"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-ole-boot",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ole"
+            }
+          },
+          "questionId": "question:q01"
+        }
+      },
+      {
+        "stepId": "ask-hinrich-pegel",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:hinrich"
+            }
+          },
+          "questionId": "question:q04"
+        }
+      },
+      {
+        "stepId": "ask-jasper-strand",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:jasper"
+            }
+          },
+          "questionId": "question:q06"
+        }
+      },
+      {
+        "stepId": "confront-jasper",
+        "event": {
+          "type": "confront",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:jasper"
+            }
+          },
+          "questionId": "question:q06",
+          "evidence": {
+            "$playerRefOf": {
+              "kind": "evidence",
+              "id": "evidence:visitenkarte"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-frauke-telefon",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:frauke"
+            }
+          },
+          "questionId": "question:q03"
+        }
+      },
+      {
+        "stepId": "ask-ole-haus",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ole"
+            }
+          },
+          "questionId": "question:q02"
+        }
+      },
+      {
+        "stepId": "confront-ole",
+        "event": {
+          "type": "confront",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ole"
+            }
+          },
+          "questionId": "question:q02",
+          "evidence": {
+            "$playerRefOf": {
+              "kind": "evidence",
+              "id": "evidence:pegelfoto"
+            }
+          }
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "observed:hinrich",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:hinrich-grog",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:kassenbuch"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:hinrich"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:faehrhaus"
+                  }
+                },
+                "at": 6300
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:hinrich",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:hinrich",
+            "allOf": [
+              "observation:hinrich"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-hinrich",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:deich",
+        "afterObservations": [
+          "observed:hinrich"
+        ]
+      },
+      {
+        "id": "observed:jasper",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:jasper-notruf",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:anrufliste"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:jasper"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:faehrhaus"
+                  }
+                },
+                "at": 7380
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:jasper",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:jasper",
+            "allOf": [
+              "observation:jasper"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-jasper",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:deich",
+        "afterObservations": [
+          "observed:jasper"
+        ]
+      },
+      {
+        "id": "observed:frauke",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:frauke-anruf",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:anrufliste"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:frauke"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:faehrhaus"
+                  }
+                },
+                "at": 7200
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:frauke",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:frauke",
+            "allOf": [
+              "observation:frauke"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-frauke",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:frauke"
+        ]
+      },
+      {
+        "id": "observed:ole",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:ole-hafen",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:pegelfoto"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:ole"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:hafen"
+                  }
+                },
+                "at": 7200
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:ole",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:ole",
+            "allOf": [
+              "observation:ole"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-ole",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:ole"
+        ]
+      },
+      {
+        "id": "observed:marlene",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:marlene-warte",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:nachtkamera"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:marlene"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:vogelwarte"
+                  }
+                },
+                "at": 7200
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:marlene",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:marlene",
+            "allOf": [
+              "observation:marlene"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-marlene",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:marlene"
+        ]
+      },
+      {
+        "id": "observed:knut",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:knut-landung",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:schlauchboot"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:knut"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:strand"
+                  }
+                },
+                "at": 2400
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:knut",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "remaining:knut",
+            "allOf": [
+              "literal:hinrich",
+              "literal:jasper",
+              "literal:frauke",
+              "literal:ole",
+              "literal:marlene",
+              "observation:knut"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-knut",
+              "value": true
+            }
+          }
+        ],
+        "ruleId": "rule:roster",
+        "afterObservations": [
+          "observed:hinrich",
+          "observed:jasper",
+          "observed:frauke",
+          "observed:ole",
+          "observed:marlene",
+          "observed:knut"
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "routeId": "befragen",
+        "stepIds": [
+          "ask-ole-boot",
+          "search-strand",
+          "search-faehrhaus",
+          "read-telefon",
+          "ask-hinrich-pegel",
+          "read-pegel",
+          "search-vogelwarte"
+        ]
+      },
+      {
+        "routeId": "vorhalten",
+        "stepIds": [
+          "search-laterne",
+          "search-strand",
+          "ask-jasper-strand",
+          "confront-jasper",
+          "ask-frauke-telefon",
+          "read-telefon",
+          "search-faehrhaus",
+          "search-hafen",
+          "read-pegel",
+          "ask-ole-haus",
+          "confront-ole",
+          "search-vogelwarte"
+        ]
+      }
+    ]
+  }
+}
