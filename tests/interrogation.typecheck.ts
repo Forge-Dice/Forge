@@ -8,8 +8,13 @@ import type {
   InterrogationInput,
   InterrogationObservation,
   PlayerClaim,
+  PlayerRefTranslator,
   ResponseStance,
 } from "../src/domain/interrogation.ts";
+import type {
+  PlayerClaim as EvidencePlayerClaim,
+  PlayerRefTranslator as EvidencePlayerRefTranslator,
+} from "../src/domain/evidence-presentation.ts";
 
 // No field of an observation is (or contains) a VisibleRef.
 type Values<T> = T extends object ? { [K in keyof T]: T[K] extends readonly (infer U)[] ? U | Values<U> : T[K] | Values<T[K]> }[keyof T] : never;
@@ -47,8 +52,14 @@ declare const ref: VisibleRef<"person">;
 // @ts-expect-error a VisibleRef is not a PlayerRef
 const visibleInStatement: PlayerClaim = { kind: "noPersonResponsibleForEvent", event: ref };
 
-// Note: structural identity of the shared PlayerClaim variants with MYST-0004 is not checked
-// here; MYST-0004 is not implemented on this base.
+// AC-13: the shared PlayerClaim variants and the PlayerRef port are structurally identical with MYST-0004.
+type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
+type Shared = "personAt" | "eventHasParticipant" | "eventHasItem";
+const sharedClaims: Equal<Extract<PlayerClaim, { kind: Shared }>, EvidencePlayerClaim> = true;
+const samePort: Equal<PlayerRefTranslator, EvidencePlayerRefTranslator> = true;
+// @ts-expect-error Equal really distinguishes types
+const equalDetects: Equal<{ readonly a: string }, { a: string }> = true;
 
 export { noVisibleRef, detects, toSix, fromSix, lies, rawCatalogue, rawProfile, rawSnapshot, visibleInStatement };
+export { sharedClaims, samePort, equalDetects };
 export type { DeclineStance };
