@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "caseId": "case:nachtzug",
-  "truthHash": "f17c172ce85d4206a7f2025e08f555f3419d08e08a7aaff94b5ec538a427094b",
-  "solutionHash": "4e864a8f60f51a008b6261683e701a9ed10bb67a727afee755d43a56b187e737",
+  "truthHash": "c8807cc498002fcdae7a65f7b5df1435cce251658b09f0b4b8d52ef5a986c6a9",
+  "solutionHash": "ecc6da3f7883d94dd6578d987f94a4cef34e49f8d972b0807a0322284a127d4d",
   "npcId": "person:clara",
   "revision": 1,
   "asOf": 9000,
@@ -152,6 +152,36 @@
       "provenance": {
         "kind": "witnessed_event",
         "eventId": "event:tee"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:clara-abteil7"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 4800,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:diebstahl"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:clara-speisewagen"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": false
+      },
+      "acquiredAt": 4800,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:diebstahl"
       }
     }
   ]
