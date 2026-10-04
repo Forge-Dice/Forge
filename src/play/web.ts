@@ -25,12 +25,15 @@ import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./
 import { generateCase, generatedClockOrigin, generatedPackage } from "../authoring/case-generator.ts";
 import { generateCaseOfDifficulty } from "../authoring/case-difficulty.ts";
 import { difficultyText, type Difficulty } from "./difficulty.ts";
+import { importCaseText, MAX_SHARE_BYTES } from "./case-share.ts";
+import { renderImport } from "./import-page.ts";
 
 // `npm run play:web`: the playable cases in the browser, one local player, same session logic as
 // the CLI. The server holds one game per case in memory; saves are the Session C text.
 
 const MAX_GENERATED = 20;
-const MAX_BODY = 1024 * 1024 + 4096; // one Session C save plus slack for a form body
+const MAX_IMPORTED = 20;
+const MAX_BODY = Math.max(1024 * 1024, MAX_SHARE_BYTES) + 4096; // one Session C save or case file plus slack
 
 function readBody(req: IncomingMessage): Promise<string | null> {
   return new Promise((resolve) => {
@@ -155,10 +158,14 @@ export function createWebHandler(
   // zufall-<seed>, or zufall-<seed>-stufe-<1..5> for a wished difficulty (the playtest bot searches).
   const generated = new Map<string, { slot: Slot; clockOrigin: number; seed: number }>();
   const extras = new Map<string, { version: string; slot: Slot }>();
+  // Imported cases ("Eigenen Fall laden"), keyed by eigen-<digest>; the oldest is dropped beyond MAX_IMPORTED.
+  const imported = new Map<string, { slot: Slot; clockOrigin: number; title: string }>();
   type Target = { readonly slot: Slot; readonly slug: string; readonly clockOrigin: number; readonly seed: number | null; readonly level?: Difficulty | null };
   const target = (slug: string | undefined): Target | null => {
     const name = playCaseName(slug);
     if (name !== null) return { slot: slot(name), slug: slugOf(name), clockOrigin: PLAY_CASES[name].clockOrigin, seed: null };
+    const own = slug === undefined ? undefined : imported.get(slug);
+    if (own !== undefined) return { slot: own.slot, slug: slug!, clockOrigin: own.clockOrigin, seed: null };
     const extra = slug === undefined || options.extraCase === undefined ? null : options.extraCase(slug);
     if (extra !== null) {
       let e = extras.get(slug!);
@@ -189,6 +196,7 @@ export function createWebHandler(
   const redirect = (to: string): WebResponse => ({ status: 303, headers: { location: to }, body: "" });
   const html = (body: string): WebResponse => ({ status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }, body });
   const text = (status: number, body: string): WebResponse => ({ status, headers: { "content-type": "text/plain; charset=utf-8" }, body });
+  const json = (status: number, body: unknown): WebResponse => ({ status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }, body: JSON.stringify(body) });
 
   // The case list's own result sheet (a save that fits no case); shown once.
   let homeFeedback: Feedback | null = null;
@@ -274,6 +282,18 @@ export function createWebHandler(
       return text(200, "/");
     }
     if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp());
+    if (method === "GET" && url.pathname === "/eigener-fall") return html(renderImport([...imported].map(([slug, c]) => ({ slug, title: c.title }))));
+    if (method === "POST" && url.pathname === "/eigener-fall") {
+      const body = await readBody();
+      const result = body === null ? { ok: false as const, title: "Die Datei ist zu groß.", problems: [] } : importCaseText(body);
+      if (!result.ok) return json(422, { ok: false, title: result.title, problems: result.problems });
+      if (!imported.has(result.slug)) {
+        const game = newGame(result.pkg, result.clockOrigin);
+        imported.set(result.slug, { slot: { game, feedback: { tone: "info", title: "Eigener Fall", lines: ["Geprüft und geladen. Lies die Fallakte und beginne zu ermitteln."] }, fresh: new Set() }, clockOrigin: result.clockOrigin, title: result.title });
+        if (imported.size > MAX_IMPORTED) imported.delete(imported.keys().next().value!);
+      }
+      return json(200, { ok: true, slug: result.slug, title: result.title });
+    }
     if (method === "POST" && url.pathname === "/zufall") {
       // An empty seed picks one; anything else must be a whole number up to nine digits.
       // The difficulty is optional: empty means any, otherwise a level 1..5.
