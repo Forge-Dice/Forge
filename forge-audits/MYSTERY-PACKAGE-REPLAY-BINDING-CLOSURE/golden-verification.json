@@ -1,0 +1,148 @@
+{
+  "implementation": "Python hashlib + separately implemented UTF-16-key JSON serializer",
+  "hashVectors": 23,
+  "refVectors": 5,
+  "checks": [
+    {
+      "id": "npc-base",
+      "digest": "a4d50cd4432d6eba36626f6f8199499f11cbd0287b4c28d21b3b420f259b2656",
+      "passed": true
+    },
+    {
+      "id": "npc-awareness-reordered",
+      "digest": "a4d50cd4432d6eba36626f6f8199499f11cbd0287b4c28d21b3b420f259b2656",
+      "passed": true
+    },
+    {
+      "id": "npc-attitudes-reordered",
+      "digest": "a4d50cd4432d6eba36626f6f8199499f11cbd0287b4c28d21b3b420f259b2656",
+      "passed": true
+    },
+    {
+      "id": "npc-revision",
+      "digest": "ce042899818420b36ab8260ecab8faa7d47b770009ddd4a7b84fc5ac74024346",
+      "passed": true
+    },
+    {
+      "id": "npc-asOf",
+      "digest": "26bbfd1de7726e191ef5c8bf3882ac7a13ef722b8e8ec6cd40ebdcc3a8f746e3",
+      "passed": true
+    },
+    {
+      "id": "npc-caseId",
+      "digest": "d2caffa67d5e9a4c74485be6fd2db53e64ba9c44fd557e64e5e8bc44a57b8aa5",
+      "passed": true
+    },
+    {
+      "id": "npc-truthHash",
+      "digest": "d12dce60b792e202ee49afb11077d9397fe8ce27fcb58f7435c71296ec8c8182",
+      "passed": true
+    },
+    {
+      "id": "npc-solutionHash",
+      "digest": "3702e1d68004663d5099f4cabba4e9b572d4a03d1192d5e2282764860b2477a3",
+      "passed": true
+    },
+    {
+      "id": "npc-acquiredAt",
+      "digest": "c72bcc6105ad6b2db11d9446899b03e3870922aa76dfd8fb1d23b0d035d304c3",
+      "passed": true
+    },
+    {
+      "id": "npc-provenance",
+      "digest": "76221f87b8548b6a8054da04cb5c0c6aa31ed08dac58310a6b207450dbd7334b",
+      "passed": true
+    },
+    {
+      "id": "npc-stance",
+      "digest": "a86abe7e74d303bc68311cc836dcf38defa3f9b9678b8b2bda91aede57cfb4e8",
+      "passed": true
+    },
+    {
+      "id": "npc-npcId",
+      "digest": "678254385c7dea9c5089880c2797aa0b8e9d168cb8977b15ddb3c460a5a5d6ed",
+      "passed": true
+    },
+    {
+      "id": "Unicode-key-order",
+      "digest": "9eb06a24a547a1e91f9ed81ba4be23747b14d540c104cae2686601ce77a05da4",
+      "passed": true
+    },
+    {
+      "id": "save-empty",
+      "digest": "58a1857b0b76ba1f342237261c2d4c9877f7cc7bb2a78c116d8e1ecebdc6875f",
+      "passed": true
+    },
+    {
+      "id": "truth",
+      "digest": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+      "passed": true
+    },
+    {
+      "id": "solution",
+      "digest": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+      "passed": true
+    },
+    {
+      "id": "access",
+      "digest": "7b4aa0453486dc255ee6afbb92f9f90233dbcfbc9f3da9640032502b7c068d4e",
+      "passed": true
+    },
+    {
+      "id": "presentation",
+      "digest": "523751b9cd35c7f7279801ad737dc786b50590668d61a29e071b51aec8121a36",
+      "passed": true
+    },
+    {
+      "id": "catalogue",
+      "digest": "85b0eab90f1f58a58d17614739bfe631055319cbe8b733109bac10d8cebc15bc",
+      "passed": true
+    },
+    {
+      "id": "public-content",
+      "digest": "320c92b3388b0d072673bd27f8b42a1a221808e01e66a74f6b1085bc5d8a2afe",
+      "passed": true
+    },
+    {
+      "id": "proof-typed-arrays",
+      "digest": "66e8e90604acbc9991c149c6719f34d7b78151b05e1d6b323bddf742db162f00",
+      "passed": true
+    },
+    {
+      "id": "package-proof-null",
+      "digest": "8aa4ece88fc78273705eee04664ba06ca7def02f4a659031eb0c3f64039b9b89",
+      "passed": true
+    },
+    {
+      "id": "proof-nested-sets",
+      "digest": "4d718945571ab006e0b6ddd3981f86f2ac70acaf2e9845db2842ff073517e3e7",
+      "passed": true
+    },
+    {
+      "id": "person/person:a/000102030405060708090a0b0c0d0e0f",
+      "ref": "pr1_xfs3rzypnyradx49",
+      "passed": true
+    },
+    {
+      "id": "person/person:b/000102030405060708090a0b0c0d0e0f",
+      "ref": "pr1_zmkgz9c35yhk1qa3",
+      "passed": true
+    },
+    {
+      "id": "location/location:hall/000102030405060708090a0b0c0d0e0f",
+      "ref": "pr1_znh7e2dfbmaffz8n",
+      "passed": true
+    },
+    {
+      "id": "event/event:e1/000102030405060708090a0b0c0d0e0f",
+      "ref": "pr1_yyqw0dn6dan7mbdt",
+      "passed": true
+    },
+    {
+      "id": "person/person:a/ffeeddccbbaa99887766554433221100",
+      "ref": "pr1_44rh5ek8sxdz4w97",
+      "passed": true
+    }
+  ],
+  "failed": 0
+}

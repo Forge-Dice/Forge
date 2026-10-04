@@ -1,0 +1,446 @@
+{
+  "registryVersion": 1,
+  "canonicalizer": "Session C/H structural serializer is owned by Session A, arrays ORDERED by default; SET overrides only explicit paths. Existing all-array-SET domain serializers remain unchanged. Every SET comparator uses UTF-16 code units. Reject parser-defined duplicates before hashing; sorting never deduplicates.",
+  "ruleset": {
+    "owner": "Session B §§4–7 with A §§2–3 and C §8",
+    "version": "mystery-session-v1",
+    "identity": "embedded in releaseContextHash, packageHash and descriptor; no redundant rulesetHash",
+    "covers": [
+      "investigation acceptance/release",
+      "interrogation availability/decisions/release",
+      "challenge/verdict",
+      "PlayerKnowledge projection",
+      "proof adapter semantics via explicit adapterVersion plus releaseManifest"
+    ],
+    "saveRelevance": "exact version required; incompatible meaning requires fresh version and package identity"
+  },
+  "components": [
+    {
+      "component": "CaseTruth",
+      "owner": "TASK-0001 / existing domain",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-case-c14n-v1",
+      "canonicalInput": "entire parsed CaseTruth incl schemaVersion/caseId/revision/name/descriptions/timeline",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "all arrays": "SET sorted by recursively canonical JSON; existing parser validity/duplicate policies unchanged"
+      },
+      "bindingInputs": [],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "all bound parsers",
+        "private semantics",
+        "PlayerRef"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "CaseSolution",
+      "owner": "TASK-0003 / existing domain",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-solution-c14n-v1",
+      "canonicalInput": "entire parsed CaseSolution incl authored revision and all conclusion/policy fields",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "all arrays": "SET sorted by recursively canonical JSON"
+      },
+      "bindingInputs": [
+        "caseId",
+        "truthHash"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "NPC binding",
+        "challenge",
+        "verdict",
+        "proof"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Evidence Access",
+      "owner": "MYST-0003",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-evidence-access-c14n-v1",
+      "canonicalInput": "entire parsed EvidenceAccessMap",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "entries": "SET",
+        "entries[].access.paths": "SET"
+      },
+      "bindingInputs": [
+        "caseId",
+        "truthHash"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "investigation"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Evidence Presentation",
+      "owner": "MYST-0004",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-evidence-presentation-c14n-v1",
+      "canonicalInput": "entire parsed EvidencePresentation, text, mentions and authored reports",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "entries": "SET",
+        "entries[].mentions": "SET",
+        "entries[].reports": "SET"
+      },
+      "bindingInputs": [
+        "caseId",
+        "truthHash"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "releaseEvidence",
+        "PlayerKnowledge",
+        "proof adapter"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "QuestionCatalogue",
+      "owner": "MYST-0005A",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-interrogation-catalogue-c14n-v1",
+      "canonicalInput": "entire parsed QuestionCatalogue incl revision",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "questions": "SET",
+        "questions[].mentions": "SET"
+      },
+      "bindingInputs": [
+        "caseId",
+        "truthHash"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "question availability",
+        "interrogation"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "InterrogationProfile",
+      "owner": "MYST-0005A",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-interrogation-profile-c14n-v1",
+      "canonicalInput": "entire parsed per-NPC InterrogationProfile incl revision",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "rules": "SET",
+        "rules[act=answer].reveal": "SET"
+      },
+      "bindingInputs": [
+        "caseId",
+        "truthHash",
+        "catalogueHash",
+        "npcId"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "interrogate"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "NPC Knowledge Snapshot",
+      "owner": "Session A §2; parser TASK-0004",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-npc-snapshot-v1",
+      "canonicalInput": "entire parsed NpcKnowledgeSnapshot incl schemaVersion, revision, npcId, asOf, caseId, truthHash, solutionHash/null, acquisition timestamps, all provenance and stance fields",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "awareness": "SET sorted by C(entry), subject unique per parser",
+        "attitudes": "SET sorted by C(entry), structural statement uniqueness per parser",
+        "all other fields": "no arrays in V1; strict schema rejects new array fields"
+      },
+      "bindingInputs": [
+        "caseId",
+        "truthHash",
+        "solutionHash or null",
+        "npcId"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "NPC projection",
+        "interrogation replay"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "NPC bundle",
+      "owner": "Session A §2",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-npcs-v1",
+      "canonicalInput": "[{npcId,snapshotHash,profileHash}]",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "root": "SET sorted by npcId; duplicate NPC id rejected"
+      },
+      "bindingInputs": [
+        "all verified snapshotHash/profileHash pairs"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "release context"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Player Setup / initial awareness",
+      "owner": "Session A §2",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-initial-v1",
+      "canonicalInput": "{schemaVersion:1,known:EntityRef[]}; no implicit discovery",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "known": "SET sorted by (kind,id); duplicate entities rejected"
+      },
+      "bindingInputs": [
+        "entity membership in exact Truth; T transitively in release context"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "initialPlayerKnowledge",
+        "prefix authorization"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Challenge",
+      "owner": "Session A §2; parser MYST-CHALLENGE-0001",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-challenge-v1",
+      "canonicalInput": "entire parsed Challenge",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "allowedClaims": "SET sorted by C(claim); exact structural claim key; false/undetermined members retained"
+      },
+      "bindingInputs": [
+        "caseId",
+        "truthHash",
+        "solutionHash"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "evaluateChallengeAccusation"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "PublicContent",
+      "owner": "Session A §2 per accepted D9/D10 and Master B.5",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-public-content-v1",
+      "canonicalInput": "{schemaVersion,title,brief,challengeQuestion,labels:[{entity,label,role}],questionTexts:[{npc,questionId,text}],publicRules:[{id,text}]}",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "labels": "SET sort by entity.kind then entity.id",
+        "questionTexts": "SET sort by npc then questionId; exactly the authored profile-rule question pairs",
+        "publicRules": "SET sort by id"
+      },
+      "bindingInputs": [
+        "entity membership",
+        "NPC/profile/catalogue question membership",
+        "initial Known for display authorization"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "public labels/brief/question/rule/role wording; never derive display roster from Truth"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "PlayerRef derivation",
+      "owner": "MYST-0001 D2–D5",
+      "schemaVersion": "1",
+      "identityProfile": "SHA-256 first 10 bytes, big-endian Crockford lowercase 16 symbols; pr1_ prefix",
+      "profile": "forge-mystery-playerref-v1",
+      "canonicalInput": "six ASCII LF-separated fields: PROFILE,refSalt,caseId,truthHash,kind,id; no trailing LF",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "none": "preimage is string; kind encoding is exact enum token"
+      },
+      "bindingInputs": [
+        "salt:32 lowercase hex nonzero",
+        "profile pin",
+        "caseId",
+        "truthHash",
+        "kind",
+        "canonical id membership"
+      ],
+      "digest": "SHA-256 UTF-8(six-field LF preimage); truncate to first 10 bytes; encode as documented; no alternate input version allowed in V1",
+      "runtimeConsumer": [
+        "refFor/resolve translation only"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "PlayerRef config + complete mapping",
+      "owner": "Session A §2",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-refs-v1",
+      "canonicalInput": "{config:{profile:\"forge-mystery-playerref-v1\",saltHex},caseId,truthHash,mapping:[{kind,id,ref}]}",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "mapping": "SET sort by kind then id; complete five-kind membership; globally injective; no duplicate entity/ref"
+      },
+      "bindingInputs": [
+        "exact salt used in real buildPlayerRefIndex",
+        "pinned derivation profile",
+        "all recomputed refs and reverse resolutions"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "immutable package ref adapter",
+        "release context"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Release context",
+      "owner": "Session A §2",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-release-context-v1",
+      "canonicalInput": "{rulesetVersion,truthHash,solutionHash,accessHash,presentationHash,catalogueHash,npcBundleHash,initialHash,refsHash,challengeHash,publicContentHash}",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "none": "hash values are scalar lowercase hex strings"
+      },
+      "bindingInputs": [
+        "all listed verified component hashes; no missing default"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "release manifest binding"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Release manifest / proof adapter data",
+      "owner": "Session A §2 per D9; runner in case acceptance",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-release-v1",
+      "canonicalInput": "exact manifest string = C({schemaVersion:1,releaseContextHash,adapterVersion,certificateData})",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "certificateData.steps": "ORDERED",
+        "certificateData.observations and every remaining certificate-data array": "ORDERED under C; authored IDs unique; no generic set normalization",
+        "manifest": "a canonical UTF-8 string, hashed directly; NOT JSON-quoted a second time"
+      },
+      "bindingInputs": [
+        "releaseContextHash",
+        "adapterVersion=\"forge-release-proof-v1\"",
+        "exact certificateData incl authored mapping/license/rule meanings"
+      ],
+      "digest": "SHA-256 UTF-8(\"forge-session-release-v1\\n\" + exact canonical releaseManifest string); lowercase 64 hex",
+      "runtimeConsumer": [
+        "CaseProofProfile.bindings.releaseHash",
+        "release-to-proof case acceptance"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Proof Profile",
+      "owner": "Session A §2; schema MYST-SOLVABILITY-0001",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-proof-v1",
+      "canonicalInput": "entire parsed bound CaseProofProfile",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "answerScope": "SET C-sort",
+        "observations": "SET C-sort after nested normalization",
+        "nodes": "SET C-sort",
+        "edges": "SET C-sort after allOf normalization",
+        "edges[].allOf": "SET C-sort",
+        "observations[kind=PUBLIC_RULE].rules": "SET C-sort after allOf normalization",
+        "observations[kind=PUBLIC_RULE].rules[].allOf": "SET C-sort",
+        "witnessStepIds": "ORDERED; strict authored IDs; never sort"
+      },
+      "bindingInputs": [
+        "caseId",
+        "truthHash",
+        "solutionHash",
+        "releaseHash"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "Solvability case acceptance; not runtime proof gate"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Package hash",
+      "owner": "Session A §2",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-case-package-v1",
+      "canonicalInput": "{schemaVersion:1,rulesetVersion,releaseContextHash,releaseHash:null|string,proofHash:null|string}",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "none": "proof null means both releaseHash/proofHash null; no empty or omitted surrogate"
+      },
+      "bindingInputs": [
+        "release context",
+        "proof closure or paired null"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "CasePackageIdentity"
+      ],
+      "saveRelevance": "transitively invalidates exact package"
+    },
+    {
+      "component": "Session Save checksum",
+      "owner": "Session C §8",
+      "schemaVersion": "1",
+      "identityProfile": "content hash",
+      "profile": "forge-session-save-v1",
+      "canonicalInput": "{schemaVersion:1,packageIdentity:{schemaVersion:1,packageHash,rulesetVersion},events:SessionEvent[]}",
+      "objectKeySemantics": "recursive UTF-16 code-unit ordering; JSON.stringify scalars; no whitespace, no trimming/NFC/NFD; lowercase hex digest inputs are JSON strings",
+      "arraySemantics": {
+        "events": "ORDERED accepted events",
+        "events[type=accuse].literals": "ORDERED input literals; structural duplicates rejected by Accusation parser",
+        "other event fields": "strict closed shapes"
+      },
+      "bindingInputs": [
+        "exact full descriptor",
+        "event sequence",
+        "save schema version"
+      ],
+      "digest": "SHA-256 UTF-8(profile + LF + canonical input), lowercase 64 hex unless explicitly stated",
+      "runtimeConsumer": [
+        "decode then replay"
+      ],
+      "saveRelevance": "checksum is integrity, not authenticity"
+    }
+  ],
+  "audit": {
+    "unversionedProfiles": [],
+    "cycles": [],
+    "missingComponents": [],
+    "duplicateResponsibilities": "Truth retains original domain name/description identity; PublicContent exclusively owns labels/brief/public questions/rules; EvidencePresentation exclusively owns evidence text/reports. Shared wording does not permit substitution between these owners.",
+    "hashOfHash": "Aggregates hash typed records of verified 64-hex digest strings; never concatenated unlabeled digests. releaseManifest exception hashes exact manifest bytes; no second string quoting.",
+    "presentationInstability": "UTF-16 order and no normalization fixed; text whitespace and NFC/NFD changes are intentionally identity-significant."
+  }
+}

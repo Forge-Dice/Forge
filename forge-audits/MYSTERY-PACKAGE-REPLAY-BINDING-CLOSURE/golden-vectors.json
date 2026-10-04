@@ -1,0 +1,1317 @@
+{
+  "scope": "hash-only vectors; foreign/null controls need not be accepted package inputs",
+  "vectors": [
+    {
+      "id": "npc-base",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "a4d50cd4432d6eba36626f6f8199499f11cbd0287b4c28d21b3b420f259b2656"
+    },
+    {
+      "id": "npc-awareness-reordered",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "a4d50cd4432d6eba36626f6f8199499f11cbd0287b4c28d21b3b420f259b2656"
+    },
+    {
+      "id": "npc-attitudes-reordered",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "a4d50cd4432d6eba36626f6f8199499f11cbd0287b4c28d21b3b420f259b2656"
+    },
+    {
+      "id": "npc-revision",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 2,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":2,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":2,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "ce042899818420b36ab8260ecab8faa7d47b770009ddd4a7b84fc5ac74024346"
+    },
+    {
+      "id": "npc-asOf",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 11,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":11,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":11,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "26bbfd1de7726e191ef5c8bf3882ac7a13ef722b8e8ec6cd40ebdcc3a8f746e3"
+    },
+    {
+      "id": "npc-caseId",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:foreign",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:foreign\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:foreign\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "d2caffa67d5e9a4c74485be6fd2db53e64ba9c44fd557e64e5e8bc44a57b8aa5"
+    },
+    {
+      "id": "npc-truthHash",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\"}",
+      "digest": "d12dce60b792e202ee49afb11077d9397fe8ce27fcb58f7435c71296ec8c8182"
+    },
+    {
+      "id": "npc-solutionHash",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": null,
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":null,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":null,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "3702e1d68004663d5099f4cabba4e9b572d4a03d1192d5e2282764860b2477a3"
+    },
+    {
+      "id": "npc-acquiredAt",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 1,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":1,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":1,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "c72bcc6105ad6b2db11d9446899b03e3870922aa76dfd8fb1d23b0d035d304c3"
+    },
+    {
+      "id": "npc-provenance",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "told_by_person",
+              "personId": "person:b"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"told_by_person\",\"personId\":\"person:b\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"told_by_person\",\"personId\":\"person:b\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "76221f87b8548b6a8054da04cb5c0c6aa31ed08dac58310a6b207450dbd7334b"
+    },
+    {
+      "id": "npc-stance",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:a",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": false
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":false},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":false},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:a\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "a86abe7e74d303bc68311cc836dcf38defa3f9b9678b8b2bda91aede57cfb4e8"
+    },
+    {
+      "id": "npc-npcId",
+      "profile": "forge-npc-snapshot-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+        "npcId": "person:b",
+        "revision": 1,
+        "asOf": 10,
+        "awareness": [
+          {
+            "subject": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ],
+        "attitudes": [
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:a"
+            },
+            "stance": {
+              "kind": "belief",
+              "value": true
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          },
+          {
+            "subject": {
+              "kind": "proposition",
+              "id": "proposition:b"
+            },
+            "stance": {
+              "kind": "uncertain",
+              "leaning": null
+            },
+            "acquiredAt": 0,
+            "provenance": {
+              "kind": "prior_knowledge"
+            }
+          }
+        ]
+      },
+      "canonical": "{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:b\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-npc-snapshot-v1\n{\"asOf\":10,\"attitudes\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"belief\",\"value\":true},\"subject\":{\"id\":\"proposition:a\",\"kind\":\"proposition\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"stance\":{\"kind\":\"uncertain\",\"leaning\":null},\"subject\":{\"id\":\"proposition:b\",\"kind\":\"proposition\"}}],\"awareness\":[{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"location:hall\",\"kind\":\"location\"}},{\"acquiredAt\":0,\"provenance\":{\"kind\":\"prior_knowledge\"},\"subject\":{\"id\":\"person:a\",\"kind\":\"person\"}}],\"caseId\":\"case:binding-lab\",\"npcId\":\"person:b\",\"revision\":1,\"schemaVersion\":1,\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "678254385c7dea9c5089880c2797aa0b8e9d168cb8977b15ddb3c460a5a5d6ed"
+    },
+    {
+      "id": "Unicode-key-order",
+      "profile": "forge-session-public-content-v1",
+      "kind": "ordered",
+      "input": {
+        "": "BMP",
+        "😀": "astral",
+        "a": "é"
+      },
+      "canonical": "{\"a\":\"é\",\"😀\":\"astral\",\"\":\"BMP\"}",
+      "preimage": "forge-session-public-content-v1\n{\"a\":\"é\",\"😀\":\"astral\",\"\":\"BMP\"}",
+      "digest": "9eb06a24a547a1e91f9ed81ba4be23747b14d540c104cae2686601ce77a05da4"
+    },
+    {
+      "id": "save-empty",
+      "profile": "forge-session-save-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "packageIdentity": {
+          "schemaVersion": 1,
+          "packageHash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "rulesetVersion": "mystery-session-v1"
+        },
+        "events": []
+      },
+      "canonical": "{\"events\":[],\"packageIdentity\":{\"packageHash\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"rulesetVersion\":\"mystery-session-v1\",\"schemaVersion\":1},\"schemaVersion\":1}",
+      "preimage": "forge-session-save-v1\n{\"events\":[],\"packageIdentity\":{\"packageHash\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"rulesetVersion\":\"mystery-session-v1\",\"schemaVersion\":1},\"schemaVersion\":1}",
+      "digest": "58a1857b0b76ba1f342237261c2d4c9877f7cc7bb2a78c116d8e1ecebdc6875f"
+    },
+    {
+      "id": "truth",
+      "profile": "forge-case-c14n-v1",
+      "kind": "set",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "revision": 1,
+        "name": "Case name",
+        "description": "Case description",
+        "entities": [
+          {
+            "kind": "person",
+            "id": "person:a"
+          },
+          {
+            "kind": "person",
+            "id": "person:b"
+          },
+          {
+            "kind": "location",
+            "id": "location:hall"
+          },
+          {
+            "kind": "item",
+            "id": "item:key"
+          },
+          {
+            "kind": "event",
+            "id": "event:e1"
+          },
+          {
+            "kind": "evidence",
+            "id": "evidence:note"
+          }
+        ]
+      },
+      "canonical": "{\"caseId\":\"case:binding-lab\",\"description\":\"Case description\",\"entities\":[{\"id\":\"event:e1\",\"kind\":\"event\"},{\"id\":\"evidence:note\",\"kind\":\"evidence\"},{\"id\":\"item:key\",\"kind\":\"item\"},{\"id\":\"location:hall\",\"kind\":\"location\"},{\"id\":\"person:a\",\"kind\":\"person\"},{\"id\":\"person:b\",\"kind\":\"person\"}],\"name\":\"Case name\",\"revision\":1,\"schemaVersion\":1}",
+      "preimage": "forge-case-c14n-v1\n{\"caseId\":\"case:binding-lab\",\"description\":\"Case description\",\"entities\":[{\"id\":\"event:e1\",\"kind\":\"event\"},{\"id\":\"evidence:note\",\"kind\":\"evidence\"},{\"id\":\"item:key\",\"kind\":\"item\"},{\"id\":\"location:hall\",\"kind\":\"location\"},{\"id\":\"person:a\",\"kind\":\"person\"},{\"id\":\"person:b\",\"kind\":\"person\"}],\"name\":\"Case name\",\"revision\":1,\"schemaVersion\":1}",
+      "digest": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48"
+    },
+    {
+      "id": "solution",
+      "profile": "forge-solution-c14n-v1",
+      "kind": "set",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "revision": 1,
+        "conclusions": [
+          {
+            "id": "conclusion:a",
+            "claim": {
+              "kind": "personResponsibleForEvent",
+              "personId": "person:a",
+              "eventId": "event:e1"
+            },
+            "required": true,
+            "value": true
+          }
+        ]
+      },
+      "canonical": "{\"caseId\":\"case:binding-lab\",\"conclusions\":[{\"claim\":{\"eventId\":\"event:e1\",\"kind\":\"personResponsibleForEvent\",\"personId\":\"person:a\"},\"id\":\"conclusion:a\",\"required\":true,\"value\":true}],\"revision\":1,\"schemaVersion\":1,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-solution-c14n-v1\n{\"caseId\":\"case:binding-lab\",\"conclusions\":[{\"claim\":{\"eventId\":\"event:e1\",\"kind\":\"personResponsibleForEvent\",\"personId\":\"person:a\"},\"id\":\"conclusion:a\",\"required\":true,\"value\":true}],\"revision\":1,\"schemaVersion\":1,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b"
+    },
+    {
+      "id": "access",
+      "profile": "forge-evidence-access-c14n-v1",
+      "kind": "set",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "entries": [
+          {
+            "evidenceId": "evidence:note",
+            "access": {
+              "kind": "discoverable",
+              "paths": [
+                {
+                  "kind": "search_location",
+                  "locationId": "location:hall"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "canonical": "{\"caseId\":\"case:binding-lab\",\"entries\":[{\"access\":{\"kind\":\"discoverable\",\"paths\":[{\"kind\":\"search_location\",\"locationId\":\"location:hall\"}]},\"evidenceId\":\"evidence:note\"}],\"schemaVersion\":1,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-evidence-access-c14n-v1\n{\"caseId\":\"case:binding-lab\",\"entries\":[{\"access\":{\"kind\":\"discoverable\",\"paths\":[{\"kind\":\"search_location\",\"locationId\":\"location:hall\"}]},\"evidenceId\":\"evidence:note\"}],\"schemaVersion\":1,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "7b4aa0453486dc255ee6afbb92f9f90233dbcfbc9f3da9640032502b7c068d4e"
+    },
+    {
+      "id": "presentation",
+      "profile": "forge-evidence-presentation-c14n-v1",
+      "kind": "set",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "entries": [
+          {
+            "evidenceId": "evidence:note",
+            "text": "A note.",
+            "mentions": [
+              {
+                "kind": "item",
+                "id": "item:key"
+              },
+              {
+                "kind": "event",
+                "id": "event:e1"
+              }
+            ],
+            "reports": []
+          }
+        ]
+      },
+      "canonical": "{\"caseId\":\"case:binding-lab\",\"entries\":[{\"evidenceId\":\"evidence:note\",\"mentions\":[{\"id\":\"event:e1\",\"kind\":\"event\"},{\"id\":\"item:key\",\"kind\":\"item\"}],\"reports\":[],\"text\":\"A note.\"}],\"schemaVersion\":1,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-evidence-presentation-c14n-v1\n{\"caseId\":\"case:binding-lab\",\"entries\":[{\"evidenceId\":\"evidence:note\",\"mentions\":[{\"id\":\"event:e1\",\"kind\":\"event\"},{\"id\":\"item:key\",\"kind\":\"item\"}],\"reports\":[],\"text\":\"A note.\"}],\"schemaVersion\":1,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "523751b9cd35c7f7279801ad737dc786b50590668d61a29e071b51aec8121a36"
+    },
+    {
+      "id": "catalogue",
+      "profile": "forge-interrogation-catalogue-c14n-v1",
+      "kind": "set",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "case:binding-lab",
+        "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+        "revision": 1,
+        "questions": [
+          {
+            "id": "question:q1",
+            "mentions": [
+              {
+                "kind": "person",
+                "id": "person:a"
+              }
+            ]
+          },
+          {
+            "id": "question:q2",
+            "mentions": [
+              {
+                "kind": "person",
+                "id": "person:a"
+              }
+            ]
+          }
+        ]
+      },
+      "canonical": "{\"caseId\":\"case:binding-lab\",\"questions\":[{\"id\":\"question:q1\",\"mentions\":[{\"id\":\"person:a\",\"kind\":\"person\"}]},{\"id\":\"question:q2\",\"mentions\":[{\"id\":\"person:a\",\"kind\":\"person\"}]}],\"revision\":1,\"schemaVersion\":1,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "preimage": "forge-interrogation-catalogue-c14n-v1\n{\"caseId\":\"case:binding-lab\",\"questions\":[{\"id\":\"question:q1\",\"mentions\":[{\"id\":\"person:a\",\"kind\":\"person\"}]},{\"id\":\"question:q2\",\"mentions\":[{\"id\":\"person:a\",\"kind\":\"person\"}]}],\"revision\":1,\"schemaVersion\":1,\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"}",
+      "digest": "85b0eab90f1f58a58d17614739bfe631055319cbe8b733109bac10d8cebc15bc"
+    },
+    {
+      "id": "public-content",
+      "profile": "forge-session-public-content-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "title": "Case title",
+        "brief": "Find the answer.",
+        "challengeQuestion": "Who?",
+        "labels": [
+          {
+            "entity": {
+              "kind": "event",
+              "id": "event:e1"
+            },
+            "label": "event:e1",
+            "role": null
+          },
+          {
+            "entity": {
+              "kind": "evidence",
+              "id": "evidence:note"
+            },
+            "label": "evidence:note",
+            "role": null
+          },
+          {
+            "entity": {
+              "kind": "item",
+              "id": "item:key"
+            },
+            "label": "item:key",
+            "role": null
+          },
+          {
+            "entity": {
+              "kind": "location",
+              "id": "location:hall"
+            },
+            "label": "location:hall",
+            "role": null
+          },
+          {
+            "entity": {
+              "kind": "person",
+              "id": "person:a"
+            },
+            "label": "person:a",
+            "role": null
+          },
+          {
+            "entity": {
+              "kind": "person",
+              "id": "person:b"
+            },
+            "label": "person:b",
+            "role": null
+          }
+        ],
+        "questionTexts": [
+          {
+            "npc": "person:a",
+            "questionId": "question:q1",
+            "text": "First question?"
+          },
+          {
+            "npc": "person:a",
+            "questionId": "question:q2",
+            "text": "Second question?"
+          }
+        ],
+        "publicRules": [
+          {
+            "id": "rule:a",
+            "text": "First rule."
+          },
+          {
+            "id": "rule:b",
+            "text": "Second rule."
+          }
+        ]
+      },
+      "canonical": "{\"brief\":\"Find the answer.\",\"challengeQuestion\":\"Who?\",\"labels\":[{\"entity\":{\"id\":\"event:e1\",\"kind\":\"event\"},\"label\":\"event:e1\",\"role\":null},{\"entity\":{\"id\":\"evidence:note\",\"kind\":\"evidence\"},\"label\":\"evidence:note\",\"role\":null},{\"entity\":{\"id\":\"item:key\",\"kind\":\"item\"},\"label\":\"item:key\",\"role\":null},{\"entity\":{\"id\":\"location:hall\",\"kind\":\"location\"},\"label\":\"location:hall\",\"role\":null},{\"entity\":{\"id\":\"person:a\",\"kind\":\"person\"},\"label\":\"person:a\",\"role\":null},{\"entity\":{\"id\":\"person:b\",\"kind\":\"person\"},\"label\":\"person:b\",\"role\":null}],\"publicRules\":[{\"id\":\"rule:a\",\"text\":\"First rule.\"},{\"id\":\"rule:b\",\"text\":\"Second rule.\"}],\"questionTexts\":[{\"npc\":\"person:a\",\"questionId\":\"question:q1\",\"text\":\"First question?\"},{\"npc\":\"person:a\",\"questionId\":\"question:q2\",\"text\":\"Second question?\"}],\"schemaVersion\":1,\"title\":\"Case title\"}",
+      "preimage": "forge-session-public-content-v1\n{\"brief\":\"Find the answer.\",\"challengeQuestion\":\"Who?\",\"labels\":[{\"entity\":{\"id\":\"event:e1\",\"kind\":\"event\"},\"label\":\"event:e1\",\"role\":null},{\"entity\":{\"id\":\"evidence:note\",\"kind\":\"evidence\"},\"label\":\"evidence:note\",\"role\":null},{\"entity\":{\"id\":\"item:key\",\"kind\":\"item\"},\"label\":\"item:key\",\"role\":null},{\"entity\":{\"id\":\"location:hall\",\"kind\":\"location\"},\"label\":\"location:hall\",\"role\":null},{\"entity\":{\"id\":\"person:a\",\"kind\":\"person\"},\"label\":\"person:a\",\"role\":null},{\"entity\":{\"id\":\"person:b\",\"kind\":\"person\"},\"label\":\"person:b\",\"role\":null}],\"publicRules\":[{\"id\":\"rule:a\",\"text\":\"First rule.\"},{\"id\":\"rule:b\",\"text\":\"Second rule.\"}],\"questionTexts\":[{\"npc\":\"person:a\",\"questionId\":\"question:q1\",\"text\":\"First question?\"},{\"npc\":\"person:a\",\"questionId\":\"question:q2\",\"text\":\"Second question?\"}],\"schemaVersion\":1,\"title\":\"Case title\"}",
+      "digest": "320c92b3388b0d072673bd27f8b42a1a221808e01e66a74f6b1085bc5d8a2afe"
+    },
+    {
+      "id": "proof-typed-arrays",
+      "profile": "forge-session-proof-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "bindings": {
+          "caseId": "case:binding-lab",
+          "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+          "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+          "releaseHash": "792a6a898d46ee3aa89faeadeaf8c44edc8389e4c278ee8ceb01046bbc44eb83"
+        },
+        "answerScope": [
+          "conclusion:a",
+          "conclusion:b"
+        ],
+        "ambiguityPolicy": "must_disambiguate",
+        "question": {
+          "kind": "required_literals"
+        },
+        "observations": [
+          {
+            "id": "o1",
+            "kind": "ENTITY_AWARENESS",
+            "entity": {
+              "kind": "person",
+              "id": "person:a"
+            }
+          },
+          {
+            "id": "o2",
+            "kind": "ENTITY_AWARENESS",
+            "entity": {
+              "kind": "person",
+              "id": "person:b"
+            }
+          }
+        ],
+        "nodes": [
+          {
+            "id": "n1",
+            "kind": "observation",
+            "observationId": "o1"
+          },
+          {
+            "id": "n2",
+            "kind": "observation",
+            "observationId": "o2"
+          }
+        ],
+        "edges": [],
+        "witnessStepIds": [
+          "s1",
+          "s2"
+        ]
+      },
+      "canonical": "{\"ambiguityPolicy\":\"must_disambiguate\",\"answerScope\":[\"conclusion:a\",\"conclusion:b\"],\"bindings\":{\"caseId\":\"case:binding-lab\",\"releaseHash\":\"792a6a898d46ee3aa89faeadeaf8c44edc8389e4c278ee8ceb01046bbc44eb83\",\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"},\"edges\":[],\"nodes\":[{\"id\":\"n1\",\"kind\":\"observation\",\"observationId\":\"o1\"},{\"id\":\"n2\",\"kind\":\"observation\",\"observationId\":\"o2\"}],\"observations\":[{\"entity\":{\"id\":\"person:a\",\"kind\":\"person\"},\"id\":\"o1\",\"kind\":\"ENTITY_AWARENESS\"},{\"entity\":{\"id\":\"person:b\",\"kind\":\"person\"},\"id\":\"o2\",\"kind\":\"ENTITY_AWARENESS\"}],\"question\":{\"kind\":\"required_literals\"},\"schemaVersion\":1,\"witnessStepIds\":[\"s1\",\"s2\"]}",
+      "preimage": "forge-session-proof-v1\n{\"ambiguityPolicy\":\"must_disambiguate\",\"answerScope\":[\"conclusion:a\",\"conclusion:b\"],\"bindings\":{\"caseId\":\"case:binding-lab\",\"releaseHash\":\"792a6a898d46ee3aa89faeadeaf8c44edc8389e4c278ee8ceb01046bbc44eb83\",\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"},\"edges\":[],\"nodes\":[{\"id\":\"n1\",\"kind\":\"observation\",\"observationId\":\"o1\"},{\"id\":\"n2\",\"kind\":\"observation\",\"observationId\":\"o2\"}],\"observations\":[{\"entity\":{\"id\":\"person:a\",\"kind\":\"person\"},\"id\":\"o1\",\"kind\":\"ENTITY_AWARENESS\"},{\"entity\":{\"id\":\"person:b\",\"kind\":\"person\"},\"id\":\"o2\",\"kind\":\"ENTITY_AWARENESS\"}],\"question\":{\"kind\":\"required_literals\"},\"schemaVersion\":1,\"witnessStepIds\":[\"s1\",\"s2\"]}",
+      "digest": "66e8e90604acbc9991c149c6719f34d7b78151b05e1d6b323bddf742db162f00"
+    },
+    {
+      "id": "package-proof-null",
+      "profile": "forge-case-package-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "rulesetVersion": "mystery-session-v1",
+        "releaseContextHash": "6d4b44661ae98a1bb134d9e25835c6d75c5ae248ecebefd42f3ebcb33296519d",
+        "releaseHash": null,
+        "proofHash": null
+      },
+      "canonical": "{\"proofHash\":null,\"releaseContextHash\":\"6d4b44661ae98a1bb134d9e25835c6d75c5ae248ecebefd42f3ebcb33296519d\",\"releaseHash\":null,\"rulesetVersion\":\"mystery-session-v1\",\"schemaVersion\":1}",
+      "preimage": "forge-case-package-v1\n{\"proofHash\":null,\"releaseContextHash\":\"6d4b44661ae98a1bb134d9e25835c6d75c5ae248ecebefd42f3ebcb33296519d\",\"releaseHash\":null,\"rulesetVersion\":\"mystery-session-v1\",\"schemaVersion\":1}",
+      "digest": "8aa4ece88fc78273705eee04664ba06ca7def02f4a659031eb0c3f64039b9b89"
+    },
+    {
+      "id": "proof-nested-sets",
+      "profile": "forge-session-proof-v1",
+      "kind": "ordered",
+      "input": {
+        "schemaVersion": 1,
+        "bindings": {
+          "caseId": "case:binding-lab",
+          "truthHash": "abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48",
+          "solutionHash": "59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b",
+          "releaseHash": "792a6a898d46ee3aa89faeadeaf8c44edc8389e4c278ee8ceb01046bbc44eb83"
+        },
+        "answerScope": [
+          "conclusion:a",
+          "conclusion:b"
+        ],
+        "ambiguityPolicy": "must_disambiguate",
+        "question": {
+          "kind": "required_literals"
+        },
+        "observations": [
+          {
+            "id": "o1",
+            "kind": "ENTITY_AWARENESS",
+            "entity": {
+              "kind": "person",
+              "id": "person:a"
+            }
+          },
+          {
+            "id": "o2",
+            "kind": "ENTITY_AWARENESS",
+            "entity": {
+              "kind": "person",
+              "id": "person:b"
+            }
+          },
+          {
+            "id": "rule:obs",
+            "kind": "PUBLIC_RULE",
+            "rules": [
+              {
+                "edgeId": "edge:a",
+                "allOf": [
+                  "node:a",
+                  "node:z"
+                ],
+                "yields": {
+                  "kind": "conclusion",
+                  "conclusionId": "conclusion:a",
+                  "value": false
+                }
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "id": "n1",
+            "kind": "observation",
+            "observationId": "o1"
+          },
+          {
+            "id": "n2",
+            "kind": "observation",
+            "observationId": "o2"
+          }
+        ],
+        "edges": [
+          {
+            "id": "edge:a",
+            "allOf": [
+              "node:a",
+              "node:z"
+            ],
+            "to": "node:b",
+            "license": "node:a"
+          }
+        ],
+        "witnessStepIds": [
+          "s1",
+          "s2"
+        ]
+      },
+      "canonical": "{\"ambiguityPolicy\":\"must_disambiguate\",\"answerScope\":[\"conclusion:a\",\"conclusion:b\"],\"bindings\":{\"caseId\":\"case:binding-lab\",\"releaseHash\":\"792a6a898d46ee3aa89faeadeaf8c44edc8389e4c278ee8ceb01046bbc44eb83\",\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"},\"edges\":[{\"allOf\":[\"node:a\",\"node:z\"],\"id\":\"edge:a\",\"license\":\"node:a\",\"to\":\"node:b\"}],\"nodes\":[{\"id\":\"n1\",\"kind\":\"observation\",\"observationId\":\"o1\"},{\"id\":\"n2\",\"kind\":\"observation\",\"observationId\":\"o2\"}],\"observations\":[{\"entity\":{\"id\":\"person:a\",\"kind\":\"person\"},\"id\":\"o1\",\"kind\":\"ENTITY_AWARENESS\"},{\"entity\":{\"id\":\"person:b\",\"kind\":\"person\"},\"id\":\"o2\",\"kind\":\"ENTITY_AWARENESS\"},{\"id\":\"rule:obs\",\"kind\":\"PUBLIC_RULE\",\"rules\":[{\"allOf\":[\"node:a\",\"node:z\"],\"edgeId\":\"edge:a\",\"yields\":{\"conclusionId\":\"conclusion:a\",\"kind\":\"conclusion\",\"value\":false}}]}],\"question\":{\"kind\":\"required_literals\"},\"schemaVersion\":1,\"witnessStepIds\":[\"s1\",\"s2\"]}",
+      "preimage": "forge-session-proof-v1\n{\"ambiguityPolicy\":\"must_disambiguate\",\"answerScope\":[\"conclusion:a\",\"conclusion:b\"],\"bindings\":{\"caseId\":\"case:binding-lab\",\"releaseHash\":\"792a6a898d46ee3aa89faeadeaf8c44edc8389e4c278ee8ceb01046bbc44eb83\",\"solutionHash\":\"59b69d70ad33289513bcc6a3d6ee8b7f1556310687b15977afc4811ca480d39b\",\"truthHash\":\"abe49445e2befdd3bd089d1b99c6c0028c8552413468d3abf35d9501bf536f48\"},\"edges\":[{\"allOf\":[\"node:a\",\"node:z\"],\"id\":\"edge:a\",\"license\":\"node:a\",\"to\":\"node:b\"}],\"nodes\":[{\"id\":\"n1\",\"kind\":\"observation\",\"observationId\":\"o1\"},{\"id\":\"n2\",\"kind\":\"observation\",\"observationId\":\"o2\"}],\"observations\":[{\"entity\":{\"id\":\"person:a\",\"kind\":\"person\"},\"id\":\"o1\",\"kind\":\"ENTITY_AWARENESS\"},{\"entity\":{\"id\":\"person:b\",\"kind\":\"person\"},\"id\":\"o2\",\"kind\":\"ENTITY_AWARENESS\"},{\"id\":\"rule:obs\",\"kind\":\"PUBLIC_RULE\",\"rules\":[{\"allOf\":[\"node:a\",\"node:z\"],\"edgeId\":\"edge:a\",\"yields\":{\"conclusionId\":\"conclusion:a\",\"kind\":\"conclusion\",\"value\":false}}]}],\"question\":{\"kind\":\"required_literals\"},\"schemaVersion\":1,\"witnessStepIds\":[\"s1\",\"s2\"]}",
+      "digest": "4d718945571ab006e0b6ddd3981f86f2ac70acaf2e9845db2842ff073517e3e7"
+    }
+  ],
+  "refVectors": [
+    {
+      "kind": "person",
+      "id": "person:a",
+      "salt": "000102030405060708090a0b0c0d0e0f",
+      "preimage": "forge-mystery-playerref-v1\n000102030405060708090a0b0c0d0e0f\ncase:golden\nbd95eb9a8569f4f3f62eab50aac94e75cd601b54e3432776cc6663a204647501\nperson\nperson:a",
+      "digest": "ebf23c7fd6afb0a6f4898f08dc1b26015990d4c0ca0d8d06e3ef1578f99d1d95",
+      "expected": "pr1_xfs3rzypnyradx49",
+      "actual": "pr1_xfs3rzypnyradx49"
+    },
+    {
+      "kind": "person",
+      "id": "person:b",
+      "salt": "000102030405060708090a0b0c0d0e0f",
+      "preimage": "forge-mystery-playerref-v1\n000102030405060708090a0b0c0d0e0f\ncase:golden\nbd95eb9a8569f4f3f62eab50aac94e75cd601b54e3432776cc6663a204647501\nperson\nperson:b",
+      "digest": "fd270fa5832fa330dd43413206e9cf1f6d3b2456fcb432e7eebd29722cbcd797",
+      "expected": "pr1_zmkgz9c35yhk1qa3",
+      "actual": "pr1_zmkgz9c35yhk1qa3"
+    },
+    {
+      "kind": "location",
+      "id": "location:hall",
+      "salt": "000102030405060708090a0b0c0d0e0f",
+      "preimage": "forge-mystery-playerref-v1\n000102030405060708090a0b0c0d0e0f\ncase:golden\nbd95eb9a8569f4f3f62eab50aac94e75cd601b54e3432776cc6663a204647501\nlocation\nlocation:hall",
+      "digest": "fd627709af5d14f7fd1524f25e8ffa2c638ef53232f12fbceab018cda616de8a",
+      "expected": "pr1_znh7e2dfbmaffz8n",
+      "actual": "pr1_znh7e2dfbmaffz8n"
+    },
+    {
+      "kind": "event",
+      "id": "event:e1",
+      "salt": "000102030405060708090a0b0c0d0e0f",
+      "preimage": "forge-mystery-playerref-v1\n000102030405060708090a0b0c0d0e0f\ncase:golden\nbd95eb9a8569f4f3f62eab50aac94e75cd601b54e3432776cc6663a204647501\nevent\nevent:e1",
+      "digest": "f7afc036a66aaa7a2dba89925daa971b65c347e3734c9ed12906dc1a88ec2b7a",
+      "expected": "pr1_yyqw0dn6dan7mbdt",
+      "actual": "pr1_yyqw0dn6dan7mbdt"
+    },
+    {
+      "kind": "person",
+      "id": "person:a",
+      "salt": "ffeeddccbbaa99887766554433221100",
+      "preimage": "forge-mystery-playerref-v1\nffeeddccbbaa99887766554433221100\ncase:golden\nbd95eb9a8569f4f3f62eab50aac94e75cd601b54e3432776cc6663a204647501\nperson\nperson:a",
+      "expected": "pr1_44rh5ek8sxdz4w97",
+      "actual": "pr1_44rh5ek8sxdz4w97"
+    }
+  ]
+}

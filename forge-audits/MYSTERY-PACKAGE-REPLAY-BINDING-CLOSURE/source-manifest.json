@@ -1,0 +1,403 @@
+{
+  "repository": "Forge-Dice/Forge",
+  "mainBefore": "3d7545d843883418348004e68717399a64da7a7d",
+  "account": "forge-codex",
+  "sources": [
+    {
+      "branch": "forge/owner/audits/DIE-LEERE-VITRINE",
+      "commit": "fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2",
+      "path": "forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-HEADLESS-SPEC.html",
+      "gitBlob": "ab951b0e415cd93376a06cd240d8b0decad0fbf2",
+      "verifiedGitBlob": "ab951b0e415cd93376a06cd240d8b0decad0fbf2",
+      "sha256": "d5e894ecd1734b3c72c7f0b369f89315e1b25fd8d9f9ba4f6542ae5c447fd418"
+    },
+    {
+      "branch": "forge/owner/audits/DIE-LEERE-VITRINE",
+      "commit": "fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2",
+      "path": "forge-audits/DIE-LEERE-VITRINE/DIE-LEERE-VITRINE-PLAYER-BRIEF.html",
+      "gitBlob": "30823853e6b9fce87335649f2375d43c4f63a731",
+      "verifiedGitBlob": "30823853e6b9fce87335649f2375d43c4f63a731",
+      "sha256": "954bf39433fc6dac397fcb19bebec32d435e823347c9486bd883366114b72fdc"
+    },
+    {
+      "branch": "forge/owner/audits/DIE-LEERE-VITRINE",
+      "commit": "fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2",
+      "path": "forge-audits/DIE-LEERE-VITRINE/README.txt",
+      "gitBlob": "8550407606ee564bae5a2fef1c048888b1e6c8d4",
+      "verifiedGitBlob": "8550407606ee564bae5a2fef1c048888b1e6c8d4",
+      "sha256": "92a1efbc38269e844548315cccadc0d0c1a357fbf15499a14ee01da7b688ab83"
+    },
+    {
+      "branch": "forge/owner/audits/DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION",
+      "commit": "e66e7e19f07aaf3fb527a154e5c5a6ea3794c94d",
+      "path": "forge-audits/DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION/DIE-LEERE-VITRINE-PROOF-PROFILE.json",
+      "gitBlob": "5c56273f146f2f6bad84a405dc23bcfd4122a686",
+      "verifiedGitBlob": "5c56273f146f2f6bad84a405dc23bcfd4122a686",
+      "sha256": "c052e467cf22fb72791ee82c033dd93f81458994eca2ac6b2fb091a42550963c"
+    },
+    {
+      "branch": "forge/owner/audits/DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION",
+      "commit": "e66e7e19f07aaf3fb527a154e5c5a6ea3794c94d",
+      "path": "forge-audits/DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION/DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION.html",
+      "gitBlob": "259dfff3f3ec877592f6b08249d74a246d86ebef",
+      "verifiedGitBlob": "259dfff3f3ec877592f6b08249d74a246d86ebef",
+      "sha256": "59725aa2639b6de4cdbf2735ac9b95b044b66849426a71a7369dad6fa19d5150"
+    },
+    {
+      "branch": "forge/owner/audits/FORGE-MYSTERY-FINAL-OWNER-RECONCILIATION",
+      "commit": "52dab20bb7825a9ced0da2c572cc9be9033754bd",
+      "path": "forge-audits/FORGE-MYSTERY-FINAL-OWNER-RECONCILIATION/FORGE-MYSTERY-FINAL-OWNER-RECONCILIATION.md",
+      "gitBlob": "aa98bcdbb5aacbcc3df528da2086f76446a0ca13",
+      "verifiedGitBlob": "aa98bcdbb5aacbcc3df528da2086f76446a0ca13",
+      "sha256": "7dbcb852519a48a832f3041e9cee28a8755562c7c7a1d35495482485c45949c4"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0001-PLAYERREF",
+      "commit": "a256e5170697a76a302b765cd44a3140c5ce5da1",
+      "path": "forge-audits/MYST-0001-PLAYERREF/MYST-0001-PLAYERREF-V1.contract.DRAFT.md",
+      "gitBlob": "1a08704965b9d4044f77a3f1a4d8df4e4a980e4e",
+      "verifiedGitBlob": "1a08704965b9d4044f77a3f1a4d8df4e4a980e4e",
+      "sha256": "a602ab163f17cec6ebfb61e2095d926f0c06897e634f7a600e104485359ea192"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0002-ACCUSATION-VERDICT",
+      "commit": "cda9171e517ff19c282b19d7321ee0b66165dc92",
+      "path": "forge-audits/MYST-0002-ACCUSATION-VERDICT/MYST-0002-ACCUSATION-VERDICT-PACKAGE.md",
+      "gitBlob": "061893b738678389da64e60197476a4bf0501fb3",
+      "verifiedGitBlob": "061893b738678389da64e60197476a4bf0501fb3",
+      "sha256": "1012fba1b99d8a6bb75ae28d9c0190099b7f38f64b4d460872a498e5940b6fd2"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0002-ACCUSATION-VERDICT",
+      "commit": "cda9171e517ff19c282b19d7321ee0b66165dc92",
+      "path": "forge-audits/MYST-0002-ACCUSATION-VERDICT/MYST-0002-ACCUSATION-VERDICT-V1.contract.DRAFT.md",
+      "gitBlob": "5c5edcd79504d4532ec242a029831162b1eef29d",
+      "verifiedGitBlob": "5c5edcd79504d4532ec242a029831162b1eef29d",
+      "sha256": "8822470ba5fe2c5959d7f113991e2dc3731b9770393ade234e6899915d5e663c"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0002-REPAIR",
+      "commit": "ea22147f4ac1778afc8191a03f30784864d7591a",
+      "path": "forge-audits/MYST-0002-REPAIR/MYST-0002-REPAIR-REPORT.md",
+      "gitBlob": "3f95e8124be9d751b3fb8e86f0078c5653423f7d",
+      "verifiedGitBlob": "3f95e8124be9d751b3fb8e86f0078c5653423f7d",
+      "sha256": "582d19e7229a3e24c2b12e25fd8a2d34f1a16704d37114576a1bc6875b49c154"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0002-REPAIR",
+      "commit": "ea22147f4ac1778afc8191a03f30784864d7591a",
+      "path": "forge-audits/MYST-0002-REPAIR/MYST-0002.contract.FINAL-CANDIDATE.md",
+      "gitBlob": "f8faf084c0b6f150ec3468acfbe008d30cf99ec0",
+      "verifiedGitBlob": "f8faf084c0b6f150ec3468acfbe008d30cf99ec0",
+      "sha256": "f8f72fa58115fec37b1994c551a697470fd29a87d627736a2060b85a8708b84c"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0003-EVIDENCE-ACCESS",
+      "commit": "8ae160f60bb9e5aeb6be20c5006aa2673408946a",
+      "path": "forge-audits/MYST-0003-EVIDENCE-ACCESS/MYST-0003-EVIDENCE-ACCESS-PACKAGE.md",
+      "gitBlob": "7a59c4259f36f3fc4b1b93ad66ff11014f5a73c5",
+      "verifiedGitBlob": "7a59c4259f36f3fc4b1b93ad66ff11014f5a73c5",
+      "sha256": "c156256da7e1a63a41bb909be6ee138092cac23142428ffb5f04ca8de12646f8"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0003-EVIDENCE-ACCESS",
+      "commit": "8ae160f60bb9e5aeb6be20c5006aa2673408946a",
+      "path": "forge-audits/MYST-0003-EVIDENCE-ACCESS/MYST-0003-EVIDENCE-ACCESS-V1.contract.DRAFT.md",
+      "gitBlob": "9bbfdc656865d0da629e1f7c9f51a7741b37d905",
+      "verifiedGitBlob": "9bbfdc656865d0da629e1f7c9f51a7741b37d905",
+      "sha256": "dd39b7fc8c36eab5745f6b1c9ba505f3e7595bd22d6dbc99c62e4c89a6c84f35"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0004-EVIDENCE-PRESENTATION",
+      "commit": "51c2ddc4b6d312729d9e0a12d8e7f544e9e6e23e",
+      "path": "forge-audits/MYST-0004-EVIDENCE-PRESENTATION/MYST-0004-EVIDENCE-PRESENTATION-PACKAGE.md",
+      "gitBlob": "c628b648ddcc545232a7854643a40531de72b756",
+      "verifiedGitBlob": "c628b648ddcc545232a7854643a40531de72b756",
+      "sha256": "cfe9674c108bad73cdcb0e4c16917720c59a55cafe460c317578b12830a0240d"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0004-EVIDENCE-PRESENTATION",
+      "commit": "51c2ddc4b6d312729d9e0a12d8e7f544e9e6e23e",
+      "path": "forge-audits/MYST-0004-EVIDENCE-PRESENTATION/MYST-0004-EVIDENCE-PRESENTATION-V1.contract.DRAFT.md",
+      "gitBlob": "f6c20f3d84b0aebb39fcfa75109d56edbdec057b",
+      "verifiedGitBlob": "f6c20f3d84b0aebb39fcfa75109d56edbdec057b",
+      "sha256": "6a2e155f7767f9cc09ba5324fa0e5cd2913826a2b5b3c6801b33d8136d992973"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0005-INTERROGATION",
+      "commit": "76405cd386894b0bf657d1222ce287b0031fb284",
+      "path": "forge-audits/MYST-0005-INTERROGATION/MYST-0005-INTERROGATION-PACKAGE.md",
+      "gitBlob": "bc3ece082808eea822c9ae2744e0a7a60aeffac5",
+      "verifiedGitBlob": "bc3ece082808eea822c9ae2744e0a7a60aeffac5",
+      "sha256": "811be18c8362d261552e64e2a6e6cdf811e00504ee22b9904ae9766c0b6ca149"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0005-INTERROGATION",
+      "commit": "76405cd386894b0bf657d1222ce287b0031fb284",
+      "path": "forge-audits/MYST-0005-INTERROGATION/MYST-0005A-INTERROGATION-AUTHORING-V1.contract.DRAFT.md",
+      "gitBlob": "7c3558c497a54b188738fcf6af942ebf6ef60e96",
+      "verifiedGitBlob": "7c3558c497a54b188738fcf6af942ebf6ef60e96",
+      "sha256": "fc4c7a633ccd88082b38ba1ebad4fed1e835a9e6c7cf62ea34c6ec66db123e0e"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-0005-INTERROGATION",
+      "commit": "76405cd386894b0bf657d1222ce287b0031fb284",
+      "path": "forge-audits/MYST-0005-INTERROGATION/MYST-0005B-INTERROGATION-RELEASE-V1.contract.DRAFT.md",
+      "gitBlob": "5824621ef83f43c95ada80ca361f7aae343cc88a",
+      "verifiedGitBlob": "5824621ef83f43c95ada80ca361f7aae343cc88a",
+      "sha256": "abcb3a4879dbf19de1d32f9fd5be898b207995219cedd8364b4cf7afc4f6a180"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-ACCUSATION-CHALLENGE-EXACTNESS",
+      "commit": "7514e7e6a31e8c6c2aa03796dc0cd4c9a00ebcc8",
+      "path": "forge-audits/MYST-ACCUSATION-CHALLENGE-EXACTNESS/MYST-ACCUSATION-CHALLENGE-EXACTNESS-REPORT.html",
+      "gitBlob": "1480be3febc298915f510c35fd81d2b3a3da3ece",
+      "verifiedGitBlob": "1480be3febc298915f510c35fd81d2b3a3da3ece",
+      "sha256": "6a42621247ec93d5ed62cd000c6baa1b10d80f9480307af1c0c793ff5e3977b8"
+    },
+    {
+      "branch": "forge/owner/audits/MYST-ACCUSATION-CHALLENGE-EXACTNESS",
+      "commit": "7514e7e6a31e8c6c2aa03796dc0cd4c9a00ebcc8",
+      "path": "forge-audits/MYST-ACCUSATION-CHALLENGE-EXACTNESS/MYST-CHALLENGE-0001.contract.DRAFT.md",
+      "gitBlob": "2b871371bd6fc2861a2d3cd6836a2b2cc978a455",
+      "verifiedGitBlob": "2b871371bd6fc2861a2d3cd6836a2b2cc978a455",
+      "sha256": "9888f9b55da5955eb161014c5f34a74ee9e4ce65483007f5adc9b397686f58f4"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-CROSS-CONTRACT-CONSISTENCY",
+      "commit": "3254b9c2d4c8fbac58d51be9981d84631dda60d2",
+      "path": "forge-audits/MYSTERY-CROSS-CONTRACT-CONSISTENCY/MYSTERY-CROSS-CONTRACT-CONSISTENCY-REPORT.html",
+      "gitBlob": "1654e305918446a1adbed2aebb83b73752084803",
+      "verifiedGitBlob": "1654e305918446a1adbed2aebb83b73752084803",
+      "sha256": "8721d86db5a64d0f3f61b62aa7c2ba02801b0d159dcb2a4c706e26077315f88d"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-FINAL-RECONCILIATION-SPEC-FREEZE",
+      "commit": "5e77872d59e00cfaf3396a6936df3a4ab29b26b5",
+      "path": "forge-audits/MYSTERY-FINAL-RECONCILIATION-SPEC-FREEZE/MYSTERY-FINAL-RECONCILIATION-SPEC-FREEZE.md",
+      "gitBlob": "ceba564e340ee301ac113bd896534c4f7974ebc0",
+      "verifiedGitBlob": "ceba564e340ee301ac113bd896534c4f7974ebc0",
+      "sha256": "bd9bacda32530093821efb3d05790b60cbf12b06c2f625393b99c32078d64bac"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION",
+      "commit": "25a8a17b277eb0b94e5d2892739a82437b300f75",
+      "path": "forge-audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION/FREEZE-CRITERIA-PRECOMMITTED.md",
+      "gitBlob": "c56644d618337d586a19e940ace7ef5b8eee19e3",
+      "verifiedGitBlob": "c56644d618337d586a19e940ace7ef5b8eee19e3",
+      "sha256": "fc9046b3819bf4311bc2c51d91e1c5e7754aed4a047313e635c3d8fbd211b171"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION",
+      "commit": "25a8a17b277eb0b94e5d2892739a82437b300f75",
+      "path": "forge-audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION.html",
+      "gitBlob": "bf9ee5b92228f1e86db88a4f855ae84b8316fd14",
+      "verifiedGitBlob": "bf9ee5b92228f1e86db88a4f855ae84b8316fd14",
+      "sha256": "6bd6f825c4aae9ad9a66efc05779aaa60aa2916d65984a064ffe508b7cf1028c"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION",
+      "commit": "25a8a17b277eb0b94e5d2892739a82437b300f75",
+      "path": "forge-audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION/REPRODUCTION.md",
+      "gitBlob": "c9e340b109772b904fd76e604b43f3cf25cec99e",
+      "verifiedGitBlob": "c9e340b109772b904fd76e604b43f3cf25cec99e",
+      "sha256": "a3e54be1deb1d6b13ec0fb899357ce7a6d0d630efcce5eee0763f574ad09951c"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION",
+      "commit": "25a8a17b277eb0b94e5d2892739a82437b300f75",
+      "path": "forge-audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION/build_report.py",
+      "gitBlob": "fd7173b6df88b113762cd2e16249963f8fbba7c1",
+      "verifiedGitBlob": "fd7173b6df88b113762cd2e16249963f8fbba7c1",
+      "sha256": "ad286c24b211e508afae3ac3fae0bba665e7dfdbc89958ef97005989ccded801"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION",
+      "commit": "25a8a17b277eb0b94e5d2892739a82437b300f75",
+      "path": "forge-audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION/probe-results.json",
+      "gitBlob": "2cc6bb8d8c4a5610513deaf1366c451b18decee7",
+      "verifiedGitBlob": "2cc6bb8d8c4a5610513deaf1366c451b18decee7",
+      "sha256": "6ba1df25d1df3bb2ca5cf8dea53ecfc5d9ac9d6895a015712a10fdccb4125ac7"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION",
+      "commit": "25a8a17b277eb0b94e5d2892739a82437b300f75",
+      "path": "forge-audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION/probe.py",
+      "gitBlob": "36f9944eaa952c2541f94b789052e264f117989d",
+      "verifiedGitBlob": "36f9944eaa952c2541f94b789052e264f117989d",
+      "sha256": "e15db17de54ed15396a3be70d5f1109a7f00bcc5a7149ce7c26d7653736f2260"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION",
+      "commit": "25a8a17b277eb0b94e5d2892739a82437b300f75",
+      "path": "forge-audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION/reproduce.py",
+      "gitBlob": "e3399395e2de1767476e3cf102ef6f382f0e6ed5",
+      "verifiedGitBlob": "e3399395e2de1767476e3cf102ef6f382f0e6ed5",
+      "sha256": "649f89511a3b4cb7dbbe7ce6737780597646ab63cde3a9ac577137de8164f5d4"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SCALE-COMPLEXITY",
+      "commit": "27dd70f0ea9b0830358fdbaf2af78ec390914390",
+      "path": "forge-audits/MYSTERY-SCALE-COMPLEXITY/MYSTERY-SCALE-COMPLEXITY-REPORT.html",
+      "gitBlob": "d3f6fce9bfddb36a66b58998a01c675063298dcf",
+      "verifiedGitBlob": "d3f6fce9bfddb36a66b58998a01c675063298dcf",
+      "sha256": "667ded6e26dd5627bfd046a051baa124629f9d9ed9e6b17d9c50ee063e72753b"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SCALE-COMPLEXITY",
+      "commit": "27dd70f0ea9b0830358fdbaf2af78ec390914390",
+      "path": "forge-audits/MYSTERY-SCALE-COMPLEXITY/MYSTERY-SCALE-MANIFEST.json",
+      "gitBlob": "6d90624bc356fe7a7f2273e7ac4058a08b7a4022",
+      "verifiedGitBlob": "6d90624bc356fe7a7f2273e7ac4058a08b7a4022",
+      "sha256": "3dd8a8801ae8ceb3c44d53488ee0a3e252bd3f300567a0fd207742c25b7efeab"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SCALE-COMPLEXITY",
+      "commit": "27dd70f0ea9b0830358fdbaf2af78ec390914390",
+      "path": "forge-audits/MYSTERY-SCALE-COMPLEXITY/README.txt",
+      "gitBlob": "20b7e11e87db2510fbb45af8dda81ef0efd5de4d",
+      "verifiedGitBlob": "20b7e11e87db2510fbb45af8dda81ef0efd5de4d",
+      "sha256": "1bcc34c3851ffa68b19dbe2cb1e1d5795afd22698777fdb1ec67ed7b046da49b"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "forge-audits/MYSTERY-SESSION-PRODUCTION-PACKAGE/MYST-SESSION-0001A.contract.DRAFT.md",
+      "gitBlob": "38f9a33165f1fff7bf4e370cfb4932331448b3e4",
+      "verifiedGitBlob": "38f9a33165f1fff7bf4e370cfb4932331448b3e4",
+      "sha256": "060f3fc65fc1a8064f351f79a9ff90f51c5a614904abf28fd5f47a0b497bc394"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "forge-audits/MYSTERY-SESSION-PRODUCTION-PACKAGE/MYST-SESSION-0001B.contract.DRAFT.md",
+      "gitBlob": "50c1179ed465b6dc6f08754bdca31e8404919114",
+      "verifiedGitBlob": "50c1179ed465b6dc6f08754bdca31e8404919114",
+      "sha256": "3550a9df80c8f595b0b459133a1f9d2fde3643fe6d30f22e525a67dbc18c7251"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "forge-audits/MYSTERY-SESSION-PRODUCTION-PACKAGE/MYST-SESSION-0001C.contract.DRAFT.md",
+      "gitBlob": "38323fc62dc954c6433240c16294a78c9626d377",
+      "verifiedGitBlob": "38323fc62dc954c6433240c16294a78c9626d377",
+      "sha256": "6263e005e637bc57f15bdac21e8dd1abb22ece34fbf831573c370d5e213e3205"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "forge-audits/MYSTERY-SESSION-PRODUCTION-PACKAGE/MYSTERY-SESSION-PRODUCTION-PACKAGE.html",
+      "gitBlob": "dd24164713799b823cdf6cf69f08375295b70846",
+      "verifiedGitBlob": "dd24164713799b823cdf6cf69f08375295b70846",
+      "sha256": "2546141e5b45b8019f6adabee8c61264428ed9b0e566e1f2359efcc750268e69"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "forge-audits/MYSTERY-SESSION-PRODUCTION-PACKAGE/README.txt",
+      "gitBlob": "192e0e967b33c83336e351c7b8f3280a4a76a0f0",
+      "verifiedGitBlob": "192e0e967b33c83336e351c7b8f3280a4a76a0f0",
+      "sha256": "0ee7f32796ab1eb21a9d94f3deb7e24e691200d7d4e4314aba4888abd54401df"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "forge-audits/MYSTERY-SESSION-PRODUCTION-PACKAGE/SESSION-ACCEPTANCE-120.md",
+      "gitBlob": "38c408e4a08cd83494aade9bbf1e235e486afe79",
+      "verifiedGitBlob": "38c408e4a08cd83494aade9bbf1e235e486afe79",
+      "sha256": "5b179e26cf7ca62ab9dcede61c8f38e2cbe37433e382c6bcc503ed97fbc6a1b8"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "forge-audits/MYSTERY-SESSION-PRODUCTION-PACKAGE/SHA256SUMS.txt",
+      "gitBlob": "598b492106af6210a455e4870dbdf952652498f8",
+      "verifiedGitBlob": "598b492106af6210a455e4870dbdf952652498f8",
+      "sha256": "462fb47ca059ee927acebe98f772462c5e1351a00d1d155c10d741c2dad4a300"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SOLVABILITY-ACCUSATION-REPAIR",
+      "commit": "f02b7a5625497ada4651181e285053f46e0a2bb8",
+      "path": "forge-audits/MYSTERY-SOLVABILITY-ACCUSATION-REPAIR/MYST-SOLVABILITY-0001.contract.DRAFT.md",
+      "gitBlob": "d1b10b9c2e75bf41bd2ea0ea0906892fc1b64d00",
+      "verifiedGitBlob": "d1b10b9c2e75bf41bd2ea0ea0906892fc1b64d00",
+      "sha256": "06b0e5f2774d22ce520ef6787e91c8b84ed6907983cfee2d0f0d3432391e09d8"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SOLVABILITY-V1-RESEARCH",
+      "commit": "04e71f068978185c9bd79285f12fe53d26f6e430",
+      "path": "forge-audits/MYSTERY-SOLVABILITY-V1-RESEARCH/MYSTERY-SOLVABILITY-V1-RESEARCH.md",
+      "gitBlob": "27f1f4568be087215e556f8f037620d9409b6b44",
+      "verifiedGitBlob": "27f1f4568be087215e556f8f037620d9409b6b44",
+      "sha256": "65c3a0df13b68b41c2c169a89ab70068669680a08fe36a449927f33fea5c5c5f"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-VS5-PREFLIGHT",
+      "commit": "284ea9de130693235070419b79500551fd9ea59b",
+      "path": "forge-audits/MYSTERY-VS5-PREFLIGHT/vs5-preflight-results.json",
+      "gitBlob": "6b8368ec9ed3d9ce2654d04d3d42263ce7e1bd8d",
+      "verifiedGitBlob": "6b8368ec9ed3d9ce2654d04d3d42263ce7e1bd8d",
+      "sha256": "0a84352cb00e10d7ea92a75d6c43e2279be1a662f1211699758fc157e1018622"
+    },
+    {
+      "branch": "forge/owner/audits/TASK-0004-M1",
+      "commit": "549ee57742d1e08ce2c38fdd89cf088cf9a4433c",
+      "path": "forge-audits/TASK-0004-M1/TASK-0004-M1-verification.md",
+      "gitBlob": "732e990f5b17bca82ccf46736a8ab75f2c49d7f0",
+      "verifiedGitBlob": "732e990f5b17bca82ccf46736a8ab75f2c49d7f0",
+      "sha256": "819516b298344e1a7f3fdebdbc2dc2c0292357a3b51b632a34eb61fb9053d437"
+    },
+    {
+      "branch": "forge/owner/audits/mystery-infoflow",
+      "commit": "006ecf363e1f5850c7731948464ee10cef4dff59",
+      "path": "forge-audits/mystery-infoflow/MYSTERY-INFOFLOW-SPOILERFREE-SUMMARY.html",
+      "gitBlob": "e7cd902fc8719bf6f7c234d81d685255242ff544",
+      "verifiedGitBlob": "e7cd902fc8719bf6f7c234d81d685255242ff544",
+      "sha256": "6e89c954ea65b77eaaee9aca24cbd8238d1c8ed775c0e892d0b352a39be30476"
+    },
+    {
+      "branch": "forge/owner/audits/mystery-infoflow",
+      "commit": "006ecf363e1f5850c7731948464ee10cef4dff59",
+      "path": "forge-audits/mystery-infoflow/MYSTERY-INFORMATION-FLOW-REPORT.html",
+      "gitBlob": "87110b1df0add310fdcb7dd91e32ac26d6586693",
+      "verifiedGitBlob": "87110b1df0add310fdcb7dd91e32ac26d6586693",
+      "sha256": "53c38b83f6eabfc58cd4805d926fa9197fe95a3ba4d3d54eb6ca4e976c48f8ad"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "src/domain/npc-knowledge.ts",
+      "gitBlob": "5671e141e43785d3b9eb1febf7ce15c057e6bb43",
+      "sha256": "b857139cb1b93de85c70663727b261b99a1d06bf55d4ab34309e5addfa0ec34b",
+      "role": "original unchanged baseline schema/identity read from audit commit"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "src/domain/case-truth.identity.ts",
+      "gitBlob": "c8ee8f78faa0cf4e158ec4c9a48a1bbb4fd6be98",
+      "sha256": "8e0ee1cba53559bbc3c727408d519506a85c6ad434f6c95566e7f3c16fa21033",
+      "role": "original unchanged baseline schema/identity read from audit commit"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "src/domain/case-truth.ts",
+      "gitBlob": "ecc698e23a59a603ffe8211baf2fc1209126e699",
+      "sha256": "95fa06f8463d6a91a74dbc31caeb2a7fe3457c0538704f6c3cdeb19814bfa15e",
+      "role": "original unchanged baseline schema/identity read from audit commit"
+    },
+    {
+      "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+      "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+      "path": "src/domain/case-solution.identity.ts",
+      "gitBlob": "ea5e1e4147607d6e4b274c3e93336ebbea4cdc7d",
+      "sha256": "75a5c52049ea7ab2fac0f9252541df286657a1afe842cc252376215a248d9d80",
+      "role": "original unchanged baseline schema/identity read from audit commit"
+    }
+  ],
+  "missingSourceNotes": [
+    "VS-5 audit branch contains original vs5-preflight-results.json only, no standalone contract/report. Accepted D9 supersedes VS-5 with Session A/B/C.",
+    "No later package/replay repair branch present in observed initial branch inventory; closure uses original A/B/C plus accepted owner reconciliation."
+  ]
+}

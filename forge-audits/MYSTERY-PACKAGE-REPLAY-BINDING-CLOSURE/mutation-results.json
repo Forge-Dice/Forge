@@ -1,0 +1,1517 @@
+{
+  "scope": "finite contract identity model; not production schema certification",
+  "total": 163,
+  "passed": 163,
+  "failed": 0,
+  "refNegativeControls": [
+    {
+      "name": "salt",
+      "rejected": true
+    },
+    {
+      "name": "profile",
+      "rejected": true
+    },
+    {
+      "name": "encoding",
+      "rejected": true
+    },
+    {
+      "name": "truncation",
+      "rejected": true
+    },
+    {
+      "name": "kind",
+      "rejected": true
+    },
+    {
+      "name": "membership",
+      "rejected": true
+    },
+    {
+      "name": "duplicate",
+      "rejected": true
+    },
+    {
+      "name": "collision",
+      "rejected": true
+    },
+    {
+      "name": "resolution",
+      "rejected": true
+    },
+    {
+      "name": "forced digest collision; no partial index",
+      "rejected": true
+    }
+  ],
+  "rows": [
+    {
+      "id": "M001",
+      "component": "truth",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M002",
+      "component": "truth",
+      "operation": "revision mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M003",
+      "component": "truth",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M004",
+      "component": "truth",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M005",
+      "component": "truth",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M006",
+      "component": "truth",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M007",
+      "component": "solution",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M008",
+      "component": "solution",
+      "operation": "revision mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M009",
+      "component": "solution",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M010",
+      "component": "solution",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M011",
+      "component": "solution",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M012",
+      "component": "solution",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M013",
+      "component": "access",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M014",
+      "component": "access",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M015",
+      "component": "access",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M016",
+      "component": "access",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M017",
+      "component": "access",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M018",
+      "component": "access",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M019",
+      "component": "presentation",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M020",
+      "component": "presentation",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M021",
+      "component": "presentation",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M022",
+      "component": "presentation",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M023",
+      "component": "presentation",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M024",
+      "component": "presentation",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M025",
+      "component": "catalogue",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M026",
+      "component": "catalogue",
+      "operation": "revision mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M027",
+      "component": "catalogue",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M028",
+      "component": "catalogue",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M029",
+      "component": "catalogue",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M030",
+      "component": "catalogue",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M031",
+      "component": "snapshot",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M032",
+      "component": "snapshot",
+      "operation": "revision mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M033",
+      "component": "snapshot",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M034",
+      "component": "snapshot",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M035",
+      "component": "snapshot",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M036",
+      "component": "snapshot",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M037",
+      "component": "profile",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M038",
+      "component": "profile",
+      "operation": "revision mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M039",
+      "component": "profile",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M040",
+      "component": "profile",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M041",
+      "component": "profile",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M042",
+      "component": "profile",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M043",
+      "component": "initial",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M044",
+      "component": "initial",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M045",
+      "component": "initial",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M046",
+      "component": "initial",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M047",
+      "component": "initial",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M048",
+      "component": "initial",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M049",
+      "component": "challenge",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M050",
+      "component": "challenge",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M051",
+      "component": "challenge",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M052",
+      "component": "challenge",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M053",
+      "component": "challenge",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M054",
+      "component": "challenge",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M055",
+      "component": "publicContent",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M056",
+      "component": "publicContent",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M057",
+      "component": "publicContent",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M058",
+      "component": "publicContent",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M059",
+      "component": "publicContent",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M060",
+      "component": "publicContent",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M061",
+      "component": "refConfig",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M062",
+      "component": "refConfig",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M063",
+      "component": "refConfig",
+      "operation": "object key reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M064",
+      "component": "refConfig",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M065",
+      "component": "refConfig",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M066",
+      "component": "refConfig",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M067",
+      "component": "release",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M068",
+      "component": "release",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M069",
+      "component": "release",
+      "operation": "collection reordering",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M070",
+      "component": "release",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M071",
+      "component": "release",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M072",
+      "component": "release",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M073",
+      "component": "proof",
+      "operation": "content mutation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M074",
+      "component": "proof",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M075",
+      "component": "proof",
+      "operation": "collection reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M076",
+      "component": "proof",
+      "operation": "foreign binding",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M077",
+      "component": "proof",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M078",
+      "component": "proof",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M079",
+      "component": "snapshot",
+      "operation": "revision",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M080",
+      "component": "snapshot",
+      "operation": "asOf",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M081",
+      "component": "snapshot",
+      "operation": "caseId",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M082",
+      "component": "snapshot",
+      "operation": "truthHash",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M083",
+      "component": "snapshot",
+      "operation": "solutionHash",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M084",
+      "component": "snapshot",
+      "operation": "npcId",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M085",
+      "component": "snapshot",
+      "operation": "acquiredAt",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M086",
+      "component": "snapshot",
+      "operation": "provenance",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M087",
+      "component": "snapshot",
+      "operation": "stance",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M088",
+      "component": "snapshot",
+      "operation": "leaning",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M089",
+      "component": "publicContent",
+      "operation": "title",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M090",
+      "component": "publicContent",
+      "operation": "brief",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M091",
+      "component": "publicContent",
+      "operation": "challengeQuestion",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M092",
+      "component": "public text",
+      "operation": "name",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M093",
+      "component": "public text",
+      "operation": "description",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M094",
+      "component": "public text",
+      "operation": "label",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M095",
+      "component": "public text",
+      "operation": "role",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M096",
+      "component": "public text",
+      "operation": "npcWording",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M097",
+      "component": "public text",
+      "operation": "publicRule",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M098",
+      "component": "public text",
+      "operation": "observation",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M099",
+      "component": "public text",
+      "operation": "whitespace",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M100",
+      "component": "public text",
+      "operation": "NFC",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M101",
+      "component": "public text",
+      "operation": "NFD",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M102",
+      "component": "refConfig",
+      "operation": "profile unsupported in V1",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M103",
+      "component": "refConfig",
+      "operation": "encoding unsupported in V1",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M104",
+      "component": "refConfig",
+      "operation": "truncation unsupported in V1",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M105",
+      "component": "refConfig",
+      "operation": "kindEncoding unsupported in V1",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M106",
+      "component": "refConfig",
+      "operation": "collisionPolicy unsupported in V1",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M107",
+      "component": "refConfig",
+      "operation": "schemaVersion unsupported in V1",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M108",
+      "component": "refConfig",
+      "operation": "invalid salt 00000000000000000000000000000000",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M109",
+      "component": "refConfig",
+      "operation": "invalid salt AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M110",
+      "component": "refConfig",
+      "operation": "invalid salt 1111111111111111111111111111111",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M111",
+      "component": "refConfig",
+      "operation": "invalid salt 111111111111111111111111111111111",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M112",
+      "component": "refConfig",
+      "operation": "invalid salt 0x11111111111111111111111111111111",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M113",
+      "component": "refConfig",
+      "operation": "invalid salt  11111111111111111111111111111111",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M114",
+      "component": "typed arrays",
+      "operation": "attitudes",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M115",
+      "component": "typed arrays",
+      "operation": "labels",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M116",
+      "component": "typed arrays",
+      "operation": "questionTexts",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M117",
+      "component": "typed arrays",
+      "operation": "publicRules",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M118",
+      "component": "typed arrays",
+      "operation": "witness",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M119",
+      "component": "typed arrays",
+      "operation": "observations",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M120",
+      "component": "typed arrays",
+      "operation": "nodes",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M121",
+      "component": "typed arrays",
+      "operation": "known",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M122",
+      "component": "same revision content",
+      "operation": "text byte 0",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M123",
+      "component": "same revision content",
+      "operation": "text byte 1",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M124",
+      "component": "same revision content",
+      "operation": "text byte 2",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M125",
+      "component": "same revision content",
+      "operation": "text byte 3",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M126",
+      "component": "same revision content",
+      "operation": "text byte 4",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M127",
+      "component": "same revision content",
+      "operation": "text byte 5",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M128",
+      "component": "same revision content",
+      "operation": "text byte 6",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M129",
+      "component": "same revision content",
+      "operation": "text byte 7",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M130",
+      "component": "same revision content",
+      "operation": "text byte 8",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M131",
+      "component": "same revision content",
+      "operation": "text byte 9",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M132",
+      "component": "same revision content",
+      "operation": "text byte 10",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M133",
+      "component": "same revision content",
+      "operation": "text byte 11",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M134",
+      "component": "same revision content",
+      "operation": "text byte 12",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M135",
+      "component": "same revision content",
+      "operation": "text byte 13",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M136",
+      "component": "same revision content",
+      "operation": "text byte 14",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M137",
+      "component": "same revision content",
+      "operation": "text byte 15",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M138",
+      "component": "same revision content",
+      "operation": "text byte 16",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M139",
+      "component": "same revision content",
+      "operation": "text byte 17",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M140",
+      "component": "same revision content",
+      "operation": "text byte 18",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M141",
+      "component": "same revision content",
+      "operation": "text byte 19",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M142",
+      "component": "same revision content",
+      "operation": "text byte 20",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M143",
+      "component": "same revision content",
+      "operation": "text byte 21",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M144",
+      "component": "same revision content",
+      "operation": "text byte 22",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M145",
+      "component": "same revision content",
+      "operation": "text byte 23",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M146",
+      "component": "same revision content",
+      "operation": "text byte 24",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M147",
+      "component": "same revision content",
+      "operation": "text byte 25",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M148",
+      "component": "same revision content",
+      "operation": "text byte 26",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M149",
+      "component": "same revision content",
+      "operation": "text byte 27",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M150",
+      "component": "same revision content",
+      "operation": "text byte 28",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M151",
+      "component": "same revision content",
+      "operation": "text byte 29",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M152",
+      "component": "replay ruleset",
+      "operation": "content mutation",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M153",
+      "component": "replay ruleset",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M154",
+      "component": "replay ruleset",
+      "operation": "object key reordering",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M155",
+      "component": "replay ruleset",
+      "operation": "foreign ruleset",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M156",
+      "component": "replay ruleset",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M157",
+      "component": "replay ruleset",
+      "operation": "duplicate component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M158",
+      "component": "NPC bundle",
+      "operation": "content mutation; technical empty NPC set",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "PACKAGE ID CHANGES; old save incompatible",
+      "passed": true
+    },
+    {
+      "id": "M159",
+      "component": "NPC bundle",
+      "operation": "revision absent; forbidden addition",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M160",
+      "component": "NPC bundle",
+      "operation": "reordering existing singleton",
+      "expected": "semantic no-change",
+      "actual": "semantic no-change",
+      "detail": "NO SEMANTIC CHANGE",
+      "passed": true
+    },
+    {
+      "id": "M161",
+      "component": "NPC bundle",
+      "operation": "mixed snapshot/profile NPC ids",
+      "expected": "package mismatch",
+      "actual": "package mismatch",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M162",
+      "component": "NPC bundle",
+      "operation": "missing component",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    },
+    {
+      "id": "M163",
+      "component": "NPC bundle",
+      "operation": "duplicate NPC pair",
+      "expected": "schema failure",
+      "actual": "schema failure",
+      "detail": "resolution rejected",
+      "passed": true
+    }
+  ]
+}

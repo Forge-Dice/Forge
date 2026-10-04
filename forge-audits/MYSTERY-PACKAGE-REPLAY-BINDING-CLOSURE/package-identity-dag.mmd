@@ -1,0 +1,33 @@
+flowchart TD
+ T["Truth hash"] --> S["Solution hash"]
+ T --> L["Access, presentation, catalogue"]
+ T --> R["PlayerRef config and mapping"]
+ T --> N["NPC snapshot and profile bundle"]
+ S --> N
+ L --> N
+ T --> CH["Challenge hash"]
+ S --> CH
+ T --> I["Initial setup hash"]
+ T --> P["PublicContent hash"]
+ T --> C["Release context hash"]
+ S --> C
+ L --> C
+ R --> C
+ N --> C
+ CH --> C
+ I --> C
+ P --> C
+ RV["Replay ruleset version"] --> C
+ C --> RH["Release manifest hash"]
+ CD["Adapter version and certificate data"] --> RH
+ RH --> PH["Proof profile hash"]
+ T --> PH
+ S --> PH
+ C --> PK["Package hash"]
+ RH --> PK
+ PH --> PK
+ RV --> PK
+ PK --> D["CasePackageIdentity descriptor"]
+ RV --> D
+ D --> SAVE["Save checksum"]
+ E["Ordered accepted events"] --> SAVE
