@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+  "entries": [
+    {
+      "evidenceId": "evidence:waage",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:wiegezelt"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:handschuhe",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:wiegezelt"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:schleifspur",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:wiegezelt"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:parkschein",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:parkwiese"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:stativ",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:buehne"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:festvideo",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:kamera"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:kuchenbon",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:kuchenstand"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:tombolafoto",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:tombola"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:zapfanlage",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:bierzelt"
+          }
+        ]
+      }
+    }
+  ]
+}
