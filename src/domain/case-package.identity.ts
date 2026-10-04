@@ -166,6 +166,30 @@ export function hashReleaseContext(context: ReleaseContext): string {
   return hashSessionJson("forge-session-release-context-v1", context);
 }
 
+type ProofRule = { readonly allOf: readonly unknown[] };
+export type ProofProfileComponent = {
+  readonly answerScope: readonly unknown[];
+  readonly observations: readonly ({ readonly kind: string } | { readonly kind: "PUBLIC_RULE"; readonly rules: readonly ProofRule[] })[];
+  readonly nodes: readonly unknown[];
+  readonly edges: readonly ProofRule[];
+  readonly witnessStepIds: readonly string[];
+};
+
+/** Proof SET paths per registry; witnessStepIds stays ORDERED. */
+export function hashProofProfile(profile: ProofProfileComponent): string {
+  const withSortedAllOf = <T extends ProofRule>(rule: T): T => ({ ...rule, allOf: byC(rule.allOf) });
+  const observations = profile.observations.map((o) =>
+    "rules" in o && o.kind === "PUBLIC_RULE" ? { ...o, rules: byC(o.rules.map(withSortedAllOf)) } : o,
+  );
+  return hashSessionJson("forge-session-proof-v1", {
+    ...profile,
+    answerScope: byC(profile.answerScope),
+    observations: byC(observations),
+    nodes: byC(profile.nodes),
+    edges: byC(profile.edges.map(withSortedAllOf)),
+  });
+}
+
 /** The manifest is already canonical C text; it is hashed as-is, never JSON-quoted again. */
 export function hashReleaseManifest(manifest: string): string {
   return sha256(`forge-session-release-v1\n${manifest}`);
