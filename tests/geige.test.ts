@@ -95,7 +95,9 @@ describe("npm run play -- geige", () => {
     const a = say("a");
     expect(a.split("\n").filter((l) => /^\s+\d+\./.test(l))).toHaveLength(5);
     expect(say(`a ${numberOf(a, "Paul Adler")}`)).toContain("noch nicht");
-    expect(say(`a ${numberOf(a, "Ida Reiner")}`)).toContain("Fall gelöst");
+    const solved = say(`a ${numberOf(a, "Ida Reiner")}`);
+    expect(solved).toContain("Fall gelöst");
+    expect(solved).toContain("=== Auflösung ===\nIda Reiner gesteht.");
   });
 
   it("route A: Kurt's answer makes the cabinet examinable", () => {

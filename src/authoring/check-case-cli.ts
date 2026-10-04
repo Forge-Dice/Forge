@@ -1,7 +1,7 @@
 import { checkCaseFolder, formatCaseCheck, writeFilledHashes } from "./check-case.ts";
 
 // `npm run check-case -- [--fix] <ordner>`: exit code 0 when the case folder is valid and solvable.
-// --fix writes computed hashes into fields that still hold the TO_BE_COMPUTED placeholder.
+// --fix writes computed hashes into TO_BE_COMPUTED placeholders and over outdated hash values.
 
 const args = process.argv.slice(2);
 const fix = args.includes("--fix");
