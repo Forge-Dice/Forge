@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "title": "The Night Train to Trieste",
+  "brief": "Night train Vienna–Trieste, sleeping car. At 01:40, Henriette von Arx notices in compartment 7 that her necklace has vanished from its case. Henriette slept with earplugs. The case has a contact sensor: it was opened exactly once, at 01:20.\n\nThe suspects are Bruno Kessler and Felix Roth from the couchette car, Clara Mai from compartment 5, Dora Lenz from compartment 6 and the train attendant Janek Novak. Clara says she was sitting in the dining car at the time of the theft, and more than one person believes her. An alibi doesn’t have to be at exactly 01:20 to count, and not every alibi for 01:20 holds up. Pay attention to who could get where, and when.",
+  "challengeQuestion": "Who took the necklace from compartment 7 at 01:20?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:henriette"
+      },
+      "label": "Henriette von Arx",
+      "role": "passenger in compartment 7"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:bruno"
+      },
+      "label": "Bruno Kessler",
+      "role": "wine merchant, couchette car"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:clara"
+      },
+      "label": "Clara Mai",
+      "role": "Henriette's niece, compartment 5"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:felix"
+      },
+      "label": "Felix Roth",
+      "role": "student, couchette car"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:janek"
+      },
+      "label": "Janek Novak",
+      "role": "train attendant"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:dora"
+      },
+      "label": "Dora Lenz",
+      "role": "writer, compartment 6"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:speisewagen"
+      },
+      "label": "Dining car",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:liegewagen"
+      },
+      "label": "Couchette car",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:schlafwagen"
+      },
+      "label": "Sleeping car corridor",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:abteil6"
+      },
+      "label": "Compartment 6",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:abteil7"
+      },
+      "label": "Compartment 7",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:bahnsteig"
+      },
+      "label": "Platform at Villach Hbf",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:collier"
+      },
+      "label": "Henriette's necklace",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:tuer"
+      },
+      "label": "Connecting door between couchette car and sleeping car",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:dienstbuch"
+      },
+      "label": "Janek's duty log",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:terminal"
+      },
+      "label": "Door terminal in the sleeping car",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:tee"
+      },
+      "label": "Tea in the dining car",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:wein"
+      },
+      "label": "Wine in the dining car",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:verriegelung"
+      },
+      "label": "Locking of the connecting door",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:anruf"
+      },
+      "label": "Video call",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:halt"
+      },
+      "label": "Stop in Villach",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:einschluss"
+      },
+      "label": "Dora locking herself in",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:diebstahl"
+      },
+      "label": "Disappearance of the necklace at 01:20",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:entdeckung"
+      },
+      "label": "Discovery of the empty case",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kassenjournal"
+      },
+      "label": "Cash register journal",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:riegelvermerk"
+      },
+      "label": "Lock notice",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:abfertigung"
+      },
+      "label": "Dispatch report",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:bildschirmfoto"
+      },
+      "label": "Screenshot",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:terminalhinweis"
+      },
+      "label": "Door terminal",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:tuerlog"
+      },
+      "label": "Door log",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:korken"
+      },
+      "label": "Wine cork",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:janek",
+      "questionId": "question:q01",
+      "text": "Did you lock the door to the sleeping car tonight?"
+    },
+    {
+      "npc": "person:janek",
+      "questionId": "question:q02",
+      "text": "Was Clara Mai in the dining car at 01:20?"
+    },
+    {
+      "npc": "person:felix",
+      "questionId": "question:q06",
+      "text": "Were you in the couchette car at 01:12?"
+    },
+    {
+      "npc": "person:felix",
+      "questionId": "question:q02",
+      "text": "Was Clara Mai in the dining car at 01:20?"
+    },
+    {
+      "npc": "person:bruno",
+      "questionId": "question:q05",
+      "text": "Were you still in the dining car after 01:00?"
+    },
+    {
+      "npc": "person:bruno",
+      "questionId": "question:q03",
+      "text": "Were you in compartment 7 at 01:20?"
+    },
+    {
+      "npc": "person:bruno",
+      "questionId": "question:q02",
+      "text": "Was Clara Mai in the dining car at 01:20?"
+    },
+    {
+      "npc": "person:dora",
+      "questionId": "question:q04",
+      "text": "Were you locked in your compartment at 01:20?"
+    },
+    {
+      "npc": "person:dora",
+      "questionId": "question:q03",
+      "text": "Was Bruno Kessler in compartment 7 at 01:20?"
+    },
+    {
+      "npc": "person:clara",
+      "questionId": "question:q02",
+      "text": "Were you in the dining car at 01:20?"
+    },
+    {
+      "npc": "person:clara",
+      "questionId": "question:q03",
+      "text": "Was Bruno Kessler in compartment 7 at 01:20?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Whatever a journal, a log or a screenshot records with a time counts as fact. People’s statements can be mistaken."
+    },
+    {
+      "id": "rule:presence",
+      "text": "The necklace was taken from compartment 7 at 01:20 by exactly one person. Anyone who was demonstrably somewhere else at 01:20 is ruled out."
+    },
+    {
+      "id": "rule:door",
+      "text": "The sleeping car is the last car. The only way in is through the connecting door from the couchette car, and only the train attendant has the key. If the door was locked from 01:00 onward, anyone who was demonstrably in the dining car or the couchette car after that and before 01:20 is ruled out."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Only Bruno Kessler, Clara Mai, Felix Roth, Janek Novak and Dora Lenz are suspects. If four are ruled out, the fifth person remains."
+    }
+  ],
+  "epilogue": "Clara Mai confesses at dawn outside Ljubljana. At 00:50 she had paid for a tea in the dining car, in plain sight, and had gone back to her compartment before 01:00, before Janek locked the connecting door. At 01:20, while the train was stopped in Villach, she opened compartment 7. She feared her aunt would sell the necklace and squander the inheritance.\n\nBruno Kessler was sitting in the dining car at 01:05 and, with the door locked, could no longer get into the sleeping car. Henriette herself had been given the cork by him as a gift that evening. Felix honestly believed he had seen Clara in the dining car, but that was half an hour earlier. The necklace is hidden in the lining of Clara’s travel bag."
+}

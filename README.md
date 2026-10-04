@@ -9,6 +9,7 @@ Node 22, TypeScript, zod. `npm install`, then `npm run typecheck` and `npm test`
 ```sh
 npm run play                 # Terminal, Fall "vitrine"
 npm run play -- geige        # anderer Fall: vitrine, brieföffner (briefoeffner), geige, hüttenkasse, nachtzug
+npm run play -- geige --lang en   # auf Englisch (im Browser: Umschalter oben, die Wahl bleibt gespeichert)
 npm run play:web             # Browser auf http://localhost:4173 (PORT=… für einen anderen Port)
 npm run build:web            # eine einzige HTML-Datei (dist/kriminalfaelle.html), spielbar ohne Server
 ```
@@ -28,7 +29,9 @@ Befehle im Terminal (`hilfe` zeigt sie im Spiel):
 | `speichern [datei]`, `laden [datei]` | Spielstand (Standard: `<fall>.save.json`) |
 | `ende` | beenden |
 
-Ein Spielstand ist das Ereignisprotokoll der Session; Laden spielt es neu ab.
+Ein Spielstand ist das Ereignisprotokoll der Session; Laden spielt es neu ab. Auf Englisch heißen die
+Befehle `case`, `known`, `i`, `q`, `c`, `j`, `a`, `h`, `save`, `load`, `quit` (`help`); beide Sätze
+gelten in beiden Sprachen. Ein Spielstand lädt auch in der anderen Sprache.
 
 ### Fälle schreiben
 
@@ -55,6 +58,12 @@ Hashes, die das Werkzeug berechnet, schreibt man als `"TO_BE_COMPUTED_FROM_FINAL
 npm run check-case -- tests/fixtures/geige          # prüft Dateien, Bindungen und Lösbarkeit
 npm run check-case -- --fix tests/fixtures/geige    # trägt berechnete Hashes ein
 ```
+
+Sprachfassungen: ein Unterordner je Sprache (`en/`) mit übersetzter `public-content.json` und
+`evidence-presentation.json`. Nur Texte ändern sich (Titel, Einleitung, Namen, Rollen, Fragen, Regeln,
+Fundtexte, Epilog); Wahrheit, Lösung, Personen und Beweis bleiben gemeinsam. `check-case` prüft jede
+Sprachfassung nach dem Grundfall: reine Übersetzung, keine internen IDs, lösbar. Die Texte der
+Oberfläche stehen in `src/play/messages.ts`.
 
 Exit-Code 0 heißt: gültig und lösbar. Jeder Fehler nennt Datei und Feld. Spielbar wird ein Fall mit
 einem Eintrag in `PLAY_CASES` (`src/play/cases.ts`).

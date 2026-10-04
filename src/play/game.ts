@@ -4,99 +4,103 @@ import { hintCount, type Hint } from "../domain/case-hints.ts";
 import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
 import type { EvidenceObservation, PlayerClaim as EvidenceClaim } from "../domain/evidence-presentation.ts";
 import type { ConfrontationObservation, InterrogationObservation, PlayerClaim } from "../domain/interrogation.ts";
+import { MESSAGES, type Lang, type Messages } from "./messages.ts";
 
 // Text front end over the real session reducer. Pure: every command maps (game, line) to a new game
 // and the text to print; file I/O lives in cli.ts. The player sees only PublicContent, released
 // observations and labels of entities they already know. Every action goes through reduceSession.
 
-/** clockOrigin: wall-clock seconds of timeline second 0 (display convention of the case). */
-export type Game = { readonly pkg: ResolvedCasePackage; readonly state: SessionState; readonly clockOrigin: number };
+/**
+ * clockOrigin: wall-clock seconds of timeline second 0 (display convention of the case).
+ * lang: UI language (default de); the package carries the case text of the same language.
+ */
+export type Game = { readonly pkg: ResolvedCasePackage; readonly state: SessionState; readonly clockOrigin: number; readonly lang?: Lang };
 export type Step = { readonly game: Game; readonly text: string; readonly quit?: true };
 export type Action = { readonly label: string; readonly event: unknown };
 
 
-export const newGame = (pkg: ResolvedCasePackage, clockOrigin = 0): Game => ({ pkg, state: initialSession(pkg), clockOrigin });
+export const newGame = (pkg: ResolvedCasePackage, clockOrigin = 0, lang?: Lang): Game => ({ pkg, state: initialSession(pkg), clockOrigin, ...(lang === undefined ? {} : { lang }) });
 
-const HELP = [
-  "Befehle:",
-  "  fall              Fallbeschreibung, Regeln und Auftrag",
-  "  bekannt           alles, was du bisher kennst",
-  "  untersuchen | u   mögliche Untersuchungen anzeigen; u <nr> ausführen",
-  "  fragen | f        verfügbare Fragen anzeigen; f <nr> stellen",
-  "  vorhalten | v     einer Aussage einen Fund vorhalten; v <nr> ausführen",
-  "  journal | j       alle bisherigen Funde und Aussagen",
-  "  anklage | a       Verdächtige anzeigen; a <nr> anklagen",
-  "  hinweis | h       ein Tipp; wiederholt wird er konkreter (wird gezählt)",
-  "  speichern [datei] Spielstand sichern; laden [datei] Spielstand laden",
-  "  hilfe | ende",
-].join("\n");
+/** UI text table of the game's language. */
+export const msg = (game: Pick<Game, "lang">): Messages => MESSAGES[game.lang ?? "de"];
 
-/** Player text for each session error code; shared by CLI and web. */
-export const SESSION_ERRORS: Record<string, string> = {
-  ACTION_UNAVAILABLE: "Das geht gerade nicht.",
-  SESSION_CLOSED: "Der Fall ist bereits gelöst.",
-  LIMIT_REACHED: "Das Aktionslimit dieses Falls ist erreicht.",
-  HOST_FAILURE: "Technischer Fehler, die Aktion wurde nicht ausgeführt.",
-};
+/** Player text for each session error code (German); per language in msg(game).errors. */
+export const SESSION_ERRORS: Record<string, string> = MESSAGES.de.errors;
 
 export function intro(game: Game): string {
   const { publicContent } = game.pkg;
-  return [`=== ${publicContent.title} ===`, "", publicContent.brief, "", `Auftrag: ${publicContent.challengeQuestion}`, "", "Tippe „hilfe“ für die Befehle."].join("\n");
+  const m = msg(game).cli;
+  return [`=== ${publicContent.title} ===`, "", publicContent.brief, "", `${m.mission}: ${publicContent.challengeQuestion}`, "", m.typeHelp].join("\n");
 }
 
 export function command(game: Game, line: string): Step {
   const [word = "", arg] = line.trim().split(/\s+/, 2);
   const pick = arg === undefined ? null : Number.parseInt(arg, 10);
   const say = (text: string): Step => ({ game, text });
+  const m = msg(game);
+  // German and English commands work in either language.
   switch (word.toLowerCase()) {
     case "":
       return say("");
     case "hilfe":
+    case "help":
     case "?":
-      return say(HELP);
+      return say(m.cli.help);
     case "ende":
     case "quit":
-      return { game, text: "Bis bald.", quit: true };
+    case "exit":
+      return { game, text: m.cli.bye, quit: true };
     case "fall":
+    case "case":
       return say(caseText(game));
     case "bekannt":
+    case "known":
       return say(knownText(game));
     case "journal":
     case "j":
       return say(journalText(game));
     case "untersuchen":
     case "u":
-      return choose(game, investigations(game), pick, "Untersuchungen");
+    case "investigate":
+    case "i":
+      return choose(game, investigations(game), pick, m.cli.investigations);
     case "fragen":
     case "f":
-      return choose(game, questions(game), pick, "Fragen");
+    case "ask":
+    case "q":
+      return choose(game, questions(game), pick, m.cli.questions);
     case "vorhalten":
     case "v":
-      return choose(game, confrontations(game), pick, "Vorhalten");
+    case "confront":
+    case "c":
+      return choose(game, confrontations(game), pick, m.cli.confront);
     case "anklage":
     case "a":
-      return choose(game, accusations(game), pick, `Anklage. ${game.pkg.publicContent.challengeQuestion}`);
+    case "accuse":
+      return choose(game, accusations(game), pick, m.cli.accusation(game.pkg.publicContent.challengeQuestion));
     case "hinweis":
-    case "h": {
+    case "h":
+    case "hint": {
       const result = reduceSession(game.pkg, game.state, { type: "hint" });
-      if (!result.ok) return say(result.code === "ACTION_UNAVAILABLE" ? "Für diesen Fall gibt es keine Hinweise." : SESSION_ERRORS[result.code]!);
+      if (!result.ok) return say(result.code === "ACTION_UNAVAILABLE" ? m.cli.noHints : m.errors[result.code]!);
       const next = { ...game, state: result.state };
       return { game: next, text: outputText(next, result.output) };
     }
     default:
-      return say(`Unbekannter Befehl „${word}“. Tippe „hilfe“.`);
+      return say(m.cli.unknownCommand(word));
   }
 }
 
 function choose(game: Game, actions: Action[], pick: number | null, title: string): Step {
+  const m = msg(game);
   if (pick === null) {
-    if (actions.length === 0) return { game, text: `${title}: gerade nichts verfügbar.` };
+    if (actions.length === 0) return { game, text: m.cli.nothingAvailable(title) };
     return { game, text: [`${title}:`, ...actions.map((a, i) => `  ${i + 1}. ${a.label}`)].join("\n") };
   }
   const action = actions[pick - 1];
-  if (action === undefined) return { game, text: `Keine Nummer ${pick}.` };
+  if (action === undefined) return { game, text: m.cli.noNumber(pick) };
   const result = reduceSession(game.pkg, game.state, action.event);
-  if (!result.ok) return { game, text: SESSION_ERRORS[result.code]! };
+  if (!result.ok) return { game, text: m.errors[result.code]! };
   const next = { ...game, state: result.state };
   return { game: next, text: `> ${action.label}\n${outputText(next, result.output)}` };
 }
@@ -108,13 +112,10 @@ export function known(game: Game, kind: string): { ref: string; label: string }[
 }
 
 export function investigations(game: Game): Action[] {
-  const offer = (kind: string, action: string, verb: string) =>
-    known(game, kind).map(({ ref, label }) => ({ label: `${verb}: ${label}`, event: { type: "investigate", action, target: ref } }));
-  return [
-    ...offer("location", "search_location", "Ort durchsuchen"),
-    ...offer("item", "examine_item", "Gegenstand untersuchen"),
-    ...offer("person", "examine_person", "Person untersuchen"),
-  ];
+  const { verbs } = msg(game);
+  const offer = (kind: string, action: string) =>
+    known(game, kind).map(({ ref, label }) => ({ label: `${verbs[action]}: ${label}`, event: { type: "investigate", action, target: ref } }));
+  return [...offer("location", "search_location"), ...offer("item", "examine_item"), ...offer("person", "examine_person")];
 }
 
 /** Questions of known NPCs that the session would accept now (a dry run changes nothing). */
@@ -145,7 +146,7 @@ export function confrontations(game: Game): Action[] {
     const text = pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === questionId)?.text ?? questionId;
     return state.knowledge.discoveries
       .map((d) => ({
-        label: `${labelOf(game, npc)} zu „${text}“ vorhalten: ${labelOf(game, d.evidence)}`,
+        label: msg(game).confrontLabel(labelOf(game, npc), text, labelOf(game, d.evidence)),
         event: { type: "confront", npc, questionId, evidence: d.evidence },
       }))
       .filter((action) => reduceSession(pkg, state, action.event).ok);
@@ -180,64 +181,58 @@ function labelOf(game: Game, ref: string): string {
   const entity = game.pkg.refs.resolve(ref);
   const isKnown = game.state.knowledge.known.some((k) => k.ref === ref);
   const label = entity && game.pkg.publicContent.labels.find((l) => l.entity.kind === entity.kind && l.entity.id === entity.id);
-  return isKnown && label ? label.label : "(unbekannt)";
+  return isKnown && label ? label.label : msg(game).unknownLabel;
 }
 
-const ROLES: Record<string, string> = { direct_actor: "eigenhändig handelnde Person", planner: "Planer", facilitator: "Helfer" };
-
 function claimText(game: Game, claim: PlayerClaim | EvidenceClaim): string {
+  const m = msg(game);
   const l = (ref: string) => labelOf(game, ref);
+  const ql = (ref: string) => m.q(labelOf(game, ref));
   const clock = (at: number) => {
     const s = game.clockOrigin + at;
     return [Math.floor(s / 3600) % 24, Math.floor(s / 60) % 60, s % 60].map((n) => String(n).padStart(2, "0")).join(":");
   };
+  const c = m.claim;
   switch (claim.kind) {
     case "personAt":
-      return `${l(claim.person)} war um ${clock(claim.at)} am Ort „${l(claim.location)}“`;
+      return c.personAt(l(claim.person), clock(claim.at), ql(claim.location));
     case "eventHasParticipant":
-      return `${l(claim.person)} war an „${l(claim.event)}“ beteiligt`;
+      return c.eventHasParticipant(l(claim.person), ql(claim.event));
     case "eventHasItem":
-      return `„${l(claim.item)}“ spielte bei „${l(claim.event)}“ eine Rolle`;
+      return c.eventHasItem(ql(claim.item), ql(claim.event));
     case "personResponsibleForEvent":
-      return `${l(claim.person)} ist für „${l(claim.event)}“ verantwortlich`;
+      return c.personResponsibleForEvent(l(claim.person), ql(claim.event));
     case "personRoleForEvent":
-      return `${l(claim.person)} war bei „${l(claim.event)}“ ${ROLES[claim.role]}`;
+      return c.personRoleForEvent(l(claim.person), ql(claim.event), m.roles[claim.role]!);
     case "noPersonResponsibleForEvent":
-      return `niemand ist für „${l(claim.event)}“ verantwortlich`;
+      return c.noPersonResponsibleForEvent(ql(claim.event));
     case "eventCausedEvent":
-      return `„${l(claim.causeEvent)}“ führte zu „${l(claim.event)}“`;
+      return c.eventCausedEvent(ql(claim.causeEvent), ql(claim.event));
     case "eventIntent":
-      return `„${l(claim.event)}“ war ${claim.value === "intended" ? "beabsichtigt" : claim.value === "unintended" ? "unbeabsichtigt" : "ohne Absicht zu bewerten"}`;
+      return c.eventIntent(ql(claim.event), claim.value === "intended" ? c.intent.intended : claim.value === "unintended" ? c.intent.unintended : c.intent.other);
     case "eventMechanism":
-      return `„${l(claim.event)}“ geschah ${claim.value === "ordinary" ? "auf natürliche Weise" : claim.value === "supernatural" ? "übernatürlich" : "teils übernatürlich"}`;
+      return c.eventMechanism(ql(claim.event), claim.value === "ordinary" ? c.mechanism.ordinary : claim.value === "supernatural" ? c.mechanism.supernatural : c.mechanism.other);
   }
 }
 
 export function evidenceText(game: Game, o: EvidenceObservation): string {
-  const lines = [`Fund: ${labelOf(game, o.evidence)}`, `  ${o.text}`];
+  const m = msg(game);
+  const lines = [`${m.findPrefix}${labelOf(game, o.evidence)}`, `  ${o.text}`];
   for (const report of o.reports) {
-    const who = report.source.kind === "observation" ? "Beobachtung" : `Aussage von ${labelOf(game, report.source.person)}`;
-    lines.push(`  ${who}: ${claimText(game, report.claim)} – ${report.stance === "affirms" ? "trifft zu" : "trifft nicht zu"}.`);
+    const who = report.source.kind === "observation" ? m.observation : m.statementBy(labelOf(game, report.source.person));
+    lines.push(`  ${who}: ${claimText(game, report.claim)} – ${report.stance === "affirms" ? m.affirms : m.denies}.`);
   }
   return lines.join("\n");
 }
 
-const STANCES: Record<string, string> = {
-  affirms: "Ja.",
-  denies: "Nein.",
-  leans_affirms: "Ich glaube schon.",
-  leans_denies: "Ich glaube eher nicht.",
-  uncertain: "Da bin ich mir nicht sicher.",
-  does_not_know: "Das weiß ich nicht.",
-};
-
 export function answerText(game: Game, o: InterrogationObservation): string {
   const npcId = game.pkg.refs.resolve(o.npc)?.id;
   const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === o.questionId);
-  const head = `${labelOf(game, o.npc)} auf „${question?.text ?? o.questionId}“`;
-  if (o.act === "decline") return `${head}: „Dazu sage ich nichts.“`;
-  const said = `${head}: „${STANCES[o.stance]}“`;
-  return "statement" in o ? `${said}\n  (zur Behauptung: ${claimText(game, o.statement)})` : said;
+  const m = msg(game);
+  const head = m.answerHead(labelOf(game, o.npc), question?.text ?? o.questionId);
+  if (o.act === "decline") return `${head}: ${m.declines}`;
+  const said = `${head}: ${m.q(m.stances[o.stance]!)}`;
+  return "statement" in o ? `${said}\n  ${m.aboutClaim(claimText(game, o.statement))}` : said;
 }
 
 /** Hints taken so far (they are session events, so saves keep the count). */
@@ -248,39 +243,33 @@ export const hintsUsed = (game: Game): number => hintCount(game.state.events);
  * the exact menu entry. The accusation hint never names a person.
  */
 export function hintText(game: Game, hint: Hint): string {
-  const head = `Hinweis (Stufe ${hint.level}):`;
+  const m = msg(game).hint;
+  const head = m.head(hint.level);
   const label = hint.target === null ? null : labelOf(game, hint.target);
-  if (hint.kind === "accuse") {
-    const texts = {
-      1: "Du hast alles Nötige beisammen. Lies die Regeln in der Fallakte und erhebe Anklage.",
-      2: "Geh das Journal durch: Welche Funde und Aussagen passen zusammen, welche widersprechen sich? Dann erhebe Anklage.",
-      3: "Die Regeln der Fallakte (Befehl „fall“) sagen, was aus deinen Funden zwingend folgt. Wende sie auf das Journal an und klage an.",
-    };
-    return `${head} ${texts[hint.level]}`;
-  }
+  if (hint.kind === "accuse") return `${head} ${m.accuse[hint.level]}`;
   if (hint.kind === "interrogate") {
-    if (label === null) return `${head} Jemand weiß mehr, als bisher gesagt wurde. Stell Fragen.`;
+    if (label === null) return `${head} ${m.someoneKnows}`;
     const npcId = hint.target === null ? undefined : game.pkg.refs.resolve(hint.target)?.id;
     const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === hint.questionId);
-    return question === undefined ? `${head} Befrage ${label}.` : `${head} Frag ${label}: „${question.text}“`;
+    return question === undefined ? `${head} ${m.askWho(label)}` : `${head} ${m.ask(label, question.text)}`;
   }
-  const vague = { search_location: "Ein Ort, den du kennst, verdient eine gründliche Durchsuchung.", examine_item: "Ein Gegenstand verdient einen genaueren Blick.", examine_person: "Sieh dir eine Person genauer an." };
-  const verb = { search_location: "Ort durchsuchen", examine_item: "Gegenstand untersuchen", examine_person: "Person untersuchen" };
-  const concrete = { search_location: `Durchsuche ${label}.`, examine_item: `Untersuche ${label}.`, examine_person: `Untersuche ${label}.` };
-  if (label === null) return `${head} ${vague[hint.kind]}`;
-  return hint.level === 2 ? `${head} ${concrete[hint.kind]}` : `${head} ${concrete[hint.kind]} Im Menü „untersuchen“: „${verb[hint.kind]}: ${label}“.`;
+  if (label === null) return `${head} ${m.vague[hint.kind]}`;
+  const concrete = m.concrete[hint.kind]!(label);
+  return hint.level === 2 ? `${head} ${concrete}` : `${head} ${concrete} ${m.menu(`${msg(game).verbs[hint.kind]}: ${label}`)}`;
 }
 
 export function confrontationText(game: Game, o: ConfrontationObservation): string {
-  const head = `${labelOf(game, o.npc)}, mit „${labelOf(game, o.evidence)}“ konfrontiert`;
-  if (o.act === "stands_by") return `${head}: „Ich bleibe bei dem, was ich gesagt habe.“`;
-  return `${head}, gibt nach: „${STANCES[o.stance]}“\n  (zur Behauptung: ${claimText(game, o.statement)})`;
+  const m = msg(game);
+  const head = m.confrontHead(labelOf(game, o.npc), labelOf(game, o.evidence));
+  if (o.act === "stands_by") return `${head}: ${m.standsBy}`;
+  return `${head}, ${m.givesIn}: ${m.q(m.stances[o.stance]!)}\n  ${m.aboutClaim(claimText(game, o.statement))}`;
 }
 
 function outputText(game: Game, output: SessionOutput): string {
+  const m = msg(game);
   switch (output.type) {
     case "investigate":
-      return output.observations.length === 0 ? "Nichts Neues gefunden." : output.observations.map((o) => evidenceText(game, o)).join("\n");
+      return output.observations.length === 0 ? m.nothingNew : output.observations.map((o) => evidenceText(game, o)).join("\n");
     case "interrogate":
       return answerText(game, output.observation);
     case "hint":
@@ -288,32 +277,33 @@ function outputText(game: Game, output: SessionOutput): string {
     case "confront":
       return confrontationText(game, output.observation);
     case "accuse": {
-      if (output.verdict !== "solved") return "Die Antwort erfüllt den Fallauftrag noch nicht. Ermittle weiter.";
-      const used = hintsUsed(game);
-      const solved = `Die Anklage sitzt. Fall gelöst! ${used === 0 ? "Ganz ohne Hinweise." : `Hinweise genutzt: ${used}.`}`;
+      if (output.verdict !== "solved") return m.notSolved;
+      const solved = m.solved(hintsUsed(game));
       // The epilogue is shown only here, after a solving accusation.
-      return game.pkg.publicContent.epilogue === undefined ? solved : `${solved}\n\n=== Auflösung ===\n${game.pkg.publicContent.epilogue}`;
+      return game.pkg.publicContent.epilogue === undefined ? solved : `${solved}\n\n${m.resolutionHeading}\n${game.pkg.publicContent.epilogue}`;
     }
   }
 }
 
 function caseText(game: Game): string {
   const { publicContent } = game.pkg;
-  return [intro(game).replace("\n\nTippe „hilfe“ für die Befehle.", ""), "", "Regeln:", ...publicContent.publicRules.map((r) => `  - ${r.text}`)].join("\n");
+  const m = msg(game).cli;
+  return [intro(game).replace(`\n\n${m.typeHelp}`, ""), "", m.rules, ...publicContent.publicRules.map((r) => `  - ${r.text}`)].join("\n");
 }
 
 function knownText(game: Game): string {
-  const groups: [string, string][] = [["person", "Personen"], ["location", "Orte"], ["item", "Gegenstände"], ["event", "Ereignisse"], ["evidence", "Nachweise"]];
-  return groups
-    .map(([kind, title]) => `${title}: ${known(game, kind).map((k) => k.label).join(", ") || "–"}`)
+  const { groups } = msg(game).cli;
+  return ["person", "location", "item", "event", "evidence"]
+    .map((kind) => `${groups[kind]}: ${known(game, kind).map((k) => k.label).join(", ") || "–"}`)
     .join("\n");
 }
 
 function journalText(game: Game): string {
   const records = game.state.knowledge.observations;
   const used = hintsUsed(game);
-  const footer = used === 0 ? [] : [`Hinweise genutzt: ${used}`];
-  if (records.length === 0) return ["Das Journal ist noch leer.", ...footer].join("\n");
+  const m = msg(game);
+  const footer = used === 0 ? [] : [m.hintsUsed(used)];
+  if (records.length === 0) return [m.cli.journalEmpty, ...footer].join("\n");
   return [...records.map((r) => `[${r.source.eventIndex + 1}] ${recordText(game, r)}`), ...footer].join("\n");
 }
 
@@ -332,11 +322,27 @@ export function recordText(game: Game, r: SessionState["knowledge"]["observation
 
 export function saveText(game: Game): { ok: true; text: string } | { ok: false; text: string } {
   const saved = encodeSessionSave(game.pkg, game.state);
-  return saved.ok ? saved : { ok: false, text: "Der Spielstand konnte nicht gespeichert werden." };
+  return saved.ok ? saved : { ok: false, text: msg(game).saveFailed };
 }
 
 /** Player facade: every failure reads the same; the save must be the exact canonical text. */
-export function loadText(pkg: ResolvedCasePackage, text: string, clockOrigin = 0): { ok: true; game: Game } | { ok: false; text: string } {
+export function loadText(pkg: ResolvedCasePackage, text: string, clockOrigin = 0, lang?: Lang): { ok: true; game: Game } | { ok: false; text: string } {
   const loaded = loadSessionSaveForPlayer(pkg, text);
-  return loaded.ok ? { ok: true, game: { pkg, state: loaded.state, clockOrigin } } : { ok: false, text: "Der Spielstand kann nicht geladen werden." };
+  return loaded.ok
+    ? { ok: true, game: { pkg, state: loaded.state, clockOrigin, ...(lang === undefined ? {} : { lang }) } }
+    : { ok: false, text: MESSAGES[lang ?? "de"].loadFailed };
+}
+
+/**
+ * The same game in another language: replays the player's events on the package of that language
+ * (same truth and refs, other player text). Null if the package does not accept the events.
+ */
+export function switchLang(game: Game, pkg: ResolvedCasePackage, lang: Lang): Game | null {
+  let state = initialSession(pkg);
+  for (const event of game.state.events) {
+    const result = reduceSession(pkg, state, event);
+    if (!result.ok) return null;
+    state = result.state;
+  }
+  return { pkg, state, clockOrigin: game.clockOrigin, ...(lang === "de" ? {} : { lang }) };
 }

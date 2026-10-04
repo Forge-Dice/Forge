@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "title": "The Dark Lighthouse",
+  "brief": "Hallig Süderhörn, an autumn gale. At 02:00 the lighthouse beacon goes dark for twenty minutes, and the freighter “Greta” runs aground on the sandbank in the fog. The crew is rescued, the cargo is lost. The switching log in the tower leaves no doubt: someone switched the lamp off by hand.\n\nAs far as anyone knows, only five people are on the island tonight: the keeper Hinrich Paulsen, the innkeeper Frauke Jensen, the fisherman Ole Brodersen, the ornithologist Marlene Voss and Jasper Kühl, an assessor for the shipping company. Hinrich swears he locked the tower at midnight, and he alone has the key. Find out who put out the light. Not every lie hides the deed, and not every person on the island is on this list.",
+  "challengeQuestion": "Who switched off the lighthouse beacon in the lantern room at 02:00?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:hinrich"
+      },
+      "label": "Hinrich Paulsen",
+      "role": "lighthouse keeper"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:frauke"
+      },
+      "label": "Frauke Jensen",
+      "role": "landlady of the ferry house"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:ole"
+      },
+      "label": "Ole Brodersen",
+      "role": "shrimp fisherman"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:marlene"
+      },
+      "label": "Marlene Voss",
+      "role": "ornithologist"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:jasper"
+      },
+      "label": "Jasper Kühl",
+      "role": "assessor for the shipping company"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:knut"
+      },
+      "label": "Knut Sievers",
+      "role": "dismissed helmsman of the “Greta”"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:laterne"
+      },
+      "label": "Lantern room",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:faehrhaus"
+      },
+      "label": "Ferry house",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:hafen"
+      },
+      "label": "Harbour",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:vogelwarte"
+      },
+      "label": "Bird observatory",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:oleshaus"
+      },
+      "label": "Ole's house",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:strand"
+      },
+      "label": "West beach",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:schalter"
+      },
+      "label": "Lamp switch",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:telefon"
+      },
+      "label": "Ferry house telephone",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:pegelkamera"
+      },
+      "label": "Harbour tide-gauge camera",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:pegelwartung"
+      },
+      "label": "Tide-gauge camera maintenance",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:landung"
+      },
+      "label": "Landing on the west beach",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:treffen"
+      },
+      "label": "Meeting on the west beach",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:grog"
+      },
+      "label": "Grog at the ferry house",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:beringung"
+      },
+      "label": "Bird ringing at the observatory",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:ablegen"
+      },
+      "label": "Ole's cutter casting off",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:anruf"
+      },
+      "label": "Call to the doctor",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:notruf"
+      },
+      "label": "Emergency call to the coastguard",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:sabotage"
+      },
+      "label": "Beacon going dark at 02:00",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:schaltprotokoll"
+      },
+      "label": "Switching log",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:pfeife"
+      },
+      "label": "Pipe",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:sandspuren"
+      },
+      "label": "Sand traces",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:schlauchboot"
+      },
+      "label": "Inflatable dinghy",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:visitenkarte"
+      },
+      "label": "Business card",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kassenbuch"
+      },
+      "label": "Cash book",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:anrufliste"
+      },
+      "label": "Call log",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:pegelmast"
+      },
+      "label": "Tide-gauge mast",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:pegelfoto"
+      },
+      "label": "Tide-gauge photo",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:nachtkamera"
+      },
+      "label": "Infrared image",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:hinrich",
+      "questionId": "question:q04",
+      "text": "Does the camera at the harbour run at night as well?"
+    },
+    {
+      "npc": "person:hinrich",
+      "questionId": "question:q05",
+      "text": "Were you in the lantern room at 02:00?"
+    },
+    {
+      "npc": "person:frauke",
+      "questionId": "question:q03",
+      "text": "Were you on the phone at 02:00?"
+    },
+    {
+      "npc": "person:frauke",
+      "questionId": "question:q05",
+      "text": "Was Hinrich Paulsen in the lantern room at 02:00?"
+    },
+    {
+      "npc": "person:ole",
+      "questionId": "question:q01",
+      "text": "Was there a strange boat at the island tonight?"
+    },
+    {
+      "npc": "person:ole",
+      "questionId": "question:q02",
+      "text": "Were you at home at 02:00?"
+    },
+    {
+      "npc": "person:marlene",
+      "questionId": "question:q08",
+      "text": "Were you at the bird observatory at 02:00?"
+    },
+    {
+      "npc": "person:marlene",
+      "questionId": "question:q05",
+      "text": "Was Hinrich Paulsen in the lantern room at 02:00?"
+    },
+    {
+      "npc": "person:jasper",
+      "questionId": "question:q06",
+      "text": "Were you on the west beach at 01:00?"
+    },
+    {
+      "npc": "person:jasper",
+      "questionId": "question:q09",
+      "text": "Did you call the coastguard from the ferry house at 02:03?"
+    },
+    {
+      "npc": "person:knut",
+      "questionId": "question:q07",
+      "text": "Were you in the lantern room at 02:00?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Whatever a log, a photo, a boat logbook or a call log records with a time counts as fact. Statements by people may be mistaken or lies."
+    },
+    {
+      "id": "rule:presence",
+      "text": "The beacon was switched off by hand in the lantern room at 02:00 by exactly one person. Anyone proven to have been somewhere else at 02:00 is ruled out."
+    },
+    {
+      "id": "rule:deich",
+      "text": "From the village with the ferry house and the harbour to the lighthouse it is a 25-minute walk along the dike; there is no other way. Anyone proven to have been in the ferry house or at the harbour between 01:35 and 02:25 cannot have been in the lantern room at 02:00."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Since 01:00 the storm surge has covered the tidal channels; nobody came onto the island or left it. Every person proven to have been on the island that night is a suspect, including anyone who met no one in the village. Once everyone else is ruled out, the last person remains."
+    }
+  ],
+  "epilogue": "Knut Sievers is waiting on the west beach beside his inflatable dinghy, as if he had known someone would come. The shipping company had dismissed him after twenty years on the “Greta”, without severance pay. At 00:40 he landed on the island, at 01:00 he met Jasper Kühl on the beach and learned from him that the Greta would pass by that night. Jasper had no idea what Knut was planning and lied out of fear of being dragged into it. At 02:00 Knut climbed the spiral staircase and flipped the switch.\n\nHinrich had not locked the tower. He had left his pipe and keys next to the lamp in the evening and was sitting over a grog in the ferry house at 01:45. During the night Marlene saw a light climbing the stairs and honestly took it for Hinrich's lantern. And Ole only lied because at two he was setting out without lights to go smuggling. The beacon is burning again."
+}

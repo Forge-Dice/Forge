@@ -80,4 +80,21 @@ describe("standalone browser build", () => {
     const end = (await bundled("GET", V, body(undefined))).body;
     expect(end, /<section id="notice"[\s\S]*?<\/section>/.exec(end)?.[0]).toContain("Lina Kern war es.");
   });
+
+  it("plays in English like the server: the locale variants are embedded", async () => {
+    const server = createWebHandler();
+    const both = async (method: string, url: string): Promise<WebResponse> => {
+      const [a, b] = await Promise.all([server(method, url, body(undefined), "sprache=en"), bundled(method, url, body(undefined), "sprache=en")]);
+      expect(b).toEqual(a);
+      return a;
+    };
+    expect((await both("GET", "/sprache?l=en&zurueck=%2F")).headers["set-cookie"]).toMatch(/^sprache=en;/);
+    for (const c of Object.values(PLAY_CASES)) {
+      await both("POST", `/fall/${c.dir}/new`); // earlier tests played on in the bundle
+      const page = (await both("GET", `/fall/${c.dir}`)).body;
+      expect(page).toContain('<html lang="en">');
+      expect(page).toContain(">Investigate</h2>");
+    }
+    expect((await both("GET", "/")).body).toContain("<h1>Detective Cases</h1>");
+  });
 });

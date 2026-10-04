@@ -17,9 +17,13 @@ const repo = fileURLToPath(new URL("../../../", import.meta.url));
 function caseFiles(): Record<string, string> {
   const files: Record<string, string> = {};
   for (const c of Object.values(PLAY_CASES)) {
-    const dir = `tests/fixtures/${c.dir}`;
-    for (const name of readdirSync(`${repo}${dir}`).filter((n) => n.endsWith(".json")).sort()) {
-      files[`${dir}/${name}`] = readFileSync(`${repo}${dir}/${name}`, "utf8");
+    // The case folder and its locale variants (en/ …: the player text of another language).
+    const base = `tests/fixtures/${c.dir}`;
+    const locales = readdirSync(`${repo}${base}`).filter((n) => /^[a-z]{2}$/.test(n)).map((n) => `${base}/${n}`);
+    for (const dir of [base, ...locales]) {
+      for (const name of readdirSync(`${repo}${dir}`).filter((n) => n.endsWith(".json")).sort()) {
+        files[`${dir}/${name}`] = readFileSync(`${repo}${dir}/${name}`, "utf8");
+      }
     }
   }
   return files;

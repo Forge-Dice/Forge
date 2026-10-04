@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:verstummte-geige",
+  "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
+  "entries": [
+    {
+      "evidenceId": "evidence:pausenfoto",
+      "text": "A press photo from the foyer, timestamp 20:40:00. It shows Paul Adler and Vera Lind chatting with guests.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:paul"
+        },
+        {
+          "kind": "person",
+          "id": "person:vera"
+        },
+        {
+          "kind": "location",
+          "id": "location:foyer"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:paul",
+            "locationId": "location:foyer",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:vera",
+            "locationId": "location:foyer",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:heizungsprotokoll",
+      "text": "The control cabinet's display shows: login Kurt Mohn, 20:38 to 20:45, directly at the unit in the boiler room.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:kurt"
+        },
+        {
+          "kind": "location",
+          "id": "location:keller"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:kurt",
+            "locationId": "location:keller",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:logenprotokoll",
+      "text": "The VIP box's electronic lock: Henrik Sand went in at 20:35 and did not come out again until 20:46. No one else.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:henrik"
+        },
+        {
+          "kind": "location",
+          "id": "location:loge"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:henrik",
+            "locationId": "location:loge",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:kellerplan",
+      "text": "The maintenance schedule hangs on the basement door: Today, intermission check at the control cabinet, Kurt Mohn.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:kurt"
+        },
+        {
+          "kind": "item",
+          "id": "item:schaltschrank"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:haar",
+      "text": "A long grey hair, like Paul Adler's, is stuck to the empty violin case. It does not show when it got there.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:paul"
+        },
+        {
+          "kind": "item",
+          "id": "item:geige"
+        }
+      ],
+      "reports": []
+    }
+  ]
+}

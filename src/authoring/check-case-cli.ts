@@ -1,7 +1,8 @@
-import { checkCaseFolder, formatCaseCheck, writeFilledHashes } from "./check-case.ts";
+import { caseLocales, checkCaseFolder, formatCaseCheck, writeFilledHashes } from "./check-case.ts";
 
 // `npm run check-case -- [--fix] <ordner>`: exit code 0 when the case folder is valid and solvable.
 // --fix writes computed hashes into TO_BE_COMPUTED placeholders and over outdated hash values.
+// Locale variants (<ordner>/en/ …) are checked after their base: a pure translation, still solvable.
 
 const args = process.argv.slice(2);
 const fix = args.includes("--fix");
@@ -18,5 +19,14 @@ if (dirs.length === 0) {
     }
     console.log(formatCaseCheck(check));
     if (!check.ok) process.exitCode = 1;
+    for (const lang of caseLocales(dir)) {
+      let local = checkCaseFolder(dir, lang);
+      if (fix && local.filled.length > 0) {
+        console.log(`--fix: Hashes eingetragen in ${writeFilledHashes(local).join(", ")}`);
+        local = checkCaseFolder(dir, lang);
+      }
+      console.log(formatCaseCheck(local, lang));
+      if (!local.ok) process.exitCode = 1;
+    }
   }
 }

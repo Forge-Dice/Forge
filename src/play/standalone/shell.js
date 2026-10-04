@@ -12,12 +12,21 @@
     set: (k, v) => { try { localStorage.setItem(k, v); } catch {} },
   };
   const none = async () => null;
+  // The language choice (/sprache sets a cookie on the server) lives in localStorage here.
+  const LANG = "kriminalfaelle.sprache";
+  const handle = async (method, url, body) => {
+    const lang = store.get(LANG);
+    const res = await app.handle(method, url, body, lang === null ? "" : `sprache=${lang}`);
+    const chosen = /^sprache=([a-z]{2});/.exec(res.headers["set-cookie"] || "");
+    if (chosen) store.set(LANG, chosen[1]);
+    return res;
+  };
 
   async function request(method, url, body) {
-    const res = await app.handle(method, url, body === undefined ? none : async () => body);
+    const res = await handle(method, url, body === undefined ? none : async () => body);
     const changed = method === "POST" && /^\/fall\/([a-z0-9-]+)\/(act|new|load)$/.exec(url);
     if (changed) {
-      const saved = await app.handle("GET", `/fall/${changed[1]}/save`, none);
+      const saved = await handle("GET", `/fall/${changed[1]}/save`, none);
       if (saved.status === 200) store.set(KEY + changed[1], saved.body);
     }
     return res;
@@ -82,8 +91,8 @@
     for (const slug of app.slugs) {
       const saved = store.get(KEY + slug);
       if (saved === null) continue;
-      const loaded = await app.handle("POST", `/fall/${slug}/load`, async () => saved);
-      if (loaded.status === 303) await app.handle("GET", `/fall/${slug}`, none);
+      const loaded = await handle("POST", `/fall/${slug}/load`, async () => saved);
+      if (loaded.status === 303) await handle("GET", `/fall/${slug}`, none);
     }
     const start = /^#(\/[^#]*)$/.exec(location.hash)?.[1] ?? "/";
     await go("GET", start);

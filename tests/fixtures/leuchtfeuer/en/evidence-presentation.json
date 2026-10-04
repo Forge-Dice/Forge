@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "entries": [
+    {
+      "evidenceId": "evidence:schaltprotokoll",
+      "text": "The lamp switch is set to manual. The switching log: 02:00:00 switched off by hand, 02:20 automatically back on. Twenty minutes of darkness, enough for the “Greta”.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:laterne"
+        },
+        {
+          "kind": "item",
+          "id": "item:schalter"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:pfeife",
+      "text": "Next to the lamp lies a meerschaum pipe with the initials H. P., and beside it a key ring with the tower key. Hinrich Paulsen smokes exactly this pipe. When it was put down here, it does not reveal.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hinrich"
+        },
+        {
+          "kind": "location",
+          "id": "location:laterne"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:sandspuren",
+      "text": "Wet, coarse sand with shell fragments sticks to the steps of the spiral staircase. Sand like this is found only on the west beach, not at the harbour and not on the dike.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:strand"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:schlauchboot",
+      "text": "A strange inflatable dinghy lies half in the mud. In the waterproof boat logbook, the last entry, with a GPS timestamp: “00:40, landed West Beach Süderhörn, K. Sievers.” So Knut Sievers was on the island that night.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:knut"
+        },
+        {
+          "kind": "location",
+          "id": "location:strand"
+        },
+        {
+          "kind": "event",
+          "id": "event:landung"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:knut",
+            "locationId": "location:strand",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:visitenkarte",
+      "text": "Stuck in the sand next to the boat is a soaked business card: “Jasper Kühl, Assessor, Hansa Shipping Company”. On the back, in pencil: “01:00, here.”",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:jasper"
+        },
+        {
+          "kind": "location",
+          "id": "location:strand"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:kassenbuch",
+      "text": "The ferry house cash book, last entry: 01:45, Hinrich Paulsen, two grogs, on his tab. Behind the bar stands the telephone; it records every call.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hinrich"
+        },
+        {
+          "kind": "location",
+          "id": "location:faehrhaus"
+        },
+        {
+          "kind": "item",
+          "id": "item:telefon"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:hinrich",
+            "locationId": "location:faehrhaus",
+            "at": 6300
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:anrufliste",
+      "text": "The call log: 02:00 to 02:02 call with the doctor's surgery on the mainland, caller Frauke Jensen. 02:03 emergency call to the coastguard, caller Jasper Kühl, Süderhörn beacon gone dark. Both voices are recorded.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:frauke"
+        },
+        {
+          "kind": "person",
+          "id": "person:jasper"
+        },
+        {
+          "kind": "location",
+          "id": "location:faehrhaus"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:frauke",
+            "locationId": "location:faehrhaus",
+            "at": 7200
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:jasper",
+            "locationId": "location:faehrhaus",
+            "at": 7380
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:pegelmast",
+      "text": "On the tide-gauge mast at the harbour hangs a camera that photographs the water level every minute. Its memory can be read out directly at the mast.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:hafen"
+        },
+        {
+          "kind": "item",
+          "id": "item:pegelkamera"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:pegelfoto",
+      "text": "Tide-gauge photo 02:00:00: at the harbour, the cutter HUS 7 is casting off without lights. At the helm, clearly visible in the glow of the harbour lamp, stands Ole Brodersen.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ole"
+        },
+        {
+          "kind": "location",
+          "id": "location:hafen"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:ole",
+            "locationId": "location:hafen",
+            "at": 7200
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:nachtkamera",
+      "text": "The bird observatory's infrared camera was triggered at 02:00:00: Marlene Voss is holding a Kentish plover and fitting it with a ring.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:marlene"
+        },
+        {
+          "kind": "location",
+          "id": "location:vogelwarte"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:marlene",
+            "locationId": "location:vogelwarte",
+            "at": 7200
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    }
+  ]
+}
