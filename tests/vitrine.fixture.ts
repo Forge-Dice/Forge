@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { parseCaseTruth, type CaseTruth } from "../src/domain/case-truth.ts";
 import { hashCaseTruth } from "../src/domain/case-truth.identity.ts";
 import { parseCaseSolution, type CaseSolution } from "../src/domain/case-solution.ts";
+import { hashCaseSolution } from "../src/domain/case-solution.identity.ts";
 import { parseEvidenceAccessMap, resolveInvestigation, type EvidenceAccessMap, type InvestigationAction } from "../src/domain/evidence-access.ts";
 import { parseEvidencePresentation, releaseEvidence, type EvidenceObservation, type EvidencePresentation } from "../src/domain/evidence-presentation.ts";
 import {
@@ -15,6 +16,14 @@ import { parseNpcKnowledge, type NpcKnowledgeSnapshot } from "../src/domain/npc-
 import { interrogate, type InterrogationObservation, type PlayerRefTranslator } from "../src/domain/interrogation.ts";
 import { parseAccusationChallenge, type AccusationChallenge } from "../src/domain/accusation-challenge.ts";
 import { buildPlayerRefIndex, playerRefFor, resolvePlayerRef, type PlayerRefIndex } from "../src/domain/player-ref.ts";
+import {
+  parseCaseProofProfile,
+  type CaseProofProfile,
+  type ReleasedObservation,
+  type WitnessReplay,
+  type WitnessReplayResult,
+} from "../src/domain/case-solvability.ts";
+import { createHash } from "node:crypto";
 
 // "Die leere Vitrine" (case:leere-vitrine-v1), loaded from tests/fixtures/vitrine with the real parsers.
 // truth.json and solution.json are byte-identical to the case pack originals; challenge, presentation
@@ -137,3 +146,113 @@ export function vitrineHost(v: Vitrine = loadVitrine()) {
 }
 
 export type VitrineHost = ReturnType<typeof vitrineHost>;
+
+// ---------- Solvability: release manifest, proof profile and a witness port on the real host ----------
+
+type RefOf = { $playerRefOf: { kind: "person" | "location" | "item" | "event" | "evidence"; id: string } };
+type ManifestStep =
+  | { stepId: string; event: { type: "investigate"; action: "search_location" | "examine_item"; target: string } }
+  | { stepId: string; event: { type: "interrogate"; npc: string; questionId: string } };
+type ManifestObservation = ReleasedObservation & {
+  alternatives?: { report: unknown }[];
+  ruleId?: string;
+  afterObservations?: string[];
+};
+/** After PlayerRef substitution: every ref is a PlayerRef string. */
+export type ReleaseManifest = {
+  schemaVersion: 1;
+  releaseContextHash: string;
+  adapterVersion: string;
+  certificateData: { schemaVersion: 1; steps: ManifestStep[]; observations: ManifestObservation[] };
+};
+
+/** Replaces every {$playerRefOf} with the PlayerRef of this fixture's index. */
+function substituteRefs(value: unknown, v: Vitrine): unknown {
+  if (Array.isArray(value)) return value.map((x) => substituteRefs(x, v));
+  if (typeof value !== "object" || value === null) return value;
+  if ("$playerRefOf" in value) {
+    const { kind, id } = (value as RefOf).$playerRefOf;
+    const ref = v.translator.refFor(kind, id);
+    if (ref === null) throw new Error(`No PlayerRef for ${kind} ${id}`);
+    return ref;
+  }
+  return Object.fromEntries(Object.entries(value).map(([k, x]) => [k, substituteRefs(x, v)]));
+}
+
+function sortedJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(sortedJson).join(",")}]`;
+  if (typeof value !== "object" || value === null) return JSON.stringify(value);
+  const keys = Object.keys(value).sort();
+  return `{${keys.map((k) => `${JSON.stringify(k)}:${sortedJson((value as Record<string, unknown>)[k])}`).join(",")}}`;
+}
+
+/** The release manifest with real PlayerRefs; releaseContextHash stays a marker (no profile exists yet). */
+export const vitrineReleaseManifest = (v: Vitrine): ReleaseManifest => substituteRefs(vitrineRaw("release-manifest.json"), v) as ReleaseManifest;
+
+/**
+ * TEST-ONLY release hash: sha256 over the sorted-key JSON of the substituted manifest. Not the
+ * forge-release-proof-v1 profile, which the release adapter will define.
+ */
+export const vitrineReleaseHash = (v: Vitrine): string => createHash("sha256").update(sortedJson(vitrineReleaseManifest(v))).digest("hex");
+
+export function loadVitrineProofProfile(v: Vitrine, overrides: object = {}): CaseProofProfile {
+  const input = vitrineRaw("proof-profile.json") as { bindings: Record<string, string> };
+  return parseCaseProofProfile(
+    { ...input, bindings: { ...input.bindings, releaseHash: vitrineReleaseHash(v) }, ...overrides },
+    v.truth,
+    v.solution,
+  );
+}
+
+const payloadOf = ({ alternatives, ruleId, afterObservations, ...payload }: ManifestObservation) => payload as ReleasedObservation;
+
+/**
+ * Witness port on the real headless host: replays each step through investigate/release/interrogate
+ * on a fresh host. An OBSERVED record is released only if its evidence card was actually released
+ * with one of the manifest's alternative reports; a PUBLIC_RULE once all its afterObservations are.
+ */
+export function vitrineWitness(v: Vitrine, manifest: ReleaseManifest = vitrineReleaseManifest(v)): WitnessReplay {
+  const resolveRef = (ref: string) => {
+    const resolved = resolvePlayerRef(v.refs, ref);
+    if (!resolved.success) throw new Error("unresolved");
+    return resolved;
+  };
+  return (stepIds): WitnessReplayResult => {
+    const host = vitrineHost(v);
+    const cards = new Map<string, EvidenceObservation>();
+    try {
+      for (const stepId of stepIds) {
+        const step = manifest.certificateData.steps.find((s) => s.stepId === stepId);
+        if (step === undefined) return { success: false, code: "INVALID_WITNESS" };
+        const { event } = step;
+        if (event.type === "interrogate") {
+          const npc = VITRINE_NPCS.find((n) => `person:${n}` === resolveRef(event.npc).id);
+          if (npc === undefined) return { success: false, code: "INVALID_WITNESS" };
+          host.ask(npc, event.questionId);
+          continue;
+        }
+        const target = resolveRef(event.target).id;
+        const found = event.action === "search_location" ? host.search(target) : host.examine(target);
+        for (const card of found) cards.set(resolveRef(card.evidence).id, card);
+      }
+    } catch {
+      return { success: false, code: "INVALID_WITNESS" };
+    }
+    const released = new Set<string>();
+    const records: ReleasedObservation[] = [];
+    for (const o of manifest.certificateData.observations) {
+      if (o.kind !== "OBSERVED" || o.source.kind !== "evidence") continue;
+      const card = cards.get(o.source.evidenceId);
+      const reports = new Set(card?.reports.map(sortedJson) ?? []);
+      if (o.alternatives?.some((alt) => reports.has(sortedJson(alt.report)))) {
+        released.add(o.id);
+        records.push(payloadOf(o));
+      }
+    }
+    for (const o of manifest.certificateData.observations) {
+      if (o.kind === "PUBLIC_RULE" && (o.afterObservations ?? []).every((id) => released.has(id))) records.push(payloadOf(o));
+    }
+    const bindings = { caseId: v.truth.caseId, truthHash: hashCaseTruth(v.truth), solutionHash: hashCaseSolution(v.solution), releaseHash: vitrineReleaseHash(v) };
+    return { success: true, bindings, released: records };
+  };
+}

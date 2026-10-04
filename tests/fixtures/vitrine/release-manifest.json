@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "releaseContextHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT",
+  "adapterVersion": "forge-release-proof-v1",
+  "certificateData": {
+    "schemaVersion": 1,
+    "steps": [
+      {
+        "stepId": "search-hof",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:hof"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-nora-photo",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:nora"
+            }
+          },
+          "questionId": "question:q08"
+        }
+      },
+      {
+        "stepId": "read-camera",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:kamera"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-oskar-record",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:oskar"
+            }
+          },
+          "questionId": "question:q14"
+        }
+      },
+      {
+        "stepId": "read-terminal",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:terminal"
+            }
+          }
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "observed:hof-contact",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p18",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:d03"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "eventHasParticipant",
+                "event": {
+                  "$playerRefOf": {
+                    "kind": "event",
+                    "id": "event:e05"
+                  }
+                },
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:nora"
+                  }
+                }
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "observed:max",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p03",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:d04"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:max"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:hof"
+                  }
+                },
+                "at": 240
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:max",
+        "kind": "PUBLIC_RULE",
+        "ruleId": "rule:manual-presence",
+        "afterObservations": [
+          "observed:max"
+        ],
+        "rules": [
+          {
+            "edgeId": "exclude:max",
+            "allOf": [
+              "observation:max"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-max",
+              "value": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "observed:nora",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p04",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:d04"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:nora"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:hof"
+                  }
+                },
+                "at": 240
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:nora",
+        "kind": "PUBLIC_RULE",
+        "ruleId": "rule:manual-presence",
+        "afterObservations": [
+          "observed:nora"
+        ],
+        "rules": [
+          {
+            "edgeId": "exclude:nora",
+            "allOf": [
+              "observation:nora"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-nora",
+              "value": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "observed:oskar",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p05",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:d05"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:oskar"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:archiv"
+                  }
+                },
+                "at": 240
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:oskar",
+        "kind": "PUBLIC_RULE",
+        "ruleId": "rule:manual-presence",
+        "afterObservations": [
+          "observed:oskar"
+        ],
+        "rules": [
+          {
+            "edgeId": "exclude:oskar",
+            "allOf": [
+              "observation:oskar"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-oskar",
+              "value": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "public-rule:remaining",
+        "kind": "PUBLIC_RULE",
+        "ruleId": "rule:closed-roster",
+        "afterObservations": [
+          "observed:max",
+          "observed:nora",
+          "observed:oskar"
+        ],
+        "rules": [
+          {
+            "edgeId": "remaining:lina",
+            "allOf": [
+              "literal:max",
+              "literal:nora",
+              "literal:oskar"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-lina",
+              "value": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
