@@ -22,6 +22,7 @@ from paths import validate_path, validate_path_set
 
 TYPE_LIMITS = {"commit": 1024 * 1024, "tree": 16 * 1024 * 1024, "blob": 8 * 1024 * 1024}
 HEADER_LIMIT = 64
+HEADER_MIN = 47  # len("<40 hex> tag 0\n"): the shortest possible frame header
 OBJECT_BUDGET_BYTES = 512 * 1024 * 1024
 OBJECT_BUDGET_COUNT = 150_000
 SNAPSHOT_ENTRIES = 40_000
@@ -150,7 +151,8 @@ class ObjectStore:
                 if self._stderr > process.BATCH_STDERR_LIMIT:
                     raise fail("EXECUTION_IO", "objects")
             if proc.stdout in ready:
-                data = os.read(proc.stdout.fileno(), min(1 << 20, max(want - len(self._buffer), 65536)))
+                # Never read past `want`: no byte of a frame is consumed before it is admitted.
+                data = os.read(proc.stdout.fileno(), min(1 << 20, want - len(self._buffer)))
                 if not data:
                     raise fail("GIT_OBJECT", "objects")
                 self._buffer += data
@@ -161,10 +163,12 @@ class ObjectStore:
         return data
 
     def _read_header(self) -> bytes:
+        # Read at most up to the header's LF: HEADER_MIN - 1 bytes at once, then byte by byte,
+        # so the declared size is checked before any content byte leaves the pipe (AV-179b/c).
         while b"\n" not in self._buffer[:HEADER_LIMIT]:
             if len(self._buffer) >= HEADER_LIMIT:
                 raise fail("GIT_OBJECT", "objects", self._buffer[:HEADER_LIMIT])
-            self._fill(len(self._buffer) + 1)
+            self._fill(max(len(self._buffer) + 1, HEADER_MIN - 1))
         end = self._buffer.index(b"\n") + 1
         return self._take(end)
 
@@ -197,6 +201,9 @@ class ObjectStore:
             raise fail("GIT_OBJECT", "objects", header)
         raw = body[:-1]
         if hashlib.sha1(kind.encode() + b" " + str(size).encode() + b"\0" + raw).hexdigest() != oid:
+            raise fail("GIT_OBJECT", "objects", header)
+        # An observed nonzero exit or signal is FAIL even after a valid frame (PKG §2).
+        if self._proc.poll() not in (None, 0):
             raise fail("GIT_OBJECT", "objects", header)
         return raw
 
@@ -269,6 +276,8 @@ class ObjectStore:
     def collect_tree(self, root: str) -> Snapshot:
         """All leaves of a tree with validated paths. Iterative, bounded, per-prefix path checks."""
         leaves: list[Leaf] = []
+        # Path trie over ALL entries, empty directories included: folded path -> is directory.
+        trie: dict[str, bool] = {}
         entry_count = 0
         stack: list[tuple[bytes, str, int]] = [(b"", root, 0)]
         while stack:
@@ -279,6 +288,10 @@ class ObjectStore:
                     raise fail("GIT_LIMIT", "objects")
                 raw_path = prefix + entry.name
                 path = validate_path(raw_path)
+                folded = path.lower()
+                if folded in trie:
+                    raise fail("GIT_COLLISION", "objects", raw_path)
+                trie[folded] = entry.mode == TREE_MODE
                 if entry.mode == TREE_MODE:
                     stack.append((raw_path + b"/", entry.oid, depth + 1))
                     continue
