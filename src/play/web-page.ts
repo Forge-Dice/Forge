@@ -1,4 +1,5 @@
 import { rulesetAllows } from "../domain/case-package.ts";
+import { DIFFICULTY_NAMES, difficultyDots, type Difficulty } from "./difficulty.ts";
 import { accusations, confrontations, hintsUsed, investigations, known, questions, recordText, type Action, type Game } from "./game.ts";
 
 // HTML views of the local browser front end. Pure: (game, feedback) -> page. Every label comes from
@@ -10,7 +11,7 @@ export type Feedback = {
   readonly title: string;
   readonly lines: readonly string[];
 };
-export type CaseCard = { readonly slug: string; readonly title: string; readonly teaser: string; readonly progress: string | null };
+export type CaseCard = { readonly slug: string; readonly title: string; readonly teaser: string; readonly progress: string | null; readonly difficulty?: Difficulty };
 
 const escape = (text: string): string =>
   text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -58,12 +59,16 @@ ${body}
 
 // ---------- Case selection ----------
 
+/** Measured by the playtest bot; dots for the eye, the word for everyone. */
+const difficultyTag = (d: Difficulty | undefined): string =>
+  d === undefined ? "" : `<span class="difficulty" title="Schwierigkeit ${d} von 5"><span class="visually-hidden">Schwierigkeit: </span><span class="dots" aria-hidden="true">${difficultyDots(d)}</span> ${DIFFICULTY_NAMES[d]}</span>`;
+
 export function renderCaseList(cases: readonly CaseCard[]): string {
   const cards = cases
     .map((c, i) => {
       const solved = c.progress === "Gelöst";
       const badge = c.progress === null ? `<span class="badge">Neu</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
-      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">Akte Nr. ${String(i + 1).padStart(3, "0")}</span><h2>${escape(c.title)}</h2><p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">Akte öffnen →</span></span>${
+      return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">Akte Nr. ${String(i + 1).padStart(3, "0")}</span><h2>${escape(c.title)}</h2>${difficultyTag(c.difficulty)}<p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">Akte öffnen →</span></span>${
         solved ? `<span class="stamp small" aria-hidden="true">Gelöst</span>` : ""
       }</a></li>`;
     })
@@ -658,6 +663,8 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .case-no { font: 700 12px var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--blood); }
 .case-card h2 { margin: 6px 0 10px; font-size: 26px; }
 .case-card p { color: #4a3d2e; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.case-card .difficulty { display: block; font: 600 13px var(--sans); margin: -4px 0 8px; color: var(--ink-soft); }
+.case-card .difficulty .dots { letter-spacing: 2px; color: var(--blood); }
 .case-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 8px; }
 .case-card .badge { background: rgba(42,33,25,.12); color: var(--ink); border-color: rgba(42,33,25,.25); }
 .case-card .badge.solved { background: var(--ok); color: #fff; }

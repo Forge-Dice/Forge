@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { memoFrozen } from "./frozen-memo.ts";
 import type { InterrogationProfile, QuestionCatalogue } from "./interrogation-authoring.ts";
 import { byCodeUnits, canonicalJson } from "./shared.ts";
 
@@ -17,9 +18,10 @@ export function serializeQuestionCatalogue(c: QuestionCatalogue): string {
   return canonicalJson(c);
 }
 
-export function hashQuestionCatalogue(c: QuestionCatalogue): string {
+/** Memoized for deep-frozen (parsed) values, which the session hashes on every action. */
+export const hashQuestionCatalogue: (c: QuestionCatalogue) => string = memoFrozen((c: QuestionCatalogue): string => {
   return sha256(QUESTION_CATALOGUE_PROFILE, serializeQuestionCatalogue(c));
-}
+});
 
 export function serializeInterrogationProfile(p: InterrogationProfile): string {
   return canonicalJson(p);
