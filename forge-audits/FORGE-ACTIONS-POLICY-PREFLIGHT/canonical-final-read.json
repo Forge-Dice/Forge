@@ -1,0 +1,180 @@
+[
+  {
+    "path": "/repos/Forge-Dice/Forge/rulesets?includes_parents=true&per_page=100",
+    "observed_utc": "2026-10-03T12:53:04.2759468Z",
+    "body": [],
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "path": "/repos/Forge-Dice/Forge/branches?per_page=100",
+    "observed_utc": "2026-10-03T12:53:06.0923501Z",
+    "body": [
+      {
+        "name": "claude/forge-architecture-review-hjdq89",
+        "commit": {
+          "sha": "be40a6876aaba328d91c2ef1bbba0bc4263cfe3d",
+          "url": "https://api.github.com/repos/Forge-Dice/Forge/commits/be40a6876aaba328d91c2ef1bbba0bc4263cfe3d"
+        },
+        "protected": false,
+        "protection": {
+          "enabled": false,
+          "required_status_checks": {
+            "enforcement_level": "off",
+            "contexts": [],
+            "checks": []
+          }
+        },
+        "protection_url": "https://api.github.com/repos/Forge-Dice/Forge/branches/claude/forge-architecture-review-hjdq89/protection"
+      },
+      {
+        "name": "codex/forge-core-v2-repair",
+        "commit": {
+          "sha": "0dfd90362b7d9f53c3626a90b579d835f76e7a20",
+          "url": "https://api.github.com/repos/Forge-Dice/Forge/commits/0dfd90362b7d9f53c3626a90b579d835f76e7a20"
+        },
+        "protected": false,
+        "protection": {
+          "enabled": false,
+          "required_status_checks": {
+            "enforcement_level": "off",
+            "contexts": [],
+            "checks": []
+          }
+        },
+        "protection_url": "https://api.github.com/repos/Forge-Dice/Forge/branches/codex/forge-core-v2-repair/protection"
+      },
+      {
+        "name": "codex/mystery-task-0005",
+        "commit": {
+          "sha": "fab792afb4acb7d8bd709133829becd8d7e16aaf",
+          "url": "https://api.github.com/repos/Forge-Dice/Forge/commits/fab792afb4acb7d8bd709133829becd8d7e16aaf"
+        },
+        "protected": false,
+        "protection": {
+          "enabled": false,
+          "required_status_checks": {
+            "enforcement_level": "off",
+            "contexts": [],
+            "checks": []
+          }
+        },
+        "protection_url": "https://api.github.com/repos/Forge-Dice/Forge/branches/codex/mystery-task-0005/protection"
+      },
+      {
+        "name": "codex/task-0004-contract",
+        "commit": {
+          "sha": "6a8c0c5349eccaf12f45e3e9128b816f316d37a6",
+          "url": "https://api.github.com/repos/Forge-Dice/Forge/commits/6a8c0c5349eccaf12f45e3e9128b816f316d37a6"
+        },
+        "protected": false,
+        "protection": {
+          "enabled": false,
+          "required_status_checks": {
+            "enforcement_level": "off",
+            "contexts": [],
+            "checks": []
+          }
+        },
+        "protection_url": "https://api.github.com/repos/Forge-Dice/Forge/branches/codex/task-0004-contract/protection"
+      },
+      {
+        "name": "forge/run/codex/IDENTITY-SPIKE-1",
+        "commit": {
+          "sha": "8dc692b0adc82e9dd2ccef60b6013006e700a744",
+          "url": "https://api.github.com/repos/Forge-Dice/Forge/commits/8dc692b0adc82e9dd2ccef60b6013006e700a744"
+        },
+        "protected": false,
+        "protection": {
+          "enabled": false,
+          "required_status_checks": {
+            "enforcement_level": "off",
+            "contexts": [],
+            "checks": []
+          }
+        },
+        "protection_url": "https://api.github.com/repos/Forge-Dice/Forge/branches/forge/run/codex/IDENTITY-SPIKE-1/protection"
+      },
+      {
+        "name": "main",
+        "commit": {
+          "sha": "3d7545d843883418348004e68717399a64da7a7d",
+          "url": "https://api.github.com/repos/Forge-Dice/Forge/commits/3d7545d843883418348004e68717399a64da7a7d"
+        },
+        "protected": false,
+        "protection": {
+          "enabled": false,
+          "required_status_checks": {
+            "enforcement_level": "off",
+            "contexts": [],
+            "checks": []
+          }
+        },
+        "protection_url": "https://api.github.com/repos/Forge-Dice/Forge/branches/main/protection"
+      }
+    ],
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "path": "/repos/Forge-Dice/Forge/actions/permissions",
+    "observed_utc": "2026-10-03T12:53:07.9920562Z",
+    "body": {
+      "enabled": true,
+      "allowed_actions": "all",
+      "sha_pinning_required": false
+    },
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "path": "/repos/Forge-Dice/Forge/actions/permissions/workflow",
+    "observed_utc": "2026-10-03T12:53:09.4133712Z",
+    "body": {
+      "default_workflow_permissions": "read",
+      "can_approve_pull_request_reviews": false
+    },
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "path": "/repos/Forge-Dice/Forge/actions/workflows",
+    "observed_utc": "2026-10-03T12:53:10.7864724Z",
+    "body": {
+      "total_count": 0,
+      "workflows": []
+    },
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "path": "/repos/Forge-Dice/Forge/actions/secrets",
+    "observed_utc": "2026-10-03T12:53:12.3097388Z",
+    "body": {
+      "total_count": 0,
+      "secrets": []
+    },
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "path": "/repos/Forge-Dice/Forge/actions/variables",
+    "observed_utc": "2026-10-03T12:53:13.7836056Z",
+    "body": {
+      "variables": [],
+      "total_count": 0
+    },
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "path": "/repos/Forge-Dice/Forge/environments",
+    "observed_utc": "2026-10-03T12:53:15.113595Z",
+    "body": {
+      "total_count": 0,
+      "environments": []
+    },
+    "status": 200,
+    "method": "GET"
+  }
+]

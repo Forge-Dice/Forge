@@ -1,0 +1,11 @@
+{
+  "method": "GET",
+  "status": 404,
+  "body": {
+    "message": "Not Found",
+    "documentation_url": "https://docs.github.com/rest/actions/policies#list-organization-actions-policies",
+    "status": "404"
+  },
+  "path": "/orgs/Forge-Dice/actions/policies?has_parents=true&per_page=100",
+  "observed_utc": "2026-10-03T12:40:20.3726183Z"
+}

@@ -1,0 +1,176 @@
+{
+  "repo_owner": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "id": "1401864629",
+      "name": "Forge",
+      "owner": {
+        "login": "Forge-Dice",
+        "id": 337291195,
+        "type": "Organization",
+        "avatar_url": "https://avatars.githubusercontent.com/u/337291195?v=4",
+        "url": "https://api.github.com/users/Forge-Dice"
+      },
+      "repository_full_name": "Forge-Dice/Forge",
+      "permissions": {
+        "admin": true,
+        "maintain": true,
+        "pull": true,
+        "push": true,
+        "triage": true
+      },
+      "allow_auto_merge": false,
+      "allow_merge_commit": true,
+      "allow_rebase_merge": true,
+      "allow_squash_merge": true,
+      "allow_update_branch": false,
+      "clone_url": "https://github.com/Forge-Dice/Forge.git",
+      "size": 326,
+      "default_branch": "main",
+      "git_commits_url": "https://api.github.com/repos/Forge-Dice/Forge/git/commits{/sha}",
+      "git_refs_url": "https://api.github.com/repos/Forge-Dice/Forge/git/refs{/sha}",
+      "git_url": "git://github.com/Forge-Dice/Forge.git",
+      "master_branch": null,
+      "visibility": "public",
+      "archived": false,
+      "is_code_search_indexed": null
+    },
+    "isError": false
+  },
+  "repo_dev": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "id": "1401864629",
+      "name": "Forge",
+      "owner": {
+        "login": "Forge-Dice",
+        "id": 337291195,
+        "type": "Organization",
+        "avatar_url": "https://avatars.githubusercontent.com/u/337291195?v=4",
+        "url": "https://api.github.com/users/Forge-Dice"
+      },
+      "repository_full_name": "Forge-Dice/Forge",
+      "permissions": {
+        "admin": false,
+        "maintain": false,
+        "pull": true,
+        "push": true,
+        "triage": true
+      },
+      "allow_auto_merge": false,
+      "allow_merge_commit": true,
+      "allow_rebase_merge": true,
+      "allow_squash_merge": true,
+      "allow_update_branch": false,
+      "clone_url": "https://github.com/Forge-Dice/Forge.git",
+      "size": 326,
+      "default_branch": "main",
+      "git_commits_url": "https://api.github.com/repos/Forge-Dice/Forge/git/commits{/sha}",
+      "git_refs_url": "https://api.github.com/repos/Forge-Dice/Forge/git/refs{/sha}",
+      "git_url": "git://github.com/Forge-Dice/Forge.git",
+      "master_branch": null,
+      "visibility": "public",
+      "archived": false,
+      "is_code_search_indexed": null
+    },
+    "isError": false
+  },
+  "repo_raw": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "{\"id\":1401864629,\"node_id\":\"R_kgDOU47BtQ\",\"name\":\"Forge\",\"full_name\":\"Forge-Dice/Forge\",\"private\":false,\"owner\":{\"login\":\"Forge-Dice\",\"id\":337291195,\"node_id\":\"O_kgDOFBqnuw\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/337291195?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/Forge-Dice\",\"html_url\":\"https://github.com/Forge-Dice\",\"followers_url\":\"https://api.github.com/users/Forge-Dice/followers\",\"following_url\":\"https://api.github.com/users/Forge-Dice/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/Forge-Dice/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/Forge-Dice/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/Forge-Dice/subscriptions\",\"organizations_url\":\"https://api.github.com/users/Forge-Dice/orgs\",\"repos_url\":\"https://api.github.com/users/Forge-Dice/repos\",\"events_url\":\"https://api.github.com/users/Forge-Dice/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/Forge-Dice/received_events\",\"type\":\"Organization\",\"user_view_type\":\"public\",\"site_admin\":false},\"html_url\":\"https://github.com/Forge-Dice/Forge\",\"description\":\"Game building tool\",\"fork\":false,\"url\":\"https://api.github.com/repos/Forge-Dice/Forge\",\"forks_url\":\"https://api.github.com/repos/Forge-Dice/Forge/forks\",\"keys_url\":\"https://api.github.com/repos/Forge-Dice/Forge/keys{/key_id}\",\"collaborators_url\":\"https://api.github.com/repos/Forge-Dice/Forge/collaborators{/collaborator}\",\"teams_url\":\"https://api.github.com/repos/Forge-Dice/Forge/teams\",\"hooks_url\":\"https://api.github.com/repos/Forge-Dice/Forge/hooks\",\"issue_events_url\":\"https://api.github.com/repos/Forge-Dice/Forge/issues/events{/number}\",\"events_url\":\"https://api.github.com/repos/Forge-Dice/Forge/events\",\"assignees_url\":\"https://api.github.com/repos/Forge-Dice/Forge/assignees{/user}\",\"branches_url\":\"https://api.github.com/repos/Forge-Dice/Forge/branches{/branch}\",\"tags_url\":\"https://api.github.com/repos/Forge-Dice/Forge/tags\",\"blobs_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/blobs{/sha}\",\"git_tags_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/tags{/sha}\",\"git_refs_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/refs{/sha}\",\"trees_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/trees{/sha}\",\"statuses_url\":\"https://api.github.com/repos/Forge-Dice/Forge/statuses/{sha}\",\"languages_url\":\"https://api.github.com/repos/Forge-Dice/Forge/languages\",\"stargazers_url\":\"https://api.github.com/repos/Forge-Dice/Forge/stargazers\",\"contributors_url\":\"https://api.github.com/repos/Forge-Dice/Forge/contributors\",\"subscribers_url\":\"https://api.github.com/repos/Forge-Dice/Forge/subscribers\",\"subscription_url\":\"https://api.github.com/repos/Forge-Dice/Forge/subscription\",\"commits_url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits{/sha}\",\"git_commits_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/commits{/sha}\",\"comments_url\":\"https://api.github.com/repos/Forge-Dice/Forge/comments{/number}\",\"issue_comment_url\":\"https://api.github.com/repos/Forge-Dice/Forge/issues/comments{/number}\",\"contents_url\":\"https://api.github.com/repos/Forge-Dice/Forge/contents/{+path}\",\"compare_url\":\"https://api.github.com/repos/Forge-Dice/Forge/compare/{base}...{head}\",\"merges_url\":\"https://api.github.com/repos/Forge-Dice/Forge/merges\",\"archive_url\":\"https://api.github.com/repos/Forge-Dice/Forge/{archive_format}{/ref}\",\"downloads_url\":\"https://api.github.com/repos/Forge-Dice/Forge/downloads\",\"issues_url\":\"https://api.github.com/repos/Forge-Dice/Forge/issues{/number}\",\"pulls_url\":\"https://api.github.com/repos/Forge-Dice/Forge/pulls{/number}\",\"milestones_url\":\"https://api.github.com/repos/Forge-Dice/Forge/milestones{/number}\",\"notifications_url\":\"https://api.github.com/repos/Forge-Dice/Forge/notifications{?since,all,participating}\",\"labels_url\":\"https://api.github.com/repos/Forge-Dice/Forge/labels{/name}\",\"releases_url\":\"https://api.github.com/repos/Forge-Dice/Forge/releases{/id}\",\"deployments_url\":\"https://api.github.com/repos/Forge-Dice/Forge/deployments\",\"created_at\":\"2026-10-02T14:15:18Z\",\"updated_at\":\"2026-10-03T10:02:31Z\",\"pushed_at\":\"2026-10-03T10:12:54Z\",\"git_url\":\"git://github.com/Forge-Dice/Forge.git\",\"ssh_url\":\"git@github.com:Forge-Dice/Forge.git\",\"clone_url\":\"https://github.com/Forge-Dice/Forge.git\",\"svn_url\":\"https://github.com/Forge-Dice/Forge\",\"homepage\":null,\"size\":326,\"stargazers_count\":0,\"watchers_count\":0,\"language\":\"TypeScript\",\"has_issues\":true,\"has_projects\":true,\"has_downloads\":false,\"has_wiki\":true,\"has_pages\":false,\"has_discussions\":false,\"forks_count\":0,\"mirror_url\":null,\"archived\":false,\"disabled\":false,\"open_issues_count\":1,\"license\":null,\"allow_forking\":true,\"is_template\":false,\"web_commit_signoff_required\":false,\"has_pull_requests\":true,\"pull_request_creation_policy\":\"all\",\"topics\":[],\"visibility\":\"public\",\"forks\":0,\"open_issues\":1,\"watchers\":0,\"default_branch\":\"main\",\"permissions\":{\"admin\":true,\"maintain\":true,\"push\":true,\"triage\":true,\"pull\":true},\"allow_squash_merge\":true,\"allow_merge_commit\":true,\"allow_rebase_merge\":true,\"allow_auto_merge\":false,\"delete_branch_on_merge\":false,\"allow_update_branch\":false,\"use_squash_pr_title_as_default\":false,\"squash_merge_commit_message\":\"COMMIT_MESSAGES\",\"squash_merge_commit_title\":\"COMMIT_OR_PR_TITLE\",\"merge_commit_message\":\"PR_TITLE\",\"merge_commit_title\":\"MERGE_MESSAGE\",\"custom_properties\":{},\"organization\":{\"login\":\"Forge-Dice\",\"id\":337291195,\"node_id\":\"O_kgDOFBqnuw\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/337291195?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/Forge-Dice\",\"html_url\":\"https://github.com/Forge-Dice\",\"followers_url\":\"https://api.github.com/users/Forge-Dice/followers\",\"following_url\":\"https://api.github.com/users/Forge-Dice/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/Forge-Dice/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/Forge-Dice/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/Forge-Dice/subscriptions\",\"organizations_url\":\"https://api.github.com/users/Forge-Dice/orgs\",\"repos_url\":\"https://api.github.com/users/Forge-Dice/repos\",\"events_url\":\"https://api.github.com/users/Forge-Dice/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/Forge-Dice/received_events\",\"type\":\"Organization\",\"user_view_type\":\"public\",\"site_admin\":false},\"network_count\":0,\"subscribers_count\":0}",
+      "title": "Forge",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/Forge-Dice/Forge",
+      "display_url": "https://api.github.com/repos/Forge-Dice/Forge",
+      "display_title": "Forge",
+      "structuredContent": {
+        "title": "Forge",
+        "content": "{\"id\":1401864629,\"node_id\":\"R_kgDOU47BtQ\",\"name\":\"Forge\",\"full_name\":\"Forge-Dice/Forge\",\"private\":false,\"owner\":{\"login\":\"Forge-Dice\",\"id\":337291195,\"node_id\":\"O_kgDOFBqnuw\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/337291195?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/Forge-Dice\",\"html_url\":\"https://github.com/Forge-Dice\",\"followers_url\":\"https://api.github.com/users/Forge-Dice/followers\",\"following_url\":\"https://api.github.com/users/Forge-Dice/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/Forge-Dice/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/Forge-Dice/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/Forge-Dice/subscriptions\",\"organizations_url\":\"https://api.github.com/users/Forge-Dice/orgs\",\"repos_url\":\"https://api.github.com/users/Forge-Dice/repos\",\"events_url\":\"https://api.github.com/users/Forge-Dice/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/Forge-Dice/received_events\",\"type\":\"Organization\",\"user_view_type\":\"public\",\"site_admin\":false},\"html_url\":\"https://github.com/Forge-Dice/Forge\",\"description\":\"Game building tool\",\"fork\":false,\"url\":\"https://api.github.com/repos/Forge-Dice/Forge\",\"forks_url\":\"https://api.github.com/repos/Forge-Dice/Forge/forks\",\"keys_url\":\"https://api.github.com/repos/Forge-Dice/Forge/keys{/key_id}\",\"collaborators_url\":\"https://api.github.com/repos/Forge-Dice/Forge/collaborators{/collaborator}\",\"teams_url\":\"https://api.github.com/repos/Forge-Dice/Forge/teams\",\"hooks_url\":\"https://api.github.com/repos/Forge-Dice/Forge/hooks\",\"issue_events_url\":\"https://api.github.com/repos/Forge-Dice/Forge/issues/events{/number}\",\"events_url\":\"https://api.github.com/repos/Forge-Dice/Forge/events\",\"assignees_url\":\"https://api.github.com/repos/Forge-Dice/Forge/assignees{/user}\",\"branches_url\":\"https://api.github.com/repos/Forge-Dice/Forge/branches{/branch}\",\"tags_url\":\"https://api.github.com/repos/Forge-Dice/Forge/tags\",\"blobs_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/blobs{/sha}\",\"git_tags_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/tags{/sha}\",\"git_refs_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/refs{/sha}\",\"trees_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/trees{/sha}\",\"statuses_url\":\"https://api.github.com/repos/Forge-Dice/Forge/statuses/{sha}\",\"languages_url\":\"https://api.github.com/repos/Forge-Dice/Forge/languages\",\"stargazers_url\":\"https://api.github.com/repos/Forge-Dice/Forge/stargazers\",\"contributors_url\":\"https://api.github.com/repos/Forge-Dice/Forge/contributors\",\"subscribers_url\":\"https://api.github.com/repos/Forge-Dice/Forge/subscribers\",\"subscription_url\":\"https://api.github.com/repos/Forge-Dice/Forge/subscription\",\"commits_url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits{/sha}\",\"git_commits_url\":\"https://api.github.com/repos/Forge-Dice/Forge/git/commits{/sha}\",\"comments_url\":\"https://api.github.com/repos/Forge-Dice/Forge/comments{/number}\",\"issue_comment_url\":\"https://api.github.com/repos/Forge-Dice/Forge/issues/comments{/number}\",\"contents_url\":\"https://api.github.com/repos/Forge-Dice/Forge/contents/{+path}\",\"compare_url\":\"https://api.github.com/repos/Forge-Dice/Forge/compare/{base}...{head}\",\"merges_url\":\"https://api.github.com/repos/Forge-Dice/Forge/merges\",\"archive_url\":\"https://api.github.com/repos/Forge-Dice/Forge/{archive_format}{/ref}\",\"downloads_url\":\"https://api.github.com/repos/Forge-Dice/Forge/downloads\",\"issues_url\":\"https://api.github.com/repos/Forge-Dice/Forge/issues{/number}\",\"pulls_url\":\"https://api.github.com/repos/Forge-Dice/Forge/pulls{/number}\",\"milestones_url\":\"https://api.github.com/repos/Forge-Dice/Forge/milestones{/number}\",\"notifications_url\":\"https://api.github.com/repos/Forge-Dice/Forge/notifications{?since,all,participating}\",\"labels_url\":\"https://api.github.com/repos/Forge-Dice/Forge/labels{/name}\",\"releases_url\":\"https://api.github.com/repos/Forge-Dice/Forge/releases{/id}\",\"deployments_url\":\"https://api.github.com/repos/Forge-Dice/Forge/deployments\",\"created_at\":\"2026-10-02T14:15:18Z\",\"updated_at\":\"2026-10-03T10:02:31Z\",\"pushed_at\":\"2026-10-03T10:12:54Z\",\"git_url\":\"git://github.com/Forge-Dice/Forge.git\",\"ssh_url\":\"git@github.com:Forge-Dice/Forge.git\",\"clone_url\":\"https://github.com/Forge-Dice/Forge.git\",\"svn_url\":\"https://github.com/Forge-Dice/Forge\",\"homepage\":null,\"size\":326,\"stargazers_count\":0,\"watchers_count\":0,\"language\":\"TypeScript\",\"has_issues\":true,\"has_projects\":true,\"has_downloads\":false,\"has_wiki\":true,\"has_pages\":false,\"has_discussions\":false,\"forks_count\":0,\"mirror_url\":null,\"archived\":false,\"disabled\":false,\"open_issues_count\":1,\"license\":null,\"allow_forking\":true,\"is_template\":false,\"web_commit_signoff_required\":false,\"has_pull_requests\":true,\"pull_request_creation_policy\":\"all\",\"topics\":[],\"visibility\":\"public\",\"forks\":0,\"open_issues\":1,\"watchers\":0,\"default_branch\":\"main\",\"permissions\":{\"admin\":true,\"maintain\":true,\"push\":true,\"triage\":true,\"pull\":true},\"allow_squash_merge\":true,\"allow_merge_commit\":true,\"allow_rebase_merge\":true,\"allow_auto_merge\":false,\"delete_branch_on_merge\":false,\"allow_update_branch\":false,\"use_squash_pr_title_as_default\":false,\"squash_merge_commit_message\":\"COMMIT_MESSAGES\",\"squash_merge_commit_title\":\"COMMIT_OR_PR_TITLE\",\"merge_commit_message\":\"PR_TITLE\",\"merge_commit_title\":\"MERGE_MESSAGE\",\"custom_properties\":{},\"organization\":{\"login\":\"Forge-Dice\",\"id\":337291195,\"node_id\":\"O_kgDOFBqnuw\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/337291195?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/Forge-Dice\",\"html_url\":\"https://github.com/Forge-Dice\",\"followers_url\":\"https://api.github.com/users/Forge-Dice/followers\",\"following_url\":\"https://api.github.com/users/Forge-Dice/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/Forge-Dice/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/Forge-Dice/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/Forge-Dice/subscriptions\",\"organizations_url\":\"https://api.github.com/users/Forge-Dice/orgs\",\"repos_url\":\"https://api.github.com/users/Forge-Dice/repos\",\"events_url\":\"https://api.github.com/users/Forge-Dice/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/Forge-Dice/received_events\",\"type\":\"Organization\",\"user_view_type\":\"public\",\"site_admin\":false},\"network_count\":0,\"subscribers_count\":0}",
+        "display_url": "https://api.github.com/repos/Forge-Dice/Forge"
+      }
+    },
+    "isError": false
+  },
+  "rulesets": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "[]",
+      "title": "rulesets",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/Forge-Dice/Forge/rulesets?includes_parents=true",
+      "display_url": "https://api.github.com/repos/Forge-Dice/Forge/rulesets?includes_parents=true",
+      "display_title": "rulesets",
+      "structuredContent": {
+        "title": "rulesets",
+        "content": "[]",
+        "display_url": "https://api.github.com/repos/Forge-Dice/Forge/rulesets?includes_parents=true"
+      }
+    },
+    "isError": false
+  },
+  "branches": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "[{\"name\":\"claude/forge-architecture-review-hjdq89\",\"commit\":{\"sha\":\"be40a6876aaba328d91c2ef1bbba0bc4263cfe3d\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/be40a6876aaba328d91c2ef1bbba0bc4263cfe3d\"},\"protected\":false},{\"name\":\"codex/forge-core-v2-repair\",\"commit\":{\"sha\":\"0dfd90362b7d9f53c3626a90b579d835f76e7a20\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/0dfd90362b7d9f53c3626a90b579d835f76e7a20\"},\"protected\":false},{\"name\":\"codex/mystery-task-0005\",\"commit\":{\"sha\":\"fab792afb4acb7d8bd709133829becd8d7e16aaf\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/fab792afb4acb7d8bd709133829becd8d7e16aaf\"},\"protected\":false},{\"name\":\"codex/task-0004-contract\",\"commit\":{\"sha\":\"6a8c0c5349eccaf12f45e3e9128b816f316d37a6\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/6a8c0c5349eccaf12f45e3e9128b816f316d37a6\"},\"protected\":false},{\"name\":\"forge/run/codex/IDENTITY-SPIKE-1\",\"commit\":{\"sha\":\"8dc692b0adc82e9dd2ccef60b6013006e700a744\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/8dc692b0adc82e9dd2ccef60b6013006e700a744\"},\"protected\":false},{\"name\":\"main\",\"commit\":{\"sha\":\"3d7545d843883418348004e68717399a64da7a7d\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/3d7545d843883418348004e68717399a64da7a7d\"},\"protected\":false}]",
+      "title": "branches",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/Forge-Dice/Forge/branches?per_page=100",
+      "display_url": "https://api.github.com/repos/Forge-Dice/Forge/branches?per_page=100",
+      "display_title": "branches",
+      "structuredContent": {
+        "title": "branches",
+        "content": "[{\"name\":\"claude/forge-architecture-review-hjdq89\",\"commit\":{\"sha\":\"be40a6876aaba328d91c2ef1bbba0bc4263cfe3d\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/be40a6876aaba328d91c2ef1bbba0bc4263cfe3d\"},\"protected\":false},{\"name\":\"codex/forge-core-v2-repair\",\"commit\":{\"sha\":\"0dfd90362b7d9f53c3626a90b579d835f76e7a20\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/0dfd90362b7d9f53c3626a90b579d835f76e7a20\"},\"protected\":false},{\"name\":\"codex/mystery-task-0005\",\"commit\":{\"sha\":\"fab792afb4acb7d8bd709133829becd8d7e16aaf\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/fab792afb4acb7d8bd709133829becd8d7e16aaf\"},\"protected\":false},{\"name\":\"codex/task-0004-contract\",\"commit\":{\"sha\":\"6a8c0c5349eccaf12f45e3e9128b816f316d37a6\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/6a8c0c5349eccaf12f45e3e9128b816f316d37a6\"},\"protected\":false},{\"name\":\"forge/run/codex/IDENTITY-SPIKE-1\",\"commit\":{\"sha\":\"8dc692b0adc82e9dd2ccef60b6013006e700a744\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/8dc692b0adc82e9dd2ccef60b6013006e700a744\"},\"protected\":false},{\"name\":\"main\",\"commit\":{\"sha\":\"3d7545d843883418348004e68717399a64da7a7d\",\"url\":\"https://api.github.com/repos/Forge-Dice/Forge/commits/3d7545d843883418348004e68717399a64da7a7d\"},\"protected\":false}]",
+        "display_url": "https://api.github.com/repos/Forge-Dice/Forge/branches?per_page=100"
+      }
+    },
+    "isError": false
+  },
+  "runs": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "{\"total_count\":0,\"workflow_runs\":[]}",
+      "title": "runs",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/Forge-Dice/Forge/actions/runs?per_page=5",
+      "display_url": "https://api.github.com/repos/Forge-Dice/Forge/actions/runs?per_page=5",
+      "display_title": "runs",
+      "structuredContent": {
+        "title": "runs",
+        "content": "{\"total_count\":0,\"workflow_runs\":[]}",
+        "display_url": "https://api.github.com/repos/Forge-Dice/Forge/actions/runs?per_page=5"
+      }
+    },
+    "isError": false
+  }
+}

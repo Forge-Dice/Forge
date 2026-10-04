@@ -1,0 +1,10 @@
+{
+  "method": "GET",
+  "path": "/repos/Forge-Dice/Forge/actions/policies?has_parents=true&per_page=100",
+  "observed_utc": "2026-10-03T12:38:08.7655481Z",
+  "status": 200,
+  "body": {
+    "total_count": 0,
+    "policies": []
+  }
+}

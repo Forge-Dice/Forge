@@ -1,0 +1,215 @@
+{
+  "status": "DRAFT_ONLY_DO_NOT_SUBMIT",
+  "canonical_repository": "Forge-Dice/Forge",
+  "plan": "GitHub Free; public repository",
+  "blocking_unknowns": [
+    "Dedicated Forge verifier App ID and installation do not exist in this evidence. The string sentinel is deliberately not an integer and MUST NOT be omitted or replaced with null, -1, or GitHub Actions app 15368.",
+    "Independent trusted reviewer for Owner changes to CODEOWNERS-protected files not established.",
+    "Exact approved external action SHAs await implementation dependency review."
+  ],
+  "rulesets": [
+    {
+      "name": "FORGE_MAIN_V0_1",
+      "target": "branch",
+      "enforcement": "active",
+      "bypass_actors": [],
+      "conditions": {
+        "ref_name": {
+          "include": [
+            "refs/heads/main"
+          ],
+          "exclude": []
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        },
+        {
+          "type": "required_linear_history"
+        },
+        {
+          "type": "pull_request",
+          "parameters": {
+            "allowed_merge_methods": [
+              "squash"
+            ],
+            "required_approving_review_count": 1,
+            "dismiss_stale_reviews_on_push": true,
+            "require_code_owner_review": true,
+            "require_last_push_approval": true,
+            "required_review_thread_resolution": true,
+            "dismissal_restriction": {
+              "enabled": true,
+              "allowed_actors": [
+                {
+                  "id": 315180734,
+                  "type": "User"
+                }
+              ]
+            },
+            "require_extra_approval_for_unattributed_changes": true
+          }
+        },
+        {
+          "type": "required_status_checks",
+          "parameters": {
+            "required_status_checks": [
+              {
+                "context": "forge/verifier-v0.1",
+                "integration_id": "REPLACE_WITH_VERIFIED_DEDICATED_FORGE_APP_ID"
+              }
+            ],
+            "strict_required_status_checks_policy": true,
+            "do_not_enforce_on_create": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "FORGE_RUN_CODEX_V0_1",
+      "target": "branch",
+      "enforcement": "active",
+      "bypass_actors": [],
+      "conditions": {
+        "ref_name": {
+          "include": [
+            "refs/heads/forge/run/codex/**/*"
+          ],
+          "exclude": []
+        }
+      },
+      "rules": [
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        }
+      ]
+    },
+    {
+      "name": "FORGE_HALT_BRANCH",
+      "target": "branch",
+      "enforcement": "disabled",
+      "bypass_actors": [],
+      "conditions": {
+        "ref_name": {
+          "include": [
+            "~ALL"
+          ],
+          "exclude": []
+        }
+      },
+      "rules": [
+        {
+          "type": "creation"
+        },
+        {
+          "type": "update",
+          "parameters": {
+            "update_allows_fetch_and_merge": false
+          }
+        },
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        }
+      ]
+    },
+    {
+      "name": "FORGE_HALT_TAG",
+      "target": "tag",
+      "enforcement": "disabled",
+      "bypass_actors": [],
+      "conditions": {
+        "ref_name": {
+          "include": [
+            "~ALL"
+          ],
+          "exclude": []
+        }
+      },
+      "rules": [
+        {
+          "type": "creation"
+        },
+        {
+          "type": "update",
+          "parameters": {
+            "update_allows_fetch_and_merge": false
+          }
+        },
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        }
+      ]
+    },
+    {
+      "name": "FORGE_V0_1_TAG_FREEZE",
+      "target": "tag",
+      "enforcement": "active",
+      "bypass_actors": [],
+      "conditions": {
+        "ref_name": {
+          "include": [
+            "~ALL"
+          ],
+          "exclude": []
+        }
+      },
+      "rules": [
+        {
+          "type": "creation"
+        },
+        {
+          "type": "update"
+        },
+        {
+          "type": "deletion"
+        },
+        {
+          "type": "non_fast_forward"
+        }
+      ]
+    }
+  ],
+  "repository_actions_policy": {
+    "name": "FORGE_V0_1_EVENTS",
+    "enforcement": "active",
+    "rules": [
+      {
+        "type": "restrict_action_events",
+        "parameters": {
+          "allowed_events": [
+            "push",
+            "pull_request"
+          ]
+        }
+      }
+    ]
+  },
+  "settings": {
+    "actions_default_workflow_permissions": "read",
+    "actions_can_approve_pull_request_reviews": false,
+    "actions_sha_pinning_required": true,
+    "actions_allowed_actions": "selected",
+    "actions_selected": {
+      "github_owned_allowed": false,
+      "verified_allowed": false,
+      "patterns_allowed": []
+    },
+    "fork_approval_policy": "all_external_contributors",
+    "org_members_allowed_repository_creation_type": "none",
+    "cache_policy": "none",
+    "note": "Empty external action patterns are the initial policy, not a runnable dependency list. Organization-local actions remain allowed by GitHub semantics; authoritative verifier rejects them."
+  }
+}

@@ -1,0 +1,195 @@
+[
+  {
+    "label": "DEV_CREATE_RUN_BRANCH",
+    "observed_utc": "2026-10-03T12:40:09.056Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Action completed."
+        }
+      ],
+      "structuredContent": {
+        "branch": "forge/run/codex/probe"
+      },
+      "isError": false
+    }
+  },
+  {
+    "label": "DEV_DIRECT_MAIN_FILE_BLOCK",
+    "observed_utc": "2026-10-03T12:40:10.223Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "GitHub API error 409: {\"message\":\"Repository rule violations found\\n\\nChanges must be made through a pull request.\\n\\n\",\"metadata\":{},\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\",\"status\":\"409\"}"
+        }
+      ],
+      "structuredContent": {
+        "error": "GitHub API error 409: {\"message\":\"Repository rule violations found\\n\\nChanges must be made through a pull request.\\n\\n\",\"metadata\":{},\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\",\"status\":\"409\"}",
+        "error_code": "CONFLICT",
+        "error_data": {
+          "message": "Repository rule violations found\n\nChanges must be made through a pull request.\n\n",
+          "metadata": {},
+          "documentation_url": "https://docs.github.com/rest/repos/contents#create-or-update-file-contents",
+          "status": "409"
+        }
+      },
+      "isError": true
+    }
+  },
+  {
+    "label": "DEV_RUN_FILE_ALLOWED",
+    "observed_utc": "2026-10-03T12:40:11.54Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Action completed."
+        }
+      ],
+      "structuredContent": {
+        "commit_sha": "acc9cd0bfaf9cae0b39d0ed4eafa2991956c8938"
+      },
+      "isError": false
+    }
+  },
+  {
+    "label": "DEV_FORCE_RUN_BRANCH_BLOCK",
+    "observed_utc": "2026-10-03T12:40:50.491Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "GitHub API error 422: {\"message\":\"Repository rule violations found\\n\\nCannot force-push to this branch\\n\\n\",\"documentation_url\":\"https://docs.github.com/rest/git/refs#update-a-reference\",\"status\":\"422\"}"
+        }
+      ],
+      "structuredContent": {
+        "error": "GitHub API error 422: {\"message\":\"Repository rule violations found\\n\\nCannot force-push to this branch\\n\\n\",\"documentation_url\":\"https://docs.github.com/rest/git/refs#update-a-reference\",\"status\":\"422\"}",
+        "error_code": "INVALID_ARGUMENT",
+        "error_data": {
+          "message": "Repository rule violations found\n\nCannot force-push to this branch\n\n",
+          "documentation_url": "https://docs.github.com/rest/git/refs#update-a-reference",
+          "status": "422"
+        }
+      },
+      "isError": true
+    }
+  },
+  {
+    "label": "DEV_CREATE_PR",
+    "observed_utc": "2026-10-03T12:45:50.557Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "tool call error: tool call failed for `codex_apps/github.create_pull_request`\n\nCaused by:\n    timed out awaiting tools/call after 300s"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "label": "DEV_MERGE_ATTEMPT_INCONCLUSIVE_PR_NOT_CREATED",
+    "observed_utc": "2026-10-03T12:45:51.34Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/pulls/pulls#merge-a-pull-request\",\"status\":\"404\"}"
+        }
+      ],
+      "structuredContent": {
+        "error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/pulls/pulls#merge-a-pull-request\",\"status\":\"404\"}",
+        "error_code": "NOT_FOUND",
+        "error_data": {
+          "message": "Not Found",
+          "documentation_url": "https://docs.github.com/rest/pulls/pulls#merge-a-pull-request",
+          "status": "404"
+        }
+      },
+      "isError": true
+    }
+  },
+  {
+    "label": "HALT_DEV_UPDATE_DENIED",
+    "observed_utc": "2026-10-03T12:48:34.283Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "GitHub API error 409: {\"message\":\"Repository rule violations found\\n\\nCannot update this protected ref.\\n\\n\",\"metadata\":{},\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\",\"status\":\"409\"}"
+        }
+      ],
+      "structuredContent": {
+        "error": "GitHub API error 409: {\"message\":\"Repository rule violations found\\n\\nCannot update this protected ref.\\n\\n\",\"metadata\":{},\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\",\"status\":\"409\"}",
+        "error_code": "CONFLICT",
+        "error_data": {
+          "message": "Repository rule violations found\n\nCannot update this protected ref.\n\n",
+          "metadata": {},
+          "documentation_url": "https://docs.github.com/rest/repos/contents#create-or-update-file-contents",
+          "status": "409"
+        }
+      },
+      "isError": true
+    }
+  },
+  {
+    "label": "HALT_DEV_CREATE_DENIED",
+    "observed_utc": "2026-10-03T12:48:35.316Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "GitHub API error 422: {\"message\":\"Reference update failed\",\"documentation_url\":\"https://docs.github.com/rest/git/refs#create-a-reference\",\"status\":\"422\"}"
+        }
+      ],
+      "structuredContent": {
+        "error": "GitHub API error 422: {\"message\":\"Reference update failed\",\"documentation_url\":\"https://docs.github.com/rest/git/refs#create-a-reference\",\"status\":\"422\"}",
+        "error_code": "INVALID_ARGUMENT",
+        "error_data": {
+          "message": "Reference update failed",
+          "documentation_url": "https://docs.github.com/rest/git/refs#create-a-reference",
+          "status": "422"
+        }
+      },
+      "isError": true
+    }
+  },
+  {
+    "label": "HALT_OWNER_UPDATE_DENIED",
+    "observed_utc": "2026-10-03T12:48:36.594Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "GitHub API error 409: {\"message\":\"Repository rule violations found\\n\\nCannot update this protected ref.\\n\\n\",\"metadata\":{},\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\",\"status\":\"409\"}"
+        }
+      ],
+      "structuredContent": {
+        "error": "GitHub API error 409: {\"message\":\"Repository rule violations found\\n\\nCannot update this protected ref.\\n\\n\",\"metadata\":{},\"documentation_url\":\"https://docs.github.com/rest/repos/contents#create-or-update-file-contents\",\"status\":\"409\"}",
+        "error_code": "CONFLICT",
+        "error_data": {
+          "message": "Repository rule violations found\n\nCannot update this protected ref.\n\n",
+          "metadata": {},
+          "documentation_url": "https://docs.github.com/rest/repos/contents#create-or-update-file-contents",
+          "status": "409"
+        }
+      },
+      "isError": true
+    }
+  },
+  {
+    "label": "DEV_MERGE_WITH_FAKE_STATUS_ATTEMPT_INCONCLUSIVE_TRANSPORT",
+    "observed_utc": "2026-10-03T12:50:34.819Z",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "tool call error: tool call failed for `codex_apps/github.merge_pull_request`\n\nCaused by:\n    Transport send error: Transport [codex_rmcp_client::event_notification_transport::EventNotificationTransport<rmcp::transport::worker::WorkerTransport<rmcp::transport::streamable_http_client::StreamableHttpClientWorker<codex_rmcp_client::http_client_adapter::StreamableHttpClientAdapter>>>] error: Client error: HTTP request failed: http/request failed: error sending request for url (https://chatgpt.com/backend-api/ps/mcp)"
+        }
+      ],
+      "isError": true
+    }
+  }
+]

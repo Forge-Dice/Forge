@@ -1,0 +1,11 @@
+{
+  "path": "/repos/Forge-Dice/forge-actions-preflight-lab-20261003",
+  "observed_utc": "2026-10-03T12:53:45.5664791Z",
+  "status": 403,
+  "method": "DELETE",
+  "body": {
+    "message": "Must have admin rights to Repository.",
+    "documentation_url": "https://docs.github.com/rest/repos/repos#delete-a-repository",
+    "status": "403"
+  }
+}
