@@ -34,7 +34,7 @@ describe("case share file", () => {
       const r = importCaseText(exportCaseFiles(filesOf(join(FIXTURES, name))));
       expect(r.ok, name).toBe(true);
       if (!r.ok) continue;
-      expect(r.slug).toMatch(/^eigen-[0-9a-f]{12}$/);
+      expect(r.slug).toMatch(/^eigen-[0-9a-f]{32}$/);
       expect(newGame(r.pkg, r.clockOrigin).state.events).toEqual([]);
     }
   });
