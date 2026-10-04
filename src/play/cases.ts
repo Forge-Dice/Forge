@@ -22,7 +22,7 @@ export type PlayCase = {
 export const PLAY_CASES = {
   vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v1" },
   "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v2" },
-  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v1" },
+  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v2" },
 } as const satisfies Record<string, PlayCase>;
 export type PlayCaseName = keyof typeof PLAY_CASES;
 

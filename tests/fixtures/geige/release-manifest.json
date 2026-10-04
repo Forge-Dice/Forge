@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "releaseContextHash": "ec96c3afda80cb0d96543a18abe2b7e49bdde8105dc8d4a7832c16b983459d6a",
+  "releaseContextHash": "4acf39e468b50a82772e168ad9e51fa7bfd7d834301190bcb1d239e492cd699a",
   "adapterVersion": "forge-release-proof-v1",
   "certificateData": {
     "schemaVersion": 1,
@@ -58,6 +58,19 @@
         }
       },
       {
+        "stepId": "ask-ida-garderobe",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ida"
+            }
+          },
+          "questionId": "question:q06"
+        }
+      },
+      {
         "stepId": "search-keller",
         "event": {
           "type": "investigate",
@@ -72,6 +85,39 @@
       }
     ],
     "observations": [
+      {
+        "id": "reported:ida-denies",
+        "kind": "REPORTED_BY_NPC",
+        "npcId": "person:ida",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:ida-garderobe",
+          "value": false
+        },
+        "alternatives": [
+          {
+            "kind": "npc",
+            "questionId": "question:q06",
+            "claim": {
+              "kind": "personAt",
+              "person": {
+                "$playerRefOf": {
+                  "kind": "person",
+                  "id": "person:ida"
+                }
+              },
+              "location": {
+                "$playerRefOf": {
+                  "kind": "location",
+                  "id": "location:garderobe"
+                }
+              },
+              "at": 2400
+            },
+            "stance": "denies"
+          }
+        ]
+      },
       {
         "id": "observed:paul",
         "kind": "OBSERVED",
