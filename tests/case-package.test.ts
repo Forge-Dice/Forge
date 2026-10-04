@@ -408,7 +408,8 @@ describe("proof binding", () => {
   it("binds a complete profile and manifest, without any solvability claim", () => {
     expect(pkg.proof!.releaseHash).toBe(hashReleaseManifest(pkg.proof!.releaseManifest));
     expect(pkg.proof!.profile.bindings.releaseHash).toBe(pkg.proof!.releaseHash);
-    expect(Object.keys(pkg.proof!).sort()).toEqual(["profile", "releaseHash", "releaseManifest"]);
+    expect(Object.keys(pkg.proof!).sort()).toEqual(["profile", "releaseHash", "releaseManifest", "routes"]);
+    expect(pkg.proof!.routes).toEqual([{ routeId: "witness", stepIds: pkg.proof!.profile.witnessStepIds }]);
     expect(Object.isFrozen(pkg.proof!.profile)).toBe(true);
     expect(JSON.stringify(Object.keys(pkg))).not.toMatch(/solvable|pass|verdict/i);
   });
@@ -431,6 +432,43 @@ describe("proof binding", () => {
     expect(permuted.ok && permuted.package.identity.packageHash).toBe(pkg.identity.packageHash);
     const witnessOnly = proofFindings({ profile: (p) => p.witnessStepIds.reverse() });
     expect(one(witnessOnly)).toEqual({ code: "PROOF_BINDING", path: [...CERT, "steps"] });
+  });
+
+  it("further routes walk the certified steps; each is bound into the release hash", () => {
+    const witness = [...pkg.proof!.profile.witnessStepIds];
+    expect(witness.length).toBeGreaterThan(1);
+    const routed = bindWith({ cert: (c) => (c.routes = [{ routeId: "umweg", stepIds: [...witness].reverse() }]) });
+    if (!routed.ok) throw new Error(JSON.stringify(routed.findings));
+    expect(routed.package.proof!.routes).toEqual([
+      { routeId: "witness", stepIds: witness },
+      { routeId: "umweg", stepIds: [...witness].reverse() },
+    ]);
+    expect(routed.package.proof!.releaseHash).not.toBe(pkg.proof!.releaseHash);
+    const shorter = bindWith({ cert: (c) => (c.routes = [{ routeId: "kurz", stepIds: witness.slice(1) }]) });
+    expect(shorter.ok).toBe(true);
+  });
+
+  it("a route step that is not certified, or a certified step no route uses, is a binding error", () => {
+    const steps = [...CERT, "steps"];
+    expect(one(proofFindings({ cert: (c) => (c.routes = [{ routeId: "fremd", stepIds: ["nicht-zertifiziert"] }]) }))).toEqual({ code: "PROOF_BINDING", path: steps });
+    expect(one(proofFindings({ profile: (p) => p.witnessStepIds.pop() }))).toEqual({ code: "PROOF_BINDING", path: steps });
+    // The same step used only by a further route is certified again.
+    const last = pkg.proof!.profile.witnessStepIds.at(-1)!;
+    expect(bindWith({ profile: (p) => p.witnessStepIds.pop(), cert: (c) => (c.routes = [{ routeId: "mit-ende", stepIds: [last] }]) }).ok).toBe(true);
+  });
+
+  it("route IDs are unique and not \"witness\"; a route repeats no step and is not empty", () => {
+    const w = pkg.proof!.profile.witnessStepIds;
+    expect(one(proofFindings({ cert: (c) => (c.routes = [{ routeId: "witness", stepIds: [w[0]] }]) }))).toEqual({ code: "PROOF_BINDING", path: [...CERT, "routes", 1] });
+    expect(one(proofFindings({ cert: (c) => (c.routes = [{ routeId: "a", stepIds: [w[0]] }, { routeId: "a", stepIds: [w[1]] }]) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: [...CERT, "routes", 2],
+    });
+    expect(one(proofFindings({ cert: (c) => (c.routes = [{ routeId: "a", stepIds: [w[0], w[0]] }]) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: [...CERT, "routes", 0, "stepIds", 1],
+    });
+    expect(codes(proofFindings({ cert: (c) => (c.routes = [{ routeId: "a", stepIds: [] }]) }))).toEqual(["SHAPE"]);
   });
 
   it("certificate arrays stay ORDERED: permuting alternatives changes releaseHash", () => {

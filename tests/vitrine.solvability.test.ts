@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { checkCaseSolvability, type WitnessReplay } from "../src/domain/case-solvability.ts";
+import { checkCaseRoutes } from "../src/domain/case-routes.ts";
 import {
   loadVitrine,
   loadVitrineProofProfile,
@@ -51,6 +52,19 @@ describe("Die leere Vitrine: solvability with the real witness", () => {
 
   it("Route B (terminal first) passes as well", () => {
     expect(check(ROUTE_B).status).toBe("pass");
+  });
+
+  it("the release manifest certifies Route A and Route B; checkCaseRoutes replays each on its own", () => {
+    const resolution = resolveVitrinePackage(v);
+    if (!resolution.ok) throw new Error(JSON.stringify(resolution.findings));
+    const routes = resolution.package.proof!.routes;
+    expect(routes).toEqual([{ routeId: "witness", stepIds: ROUTE_A }, { routeId: "terminal-zuerst", stepIds: ROUTE_B }]);
+    const result = checkCaseRoutes(v.truth, v.solution, profile, routes, vitrineWitness(v));
+    expect(result.status).toBe("pass");
+    expect(result.routes.map((r) => r.report.survivingAnswerCount)).toEqual([1, 1]);
+    const broken = checkCaseRoutes(v.truth, v.solution, profile, [...routes, { routeId: "ohne-terminal", stepIds: ROUTE_A.slice(0, 3) }], vitrineWitness(v));
+    expect(broken.status).toBe("fail");
+    expect(broken.routes.map((r) => r.report.status)).toEqual(["pass", "pass", "fail"]);
   });
 
   it("without the terminal Oskar is not excluded: fail, Oskar and Lina stay open (4 vectors)", () => {
