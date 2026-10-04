@@ -2,13 +2,14 @@
   "schemaVersion": 1,
   "bindings": {
     "caseId": "case:letter-opener",
-    "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
-    "solutionHash": "043fe945472d7cec41b7faeea39c07fea6d0f572f25e29f8002fc69f85089010",
+    "truthHash": "24accd1071c10c9b3539b46ab1034c22293f64d0b84fcf3fc861d7bca2610f96",
+    "solutionHash": "29db5127ca231cf4edc1f1d98ae20a848662361163c1c0ec0177e5196d99bfd9",
     "releaseHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT"
   },
   "answerScope": [
     "conclusion:ben-responsible",
-    "conclusion:anna-responsible"
+    "conclusion:anna-responsible",
+    "conclusion:dorian-responsible"
   ],
   "ambiguityPolicy": "must_disambiguate",
   "question": {
@@ -36,26 +37,13 @@
       }
     },
     {
-      "id": "observed:cuff",
-      "kind": "OBSERVED",
-      "literal": {
-        "kind": "proposition",
-        "propositionId": "proposition:ben-at-murder",
-        "value": true
-      },
-      "source": {
-        "kind": "evidence",
-        "evidenceId": "evidence:cuff-button"
-      }
-    },
-    {
       "id": "public-rule:participation",
       "kind": "PUBLIC_RULE",
       "rules": [
         {
           "edgeId": "responsible:ben",
           "allOf": [
-            "observation:cuff"
+            "observation:ben-admits"
           ],
           "yields": {
             "kind": "conclusion",
@@ -79,6 +67,19 @@
       }
     },
     {
+      "id": "observed:kitchen",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:dorian-in-kitchen",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:kitchen-log"
+      }
+    },
+    {
       "id": "public-rule:alibi",
       "kind": "PUBLIC_RULE",
       "rules": [
@@ -94,13 +95,30 @@
           }
         }
       ]
+    },
+    {
+      "id": "public-rule:alibi-kitchen",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "alibi:dorian",
+          "allOf": [
+            "observation:kitchen"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:dorian-responsible",
+            "value": false
+          }
+        }
+      ]
     }
   ],
   "nodes": [
     {
-      "id": "observation:cuff",
+      "id": "observation:ben-admits",
       "kind": "observation",
-      "observationId": "observed:cuff"
+      "observationId": "reported:ben-admits"
     },
     {
       "id": "license:participation",
@@ -134,13 +152,32 @@
         "conclusionId": "conclusion:anna-responsible",
         "value": false
       }
+    },
+    {
+      "id": "observation:kitchen",
+      "kind": "observation",
+      "observationId": "observed:kitchen"
+    },
+    {
+      "id": "literal:dorian",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:dorian-responsible",
+        "value": false
+      }
+    },
+    {
+      "id": "license:alibi-kitchen",
+      "kind": "observation",
+      "observationId": "public-rule:alibi-kitchen"
     }
   ],
   "edges": [
     {
       "id": "responsible:ben",
       "allOf": [
-        "observation:cuff",
+        "observation:ben-admits",
         "license:participation"
       ],
       "to": "literal:ben",
@@ -154,11 +191,21 @@
       ],
       "to": "literal:anna",
       "license": "license:alibi"
+    },
+    {
+      "id": "alibi:dorian",
+      "allOf": [
+        "observation:kitchen",
+        "license:alibi-kitchen"
+      ],
+      "to": "literal:dorian",
+      "license": "license:alibi-kitchen"
     }
   ],
   "witnessStepIds": [
     "search-library",
     "search-garden",
+    "search-kitchen",
     "ask-ben-presence",
     "confront-ben"
   ]

@@ -32,6 +32,19 @@
         }
       },
       {
+        "stepId": "search-kitchen",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:kitchen"
+            }
+          }
+        }
+      },
+      {
         "stepId": "ask-ben-presence",
         "event": {
           "type": "interrogate",
@@ -131,52 +144,13 @@
         ]
       },
       {
-        "id": "observed:cuff",
-        "kind": "OBSERVED",
-        "literal": {
-          "kind": "proposition",
-          "propositionId": "proposition:ben-at-murder",
-          "value": true
-        },
-        "source": {
-          "kind": "evidence",
-          "evidenceId": "evidence:cuff-button"
-        },
-        "alternatives": [
-          {
-            "report": {
-              "claim": {
-                "kind": "eventHasParticipant",
-                "event": {
-                  "$playerRefOf": {
-                    "kind": "event",
-                    "id": "event:murder"
-                  }
-                },
-                "person": {
-                  "$playerRefOf": {
-                    "kind": "person",
-                    "id": "person:ben"
-                  }
-                }
-              },
-              "stance": "affirms",
-              "source": {
-                "kind": "observation"
-              }
-            },
-            "licenseRuleId": "rule:certified-sources"
-          }
-        ]
-      },
-      {
         "id": "public-rule:participation",
         "kind": "PUBLIC_RULE",
         "rules": [
           {
             "edgeId": "responsible:ben",
             "allOf": [
-              "observation:cuff"
+              "observation:ben-admits"
             ],
             "yields": {
               "kind": "conclusion",
@@ -187,7 +161,7 @@
         ],
         "ruleId": "rule:participation",
         "afterObservations": [
-          "observed:cuff"
+          "reported:ben-admits"
         ]
       },
       {
@@ -231,6 +205,46 @@
         ]
       },
       {
+        "id": "observed:kitchen",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:dorian-in-kitchen",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:kitchen-log"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:dorian"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:kitchen"
+                  }
+                },
+                "at": 1500
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
         "id": "public-rule:alibi",
         "kind": "PUBLIC_RULE",
         "rules": [
@@ -249,6 +263,27 @@
         "ruleId": "rule:alibi",
         "afterObservations": [
           "observed:garden"
+        ]
+      },
+      {
+        "id": "public-rule:alibi-kitchen",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "alibi:dorian",
+            "allOf": [
+              "observation:kitchen"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:dorian-responsible",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:alibi",
+        "afterObservations": [
+          "observed:kitchen"
         ]
       }
     ]

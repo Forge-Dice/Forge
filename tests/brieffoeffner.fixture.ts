@@ -13,7 +13,7 @@ import { PLAY_CASES, playPackageInput, refSource } from "../src/play/cases.ts";
 import { sessionWitness } from "../src/authoring/check-case.ts";
 import { releaseContextOf } from "./case-package.fixture.ts";
 
-// "Der Brieföffner" (case:letter-opener, revision 4): MYSTERY-VERTICAL-SLICE-ROADMAP §7, derived from
+// "Der Brieföffner" (case:letter-opener, revision 5): MYSTERY-VERTICAL-SLICE-ROADMAP §7, derived from
 // fullCase() in case-truth.fixture.ts. Ruleset v2: Ben lies as the roadmap planned (q01 "not there",
 // q02 "Anna was there"); the cuff button and the garden trail refute him.
 // PRIVATE: contains the answer key. The witness port replays the steps through the real session.
