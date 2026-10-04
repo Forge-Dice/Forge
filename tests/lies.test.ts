@@ -74,7 +74,8 @@ describe("existing cases stay valid unchanged", () => {
     const v1 = resolveCasePackage({ ...playPackageInput(PLAY_CASES.vitrine), rulesetVersion: "mystery-session-v1" }, refSource(playPackageInput(PLAY_CASES.vitrine).truth, PLAY_CASES.vitrine.salt));
     expect(v1.ok && v1.package.identity).toEqual({
       schemaVersion: 1,
-      packageHash: "b1dd6757491756b3cc3f1e2aa0519d900430be5317f8745d37f5457ee261c704",
+      // Re-pinned after the editorial pass on the Vitrine player texts (LEKTORAT); before: b1dd6757….
+      packageHash: "561afd4a19199b77957bf049c3e508036390b439d38f1887dcf8c56db921dfc2",
       rulesetVersion: "mystery-session-v1",
     });
   });

@@ -31,7 +31,7 @@ describe("npm run play: Die leere Vitrine", () => {
   it("loads the real package and shows only public content", () => {
     expect(pkg.publicContent.title).toBe("Die leere Vitrine");
     const text = intro(start()) + run(["fall", "bekannt", "u", "f", "a", "journal"]).all;
-    expect(text).toContain("Wer entnahm die Medaille eigenhändig?");
+    expect(text).toContain("Wer hat die Medaille um 18:04 eigenhändig aus der Vitrine genommen?");
     expect(text).not.toMatch(INTERNAL_ID);
     expect(text).not.toMatch(/pr1_/);
   });
@@ -43,20 +43,20 @@ describe("npm run play: Die leere Vitrine", () => {
     const hof = numberOf(start.texts[0]!, "Ort durchsuchen: Innenhof");
     const after = run([`u ${hof}`, "f"]);
     expect(after.texts[0]).toContain("Fund: Kontaktbogen");
-    expect(after.texts[1]).toContain("Nora Weiss: Kann ich den vollständigen Film dieses Hoffototermins sehen?");
+    expect(after.texts[1]).toContain("Nora Weiss: Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?");
   });
 
   it("plays to the solution through the real session: Hof, Kamera, Archivterminal, then Lina", () => {
     let { game, texts } = run(["u"]);
     ({ game } = run([`u ${numberOf(texts[0]!, "Innenhof")}`], game));
     let listing = command(game, "f").text;
-    ({ game } = run([`f ${numberOf(listing, "vollständigen Film")}`], game));
+    ({ game } = run([`f ${numberOf(listing, "Lief Ihre Kamera")}`], game));
     listing = command(game, "u").text;
     let step = command(game, `u ${numberOf(listing, "Noras Kamera")}`);
     expect(step.text).toContain("Fund: Vollständiger Hoffilm");
     game = step.game;
     listing = command(game, "f").text;
-    ({ game } = run([`f ${numberOf(listing, "unabhängige Archivnachweis")}`], game));
+    ({ game } = run([`f ${numberOf(listing, "Zeichnet im Archiv ein Gerät auf")}`], game));
     listing = command(game, "u").text;
     step = command(game, `u ${numberOf(listing, "Archivterminal")}`);
     expect(step.text).toContain("Fund: Archivaufnahme");

@@ -5,7 +5,7 @@
   "entries": [
     {
       "evidenceId": "evidence:cuff-button",
-      "text": "Neben dem Schreibtisch liegt ein abgerissener Manschettenknopf von Bens Hemd. Daneben: Claras Blut, noch nicht getrocknet. Der Knopf riss bei der Tat ab.",
+      "text": "Neben dem Schreibtisch liegt ein abgerissener Manschettenknopf aus Perlmutt, eindeutig von Bens Hemd. Daneben Claras Blut, noch feucht. Der Knopf riss bei der Tat ab.",
       "mentions": [
         {
           "kind": "person",
@@ -47,7 +47,7 @@
     },
     {
       "evidenceId": "evidence:muddy-path",
-      "text": "Frische Fußspuren im Gartenbeet, Annas Stiefelprofil. Der Gärtnerzähler zeigt: Sie entstanden um 20:25 Uhr, zur Tatzeit.",
+      "text": "Frische Fußspuren im Gemüsebeet, Annas Stiefelprofil. Die Wildkamera am Gartenzaun hat sie aufgenommen: 20:25 Uhr, genau zur Tatzeit.",
       "mentions": [
         {
           "kind": "person",
@@ -75,7 +75,7 @@
     },
     {
       "evidenceId": "evidence:gloves-dirty",
-      "text": "Annas Gartenhandschuhe liegen auf der Bank, voller frischer Erde.",
+      "text": "Annas Gartenhandschuhe liegen auf der Bank am Beet, nass vom Regen und voller frischer Erde.",
       "mentions": [
         {
           "kind": "person",

@@ -147,7 +147,7 @@ describe("npm run play -- geige", () => {
 
   it("route A: Kurt's answer makes the cabinet examinable", () => {
     const say = player();
-    expect(say(`f ${numberOf(say("f"), "Was haben Sie im Heizungskeller gemacht?")}`)).toContain("„Ja.“");
+    expect(say(`f ${numberOf(say("f"), "Haben Sie in der Pause den Schaltschrank im Keller kontrolliert?")}`)).toContain("„Ja.“");
     expect(say("u")).toContain("Gegenstand untersuchen: Schaltschrank");
   });
 });
