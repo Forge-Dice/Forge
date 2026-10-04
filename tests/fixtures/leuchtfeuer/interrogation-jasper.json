@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "catalogueHash": "6fcc3631c42e0ddab2c97f46200552037afd12245d4184c277c98a563cded1a5",
+  "npcId": "person:jasper",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q06",
+      "act": "lie",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:jasper",
+        "locationId": "location:strand",
+        "at": 3600
+      },
+      "stance": "denies",
+      "reveal": []
+    },
+    {
+      "questionId": "question:q09",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:jasper",
+        "locationId": "location:faehrhaus",
+        "at": 7380
+      },
+      "reveal": []
+    }
+  ],
+  "confrontations": [
+    {
+      "questionId": "question:q06",
+      "evidenceId": "evidence:visitenkarte",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:jasper",
+        "locationId": "location:strand",
+        "at": 3600
+      },
+      "reveal": []
+    }
+  ]
+}

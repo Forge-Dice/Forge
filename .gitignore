@@ -1,4 +1,5 @@
 node_modules/
 *.save.json
+generated/
 dist/
 .case-workspace/

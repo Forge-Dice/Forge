@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "known": [
+    {
+      "kind": "person",
+      "id": "person:hinrich"
+    },
+    {
+      "kind": "person",
+      "id": "person:frauke"
+    },
+    {
+      "kind": "person",
+      "id": "person:ole"
+    },
+    {
+      "kind": "person",
+      "id": "person:marlene"
+    },
+    {
+      "kind": "person",
+      "id": "person:jasper"
+    },
+    {
+      "kind": "location",
+      "id": "location:laterne"
+    },
+    {
+      "kind": "location",
+      "id": "location:faehrhaus"
+    },
+    {
+      "kind": "location",
+      "id": "location:hafen"
+    },
+    {
+      "kind": "location",
+      "id": "location:vogelwarte"
+    },
+    {
+      "kind": "location",
+      "id": "location:oleshaus"
+    },
+    {
+      "kind": "event",
+      "id": "event:sabotage"
+    }
+  ]
+}

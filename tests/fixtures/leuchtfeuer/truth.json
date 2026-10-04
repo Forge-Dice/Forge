@@ -1,0 +1,525 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "revision": 1,
+  "title": "Das dunkle Leuchtfeuer",
+  "timeline": {
+    "unit": "second",
+    "originLabel": "00:00 Uhr, Mitternacht auf der Hallig"
+  },
+  "persons": [
+    {
+      "id": "person:hinrich",
+      "name": "Hinrich Paulsen"
+    },
+    {
+      "id": "person:frauke",
+      "name": "Frauke Jensen"
+    },
+    {
+      "id": "person:ole",
+      "name": "Ole Brodersen"
+    },
+    {
+      "id": "person:marlene",
+      "name": "Marlene Voss"
+    },
+    {
+      "id": "person:jasper",
+      "name": "Jasper Kühl"
+    },
+    {
+      "id": "person:knut",
+      "name": "Knut Sievers"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location:laterne",
+      "name": "Laternenraum"
+    },
+    {
+      "id": "location:faehrhaus",
+      "name": "Fährhaus"
+    },
+    {
+      "id": "location:hafen",
+      "name": "Hafen"
+    },
+    {
+      "id": "location:vogelwarte",
+      "name": "Vogelwarte"
+    },
+    {
+      "id": "location:oleshaus",
+      "name": "Oles Haus"
+    },
+    {
+      "id": "location:strand",
+      "name": "Weststrand"
+    }
+  ],
+  "items": [
+    {
+      "id": "item:schalter",
+      "name": "Lampenschalter"
+    },
+    {
+      "id": "item:telefon",
+      "name": "Telefon des Fährhauses"
+    },
+    {
+      "id": "item:pegelkamera",
+      "name": "Pegelkamera am Hafen"
+    }
+  ],
+  "relationships": [],
+  "events": [
+    {
+      "id": "event:pegelwartung",
+      "description": "Hinrich wartet die Pegelkamera",
+      "time": {
+        "kind": "interval",
+        "start": 0,
+        "end": 600
+      },
+      "locationId": "location:hafen",
+      "participantIds": [
+        "person:hinrich"
+      ],
+      "itemIds": [
+        "item:pegelkamera"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:landung",
+      "description": "Knut landet mit einem Schlauchboot am Weststrand",
+      "time": {
+        "kind": "instant",
+        "at": 2400
+      },
+      "locationId": "location:strand",
+      "participantIds": [
+        "person:knut"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:treffen",
+      "description": "Jasper trifft Knut am Weststrand",
+      "time": {
+        "kind": "instant",
+        "at": 3600
+      },
+      "locationId": "location:strand",
+      "participantIds": [
+        "person:jasper",
+        "person:knut"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:grog",
+      "description": "Hinrich trinkt zwei Grog im Fährhaus",
+      "time": {
+        "kind": "instant",
+        "at": 6300
+      },
+      "locationId": "location:faehrhaus",
+      "participantIds": [
+        "person:hinrich",
+        "person:frauke"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:beringung",
+      "description": "Marlene beringt Zugvögel in der Vogelwarte",
+      "time": {
+        "kind": "interval",
+        "start": 6600,
+        "end": 7800
+      },
+      "locationId": "location:vogelwarte",
+      "participantIds": [
+        "person:marlene"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:ablegen",
+      "description": "Ole legt mit seinem Kutter ab",
+      "time": {
+        "kind": "interval",
+        "start": 7000,
+        "end": 7400
+      },
+      "locationId": "location:hafen",
+      "participantIds": [
+        "person:ole"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:anruf",
+      "description": "Frauke ruft den Arzt auf dem Festland an",
+      "time": {
+        "kind": "interval",
+        "start": 7200,
+        "end": 7320
+      },
+      "locationId": "location:faehrhaus",
+      "participantIds": [
+        "person:frauke"
+      ],
+      "itemIds": [
+        "item:telefon"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:notruf",
+      "description": "Jasper meldet der Küstenwache das erloschene Feuer",
+      "time": {
+        "kind": "instant",
+        "at": 7380
+      },
+      "locationId": "location:faehrhaus",
+      "participantIds": [
+        "person:jasper"
+      ],
+      "itemIds": [
+        "item:telefon"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:sabotage",
+      "description": "Knut schaltet das Leuchtfeuer von Hand ab",
+      "time": {
+        "kind": "instant",
+        "at": 7200
+      },
+      "locationId": "location:laterne",
+      "participantIds": [
+        "person:knut"
+      ],
+      "itemIds": [
+        "item:schalter"
+      ],
+      "causedByEventIds": []
+    }
+  ],
+  "motives": [
+    {
+      "id": "motive:rache",
+      "personId": "person:knut",
+      "eventIds": [
+        "event:sabotage"
+      ],
+      "description": "Knut rächt sich an der Reederei, die ihn entlassen hat"
+    }
+  ],
+  "propositions": [
+    {
+      "id": "proposition:hinrich-grog",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:hinrich",
+        "locationId": "location:faehrhaus",
+        "at": 6300
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:jasper-notruf",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:jasper",
+        "locationId": "location:faehrhaus",
+        "at": 7380
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:frauke-anruf",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:frauke",
+        "locationId": "location:faehrhaus",
+        "at": 7200
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:ole-hafen",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ole",
+        "locationId": "location:hafen",
+        "at": 7200
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:marlene-warte",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:marlene",
+        "locationId": "location:vogelwarte",
+        "at": 7200
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:knut-landung",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:knut",
+        "locationId": "location:strand",
+        "at": 2400
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:knut-laterne",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:knut",
+        "locationId": "location:laterne",
+        "at": 7200
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:jasper-strand",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:jasper",
+        "locationId": "location:strand",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:hinrich-laterne",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:hinrich",
+        "locationId": "location:laterne",
+        "at": 7200
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:ole-haus",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ole",
+        "locationId": "location:oleshaus",
+        "at": 7200
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:anruf-telefon",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:anruf",
+        "itemId": "item:telefon"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:wartung-pegel",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:pegelwartung",
+        "itemId": "item:pegelkamera"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:sabotage-schalter",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:sabotage",
+        "itemId": "item:schalter"
+      },
+      "truth": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence:schaltprotokoll",
+      "description": "Schaltprotokoll der Lampe",
+      "source": {
+        "kind": "location",
+        "id": "location:laterne"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:sabotage-schalter",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:pfeife",
+      "description": "Hinrichs Pfeife neben der Lampe",
+      "source": {
+        "kind": "location",
+        "id": "location:laterne"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:hinrich-laterne",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:sandspuren",
+      "description": "Nasser Sand auf der Wendeltreppe",
+      "source": {
+        "kind": "location",
+        "id": "location:laterne"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:knut-laterne",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:schlauchboot",
+      "description": "Fremdes Schlauchboot mit Bootsbuch",
+      "source": {
+        "kind": "location",
+        "id": "location:strand"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:knut-landung",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:visitenkarte",
+      "description": "Visitenkarte im Sand",
+      "source": {
+        "kind": "location",
+        "id": "location:strand"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:jasper-strand",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:kassenbuch",
+      "description": "Kassenbuch des Fährhauses",
+      "source": {
+        "kind": "location",
+        "id": "location:faehrhaus"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:hinrich-grog",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:anrufliste",
+      "description": "Anrufliste des Fährhaus-Telefons",
+      "source": {
+        "kind": "item",
+        "id": "item:telefon"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:frauke-anruf",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:jasper-notruf",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:pegelmast",
+      "description": "Kamera am Pegelmast",
+      "source": {
+        "kind": "location",
+        "id": "location:hafen"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:wartung-pegel",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:pegelfoto",
+      "description": "Pegelfoto um 02:00",
+      "source": {
+        "kind": "item",
+        "id": "item:pegelkamera"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:ole-hafen",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:ole-haus",
+          "direction": "refutes"
+        }
+      ]
+    },
+    {
+      "id": "evidence:nachtkamera",
+      "description": "Infrarotbild der Vogelwarte",
+      "source": {
+        "kind": "location",
+        "id": "location:vogelwarte"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:marlene-warte",
+          "direction": "supports"
+        }
+      ]
+    }
+  ],
+  "secrets": [
+    {
+      "id": "secret:rache",
+      "propositionIds": [
+        "proposition:knut-laterne"
+      ]
+    }
+  ],
+  "redHerrings": [
+    {
+      "id": "red-herring:pfeife",
+      "evidenceIds": [
+        "evidence:pfeife"
+      ],
+      "misleadingPropositionId": "proposition:hinrich-laterne"
+    }
+  ]
+}
