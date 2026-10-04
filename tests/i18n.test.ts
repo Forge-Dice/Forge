@@ -8,6 +8,8 @@ import { command, intro, newGame, saveText, switchLang, type Game } from "../src
 import { MESSAGES, parseLang } from "../src/play/messages.ts";
 import { renderGame } from "../src/play/web-page.ts";
 import { createWebApp } from "../src/play/web.ts";
+import { caseSources, CaseWorkspace, checkAndFix, editsFromForm } from "../src/play/editor.ts";
+import { renderEditor } from "../src/play/editor-page.ts";
 
 // English: UI text from the message table, case text from each case's en/ locale variant. Truth,
 // solution, NPCs and proof are shared, so the English case is the same case.
@@ -225,5 +227,27 @@ describe("generated cases in English", () => {
     expect(page).toContain(">Investigate</h2>");
     expect(page).toContain("Random case 42");
     expect((await handle("GET", "/fall/zufall-42", none, "sprache=de")).body).toContain(">Untersuchen</h2>");
+  });
+});
+
+describe("English version in the case editor", () => {
+  it("edits the translation beside the German text, marks it stale after a German edit and keeps it valid", () => {
+    const ws = new CaseWorkspace(mkdtempSync(join(tmpdir(), "i18n-editor-")));
+    const name = ws.open(caseSources().find((s) => s.key === "fixtures/geige")!);
+    const dir = ws.dirOf(name)!;
+    const page = renderEditor(name, dir, checkAndFix(dir), 0, null);
+    expect(page).toContain('id="sprache-en"');
+    expect(page).toContain('name="f:en/public-content.json:title"');
+
+    // A German edit: the translation is reported stale (a warning), the case stays valid.
+    const de = ws.save(name, editsFromForm(new URLSearchParams({ "f:public-content.json:title": "Die stumme Geige" })))!;
+    expect(de.check.ok).toBe(true);
+    expect(de.check.problems).toEqual([expect.objectContaining({ file: "en/source.json", severity: "warning" })]);
+
+    // Editing the translation confirms it.
+    const en = ws.save(name, editsFromForm(new URLSearchParams({ "f:en/public-content.json:title": "The Mute Violin" })))!;
+    expect(en.check.ok).toBe(true);
+    expect(en.check.problems).toEqual([]);
+    expect(JSON.parse(readFileSync(join(dir, "en", "public-content.json"), "utf8")).title).toBe("The Mute Violin");
   });
 });

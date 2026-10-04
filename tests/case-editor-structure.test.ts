@@ -81,7 +81,7 @@ describe("structure operations", () => {
     expect(ws.canUndo(name)).toBe(true);
     expect(ws.structure(name, { op: "remove", id: "person:lotte" })!.ok).toBe(true);
     expect(existsSync(join(dir, "npc-lotte.json"))).toBe(false);
-    expect(readdirSync(dir).some((f) => readFileSync(join(dir, f), "utf8").includes("person:lotte"))).toBe(false);
+    expect(readdirSync(dir).filter((f) => f.endsWith(".json")).some((f) => readFileSync(join(dir, f), "utf8").includes("person:lotte"))).toBe(false);
     expect(checkCaseFolder(dir).ok).toBe(true);
     expect(ws.undo(name)).toBe(true);
     expect(digest(dir)).toBe(withLotte);
