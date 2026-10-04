@@ -1,0 +1,1929 @@
+{
+  "schemaVersion": 1,
+  "repository": "Forge-Dice/Forge",
+  "baseMain": "3d7545d843883418348004e68717399a64da7a7d",
+  "candidateContractVersion": 2,
+  "sourceCertificationCommit": "b854b11379b5cb43c3d6bc77fedacde7e96511fd",
+  "sourceImplementationPackageCommit": "bb525bfd230128d3d98f3db744ba23217196c53c",
+  "counts": {
+    "existingAcceptance": 177,
+    "unchanged": 166,
+    "expectedResultChange": 11,
+    "obsolete": 0,
+    "newCases": 7,
+    "mutants": 12,
+    "adversarialAttacks": 100
+  },
+  "responsibilityFreeze": {
+    "A": [
+      "Git acquisition/object/layout/path/mode/history",
+      "second-parent guard",
+      "safe materialization",
+      "A process/object budgets"
+    ],
+    "B": [
+      "scope/freeze",
+      "test inventory",
+      "worker execution/measured isolation probes",
+      "mutation application/classification",
+      "worker report transport"
+    ],
+    "C": [
+      "GitHub read adapter",
+      "review schema/freshness",
+      "Gate->Stage2 receipt binding",
+      "final two-round checks",
+      "attempt/job interpretation",
+      "workflow shape"
+    ],
+    "Platform/Ruleset": [
+      "merge-method protection",
+      "draft-gate enforcement if platform-owned",
+      "required-check source binding",
+      "R3/Owner bypass configuration",
+      "Actions policy"
+    ],
+    "Owner Procedure": [
+      "architecture approval",
+      "accepted dependency publication",
+      "bootstrap/deployment attestations"
+    ]
+  },
+  "blockersClassification": [
+    {
+      "topic": "A streaming/resource budgets",
+      "classification": "REAL CONTRACT DEFECT",
+      "owner": "A"
+    },
+    {
+      "topic": "B Gate/Stage2 review authority gap",
+      "classification": "REAL CONTRACT DEFECT",
+      "owner": "C"
+    },
+    {
+      "topic": "C unclosed review schemas",
+      "classification": "REAL CONTRACT DEFECT",
+      "owner": "C"
+    },
+    {
+      "topic": "D masked mutant evidence",
+      "classification": "REAL CONTRACT DEFECT",
+      "owner": "A/B/C acceptance"
+    },
+    {
+      "topic": "E second-parent protection",
+      "classification": "REAL CONTRACT DEFECT",
+      "owner": "A"
+    },
+    {
+      "topic": "F failure-code/rejection priority",
+      "classification": "REAL CONTRACT DEFECT only for certified ambiguities",
+      "owner": "A/B/C by layer"
+    },
+    {
+      "topic": "G draft-gate",
+      "classification": "PLATFORM CONFIGURATION",
+      "owner": "Platform/Ruleset"
+    },
+    {
+      "topic": "H merge-method protection",
+      "classification": "PLATFORM CONFIGURATION",
+      "owner": "Platform/Ruleset"
+    },
+    {
+      "topic": "I R3/Owner-bypass semantics",
+      "classification": "PLATFORM CONFIGURATION / OWNER PROCEDURE",
+      "owner": "Platform/Ruleset|Owner Procedure"
+    },
+    {
+      "topic": "J execution-isolation boundary",
+      "classification": "IMPLEMENTATION/DEPLOYMENT ACCEPTANCE BOUNDARY",
+      "owner": "B|Platform/Ruleset"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AV-001",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-002",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-003",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-004",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: malformed/external invalid input is schema/input failure, never semantic reject."
+    },
+    {
+      "id": "AV-005",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-006",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-007",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-008",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-009",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-010",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-011",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-012",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-013",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-014",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-015",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-016",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-017",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-018",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-019",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-020",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-021",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-022",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-023",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-024",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-025",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-026",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-027",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-028",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-029",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-030",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-031",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-032",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-033",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-034",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-035",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-036",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-037",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-038",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-039",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-040",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-041",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-042",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-043",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-044",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-045",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-046",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-047",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-048",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-049",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-050",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-051",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-052",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-053",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-054",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-055",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-056",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-057",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-058",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-059",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-060",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-061",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-062",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-063",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-064",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-065",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-066",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-067",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-068",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-069",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-070",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-071",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: 129 history commits => GIT_LIMIT before GIT_HISTORY."
+    },
+    {
+      "id": "AV-072",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-073",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-074",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-075",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-076",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-077",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-078",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-079",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-080",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-081",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-082",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-083",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-084",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-085",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-086",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-087",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-088",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-089",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-090",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-091",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-092",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-093",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-094",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-095",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-096",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-097",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-098",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-099",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-100",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-101",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-102",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-103",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-104",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-105",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-106",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-107",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-108",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-109",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-110",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-111",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-112",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-113",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-114",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-115",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: fullName reuse allowed only for distinct structural tuples; tuple/occurrence collapse rejects."
+    },
+    {
+      "id": "AV-116",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-117",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-118",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-119",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-120",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-121",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-122",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-123",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: isolation denial accepted from measured worker evidence, not invented supervisor sensor."
+    },
+    {
+      "id": "AV-124",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: isolation denial accepted from measured worker evidence, not invented supervisor sensor."
+    },
+    {
+      "id": "AV-125",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: isolation denial accepted from measured worker evidence, not invented supervisor sensor."
+    },
+    {
+      "id": "AV-126",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-127",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-128",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-129",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-130",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-131",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-132",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-133",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-134",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-135",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-136",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-137",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-138",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-139",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-140",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-141",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-142",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-143",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-144",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-145",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-146",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-147",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-148",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-149",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-150",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: schema-invalid reject => REVIEW_SCHEMA; valid request_changes remains semantic review rejection."
+    },
+    {
+      "id": "AV-151",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-152",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-153",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-154",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: any Gate->Stage2 review snapshot digest change => REVIEW_CHANGED_AFTER_GATE."
+    },
+    {
+      "id": "AV-155",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-156",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-157",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-158",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-159",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-160",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-161",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-162",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-163",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-164",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-165",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-166",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-167",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-168",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-169",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-170",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: prove current-attempt evidence only, not UI rerun menu choice/foreign-check absence."
+    },
+    {
+      "id": "AV-171",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-172",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: prove current-attempt evidence only, not UI rerun menu choice/foreign-check absence."
+    },
+    {
+      "id": "AV-173",
+      "classification": "EXPECTED-RESULT CHANGE",
+      "note": "EXPECTED-RESULT CHANGE: prove current-attempt evidence only, not UI rerun menu choice/foreign-check absence."
+    },
+    {
+      "id": "AV-174",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-175",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-176",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-177",
+      "classification": "UNCHANGED",
+      "note": null
+    },
+    {
+      "id": "AV-178",
+      "owner": "A",
+      "classification": "NEW CASE REQUIRED",
+      "purpose": "Second parent above BASE is rejected even when first-parent chain reaches BASE.",
+      "expected": "GIT_HISTORY"
+    },
+    {
+      "id": "AV-179",
+      "owner": "A",
+      "classification": "NEW CASE REQUIRED",
+      "purpose": "Exactly 8 MiB payload plus valid <=256-byte frame header is accepted; payload 8 MiB+1 is rejected.",
+      "expected": "PASS / GIT_LIMIT"
+    },
+    {
+      "id": "AV-180",
+      "owner": "C",
+      "classification": "NEW CASE REQUIRED",
+      "purpose": "R0 at Gate then R1 before Stage2 with otherwise identical finals rejects by Gate receipt digest.",
+      "expected": "REVIEW_CHANGED_AFTER_GATE"
+    },
+    {
+      "id": "AV-181",
+      "owner": "C",
+      "classification": "NEW CASE REQUIRED",
+      "purpose": "approve with an active blocking finding is schema-invalid.",
+      "expected": "REVIEW_SCHEMA"
+    },
+    {
+      "id": "AV-182",
+      "owner": "C",
+      "classification": "NEW CASE REQUIRED",
+      "purpose": "supersedes closure is backward-only, acyclic and deterministic; unknown/self/forward ref rejects.",
+      "expected": "REVIEW_SCHEMA"
+    },
+    {
+      "id": "AV-183",
+      "owner": "B",
+      "classification": "NEW CASE REQUIRED",
+      "purpose": "Remove one BASE test and add a different passing test with same count.",
+      "expected": "INVENTORY_MISMATCH"
+    },
+    {
+      "id": "AV-184",
+      "owner": "B",
+      "classification": "NEW CASE REQUIRED",
+      "purpose": "Denied hostile probe is judged from measured worker evidence; absent attempted/denied fields reject.",
+      "expected": "PASS / WORKER_REPORT"
+    }
+  ],
+  "mutants": [
+    {
+      "contract": "A",
+      "id": "A1",
+      "status": "REPLACED",
+      "singleEffect": "replace-reference authority",
+      "maskingRule": "raw rehash remains intact; patch must alter only final replace authority",
+      "detector": "replaced-object dedicated assertion"
+    },
+    {
+      "contract": "A",
+      "id": "A2",
+      "status": "REFINED",
+      "singleEffect": "parent O_NOFOLLOW",
+      "detector": "parent symlink traversal assertion"
+    },
+    {
+      "contract": "A",
+      "id": "A3",
+      "status": "REFINED",
+      "singleEffect": "MODE_CHANGE emission/check",
+      "detector": "mode-only + mode/content assertion"
+    },
+    {
+      "contract": "A",
+      "id": "A4",
+      "status": "REPLACED",
+      "singleEffect": "raw duplicate collapse after raw-check position",
+      "detector": "duplicate raw tree entry assertion"
+    },
+    {
+      "contract": "B",
+      "id": "B1",
+      "status": "REFINED",
+      "singleEffect": "exact scope membership -> prefix",
+      "detector": "src/a.ts vs src/a.ts.evil"
+    },
+    {
+      "contract": "B",
+      "id": "B2",
+      "status": "REFINED",
+      "singleEffect": "structural inventory -> count only",
+      "detector": "remove-one/add-one same count"
+    },
+    {
+      "contract": "B",
+      "id": "B3",
+      "status": "REPLACED",
+      "singleEffect": "classifier INFRA_FAILURE -> KILLED for controlled compiler failure",
+      "detector": "classifier-unit assertion"
+    },
+    {
+      "contract": "B",
+      "id": "B4",
+      "status": "REFINED",
+      "singleEffect": "developer evidence fallback",
+      "detector": "fake detected without trusted kill"
+    },
+    {
+      "contract": "C",
+      "id": "C1",
+      "status": "REFINED",
+      "singleEffect": "numeric owner authority -> login equality",
+      "detector": "wrong numeric id with matching textual login representation"
+    },
+    {
+      "contract": "C",
+      "id": "C2",
+      "status": "REFINED",
+      "singleEffect": "latest blocking review -> older approve",
+      "detector": "two-review no-fallback fixture"
+    },
+    {
+      "contract": "C",
+      "id": "C3",
+      "status": "REPLACED",
+      "singleEffect": "remove GateReceipt reviewSnapshotDigest comparison",
+      "detector": "R0 Gate -> R1 Stage2 while attempt jobs remain complete"
+    },
+    {
+      "contract": "C",
+      "id": "C4",
+      "status": "REFINED",
+      "singleEffect": "remove final current-main equality",
+      "detector": "controlled moved-main fixture"
+    }
+  ],
+  "attacks": [
+    {
+      "id": "ATK-001",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-002",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-003",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-004",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-005",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-006",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-007",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-008",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-009",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-010",
+      "category": "streaming-resource-budgets",
+      "owner": "A",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-011",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-012",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-013",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-014",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-015",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-016",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-017",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-018",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-019",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-020",
+      "category": "git-history-second-parent",
+      "owner": "A",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-021",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-022",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-023",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-024",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-025",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-026",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-027",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-028",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-029",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-030",
+      "category": "path-mode-materialization",
+      "owner": "A",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-031",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-032",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-033",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-034",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-035",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-036",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-037",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-038",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-039",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-040",
+      "category": "inventory-worker-evidence",
+      "owner": "B",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-041",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-042",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-043",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-044",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-045",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-046",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-047",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-048",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-049",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-050",
+      "category": "mutation-masking-classification",
+      "owner": "B",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-051",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-052",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-053",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-054",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-055",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-056",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-057",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-058",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-059",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-060",
+      "category": "review-schema-freshness",
+      "owner": "C",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-061",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-062",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-063",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-064",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-065",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-066",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-067",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-068",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-069",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-070",
+      "category": "head-main-review-races",
+      "owner": "C",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-071",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-072",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-073",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-074",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-075",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-076",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-077",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-078",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-079",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-080",
+      "category": "attempt-job-evidence",
+      "owner": "C",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-081",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 1,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-082",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 2,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-083",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 3,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-084",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 4,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-085",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 5,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-086",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 6,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-087",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 7,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-088",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 8,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-089",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 9,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-090",
+      "category": "workflow-authority",
+      "owner": "C",
+      "variant": 10,
+      "outcome": "CLOSED_OR_FAIL_CLOSED_BY_REPAIRED_CONTRACT",
+      "pass": true
+    },
+    {
+      "id": "ATK-091",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 1,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-092",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 2,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-093",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 3,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-094",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 4,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-095",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 5,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-096",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 6,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-097",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 7,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-098",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 8,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-099",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 9,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    },
+    {
+      "id": "ATK-100",
+      "category": "platform-owner-boundary",
+      "owner": "Platform/Ruleset|Owner Procedure",
+      "variant": 10,
+      "outcome": "CORRECTLY_NOT_CLAIMED_BY_A_B_C",
+      "pass": true
+    }
+  ]
+}
