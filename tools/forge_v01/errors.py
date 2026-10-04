@@ -74,7 +74,11 @@ A_CODES = frozenset(
     }
 )
 
-PHASES = ("bootstrap", "objects", "paths", "history", "materialize", "process", "stage0")
+PHASES = (
+    "bootstrap", "objects", "paths", "history", "materialize", "process", "stage0",  # Task A
+    "policy", "scope", "inventory", "worker", "mutations",  # Task B
+    "review", "final", "gate",  # Task C
+)
 
 
 class ForgeFail(Exception):
