@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 1,
+  "releaseContextHash": "3ea7f2b2cef834066861386e098deb32705e5b0ca67823d973f51236e9273625",
+  "adapterVersion": "forge-release-proof-v1",
+  "certificateData": {
+    "schemaVersion": 1,
+    "steps": [
+      {
+        "stepId": "search-stube",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:stube"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-buch",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:buch"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-lukas-funk",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:lukas"
+            }
+          },
+          "questionId": "question:q01"
+        }
+      },
+      {
+        "stepId": "read-funkgeraet",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:funkgeraet"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-terrasse",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:terrasse"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-kamera",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:kamera"
+            }
+          }
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "observed:lukas",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:lukas-funk",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:funkprotokoll"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:lukas"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:funkraum"
+                  }
+                },
+                "at": 7800
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:lukas",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:lukas",
+            "allOf": [
+              "observation:lukas"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-lukas",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:lukas"
+        ]
+      },
+      {
+        "id": "observed:johanna",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:johanna-funk",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:funkprotokoll"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:johanna"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:funkraum"
+                  }
+                },
+                "at": 7800
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:johanna",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:johanna",
+            "allOf": [
+              "observation:johanna"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-johanna",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:johanna"
+        ]
+      },
+      {
+        "id": "observed:gerd",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:gerd-terrasse",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:sternserie"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:gerd"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:terrasse"
+                  }
+                },
+                "at": 7800
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:gerd",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:gerd",
+            "allOf": [
+              "observation:gerd"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-gerd",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:gerd"
+        ]
+      },
+      {
+        "id": "observed:mira",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:mira-terrasse",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:sternserie"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:mira"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:terrasse"
+                  }
+                },
+                "at": 7800
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:mira",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:mira",
+            "allOf": [
+              "observation:mira"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-mira",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:mira"
+        ]
+      },
+      {
+        "id": "observed:tobias",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:tobias-eintrag",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:eintrag"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:tobias"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:winterraum"
+                  }
+                },
+                "at": 2400
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:tobias",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "remaining:tobias",
+            "allOf": [
+              "literal:lukas",
+              "literal:johanna",
+              "literal:gerd",
+              "literal:mira",
+              "observation:tobias"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-tobias",
+              "value": true
+            }
+          }
+        ],
+        "ruleId": "rule:roster",
+        "afterObservations": [
+          "observed:lukas",
+          "observed:johanna",
+          "observed:gerd",
+          "observed:mira",
+          "observed:tobias"
+        ]
+      }
+    ]
+  }
+}

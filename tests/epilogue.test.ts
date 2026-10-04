@@ -11,8 +11,9 @@ import { createWebApp } from "../src/play/web.ts";
 // Optional PublicContent.epilogue: player text rules, bound into the package identity, shown in CLI
 // and web only after a solving accusation.
 
-const CASES: PlayCaseName[] = ["vitrine", "brieföffner"];
-const SOLVER: Record<PlayCaseName, string> = { vitrine: "Lina Kern", "brieföffner": "Ben" };
+const CASES: PlayCaseName[] = ["vitrine", "brieföffner", "hüttenkasse", "nachtzug"];
+const SOLVER: Partial<Record<PlayCaseName, string>> = { vitrine: "Lina Kern", "brieföffner": "Ben", "hüttenkasse": "Tobias Wenger", nachtzug: "Clara Mai" };
+const WRONG: Partial<Record<PlayCaseName, string>> = { vitrine: "Max Brandt", "brieföffner": "Anna", "hüttenkasse": "Lukas Brandl", nachtzug: "Bruno Kessler" };
 
 function resolveWith(name: PlayCaseName, edit: (content: any) => void) {
   const c = PLAY_CASES[name];
@@ -65,11 +66,11 @@ describe("epilogue in the CLI", () => {
   it.each(CASES)("%s: only the solving accusation shows it", (name) => {
     const pkg = loadPlayPackage(name);
     const epilogue = pkg.publicContent.epilogue!;
-    const { before, step } = accuse(name, SOLVER[name]);
+    const { before, step } = accuse(name, SOLVER[name]!);
     expect(intro(before) + command(before, "fall").text + command(before, "hilfe").text).not.toContain(epilogue);
     expect(step.text).toContain("=== Auflösung ===");
     expect(step.text).toContain(epilogue);
-    const wrong = accuse(name, name === "vitrine" ? "Max Brandt" : "Anna").step;
+    const wrong = accuse(name, WRONG[name]!).step;
     expect(wrong.text).not.toContain(epilogue);
   });
 });

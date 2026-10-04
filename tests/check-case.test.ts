@@ -37,7 +37,7 @@ function expectError(check: CaseCheck, file: string, field: string, message?: Re
 }
 
 describe("check-case on the real fixtures", () => {
-  it.each([["vitrine", VITRINE], ["brieföffner", BRIEF], ["geige", join(FIXTURES, "geige")]])("%s is valid and solvable", (_name, dir) => {
+  it.each([["vitrine", VITRINE], ["brieföffner", BRIEF], ["geige", join(FIXTURES, "geige")], ["hüttenkasse", join(FIXTURES, "huettenkasse")], ["nachtzug", join(FIXTURES, "nachtzug")]])("%s is valid and solvable", (_name, dir) => {
     const check = checkCaseFolder(dir);
     expect(check.problems.filter((p) => p.severity === "error")).toEqual([]);
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });

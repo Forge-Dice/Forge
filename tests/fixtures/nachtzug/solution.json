@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:nachtzug",
+  "revision": 1,
+  "truthHash": "f17c172ce85d4206a7f2025e08f555f3419d08e08a7aaff94b5ec538a427094b",
+  "resolutions": [
+    {
+      "eventId": "event:diebstahl",
+      "targets": [
+        {
+          "kind": "item",
+          "id": "item:collier"
+        }
+      ],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": [
+          {
+            "personId": "person:clara",
+            "roles": [
+              "direct_actor"
+            ]
+          }
+        ]
+      },
+      "intent": "intended",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "conclusion:actor-bruno",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:bruno",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-clara",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:clara",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-felix",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:felix",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-janek",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:janek",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-dora",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:dora",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    }
+  ],
+  "requiredConclusions": [
+    {
+      "conclusionId": "conclusion:actor-bruno",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-clara",
+      "value": true
+    },
+    {
+      "conclusionId": "conclusion:actor-felix",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-janek",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-dora",
+      "value": false
+    }
+  ]
+}

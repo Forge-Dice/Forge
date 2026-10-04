@@ -21,13 +21,15 @@ export const PLAY_CASES = {
   vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600 },
   "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600 },
   geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600 },
+  "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600 },
+  nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0 },
 } as const satisfies Record<string, PlayCase>;
 export type PlayCaseName = keyof typeof PLAY_CASES;
 
 /** Accepts the case name, its umlaut-free spelling ("briefoeffner") or its fixture directory. */
 export function playCaseName(input: string | undefined): PlayCaseName | null {
   const name = (input ?? "vitrine").toLowerCase();
-  const found = Object.entries(PLAY_CASES).find(([key, c]) => name === key || name === key.replace("ö", "oe") || name === c.dir);
+  const found = Object.entries(PLAY_CASES).find(([key, c]) => name === key || name === key.replace("ö", "oe").replace("ü", "ue") || name === c.dir);
   return found === undefined ? null : (found[0] as PlayCaseName);
 }
 
