@@ -1,0 +1,614 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "revision": 1,
+  "title": "Die leere Vitrine",
+  "timeline": {
+    "unit": "second",
+    "originLabel": "18:00:00 am Schließabend"
+  },
+  "persons": [
+    {
+      "id": "person:max",
+      "name": "Max Brandt"
+    },
+    {
+      "id": "person:lina",
+      "name": "Lina Kern"
+    },
+    {
+      "id": "person:nora",
+      "name": "Nora Weiss"
+    },
+    {
+      "id": "person:oskar",
+      "name": "Oskar Falk"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location:galerie",
+      "name": "Galerie"
+    },
+    {
+      "id": "location:hof",
+      "name": "Innenhof"
+    },
+    {
+      "id": "location:archiv",
+      "name": "Archiv"
+    },
+    {
+      "id": "location:werkstatt",
+      "name": "Werkstatt"
+    },
+    {
+      "id": "location:foyer",
+      "name": "Foyer"
+    }
+  ],
+  "items": [
+    {
+      "id": "item:medaille",
+      "name": "Goldmedaille „Morgenstern“"
+    },
+    {
+      "id": "item:schluessel",
+      "name": "Vitrinenschlüssel"
+    },
+    {
+      "id": "item:kamera",
+      "name": "Noras Kamera"
+    },
+    {
+      "id": "item:terminal",
+      "name": "Archivterminal"
+    },
+    {
+      "id": "item:kassette",
+      "name": "Transportkassette"
+    }
+  ],
+  "relationships": [],
+  "events": [
+    {
+      "id": "event:e01",
+      "description": "Alle vier bleiben nach der Schließung im Museum.",
+      "time": {
+        "kind": "instant",
+        "at": 0
+      },
+      "locationId": "location:foyer",
+      "participantIds": [
+        "person:max",
+        "person:lina",
+        "person:nora",
+        "person:oskar"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:e02",
+      "description": "Max betrachtet die Medaille; Oskar beobachtet ihn. Max entnimmt sie nicht.",
+      "time": {
+        "kind": "instant",
+        "at": 120
+      },
+      "locationId": "location:galerie",
+      "participantIds": [
+        "person:max",
+        "person:oskar"
+      ],
+      "itemIds": [
+        "item:medaille"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:e03",
+      "description": "Oskar übergibt Lina den Vitrinenschlüssel.",
+      "time": {
+        "kind": "instant",
+        "at": 180
+      },
+      "locationId": "location:archiv",
+      "participantIds": [
+        "person:oskar",
+        "person:lina"
+      ],
+      "itemIds": [
+        "item:schluessel"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:e04",
+      "description": "Lina entnimmt die Medaille eigenhändig.",
+      "time": {
+        "kind": "instant",
+        "at": 240
+      },
+      "locationId": "location:galerie",
+      "participantIds": [
+        "person:lina"
+      ],
+      "itemIds": [
+        "item:medaille",
+        "item:schluessel"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:e05",
+      "description": "Nora und Max sind im synchronisierten Hoffoto erfasst.",
+      "time": {
+        "kind": "interval",
+        "start": 220,
+        "end": 280
+      },
+      "locationId": "location:hof",
+      "participantIds": [
+        "person:max",
+        "person:nora"
+      ],
+      "itemIds": [
+        "item:kamera"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:e06",
+      "description": "Oskar arbeitet im Archiv, die Archivkamera erfasst ihn.",
+      "time": {
+        "kind": "interval",
+        "start": 220,
+        "end": 280
+      },
+      "locationId": "location:archiv",
+      "participantIds": [
+        "person:oskar"
+      ],
+      "itemIds": [
+        "item:terminal"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:e07",
+      "description": "Lina legt die Medaille in die Transportkassette; das öffentliche Bild zeigt nur den geschlossenen Deckel.",
+      "time": {
+        "kind": "instant",
+        "at": 300
+      },
+      "locationId": "location:werkstatt",
+      "participantIds": [
+        "person:lina"
+      ],
+      "itemIds": [
+        "item:medaille",
+        "item:kassette"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:e08",
+      "description": "Nora entdeckt die leere Vitrine.",
+      "time": {
+        "kind": "instant",
+        "at": 360
+      },
+      "locationId": "location:galerie",
+      "participantIds": [
+        "person:nora"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    }
+  ],
+  "motives": [
+    {
+      "id": "motive:lina",
+      "personId": "person:lina",
+      "eventIds": [
+        "event:e04"
+      ],
+      "description": "Lina will eine unerlaubte Reparatur vor der morgigen Leihgeberprüfung verbergen. Motive sind hier Erzählung, keine Proof-Prämisse."
+    }
+  ],
+  "propositions": [
+    {
+      "id": "proposition:p01",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:max",
+        "locationId": "location:galerie",
+        "at": 120
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p02",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:max",
+        "locationId": "location:galerie",
+        "at": 240
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:p03",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:max",
+        "locationId": "location:hof",
+        "at": 240
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p04",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:nora",
+        "locationId": "location:hof",
+        "at": 240
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p05",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:oskar",
+        "locationId": "location:archiv",
+        "at": 240
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p06",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:lina",
+        "locationId": "location:galerie",
+        "at": 240
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p07",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e03",
+        "personId": "person:lina"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p08",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:e03",
+        "itemId": "item:schluessel"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p09",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:e06",
+        "itemId": "item:terminal"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p10",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:e05",
+        "itemId": "item:kamera"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p11",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e07",
+        "personId": "person:lina"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p12",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:e04",
+        "itemId": "item:medaille"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p13",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:e07",
+        "itemId": "item:medaille"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p14",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e04",
+        "personId": "person:max"
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:p15",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:e04",
+        "itemId": "item:schluessel"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p16",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:e07",
+        "itemId": "item:kassette"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p17",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e03",
+        "personId": "person:oskar"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p18",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e05",
+        "personId": "person:nora"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p19",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:lina",
+        "locationId": "location:archiv",
+        "at": 180
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p20",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:lina",
+        "locationId": "location:werkstatt",
+        "at": 300
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p21",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e01",
+        "personId": "person:max"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p22",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e01",
+        "personId": "person:lina"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p23",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e01",
+        "personId": "person:nora"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:p24",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:e01",
+        "personId": "person:oskar"
+      },
+      "truth": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence:d01",
+      "description": "Besucherstempel bestätigt Max um 18:02 in der Galerie. Keine Entnahmebehauptung.",
+      "source": {
+        "kind": "location",
+        "id": "location:galerie"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:p01",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:d02",
+      "description": "Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität.",
+      "source": {
+        "kind": "event",
+        "id": "event:e04"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:p12",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:d03",
+      "description": "Kontaktbogen zeigt Nora beim Hoffototermin, aber keine Uhrzeit und keinen vollständigen Film.",
+      "source": {
+        "kind": "location",
+        "id": "location:hof"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:p18",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:d04",
+      "description": "Vollständiger Kamerafilm zeigt Max und Nora um 18:04:00 im Hof.",
+      "source": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:p03",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p04",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:d05",
+      "description": "Archivkamera zeigt Oskar um 18:04:00 im Archiv.",
+      "source": {
+        "kind": "item",
+        "id": "item:terminal"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:p05",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:d06",
+      "description": "Werkstattaufnahme zeigt Lina um 18:05 an einer geschlossenen Transportkassette. Inhalt nicht sichtbar.",
+      "source": {
+        "kind": "location",
+        "id": "location:werkstatt"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:p11",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p16",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p20",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:d07",
+      "description": "Quittung bestätigt Oskar und Lina bei der Schlüsselübergabe um 18:03.",
+      "source": {
+        "kind": "location",
+        "id": "location:archiv"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:p07",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p08",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p17",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p19",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:d08",
+      "description": "Schließliste nennt genau die vier Personen, die im Museum verblieben.",
+      "source": {
+        "kind": "location",
+        "id": "location:foyer"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:p21",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p22",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p23",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:p24",
+          "direction": "supports"
+        }
+      ]
+    }
+  ],
+  "secrets": [
+    {
+      "id": "secret:medaille",
+      "propositionIds": [
+        "proposition:p06",
+        "proposition:p13",
+        "proposition:p15"
+      ]
+    }
+  ],
+  "redHerrings": [
+    {
+      "id": "red-herring:max",
+      "evidenceIds": [
+        "evidence:d01"
+      ],
+      "misleadingPropositionId": "proposition:p02"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leere-vitrine-v1",
+  "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+  "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
+  "allowedClaims": [
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:max",
+      "eventId": "event:e04",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:lina",
+      "eventId": "event:e04",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:nora",
+      "eventId": "event:e04",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:oskar",
+      "eventId": "event:e04",
+      "role": "direct_actor"
+    }
+  ]
+}
