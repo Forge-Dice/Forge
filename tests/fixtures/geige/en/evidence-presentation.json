@@ -5,7 +5,7 @@
   "entries": [
     {
       "evidenceId": "evidence:pausenfoto",
-      "text": "A press photo from the foyer, timestamp 20:40:00. It shows Paul Adler and Vera Lind chatting with guests.",
+      "text": "A press photo from the foyer, timestamp 20:40:00. Paul Adler, still in his tailcoat, gestures with both hands; beside him Vera Lind laughs, a glass of wine in her hand.",
       "mentions": [
         {
           "kind": "person",
@@ -105,7 +105,7 @@
     },
     {
       "evidenceId": "evidence:kellerplan",
-      "text": "The maintenance schedule hangs on the basement door: Today, intermission check at the control cabinet, Kurt Mohn.",
+      "text": "The maintenance schedule hangs on the boiler room door, in Kurt Mohn's scrawly handwriting: “Today intermission check at the control cabinet. K. M.”",
       "mentions": [
         {
           "kind": "person",
@@ -120,7 +120,7 @@
     },
     {
       "evidenceId": "evidence:haar",
-      "text": "A long grey hair, like Paul Adler's, is stuck to the empty violin case. It does not show when it got there.",
+      "text": "A long grey hair is stuck to the empty violin case, just like Paul Adler's mane. It does not show when it got there.",
       "mentions": [
         {
           "kind": "person",

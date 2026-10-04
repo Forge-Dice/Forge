@@ -39,7 +39,7 @@
     },
     {
       "evidenceId": "evidence:eintrag",
-      "text": "Below the names of the dinner guests there is one last entry, without a seat at the table: “21:40, Tobias Wenger, winter room, ski tour to the glacier.” So he was in the house this evening, even though no one saw him at dinner.",
+      "text": "Below the names of the evening's guests there is one last entry, in hurried handwriting: “21:40, Tobias Wenger, winter room, ski tour to the glacier.” So he was in the hut tonight, even though no one saw him at dinner.",
       "mentions": [
         {
           "kind": "person",
@@ -71,7 +71,7 @@
     },
     {
       "evidenceId": "evidence:funkbuch",
-      "text": "The radio logbook lies on the table in the radio room. The last entry is unfinished; the radio itself stores every connection.",
+      "text": "On the table in the radio room lies the radio logbook, next to a cold cup of tea. The last entry breaks off mid-sentence; the radio itself stores every connection.",
       "mentions": [
         {
           "kind": "location",

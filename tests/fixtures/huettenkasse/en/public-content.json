@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "The Hut's Cash Box",
-  "brief": "A storm over the glacier. Since 22:00 the hut has been snowed in, and the door can no longer be opened. At 23:20 the landlady Rosa Egger finds the cash cabinet in the common room open; the hut's cash box with the season's takings is gone. The bell on the cabinet rang exactly once: at 23:10.\n\nAt dinner, Lukas Brandl, Mira Hofer, Gerd Sailer and Johanna Pichler sat at the table with Rosa. Dr. Pichler has retired with a migraine and is not speaking to anyone today. Find out who took the cash box with their own hands, and check carefully who is really in the house tonight. Not every guest sits down to dinner.",
+  "brief": "A storm over the glacier. Since 22:00 the hut has been snowed in, and the door can no longer be opened. At 23:20 the hut warden Rosa Egger finds the cash cabinet in the common room open; the hut's cash box with the whole season's takings is gone. The bell on the cabinet rang exactly once: at 23:10.\n\nAt dinner, Lukas Brandl, Mira Hofer, Gerd Sailer and Johanna Pichler sat at the table with Rosa. Dr. Pichler has retired with a migraine and is not speaking to anyone today. Find out who took the cash box with their own hands, and check carefully who is really in the hut tonight. Not every guest sits at dinner.",
   "challengeQuestion": "Who took the hut's cash box from the common room at 23:10?",
   "labels": [
     {
@@ -311,5 +311,5 @@
       "text": "Since 22:00 the hut has been snowed in; no one came in or went out. Every person who was in the hut this evening is a suspect, including anyone who did not sit at dinner. If all the others are ruled out, the last person remains."
     }
   ],
-  "epilogue": "Tobias Wenger opens the door of the winter room without resistance. He had arrived at 21:40, shortly before the storm, signed in quietly and not taken a seat at the table because he could not pay for the night. At 23:10, while everyone else was on the radio or taking photos, he took the cash box from the cabinet. His touring boots have the same coarse tread as a mountain guide's.\n\nLukas Brandl was at the radio the whole time. The print in front of the cabinet was a false lead, and Mira was honestly mistaken when she thought he was in the common room. The cash box is under Tobias' sleeping bag, complete."
+  "epilogue": "Tobias Wenger is sitting on his sleeping bag in the winter room when you open the door. “I would have given it back,” he says without looking up. He had arrived at 21:40, shortly before the storm, signed in quietly and not taken a seat at the table, because he could not pay for the night. At 23:10, while the others were on the radio or taking photos, he took the cash box out of the cabinet. His touring boots have the same coarse tread as a mountain guide's. Under questioning he lied that he had not been in the common room.\n\nLukas Brandl was at the radio the whole time. The boot print in front of the cabinet was a false lead, and Mira was honestly mistaken when she thought Lukas was in the common room. The cash box lies, complete, under Tobias' sleeping bag."
 }

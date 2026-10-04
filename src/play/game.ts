@@ -1,6 +1,6 @@
-import type { ResolvedCasePackage } from "../domain/case-package.ts";
+import { rulesetAllows, type ResolvedCasePackage } from "../domain/case-package.ts";
 import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
-import { hintCount, type Hint } from "../domain/case-hints.ts";
+import { hintCount, hintsExhausted, type Hint } from "../domain/case-hints.ts";
 import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
 import type { EvidenceObservation, PlayerClaim as EvidenceClaim } from "../domain/evidence-presentation.ts";
 import type { ConfrontationObservation, InterrogationObservation, PlayerClaim } from "../domain/interrogation.ts";
@@ -82,7 +82,7 @@ export function command(game: Game, line: string): Step {
     case "h":
     case "hint": {
       const result = reduceSession(game.pkg, game.state, { type: "hint" });
-      if (!result.ok) return say(result.code === "ACTION_UNAVAILABLE" ? m.cli.noHints : m.errors[result.code]!);
+      if (!result.ok) return say(result.code === "ACTION_UNAVAILABLE" ? hintUnavailableText(game) : m.errors[result.code]!);
       const next = { ...game, state: result.state };
       return { game: next, text: outputText(next, result.output) };
     }
@@ -235,6 +235,14 @@ export function answerText(game: Game, o: InterrogationObservation): string {
   return "statement" in o ? `${said}\n  ${m.aboutClaim(claimText(game, o.statement))}` : said;
 }
 
+/** Why a hint was refused: none for this case, or the last one was already as concrete as it gets. */
+export function hintUnavailableText(game: Game): string {
+  const offered = rulesetAllows(game.pkg.identity.rulesetVersion, "hints") && game.pkg.proof !== null;
+  return offered && hintsExhausted(game.pkg, game.state.knowledge, game.state.events)
+    ? msg(game).hint.exhausted
+    : msg(game).cli.noHints;
+}
+
 /** Hints taken so far (they are session events, so saves keep the count). */
 export const hintsUsed = (game: Game): number => hintCount(game.state.events);
 
@@ -252,6 +260,13 @@ export function hintText(game: Game, hint: Hint): string {
     const npcId = hint.target === null ? undefined : game.pkg.refs.resolve(hint.target)?.id;
     const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === hint.questionId);
     return question === undefined ? `${head} ${m.askWho(label)}` : `${head} ${m.ask(label, question.text)}`;
+  }
+  if (hint.kind === "confront") {
+    if (label === null) return `${head} ${m.confrontVague}`;
+    const npcId = hint.target === null ? undefined : game.pkg.refs.resolve(hint.target)?.id;
+    const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === hint.questionId);
+    if (question === undefined || hint.evidence === null) return `${head} ${m.confrontWho(label)}`;
+    return `${head} ${m.confront(label, question.text, labelOf(game, hint.evidence))}`;
   }
   if (label === null) return `${head} ${m.vague[hint.kind]}`;
   const concrete = m.concrete[hint.kind]!(label);

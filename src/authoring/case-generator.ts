@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseCaseTruth } from "../domain/case-truth.ts";
 import { hashCaseTruth } from "../domain/case-truth.identity.ts";
@@ -228,11 +228,13 @@ const clockOf = (originHour: number, at: number) => `${originHour + Math.floor(a
 // ---------- Generator ----------
 
 const PLACEHOLDER = "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT";
+export const MAX_SEED = 0xffffffff;
 type Json = Record<string, unknown>;
 
 /** Generates the case of a seed; `schema` forces one schema (the rest still follows the seed). */
 export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
-  if (!Number.isSafeInteger(seed) || seed < 0) throw new RangeError("seed must be a non-negative safe integer");
+  // The PRNG state is 32 bits: larger seeds would silently repeat another seed's case.
+  if (!Number.isSafeInteger(seed) || seed < 0 || seed > MAX_SEED) throw new RangeError(`seed must be an integer from 0 to ${MAX_SEED}`);
   const random = prng(seed);
   const pick = <T>(items: readonly T[]): T => items[Math.floor(random() * items.length)]!;
   const draw = <T>(items: readonly T[], n: number): T[] => {
@@ -679,9 +681,17 @@ export function generateCase(seed: number, schema?: CaseSchema): GeneratedCase {
   return { seed, schema: kind, title: truth.title, withLie: presenceLie || alibiLie, files };
 }
 
-/** Writes the generated case into dir (created if missing); returns the written file names. */
-export function writeGeneratedCase(generated: GeneratedCase, dir: string): string[] {
+/**
+ * Writes the generated case into dir (created if missing); returns the written file names. A folder
+ * that already holds files is refused unless forced: check-case reads every npc-* and interrogation-*
+ * file, so leftovers of another case would break it, and hand-written files would be overwritten.
+ * Forcing removes the old NPC files first.
+ */
+export function writeGeneratedCase(generated: GeneratedCase, dir: string, options: { force?: boolean } = {}): string[] {
   mkdirSync(dir, { recursive: true });
+  const existing = readdirSync(dir);
+  if (existing.length > 0 && options.force !== true) throw new Error(`Ordner ${dir} ist nicht leer (--force überschreibt)`);
+  for (const name of existing) if (/^(npc|interrogation)-.*\.json$/.test(name)) rmSync(join(dir, name));
   const names = Object.keys(generated.files).sort();
   for (const name of names) writeFileSync(join(dir, name), `${JSON.stringify(generated.files[name], null, 2)}\n`);
   return names;

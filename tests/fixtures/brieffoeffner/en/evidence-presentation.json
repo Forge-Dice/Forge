@@ -5,7 +5,7 @@
   "entries": [
     {
       "evidenceId": "evidence:cuff-button",
-      "text": "Next to the desk lies a cuff button torn from Ben's shirt. Beside it: Clara's blood, not yet dry. The button was torn off during the crime.",
+      "text": "Next to the desk lies a torn-off mother-of-pearl cuff button, clearly from Ben's shirt. Beside it, Clara's blood, still wet. The button came off during the crime.",
       "mentions": [
         {
           "kind": "person",
@@ -47,7 +47,7 @@
     },
     {
       "evidenceId": "evidence:muddy-path",
-      "text": "Fresh footprints in the garden flowerbed, matching the tread of Anna's boots. The gardener's counter shows: they were made at 20:25, at the time of the crime.",
+      "text": "Fresh footprints in the flowerbed, the tread of Anna's boots. The trail camera at the garden fence recorded her: 20:25, exactly at the time of the crime.",
       "mentions": [
         {
           "kind": "person",
@@ -75,7 +75,7 @@
     },
     {
       "evidenceId": "evidence:gloves-dirty",
-      "text": "Anna's gardening gloves are lying on the bench, covered in fresh soil.",
+      "text": "Anna's gardening gloves lie on the bench by the bed, wet from the rain and covered in fresh soil.",
       "mentions": [
         {
           "kind": "person",

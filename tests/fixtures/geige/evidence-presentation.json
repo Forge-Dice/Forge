@@ -5,7 +5,7 @@
   "entries": [
     {
       "evidenceId": "evidence:pausenfoto",
-      "text": "Ein Pressefoto aus dem Foyer, Zeitstempel 20:40:00. Darauf: Paul Adler und Vera Lind im Gespräch mit Gästen.",
+      "text": "Ein Pressefoto aus dem Foyer, Zeitstempel 20:40:00. Paul Adler, noch im Frack, gestikuliert mit beiden Händen, neben ihm lacht Vera Lind mit einem Glas Wein.",
       "mentions": [
         {
           "kind": "person",
@@ -105,7 +105,7 @@
     },
     {
       "evidenceId": "evidence:kellerplan",
-      "text": "An der Kellertür hängt der Wartungsplan: Heute Pausenkontrolle am Schaltschrank, Kurt Mohn.",
+      "text": "An der Kellertür hängt der Wartungsplan, in Kurt Mohns krakeliger Schrift: „Heute Pausenkontrolle am Schaltschrank. K. M.“",
       "mentions": [
         {
           "kind": "person",
@@ -120,7 +120,7 @@
     },
     {
       "evidenceId": "evidence:haar",
-      "text": "Am leeren Geigenkasten klebt ein langes graues Haar, wie das von Paul Adler. Wann es dorthin kam, zeigt es nicht.",
+      "text": "Am leeren Geigenkasten klebt ein langes graues Haar, genau wie Paul Adlers Mähne. Wann es dorthin kam, zeigt es nicht.",
       "mentions": [
         {
           "kind": "person",

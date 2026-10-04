@@ -75,10 +75,10 @@ describe("play:web", () => {
   it("Route A through the browser forms reaches the solution", async () => {
     let html = await click("Ort durchsuchen: Innenhof");
     expect(html).toContain("Kontaktbogen");
-    html = await click("Kann ich den vollständigen Film dieses Hoffototermins sehen?");
+    html = await click("Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?");
     html = await click("Gegenstand untersuchen: Noras Kamera");
     expect(html).toContain("Vollständiger Hoffilm");
-    html = await click("Wo ist der unabhängige Archivnachweis?");
+    html = await click("Zeichnet im Archiv ein Gerät auf, wer dort arbeitet?");
     html = await click("Gegenstand untersuchen: Archivterminal");
     expect(html).toContain("Archivaufnahme");
     html = await click("Max Brandt");
@@ -122,7 +122,7 @@ describe("play:web", () => {
     const html = await click("Ort durchsuchen: Innenhof");
     expect(html).toMatch(/<section id="notice" class="notice info" role="status"/);
     expect(html).toMatch(/<button type="submit" class="act done"><span class="visually-hidden">Ort durchsuchen: <\/span><span>Innenhof<\/span><\/button>/);
-    expect(html).toContain('class="q fresh">Kann ich den vollständigen Film dieses Hoffototermins sehen?</button>');
+    expect(html).toContain('class="q fresh">Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?</button>');
     expect(html).toContain("Eine neue Spur ist offen.");
     expect(await page()).not.toContain('id="notice"'); // shown once
   });

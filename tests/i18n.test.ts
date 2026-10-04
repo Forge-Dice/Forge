@@ -37,7 +37,9 @@ function playByHintsInEnglish(name: PlayCaseName): { game: Game; transcript: str
     const hint = run("hint");
     const menu = /In the “investigate” menu: “(.+)”\.$/.exec(hint);
     const ask = /Ask (.+?): “(.+)”$/.exec(hint);
+    const confront = /\): (Confront .+ on “.+” with: .+)\.$/.exec(hint);
     if (menu !== null) pick("i", menu[1]!);
+    else if (confront !== null) pick("c", confront[1]!);
     else if (ask !== null) pick("q", `${ask[1]}: ${ask[2]}`);
     else if (/make your accusation|and accuse\./.test(hint) && /level 3/.test(hint)) {
       const suspects = run("accuse").split("\n").slice(1).length;
@@ -56,6 +58,21 @@ describe("locale variants in check-case", () => {
     expect(check.checkedFiles).toContain("en/evidence-presentation.json");
     // The base proof binds the German text; the variant never writes into shared files.
     expect(check.filled.every((f) => f.file.startsWith("en/"))).toBe(true);
+    // en/source.json matches the current German text: the translation is up to date.
+    expect(check.problems.filter((p) => p.file === "en/source.json")).toEqual([]);
+    expect(check.filled).toEqual([]);
+  });
+
+  it("notices when the German text changed after the translation", () => {
+    const dir = mkdtempSync(join(tmpdir(), "i18n-"));
+    cpSync(fixture("geige"), dir, { recursive: true });
+    const file = join(dir, "evidence-presentation.json");
+    const content = JSON.parse(readFileSync(file, "utf8"));
+    content.entries[0].text += " Neuer Satz.";
+    writeFileSync(file, JSON.stringify(content));
+    const check = checkCaseFolder(dir, "en");
+    expect(check.problems).toEqual([expect.objectContaining({ file: "en/source.json", field: "presentation", severity: "warning" })]);
+    expect(check.filled).toEqual([expect.objectContaining({ file: "en/source.json", field: "presentation", stale: true })]);
   });
 
   it("rejects a translation that changes more than text, naming the locale file", () => {
@@ -140,7 +157,7 @@ describe("language switch in the web app", () => {
     const headers: Record<string, string> = {};
     let status = 0;
     let text = "";
-    const req = Object.assign(new (await import("node:stream")).Readable({ read() {} }), { method, url: path, headers: { cookie } });
+    const req = Object.assign(new (await import("node:stream")).Readable({ read() {} }), { method, url: path, headers: { cookie, host: "localhost" } });
     req.push(body);
     req.push(null);
     const res = {

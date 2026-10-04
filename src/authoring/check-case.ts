@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
@@ -195,7 +196,13 @@ export function checkCaseFolder(dir: string, lang?: string): CaseCheck {
     Object.entries(FILES).map(([key, file]) => [key, readJson(lang !== undefined && isLocaleKey(key) ? join(dir, lang) : dir, file, c)]),
   ) as Record<keyof typeof FILES, unknown>;
   if (lang !== undefined) {
-    for (const key of LOCALE_KEYS) checkTranslation(readJson(dir, FILES[key], new Collector()), raw[key], FILES[key], c);
+    const source = readJson(join(dir, lang), SOURCE_FILE, c);
+    for (const key of LOCALE_KEYS) {
+      const base = readJson(dir, FILES[key], new Collector());
+      checkTranslation(base, raw[key], FILES[key], c);
+      // The variant records which German text it translates: an edit of the base text shows up here.
+      if (base !== undefined && source !== undefined) checkSource(`${lang}/${SOURCE_FILE}`, source, key, textDigest(base), c);
+    }
     raw.releaseManifest = unbind(raw.releaseManifest, []);
     raw.proofProfile = unbind(raw.proofProfile, ["bindings"]);
   }
@@ -321,6 +328,31 @@ function unbind(raw: unknown, path: string[]): unknown {
   const holder = path.reduce<Record<string, unknown> | undefined>((o, k) => (typeof o?.[k] === "object" ? (o[k] as Record<string, unknown>) : undefined), copy);
   for (const key of ["releaseContextHash", "releaseHash"]) if (holder !== undefined && typeof holder[key] === "string") holder[key] = "TO_BE_COMPUTED_FROM_LOCALE";
   return copy;
+}
+
+/** <ordner>/<lang>/source.json: digests of the base texts the variant was translated from. */
+const SOURCE_FILE = "source.json";
+
+/** Digest of a file's player texts only (TEXT_FIELDS, in document order). */
+function textDigest(raw: unknown): string {
+  const texts: string[] = [];
+  const walk = (v: unknown, key: string): void => {
+    if (Array.isArray(v)) v.forEach((x) => walk(x, ""));
+    else if (typeof v === "object" && v !== null) for (const [k, x] of Object.entries(v)) walk(x, k);
+    else if (typeof v === "string" && TEXT_FIELDS.has(key)) texts.push(v);
+  };
+  walk(raw, "");
+  return createHash("sha256").update(JSON.stringify(texts)).digest("hex");
+}
+
+function checkSource(file: string, source: unknown, key: string, digest: string, c: Collector): void {
+  const given = typeof source === "object" && source !== null ? (source as Record<string, unknown>)[key] : undefined;
+  if (typeof given === "string" && PLACEHOLDER.test(given)) {
+    c.filled.push({ file, field: key, value: digest });
+  } else if (given !== digest) {
+    c.warning(file, key, `der Grundtext (${FILES[key as keyof typeof FILES]}) hat sich seit der Übersetzung geändert: Übersetzung nachziehen, dann --fix`);
+    c.filled.push({ file, field: key, value: digest, stale: true });
+  }
 }
 
 /** Fields that hold player text; a translation may change only these. */

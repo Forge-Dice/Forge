@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "The Letter Opener",
-  "brief": "A dinner at the country house. At around 20:25, Clara is found dead in the Library, killed with the letter opener from the desk. Apart from her, only Anna and Ben were in the house.\n\nYour task: Find out who is responsible for Clara's death. Search the Library and the Garden, examine what you find, and question Anna and Ben. Not every clue leads to the culprit, and a refusal to talk is not a confession.",
+  "brief": "A dinner at the family's country house, rain against the windows. Shortly after 20:25, Clara is found dead in the library, killed with the letter opener from her own desk. Apart from her, only two people were in the house that evening: her niece Anna and her business partner Ben.\n\nFind out who is responsible for Clara's death. Search the library and the garden, examine what you find, and question Anna and Ben. Not every lead points to the culprit, and silence is not yet a confession.",
   "challengeQuestion": "Who is responsible for Clara's death?",
   "labels": [
     {
@@ -173,5 +173,5 @@
       "text": "Apart from Clara, exactly one person was present at her death. Whoever was present is responsible."
     }
   ],
-  "epilogue": "Ben breaks his silence. He owed Clara money he could not pay back, and that evening the two of them argued in the Library about the will. At 20:25 he reached for the letter opener on the desk.\n\nAnna had nothing to do with Clara's death. She was working in the Garden at the time, her gloves covered in fresh soil. Her fingerprint on the handle of the letter opener was a false lead: it says nothing about when it was left."
+  "epilogue": "Ben breaks down. “She wanted to ruin me,” he says, his voice failing. He owed Clara money he could not pay back, and that evening the two of them argued in the library about the will. At 20:25 he reached for the letter opener on the desk. Under questioning he lied: he had not been there, Anna had done it.\n\nAnna had nothing to do with Clara's death. She was working in the garden at the time, her gloves covered in fresh soil. Her fingerprint on the handle of the letter opener was a false lead: she had used it to open letters in the afternoon."
 }

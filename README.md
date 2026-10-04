@@ -63,7 +63,9 @@ npm run check-case -- --fix tests/fixtures/geige    # trägt berechnete Hashes e
 Sprachfassungen: ein Unterordner je Sprache (`en/`) mit übersetzter `public-content.json` und
 `evidence-presentation.json`. Nur Texte ändern sich (Titel, Einleitung, Namen, Rollen, Fragen, Regeln,
 Fundtexte, Epilog); Wahrheit, Lösung, Personen und Beweis bleiben gemeinsam. `check-case` prüft jede
-Sprachfassung nach dem Grundfall: reine Übersetzung, keine internen IDs, lösbar. Die Texte der
+Sprachfassung nach dem Grundfall: reine Übersetzung, keine internen IDs, lösbar. `en/source.json` hält
+fest, welchen deutschen Text die Übersetzung wiedergibt; ändert sich der Grundtext, meldet `check-case`
+das, bis die Übersetzung nachgezogen und mit `--fix` bestätigt ist. Die Texte der
 Oberfläche stehen in `src/play/messages.ts`.
 
 Exit-Code 0 heißt: gültig und lösbar. Jeder Fehler nennt Datei und Feld. Spielbar wird ein Fall mit

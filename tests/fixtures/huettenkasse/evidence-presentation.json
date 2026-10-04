@@ -39,7 +39,7 @@
     },
     {
       "evidenceId": "evidence:eintrag",
-      "text": "Unter den Namen der Abendgäste steht ein letzter Eintrag, ohne Platz am Tisch: „21:40 Uhr, Tobias Wenger, Winterraum, Skitour zum Gletscher.“ Er war heute Abend also im Haus, auch wenn ihn beim Essen niemand gesehen hat.",
+      "text": "Unter den Namen der Abendgäste steht ein letzter Eintrag, in hastiger Schrift: „21:40 Uhr, Tobias Wenger, Winterraum, Skitour zum Gletscher.“ Er war heute Abend also im Haus, auch wenn ihn beim Essen niemand gesehen hat.",
       "mentions": [
         {
           "kind": "person",
@@ -71,7 +71,7 @@
     },
     {
       "evidenceId": "evidence:funkbuch",
-      "text": "Auf dem Tisch im Funkraum liegt das Funkbuch. Der letzte Eintrag ist nicht zu Ende geschrieben, das Funkgerät selbst speichert jede Verbindung.",
+      "text": "Auf dem Tisch im Funkraum liegt das Funkbuch, daneben eine kalte Tasse Tee. Der letzte Eintrag bricht mitten im Satz ab, das Funkgerät selbst speichert jede Verbindung.",
       "mentions": [
         {
           "kind": "location",

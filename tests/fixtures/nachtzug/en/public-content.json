@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "The Night Train to Trieste",
-  "brief": "Night train Vienna–Trieste, sleeping car. At 01:40, Henriette von Arx notices in compartment 7 that her necklace has vanished from its case. Henriette slept with earplugs. The case has a contact sensor: it was opened exactly once, at 01:20.\n\nThe suspects are Bruno Kessler and Felix Roth from the couchette car, Clara Mai from compartment 5, Dora Lenz from compartment 6 and the train attendant Janek Novak. Clara says she was sitting in the dining car at the time of the theft, and more than one person believes her. An alibi doesn’t have to be at exactly 01:20 to count, and not every alibi for 01:20 holds up. Pay attention to who could get where, and when.",
+  "brief": "Night train Vienna–Trieste, sleeping car, somewhere in the mountains of Carinthia. At 01:40 Henriette von Arx in compartment 7 notices that her necklace has vanished from its case. She had been sleeping with earplugs in. The case has a contact sensor: it was opened exactly once, at 01:20.\n\nThe suspects are Bruno Kessler and Felix Roth from the couchette car, Henriette’s niece Clara Mai from compartment 5, Dora Lenz from compartment 6 and the train attendant Janek Novak. Clara says she was sitting in the dining car at the time of the theft, and Felix Roth claims to have seen her there. An alibi does not have to fall exactly at 01:20 to count, and not every alibi at 01:20 holds. Pay attention to who could get where, and when.",
   "challengeQuestion": "Who took the necklace from compartment 7 at 01:20?",
   "labels": [
     {
@@ -10,7 +10,7 @@
         "id": "person:henriette"
       },
       "label": "Henriette von Arx",
-      "role": "passenger in compartment 7"
+      "role": "passenger in compartment 7, Clara Mai’s aunt"
     },
     {
       "entity": {
@@ -328,5 +328,5 @@
       "text": "Only Bruno Kessler, Clara Mai, Felix Roth, Janek Novak and Dora Lenz are suspects. If four are ruled out, the fifth person remains."
     }
   ],
-  "epilogue": "Clara Mai confesses at dawn outside Ljubljana. At 00:50 she had paid for a tea in the dining car, in plain sight, and had gone back to her compartment before 01:00, before Janek locked the connecting door. At 01:20, while the train was stopped in Villach, she opened compartment 7. She feared her aunt would sell the necklace and squander the inheritance.\n\nBruno Kessler was sitting in the dining car at 01:05 and, with the door locked, could no longer get into the sleeping car. Henriette herself had been given the cork by him as a gift that evening. Felix honestly believed he had seen Clara in the dining car, but that was half an hour earlier. The necklace is hidden in the lining of Clara’s travel bag."
+  "epilogue": "Clara Mai confesses at dawn outside Ljubljana. “She would have sold it, like everything else,” she says. At 00:50 she had paid for a tea in the dining car, in plain sight, and returned to her compartment before 01:00, before Janek locked the connecting door. At 01:20, while the train was stopped in Villach, she opened compartment 7. Her alibi in the dining car was a lie.\n\nBruno Kessler was sitting in the dining car at 01:05 and, with the door locked, could no longer get into the sleeping car. He had given Henriette the cork that evening, with a bottle of Zweigelt. Felix honestly believed he had seen Clara in the dining car, but that was half an hour earlier. The necklace is tucked into the lining of Clara’s travel bag."
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "Der Brieföffner",
-  "brief": "Ein Abendessen im Landhaus. Gegen 20:25 Uhr wird Clara in der Bibliothek tot aufgefunden, getötet mit dem Brieföffner vom Schreibtisch. Im Haus waren außer ihr nur Anna und Ben.\n\nDein Auftrag: Finde heraus, wer für Claras Tod verantwortlich ist. Durchsuche Bibliothek und Garten, untersuche, was du findest, und befrage Anna und Ben. Nicht jede Spur führt zum Täter, und eine Gesprächsverweigerung ist kein Geständnis.",
+  "brief": "Ein Abendessen im Landhaus der Familie, Regen an den Scheiben. Kurz nach 20:25 Uhr wird Clara in der Bibliothek tot aufgefunden, getötet mit dem Brieföffner von ihrem eigenen Schreibtisch. Außer ihr waren an diesem Abend nur zwei Menschen im Haus: ihre Nichte Anna und ihr Geschäftspartner Ben.\n\nFinde heraus, wer für Claras Tod verantwortlich ist. Durchsuche Bibliothek und Garten, untersuche, was du findest, und befrage Anna und Ben. Nicht jede Spur führt zum Täter, und wer schweigt, hat damit noch nichts gestanden.",
   "challengeQuestion": "Wer ist für Claras Tod verantwortlich?",
   "labels": [
     {
@@ -173,5 +173,5 @@
       "text": "Außer Clara war genau eine Person bei ihrem Tod dabei. Wer dabei war, ist verantwortlich."
     }
   ],
-  "epilogue": "Ben bricht sein Schweigen. Er schuldete Clara Geld, das er nicht zurückzahlen konnte, und am Abend stritten die beiden in der Bibliothek über das Testament. Um 20:25 griff er nach dem Brieföffner vom Schreibtisch.\n\nAnna hatte mit Claras Tod nichts zu tun. Sie arbeitete zu dieser Zeit im Garten, ihre Handschuhe voller frischer Erde. Ihr Fingerabdruck auf dem Griff des Brieföffners war eine falsche Spur: Er sagt nichts darüber, wann er entstand."
+  "epilogue": "Ben bricht zusammen. „Sie wollte mich ruinieren“, sagt er, und seine Stimme versagt. Er schuldete Clara Geld, das er nicht zurückzahlen konnte, und am Abend stritten die beiden in der Bibliothek über das Testament. Um 20:25 griff er nach dem Brieföffner auf dem Schreibtisch. Im Verhör log er: Er sei nicht dabei gewesen, Anna sei es gewesen.\n\nAnna hatte mit Claras Tod nichts zu tun. Sie arbeitete zu dieser Zeit im Garten, ihre Handschuhe voller frischer Erde. Ihr Fingerabdruck auf dem Griff des Brieföffners war eine falsche Spur: Sie hatte am Nachmittag damit Briefe geöffnet."
 }

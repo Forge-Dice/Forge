@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "title": "The Empty Display Case",
-  "brief": "It is 18:08. The gold medal “Morgenstern” is missing. The authenticated sensor dates the removal by hand to 18:04:00 in the Gallery. Examine the four people who remained. Independent evidence will help you solve the case.\n\nYour task: Choose exactly one of the four people as the person who removed the medal by hand. The evidence helps you deduce. A complete correct answer solves the case even without collected or cited evidence. An unsolved verdict means that the submitted answer does not yet fulfil the case task; it does not point out which individual statements are wrong.\n\nLocations: Gallery – the empty display case and the visitor records. Courtyard – the area of the photo shoot. Archive – supervision, work records and key management. Workshop – restoration and transport materials. Foyer – closing and attendance list.\n\nYour actions: search locations, ask people the available structured questions, read out released device evidence and submit a complete answer. Newly known entities can make further questions or evidence available. Questions and investigations can be repeated; in this first case they cost neither time nor points.\n\nStatements made by people belong in the report journal. Independent observations are kept separate. A refusal to talk and a mere earlier visit are not proof of guilt.",
-  "challengeQuestion": "Who removed the medal by hand?",
+  "brief": "Museum am Domplatz, 18:08. The visitors are gone, the doors are locked, and the display case in the Gallery is empty. The gold medal “Morgenstern”, on loan for the major exhibition, has disappeared. The display case sensor recorded the removal to the second: 18:04:00. It does not show who took the medal out.\n\nFour people are still in the building: the historian Max Brandt, the restorer Lina Kern, the photographer Nora Weiss and Oskar Falk, the attendant with the bunch of keys. One of them took the medal with their own hands.\n\nSearch the Gallery, Courtyard, Archive, Workshop and Foyer, examine what you find, and question the four. Every find can open up new questions and new leads. You have all the time in the world: questions and examinations cost nothing.\n\nKeep apart what people tell you and what recordings and logs prove. Someone who stays silent is not guilty for that reason, and someone who was in the Gallery earlier in the evening was not necessarily there at 18:04.",
+  "challengeQuestion": "Who removed the medal from the display case by hand at 18:04?",
   "labels": [
     {
       "entity": {
@@ -226,7 +226,7 @@
         "id": "person:max"
       },
       "label": "Max Brandt",
-      "role": "historian and representative of the former owners' family"
+      "role": "historian, heir of the former owners"
     },
     {
       "entity": {
@@ -242,7 +242,7 @@
         "id": "person:oskar"
       },
       "label": "Oskar Falk",
-      "role": "supervisor and keyholder"
+      "role": "attendant and keeper of the keys"
     }
   ],
   "questionTexts": [
@@ -269,7 +269,7 @@
     {
       "npc": "person:lina",
       "questionId": "question:q20",
-      "text": "Would you like to comment on the removal?"
+      "text": "Do you want to tell me anything about the medal?"
     },
     {
       "npc": "person:max",
@@ -294,7 +294,7 @@
     {
       "npc": "person:max",
       "questionId": "question:q05",
-      "text": "Where is the complete photo evidence?"
+      "text": "Was the Courtyard photo shoot filmed in full?"
     },
     {
       "npc": "person:nora",
@@ -309,7 +309,7 @@
     {
       "npc": "person:nora",
       "questionId": "question:q08",
-      "text": "Can I see the complete footage of this courtyard photo shoot?"
+      "text": "Was your camera running the whole time during the Courtyard photo shoot?"
     },
     {
       "npc": "person:nora",
@@ -339,7 +339,7 @@
     {
       "npc": "person:oskar",
       "questionId": "question:q14",
-      "text": "Where is the independent archive evidence?"
+      "text": "Is there a device in the Archive that records who works there?"
     },
     {
       "npc": "person:oskar",
@@ -350,16 +350,16 @@
   "publicRules": [
     {
       "id": "rule:certified-sources",
-      "text": "In this case, the image evidence released as observations is unaltered and synchronised with the removal sensor. Witness statements can be mistaken. A visit at a different time and a refusal to talk do not prove a removal by hand."
+      "text": "Camera images and logs with timestamps are genuine and synchronized with the display case sensor. Witnesses can be mistaken. A visit at a different time and a silence prove no deed."
     },
     {
       "id": "rule:closed-roster",
-      "text": "Only Max, Lina, Nora and Oskar come into question as the direct remover. There was exactly one direct remover. If three are ruled out, the fourth person remains."
+      "text": "Only Max, Lina, Nora and Oskar are possible suspects, and exactly one person took the medal. If three are ruled out, the fourth remains."
     },
     {
       "id": "rule:manual-presence",
-      "text": "The medal was removed by hand by a single person in the Gallery at 18:04:00. Anyone who was demonstrably at a different location at exactly that moment is ruled out as the direct remover."
+      "text": "The medal was taken at 18:04:00 in the Gallery by a single person with their own hands. Anyone who was demonstrably somewhere else at exactly that second is ruled out."
     }
   ],
-  "epilogue": "Lina Kern gives up. At 18:04 she took the gold medal “Morgenstern” out of the display case herself and, one minute later, placed it in the transport case in the Workshop. She wanted to hide an unauthorised repair before the lender inspected the medal the next morning.\n\nMax Brandt was in the Gallery at 18:02, but at the time of the theft he was standing with Nora Weiss in the Courtyard, as the complete courtyard footage shows. Oskar Falk was honestly mistaken when he saw Max in the Gallery at 18:04: the archive camera shows Oskar himself in the Archive at that very minute. The medal is in the transport case in the Workshop."
+  "epilogue": "Lina Kern puts the key on the table. “I only wanted to save it,” she says quietly. During a cleaning in the spring she had damaged the medal and repaired the scratch on her own authority. The lender was due to inspect it the next morning. At 18:03 she had Oskar give her the key, at 18:04 she took the medal out of the display case, and at 18:05 she placed it in the transport case in the Workshop.\n\nMax Brandt was in the Gallery at 18:02, but at the time of the theft he was standing with Nora Weiss in the Courtyard, as the complete footage shows. Oskar Falk was honestly mistaken when he claimed to have seen Max in the Gallery at 18:04: the archive camera shows Oskar himself in the Archive at that very second. The medal lies undamaged in the transport case."
 }

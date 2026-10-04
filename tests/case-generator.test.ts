@@ -166,3 +166,20 @@ describe("Zufallsfall in the browser", () => {
     }
   });
 });
+
+describe("review fixes", () => {
+  it("writing into a folder that already holds files is refused unless forced; forcing drops stale NPC files", () => {
+    const dir = join(scratch, "reuse");
+    writeGeneratedCase(generateCase(0), dir);
+    expect(() => writeGeneratedCase(generateCase(1), dir)).toThrow(/nicht leer/);
+    writeGeneratedCase(generateCase(1), dir, { force: true });
+    expect(checkCaseFolder(dir).ok).toBe(true);
+  });
+
+  it("seeds above 2^32-1 are rejected instead of wrapping onto another seed's case", () => {
+    expect(() => generateCase(2 ** 32 + 5)).toThrow(RangeError);
+    expect(() => generateCase(2 ** 32 - 1)).not.toThrow();
+  });
+
+});
+

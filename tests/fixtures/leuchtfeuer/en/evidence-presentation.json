@@ -93,7 +93,7 @@
     },
     {
       "evidenceId": "evidence:kassenbuch",
-      "text": "The ferry house cash book, last entry: 01:45, Hinrich Paulsen, two grogs, on his tab. Behind the bar stands the telephone; it records every call.",
+      "text": "The ferry house cash book, in Frauke's round handwriting. Last entry: 01:45, Hinrich Paulsen, two grogs, on his tab. Behind the bar stands the telephone; it records every call.",
       "mentions": [
         {
           "kind": "person",

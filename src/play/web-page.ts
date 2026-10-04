@@ -386,7 +386,8 @@ const load = document.getElementById("load"), loadLabel = document.getElementByI
 load.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  await fetch(path + "/load", { method: "POST", headers: { "content-type": "text/plain;charset=utf-8" }, body: await file.text() });
+  // Not following the redirect: its GET would consume the load result before the page reloads.
+  try { await fetch(path + "/load", { method: "POST", redirect: "manual", headers: { "content-type": "text/plain;charset=utf-8" }, body: await file.text() }); } catch {}
   visit(path);
 });
 loadLabel.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); load.click(); } });
