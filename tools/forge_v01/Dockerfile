@@ -58,11 +58,19 @@ COPY --from=build /usr/libexec/git-core /usr/libexec/git-core
 COPY --from=build /trusted/node_modules /trusted/node_modules
 COPY --from=build /usr/local/bin/docker /usr/bin/docker
 COPY --from=build /opt/forge/bootstrap /opt/forge/bootstrap
+# FORGE-LAYOUT-BEGIN
+# The contract parser (BASE src/forge/contract-document.ts) imports the bare specifier "zod". Node's ESM
+# resolver only walks node_modules folders on the ancestors of the importing file, and the materialized BASE
+# root lives under the workspace, so the only ancestor the image controls for every workspace is "/". The
+# root folder is therefore a link to /trusted/node_modules, which holds exactly the image Zod (PKG §6).
+RUN ln -s /trusted/node_modules /node_modules
+# FORGE-LAYOUT-END
+# npm-cli.js starts with `#!/usr/bin/env node`: the check gets the worker's INSTALL_ENV PATH, as npm ci does.
 RUN chmod -R a-w /opt/forge/bootstrap /trusted \
  && /opt/python/bin/python3.12 -I -c "import sys; assert sys.version_info[:3] == (3, 12, 14)" \
  && /usr/bin/git --version | grep -qx "git version 2.51.1" \
  && test "$(/opt/node/bin/node --version)" = "v24.19.0" \
- && test "$(/opt/node/bin/npm --version)" = "11.9.0"
+ && test "$(PATH=/opt/node/bin:/usr/bin:/bin /opt/node/bin/npm --version)" = "11.9.0"
 WORKDIR /opt/forge/bootstrap
 # python -I does not put the script directory on sys.path, and stage0.py does not add it itself; the
 # entry therefore adds exactly /opt/forge/bootstrap (PKG §2) and then runs stage0.py as __main__.

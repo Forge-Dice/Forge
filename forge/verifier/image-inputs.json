@@ -11,12 +11,12 @@
     "repository": "docker.io/library/ubuntu",
     "release": "24.04",
     "arg": "UBUNTU_DIGEST",
-    "digest": null
+    "digest": "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55"
   },
   "aptSnapshot": {
     "source": "https://snapshot.ubuntu.com/",
     "arg": "UBUNTU_SNAPSHOT",
-    "id": null
+    "id": "20261001T000000Z"
   },
   "kernel": {
     "arg": "KERNEL_COMMIT",
@@ -48,19 +48,19 @@
     "node": {
       "version": "24.19.0",
       "url": "https://nodejs.org/dist/v24.19.0/node-v24.19.0-linux-x64.tar.xz",
-      "sha256": null,
+      "sha256": "14b342e71204f811bde6153be8e04b62aef63c236fef92b55f9c83154b409647",
       "arg": "NODE_SHA256"
     },
     "npm": {
       "version": "11.9.0",
       "url": "https://registry.npmjs.org/npm/-/npm-11.9.0.tgz",
-      "sha256": null,
+      "sha256": "5a172e3228e59d44cb9f44d5e83977178323bba3cc506016cae8e40b92ad418f",
       "arg": "NPM_SHA256"
     },
     "zod": {
       "version": "4.6.5",
       "url": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
-      "sha256": null,
+      "sha256": "a78c0c533de30dc1c4afc259ac43ac06e390cb0da8d2e32eae355301b50b36fc",
       "arg": "ZOD_SHA256",
       "lockIntegrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q=="
     },

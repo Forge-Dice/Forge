@@ -213,13 +213,27 @@ describe("verifier data files and main.py", () => {
     const text = readFileSync(join(ROOT, "forge/verifier/image-inputs.json"), "utf8");
     const inputs = JSON.parse(text);
     expect(inputs.status).toBe("unresolved");
-    expect(inputs.baseImage.digest).toBeNull();
     expect(inputs.kernel.commit).toBeNull();
     expect(inputs.output.ociDigest).toBeNull();
-    for (const name of ["python", "git", "node", "npm", "zod"]) expect(inputs.tools[name].sha256).toBeNull();
+    // Only pins checked against the vendor's own published value are filled: the Docker Hub index digest of
+    // ubuntu:24.04, nodejs.org SHASUMS256.txt, and npm tarballs whose registry sha512 integrity matched.
+    // python.org / kernel.org were not reachable and download.docker.com publishes no checksum: still null.
+    const verified = {
+      ubuntu: "sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55",
+      node: "14b342e71204f811bde6153be8e04b62aef63c236fef92b55f9c83154b409647",
+      npm: "5a172e3228e59d44cb9f44d5e83977178323bba3cc506016cae8e40b92ad418f",
+      zod: "a78c0c533de30dc1c4afc259ac43ac06e390cb0da8d2e32eae355301b50b36fc",
+    };
+    expect(inputs.baseImage.digest).toBe(verified.ubuntu);
+    expect(inputs.aptSnapshot.id).toBe("20261001T000000Z");
+    for (const name of ["node", "npm", "zod"] as const) expect(inputs.tools[name].sha256).toBe(verified[name]);
+    for (const name of ["python", "git", "dockerCli"]) expect(inputs.tools[name].sha256).toBeNull();
+    expect(inputs.tools.dockerCli.version).toBeNull();
+    expect(inputs.recipe.sha256).toBeNull();
+    const known = new Set(Object.values(verified).map((v) => v.replace("sha256:", "")));
+    expect((text.match(/[0-9a-f]{64}/g) ?? []).filter((h) => !known.has(h))).toEqual([]);
     expect(Object.fromEntries(["python", "git", "node", "npm", "zod"].map((n) => [n, inputs.tools[n].version])))
       .toEqual({ python: "3.12.14", git: "2.51.1", node: "24.19.0", npm: "11.9.0", zod: "4.6.5" });
-    expect(text).not.toMatch(/[0-9a-f]{64}/);
     const lock = JSON.parse(readFileSync(join(ROOT, "package-lock.json"), "utf8"));
     expect(inputs.tools.zod.lockIntegrity).toBe(lock.packages["node_modules/zod"].integrity);
   });
@@ -232,6 +246,7 @@ describe("verifier data files and main.py", () => {
     expect((text.match(/sha256sum -c --strict/g) ?? []).length).toBe(1);
     expect((text.match(/^ && fetch /gm) ?? []).length).toBe(6);
     expect(text).toMatch(/COPY stage0\.py errors\.py process\.py paths\.py objects\.py materialize\.py odb_layout\.py bootstrap\.py \/opt\/forge\/bootstrap\//);
+    expect(text).toMatch(/^RUN ln -s \/trusted\/node_modules \/node_modules$/m); // parser "zod" → image Zod only
     expect(text).toMatch(/^ENTRYPOINT \["\/opt\/python\/bin\/python3\.12", "-I", "-B", "\/opt\/forge\/bootstrap\/stage0\.py"\]$/m);
   });
 

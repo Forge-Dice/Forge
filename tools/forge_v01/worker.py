@@ -235,6 +235,7 @@ def prepare_case(case_root: str) -> None:
 def _write(path: str, data: bytes) -> None:
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC, 0o444)
     try:
+        os.fchmod(fd, 0o444)  # the bootstrap's umask 077 would leave 0400 root files the worker uid cannot read
         os.write(fd, data)
     finally:
         os.close(fd)

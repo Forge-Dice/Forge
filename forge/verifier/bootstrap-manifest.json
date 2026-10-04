@@ -91,7 +91,7 @@
     },
     {
       "path": "tools/forge_v01/worker.py",
-      "sha256": "af73ec06d0be9c92a01681aa161d8ce51c00fa6eeacf3f537a0854d019886325"
+      "sha256": "e15b223357d1ba55060f3887f215167cb5c9a3abddd84966aab89a4ea2addb98"
     },
     {
       "path": "src/forge/contract-document.ts",
