@@ -64,7 +64,13 @@ ${body}
 const difficultyTag = (d: Difficulty | undefined): string =>
   d === undefined ? "" : `<span class="difficulty" title="Schwierigkeit ${d} von 5"><span class="visually-hidden">Schwierigkeit: </span><span class="dots" aria-hidden="true">${difficultyDots(d)}</span> ${DIFFICULTY_NAMES[d]}</span>`;
 
-export function renderCaseList(cases: readonly CaseCard[], editorLink = false): string {
+export type RecentCase = { readonly slug: string; readonly title: string; readonly progress: string | null };
+export type CaseListExtras = { readonly recent?: readonly RecentCase[]; readonly feedback?: Feedback | null };
+
+const DIE = `<svg class="die" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="6" width="36" height="36" rx="7" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="16" r="3.2" fill="currentColor"/><circle cx="32" cy="16" r="3.2" fill="currentColor"/><circle cx="24" cy="24" r="3.2" fill="currentColor"/><circle cx="16" cy="32" r="3.2" fill="currentColor"/><circle cx="32" cy="32" r="3.2" fill="currentColor"/></svg>`;
+
+export function renderCaseList(cases: readonly CaseCard[], editorLink = false, extras: CaseListExtras = {}): string {
+  const recent = extras.recent ?? [];
   const cards = cases
     .map((c, i) => {
       const solved = c.progress === "Gelöst";
@@ -79,8 +85,17 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false): 
     `<a class="skip" href="#faelle">Zu den Fällen springen</a>
 <header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a>${editorLink ? ` <a class="button ghost" href="/editor">Fall-Editor</a>` : ""}</p></header>
 <main id="faelle" class="shelf"><h2 class="visually-hidden">Offene Akten</h2><ul class="cases">${cards}</ul>
-<section class="random-case" aria-labelledby="zufall"><h2 id="zufall">Zufallsfall</h2><p>Ein erzeugter Fall, jedes Mal ein anderes Schema. Gleicher Seed, gleicher Fall; leer lassen für einen zufälligen.</p><form method="post" action="/zufall"><label for="seed">Seed</label> <input id="seed" name="seed" inputmode="numeric" pattern="[0-9]{0,9}" maxlength="9" placeholder="z. B. 42"> <button type="submit">Zufallsfall öffnen</button></form></section>
-<p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>`,
+<div class="tools">
+<section class="random-case dice-box" aria-labelledby="zufall"><div class="tool-head">${DIE}<div><p class="kicker">Akte ohne Nummer</p><h2 id="zufall">Zufallsfall</h2></div></div><p>Ein erzeugter Fall nach einem von fünf Schemata. Gleicher Seed, gleicher Fall. Lass das Feld leer, dann wird gewürfelt.</p><form method="post" action="/zufall" class="seed-form"><label for="seed">Seed</label><input id="seed" name="seed" inputmode="numeric" pattern="[0-9]{0,9}" maxlength="9" placeholder="z. B. 42" autocomplete="off"><button type="submit" class="primary">Zufallsfall öffnen</button></form>${
+      recent.length === 0
+        ? ""
+        : `<h3>Zuletzt geöffnet</h3><ul class="recent">${recent.map((r) => `<li><a href="/fall/${escape(r.slug)}">${escape(r.title)}</a>${r.progress === null ? "" : ` <span class="badge${r.progress === "Gelöst" ? " solved" : ""}">${escape(r.progress)}</span>`}</li>`).join("")}</ul>`
+    }</section>
+<section class="load-any" aria-labelledby="laden"><h2 id="laden">Spielstand laden</h2><p>Eine gespeicherte Datei öffnet den passenden Fall, auch einen Zufallsfall mit seinem Seed.</p><label class="button" tabindex="0" role="button" id="load-any-label">Datei wählen<input type="file" id="load-any" accept=".json,application/json" hidden></label></section>
+</div>
+<p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>
+${extras.feedback ? notice(extras.feedback) : ""}
+<script>${HOME_SCRIPT}</script>`,
     "page-cases",
   );
 }
@@ -257,7 +272,15 @@ export function renderGame(game: Game, slug: string, feedback: Feedback | null, 
   const steps = game.state.events.length;
   const nav: [string, string, string][] = solved
     ? [["ende", "Auflösung", "E"], ["akte", "Akte", "F"], ["journal", "Journal", "J"]]
-    : [["akte", "Akte", "F"], ["untersuchen", "Untersuchen", "U"], ["verhoeren", "Verhören", "V"], ["journal", "Journal", "J"], ["anklage", "Anklage", "A"], ["bekannt", "Bekannt", "B"]];
+    : [
+        ["akte", "Akte", "F"],
+        ["untersuchen", "Untersuchen", "U"],
+        ["verhoeren", "Verhören", "V"],
+        ...(confrontations(game).length > 0 ? [["vorhalten", "Vorhalten", "H"] as [string, string, string]] : []),
+        ["journal", "Journal", "J"],
+        ["anklage", "Anklage", "A"],
+        ["bekannt", "Bekannt", "B"],
+      ];
   const accuse = accusations(game);
   const body = `<a class="skip" href="#spiel">Zum Spiel springen</a>
 <header class="topbar"><a class="home" href="/"><span aria-hidden="true">←</span> Alle Fälle</a><div class="case-title"><p class="kicker">Fallakte</p><h1>${escape(publicContent.title)}</h1></div><a class="help-link" href="/hilfe" aria-keyshortcuts="?"><span aria-hidden="true">?</span><span class="help-text"> Hilfe</span></a><span class="badge${
@@ -306,6 +329,24 @@ ${intro()}
 <script>${script(slug, solved, feedback !== null)}</script>`;
   return layout(publicContent.title, body);
 }
+
+// The case list: a chosen save file is posted as text and the server opens the matching case.
+const HOME_SCRIPT = `(() => {
+const visit = (url) => (typeof window.kfVisit === "function" ? window.kfVisit(url) : (location.href = url));
+const input = document.getElementById("load-any"), label = document.getElementById("load-any-label");
+input.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const res = await fetch("/laden", { method: "POST", headers: { "content-type": "text/plain;charset=utf-8" }, body: await file.text() });
+  const to = res.ok ? await res.text() : "/";
+  visit(to.startsWith("/") ? to : "/");
+});
+label.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+const sheet = document.getElementById("notice");
+const close = () => { if (sheet) sheet.hidden = true; };
+if (sheet) { sheet.querySelector("[data-close]").addEventListener("click", close); sheet.focus(); }
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+})();`;
 
 // ---------- Introduction and help ----------
 
@@ -360,6 +401,7 @@ export function renderHelp(): string {
     ["V", "Verhören"],
     ["J", "Journal"],
     ["A", "Anklage"],
+    ["H", "Vorhalten (wenn möglich)"],
     ["B", "Bekannt"],
     ["E", "Auflösung (nach dem Fall)"],
     ["Esc", "Meldung oder Dialog schließen"],
@@ -392,7 +434,8 @@ const load = document.getElementById("load"), loadLabel = document.getElementByI
 load.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  await fetch(path + "/load", { method: "POST", headers: { "content-type": "text/plain;charset=utf-8" }, body: await file.text() });
+  // Not followed here: the redirect target would consume the result sheet before the visit.
+  await fetch(path + "/load", { method: "POST", redirect: "manual", headers: { "content-type": "text/plain;charset=utf-8" }, body: await file.text() });
   visit(path);
 });
 loadLabel.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); load.click(); } });
@@ -672,6 +715,33 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .open-file { font: 600 14px var(--sans); }
 .hint { color: #bfae90; font: 14px var(--sans); margin-top: 28px; }
 
+/* Case list tools: random case and loading a save */
+.tools { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; margin-top: 36px; align-items: start; }
+.random-case, .load-any { position: relative; padding: 24px; border-radius: 4px; color: var(--paper); }
+.random-case { background: repeating-linear-gradient(-45deg, rgba(255,255,255,.025) 0 10px, transparent 10px 20px), var(--desk-2); border: 2px dashed #6a5845; }
+.load-any { border: 1px solid #4a3d30; background: rgba(0,0,0,.18); }
+.tool-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.tool-head .kicker { margin: 0; }
+.die { width: 46px; height: 46px; color: var(--brass); flex: none; transform: rotate(-8deg); }
+@media (prefers-reduced-motion: no-preference) { .dice-box:hover .die { transform: rotate(14deg); transition: transform .3s cubic-bezier(.3,1.6,.5,1); } }
+.random-case h2, .load-any h2 { margin: 0; font-size: 26px; }
+.load-any h2 { font: 700 13px var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--brass); margin-bottom: 8px; }
+.random-case p, .load-any p { color: #e2d5bd; max-width: 60ch; }
+.seed-form { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; margin-top: 14px; }
+.seed-form label { align-self: center; font: 700 12px var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--brass); }
+.seed-form input { width: 9.5em; min-height: 44px; padding: 8px 12px; font: 700 20px var(--type); letter-spacing: .08em; color: var(--ink); background: var(--paper); border: 2px solid #b9a789; border-radius: var(--radius); }
+.seed-form input::placeholder { color: #9c8c75; font-weight: 400; letter-spacing: 0; }
+.seed-form input:invalid { border-color: var(--warn); }
+.seed-form button.primary { background: var(--brass); color: var(--desk); border-color: var(--brass); font-weight: 700; }
+.random-case h3 { color: #bfae90; margin-top: 20px; }
+.recent { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.recent li { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,.2); border: 1px solid #5a4a39; border-radius: 4px; padding: 6px 10px; }
+.recent a { color: var(--paper); font-weight: 600; text-decoration: none; }
+.recent a:hover { text-decoration: underline; }
+.load-any .button { background: transparent; color: var(--paper); border-color: #6a5845; box-shadow: none; }
+.load-any .button:hover { border-color: var(--brass); color: #fff; }
+.page-cases .notice { color: var(--ink); }
+
 dialog { border: 0; border-radius: 6px; padding: 24px 26px; max-width: min(440px, calc(100vw - 32px)); background: var(--paper); color: var(--ink); box-shadow: 0 30px 80px rgba(0,0,0,.6); border-top: 6px solid var(--blood); }
 dialog::backdrop { background: rgba(10,8,6,.7); }
 dialog h2 { margin: 0 0 8px; font-size: 22px; }
@@ -753,6 +823,7 @@ a.primary-link { background: var(--paper); font-weight: 600; }
   .help-text { display: none; } .help-link { padding: 5px 7px; }
   .intro-steps { padding: 8px 18px 4px; min-height: 300px; } .intro-steps h3 { font-size: 22px; } .intro-steps p { font-size: 17px; }
   .manual { padding: 16px 12px 36px; } .overview li { grid-template-columns: 40px 1fr; } .overview .step-no { display: none; }
+  .tools { grid-template-columns: 1fr; }
   .masthead { padding: 40px 16px 16px; } .shelf { padding: 8px 16px 40px; }
 }
 @media (forced-colors: active) { .tag, .badge, .stamp { border: 1px solid; } }

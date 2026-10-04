@@ -157,6 +157,28 @@ describe("play:web", () => {
     expect(help).toContain("Erhebe Anklage");
   });
 
+  it("a generated case's save carries its seed and opens from the case list", async () => {
+    const Z = "/fall/zufall-4242";
+    const first = /<form method="post" action="\/fall\/zufall-4242\/act"[^>]*>(.*?)<\/form>/.exec(await page(Z))![1]!;
+    const fields = Object.fromEntries([...first.matchAll(/name="(\w+)" value="([^"]*)"/g)].map(([, k, v]) => [k!, v!]));
+    await fetch(`${base}${Z}/act`, { method: "POST", body: new URLSearchParams(fields), redirect: "manual" });
+    expect(await page(Z)).toContain("1 Aktionen");
+    const saved = await (await fetch(`${base}${Z}/save`)).text();
+    const envelope = JSON.parse(saved) as { zufallsfall: number; spielstand: string };
+    expect(envelope.zufallsfall).toBe(4242);
+    expect(Object.keys(envelope)).toEqual(["zufallsfall", "spielstand"]);
+    await fetch(`${base}${Z}/new`, { method: "POST", redirect: "manual" });
+    expect(await (await fetch(`${base}/laden`, { method: "POST", body: saved })).text()).toBe(Z);
+    expect(await page(Z)).toContain("1 Aktionen wiederhergestellt.");
+    expect(await page("/")).toContain('href="/fall/zufall-4242"');
+
+    const vitrineSave = await (await fetch(`${base}${V}/save`)).text();
+    expect(await (await fetch(`${base}/laden`, { method: "POST", body: vitrineSave })).text()).toBe(V);
+    expect(await page()).toContain("Spielstand geladen");
+    expect(await (await fetch(`${base}/laden`, { method: "POST", body: "{}" })).text()).toBe("/");
+    expect(await page("/")).toContain("Diese Datei passt zu keinem Fall.");
+  });
+
   it("no page ever contains an internal id or a PlayerRef", () => {
     expect(pages.length).toBeGreaterThan(10);
     for (const html of pages) {
