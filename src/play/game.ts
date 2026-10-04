@@ -131,13 +131,21 @@ export function investigations(game: Game): Action[] {
 
 /** Questions of known NPCs that the session would accept now (a dry run changes nothing). */
 export function questions(game: Game): Action[] {
+  return questionCandidates(game).filter((action) => accepted(game, action));
+}
+
+/** A dry run: would the session accept this action now? */
+export const accepted = (game: Game, action: Action): boolean => reduceSession(game.pkg, game.state, action.event).ok;
+
+/** Every question of a known NPC, in menu order, before the dry run that filters the menu. */
+export function questionCandidates(game: Game): Action[] {
   const { pkg, state } = game;
+  if (state.phase !== "active") return [];
   return known(game, "person").flatMap(({ ref, label }) => {
     const npcId = pkg.refs.resolve(ref)?.id;
     return pkg.publicContent.questionTexts
       .filter((q) => q.npc === npcId)
-      .map((q) => ({ label: `${label}: ${q.text}`, event: { type: "interrogate", npc: ref, questionId: q.questionId } }))
-      .filter((action) => state.phase === "active" && reduceSession(pkg, state, action.event).ok);
+      .map((q) => ({ label: `${label}: ${q.text}`, event: { type: "interrogate", npc: ref, questionId: q.questionId } }));
   });
 }
 
@@ -146,6 +154,11 @@ export function questions(game: Game): Action[] {
  * question) against every found evidence. Offered alike for true statements and lies.
  */
 export function confrontations(game: Game): Action[] {
+  return confrontationCandidates(game).filter((action) => accepted(game, action));
+}
+
+/** Every earlier statement against every find, in menu order, before the dry run. */
+export function confrontationCandidates(game: Game): Action[] {
   const { pkg, state } = game;
   if (state.phase !== "active") return [];
   const statements = new Map<string, { npc: string; questionId: string }>();
@@ -159,8 +172,7 @@ export function confrontations(game: Game): Action[] {
       .map((d) => ({
         label: `${labelOf(game, npc)} zu „${text}“ vorhalten: ${labelOf(game, d.evidence)}`,
         event: { type: "confront", npc, questionId, evidence: d.evidence },
-      }))
-      .filter((action) => reduceSession(pkg, state, action.event).ok);
+      }));
   });
 }
 
@@ -189,11 +201,26 @@ export function accusations(game: Game): Action[] {
 
 // ---------- Rendering ----------
 
+// Menus label every candidate action, so both lookups are indexed once per package and per
+// knowledge state (both immutable) instead of scanned per label.
+const labelIndex = new WeakMap<object, Map<string, string>>();
+const knownIndex = new WeakMap<object, Set<string>>();
+
 function labelOf(game: Game, ref: string): string {
+  const known = game.state.knowledge.known;
+  let refs = knownIndex.get(known);
+  if (refs === undefined) knownIndex.set(known, (refs = new Set(known.map((k) => k.ref))));
+  if (!refs.has(ref)) return "(unbekannt)";
+  const { labels } = game.pkg.publicContent;
+  let index = labelIndex.get(labels);
+  if (index === undefined) {
+    index = new Map();
+    // First label per entity wins, as with find().
+    for (const l of labels) if (!index.has(`${l.entity.kind}\0${l.entity.id}`)) index.set(`${l.entity.kind}\0${l.entity.id}`, l.label);
+    labelIndex.set(labels, index);
+  }
   const entity = game.pkg.refs.resolve(ref);
-  const isKnown = game.state.knowledge.known.some((k) => k.ref === ref);
-  const label = entity && game.pkg.publicContent.labels.find((l) => l.entity.kind === entity.kind && l.entity.id === entity.id);
-  return isKnown && label ? label.label : "(unbekannt)";
+  return (entity && index.get(`${entity.kind}\0${entity.id}`)) || "(unbekannt)";
 }
 
 const ROLES: Record<string, string> = { direct_actor: "eigenhändig handelnde Person", planner: "Planer", facilitator: "Helfer" };

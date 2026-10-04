@@ -3,7 +3,7 @@ import { checkCaseSolvability } from "../domain/case-solvability.ts";
 import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
 import { profileLies } from "../domain/interrogation-authoring.ts";
 import { eventWitness, type Manifest } from "../authoring/check-case.ts";
-import { accusations, confrontations, investigations, newGame, questions, type Action, type Game } from "./game.ts";
+import { accepted, accusations, confrontationCandidates, confrontations, investigations, newGame, questionCandidates, questions, type Action, type Game } from "./game.ts";
 import { difficultyText } from "./difficulty.ts";
 
 // Playtest bot: simulated players run a case over the real session reducer (the same action menus
@@ -271,8 +271,16 @@ type Coverage = { finds: Set<string>; mentioned: Set<string>; actions: number };
 function exhaust(pkg: ResolvedCasePackage): Coverage {
   let game = newGame(pkg);
   const done = new Set<string>();
+  // The first menu action not yet taken, as if the whole menu were built: investigations as they
+  // are, questions and confrontations only if the session accepts them. Built lazily, and the dry
+  // run only for actions not taken yet: the full menus cost a dry run per statement and find.
+  const fresh = (a: Action) => !done.has(JSON.stringify(a.event));
+  const firstOpen = (): Action | undefined =>
+    investigations(game).find(fresh) ??
+    questionCandidates(game).find((a) => fresh(a) && accepted(game, a)) ??
+    confrontationCandidates(game).find((a) => fresh(a) && accepted(game, a));
   for (;;) {
-    const next = [...investigations(game), ...questions(game), ...confrontations(game)].find((a) => !done.has(JSON.stringify(a.event)));
+    const next = firstOpen();
     if (next === undefined || done.size >= MAX_ACTIONS * 2) break;
     done.add(JSON.stringify(next.event));
     const result = reduceSession(pkg, game.state, next.event);

@@ -20,11 +20,18 @@ export function validateSessionJson(
   value: unknown,
   limits: { readonly maxDepth: number; readonly maxNodes: number } = SESSION_JSON_LIMITS,
 ): SessionJsonCheck {
-  type Frame = { readonly value: unknown; readonly depth: number; readonly path: (string | number)[] } | { readonly exit: object };
-  const stack: Frame[] = [{ value, depth: 0, path: [] }];
+  // Paths are linked lists, materialized only for a failure: a valid state has many nodes.
+  type Path = { readonly parent: Path; readonly key: string | number } | null;
+  type Frame = { readonly value: unknown; readonly depth: number; readonly path: Path } | { readonly exit: object };
+  const stack: Frame[] = [{ value, depth: 0, path: null }];
   const onPath = new Set<object>(); // ancestors only: a shared, acyclic subtree is fine
   let nodes = 0;
-  const fail = (code: "LIMIT" | "SHAPE", path: (string | number)[]): SessionJsonCheck => Object.freeze({ ok: false, code, path });
+  const pathOf = (path: Path): (string | number)[] => {
+    const out: (string | number)[] = [];
+    for (let p = path; p !== null; p = p.parent) out.push(p.key);
+    return out.reverse();
+  };
+  const fail = (code: "LIMIT" | "SHAPE", path: Path): SessionJsonCheck => Object.freeze({ ok: false, code, path: pathOf(path) });
   while (stack.length > 0) {
     const frame = stack.pop()!;
     if ("exit" in frame) {
@@ -49,13 +56,14 @@ export function validateSessionJson(
     const keys = Object.keys(v);
     if (Array.isArray(v) && keys.length !== v.length) return fail("SHAPE", path);
     for (const key of keys) {
-      if (!("value" in Object.getOwnPropertyDescriptor(v, key)!) || !isWellFormed(key)) return fail("SHAPE", [...path, key]);
+      if (!("value" in Object.getOwnPropertyDescriptor(v, key)!) || !isWellFormed(key)) return fail("SHAPE", { parent: path, key });
     }
     onPath.add(v);
     stack.push({ exit: v });
+    const array = Array.isArray(v);
     for (const key of keys) {
       const child = (v as Record<string, unknown>)[key];
-      stack.push({ value: child, depth: depth + 1, path: [...path, Array.isArray(v) ? Number(key) : key] });
+      stack.push({ value: child, depth: depth + 1, path: { parent: path, key: array ? Number(key) : key } });
     }
   }
   return OK;
