@@ -25,6 +25,8 @@ import { renderCaseList, renderGame, renderHelp, type Feedback } from "./web-pag
 import { PLAY_CASES, loadPlayPackage, loadSaveInLang, playCaseName, type PlayCaseName } from "./cases.ts";
 import { DEFAULT_LANG, MESSAGES, parseLang, type Lang } from "./messages.ts";
 import { generateCase, generatedClockOrigin, generatedPackage } from "../authoring/case-generator.ts";
+import { generateCaseOfDifficulty } from "../authoring/case-difficulty.ts";
+import { difficultyDots, type Difficulty } from "./difficulty.ts";
 import { importCaseText, MAX_SHARE_BYTES } from "./case-share.ts";
 import { renderImport } from "./import-page.ts";
 
@@ -109,22 +111,28 @@ function feedbackFor(before: Game, after: Game, action: Action, output: SessionO
 
 const HINT = (game: Game): Action[] => [{ label: msg(game).web.hint, event: { type: "hint" } }];
 
-/** Saves of generated cases carry their seed around the unchanged Session C text. */
-const wrapSave = (seed: number, text: string): string => JSON.stringify({ zufallsfall: seed, spielstand: text });
+/** Slug of a generated case: its seed and, for a wished difficulty, the level. */
+const zufallSlug = (seed: number, level: Difficulty | null): string => `zufall-${seed}${level === null ? "" : `-stufe-${level}`}`;
 
-function unwrapSave(body: string): { seed: number | null; text: string } {
+/** Saves of generated cases carry their seed (and wished level) around the unchanged Session C text. */
+const wrapSave = (seed: number, level: Difficulty | null, text: string): string =>
+  JSON.stringify(level === null ? { zufallsfall: seed, spielstand: text } : { zufallsfall: seed, stufe: level, spielstand: text });
+
+function unwrapSave(body: string): { seed: number | null; level: Difficulty | null; text: string } {
   try {
     const v: unknown = JSON.parse(body);
-    if (typeof v === "object" && v !== null && !Array.isArray(v) && Object.keys(v).length === 2) {
-      const { zufallsfall, spielstand } = v as Record<string, unknown>;
-      if (Number.isInteger(zufallsfall) && (zufallsfall as number) >= 0 && (zufallsfall as number) < 1e9 && typeof spielstand === "string") {
-        return { seed: zufallsfall as number, text: spielstand };
+    if (typeof v === "object" && v !== null && !Array.isArray(v)) {
+      const { zufallsfall, stufe, spielstand } = v as Record<string, unknown>;
+      const keys = Object.keys(v).length;
+      const level = stufe === undefined ? null : Number.isInteger(stufe) && (stufe as number) >= 1 && (stufe as number) <= 5 ? (stufe as Difficulty) : undefined;
+      if (level !== undefined && keys === (level === null ? 2 : 3) && Number.isInteger(zufallsfall) && (zufallsfall as number) >= 0 && (zufallsfall as number) < 1e9 && typeof spielstand === "string") {
+        return { seed: zufallsfall as number, level, text: spielstand };
       }
     }
   } catch {
     // Not JSON: the session decoder reports it.
   }
-  return { seed: null, text: body };
+  return { seed: null, level: null, text: body };
 }
 
 type Slot = { game: Game; feedback: Feedback | null; fresh: ReadonlySet<string> };
@@ -179,7 +187,8 @@ export function createWebHandler(
   const slugOf = (name: PlayCaseName) => PLAY_CASES[name].dir;
   // Generated cases ("Zufallsfall"): one slot per seed, created on first visit; the oldest is
   // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
-  const generated = new Map<number, { slot: Slot; clockOrigin: number }>();
+  // zufall-<seed>, or zufall-<seed>-stufe-<1..5> for a wished difficulty (the playtest bot searches).
+  const generated = new Map<string, { slot: Slot; clockOrigin: number; seed: number }>();
   const extras = new Map<string, { version: string; slot: Slot }>();
   // Imported cases ("Eigenen Fall laden"), keyed by eigen-<digest>; the oldest is dropped beyond MAX_IMPORTED.
   const imported = new Map<string, { slot: Slot; clockOrigin: number; title: string }>();
@@ -189,6 +198,8 @@ export function createWebHandler(
     readonly clockOrigin: number;
     /** The seed of a generated case, null otherwise. */
     readonly seed: number | null;
+    /** The wished difficulty of a generated case, null for any. */
+    readonly level?: Difficulty | null;
     /** A fresh game and a loaded save, both in the request's language. */
     readonly restart: () => Game;
     readonly load: (text: string) => ReturnType<typeof loadText>;
@@ -245,26 +256,31 @@ export function createWebHandler(
         },
       };
     }
-    const m = /^zufall-(0|[1-9][0-9]{0,8})$/.exec(slug ?? "");
+    const m = /^zufall-(0|[1-9][0-9]{0,8})(?:-stufe-([1-5]))?$/.exec(slug ?? "");
     if (m === null) return null;
     const seed = Number(m[1]);
-    let g = generated.get(seed);
+    const key = m[0];
+    const wishedLevel = m[2] === undefined ? null : (Number(m[2]) as Difficulty);
+    let g = generated.get(key);
     if (g === undefined) {
-      const generatedCase = generateCase(seed);
+      const wished = wishedLevel === null ? null : generateCaseOfDifficulty(seed, wishedLevel);
+      const generatedCase = wished?.generated ?? generateCase(seed);
       const clockOrigin = generatedClockOrigin(generatedCase);
       const game = withLang(newGame(generatedPackage(generatedCase), clockOrigin), lang);
-      const m = MESSAGES[lang].web;
-      g = { slot: { game, feedback: { tone: "info", title: m.randomCase(seed), lines: [m.randomWelcome] }, fresh: new Set() }, clockOrigin };
-      generated.set(seed, g);
+      const all = MESSAGES[lang];
+      const level = wished === null ? [] : [all.web.levelWished(wished.wished, `${difficultyDots(wished.rating)} ${all.difficulty[wished.rating]}`)];
+      g = { slot: { game, feedback: { tone: "info", title: all.web.randomCase(seed), lines: [all.web.randomWelcome, ...level] }, fresh: new Set() }, clockOrigin, seed };
+      generated.set(key, g);
       if (generated.size > MAX_GENERATED) generated.delete(generated.keys().next().value!);
     }
     const { slot: s, clockOrigin } = g;
     if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = withLang(s.game, lang);
     return {
       slot: s,
-      slug: `zufall-${seed}`,
+      slug: key,
       clockOrigin,
       seed,
+      level: wishedLevel,
       restart: () => withLang(newGame(s.game.pkg, clockOrigin), lang),
       load: (text) => {
         const loaded = loadText(s.game.pkg, text, clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
@@ -331,11 +347,12 @@ export function createWebHandler(
         const progress = s.game.state.phase === "solved" ? m.solvedBadge : steps === 0 ? null : m.actions(steps);
         return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress, difficulty: PLAY_CASES[name].difficulty };
       });
-      const recent = [...generated].reverse().map(([seed, g]) => {
+      const recent = [...generated].reverse().map(([key, g]) => {
         const steps = g.slot.game.state.events.length;
+        const level = /-stufe-([1-5])$/.exec(key)?.[1];
         return {
-          slug: `zufall-${seed}`,
-          title: `${g.slot.game.pkg.publicContent.title} (Seed ${seed})`,
+          slug: key,
+          title: `${g.slot.game.pkg.publicContent.title} (Seed ${g.seed}${level === undefined ? "" : m.levelTag(level)})`,
           progress: g.slot.game.state.phase === "solved" ? m.solvedBadge : steps === 0 ? null : m.actions(steps),
         };
       });
@@ -346,9 +363,9 @@ export function createWebHandler(
     if (method === "POST" && url.pathname === "/laden") {
       // Any save from the case list: a generated case's file names its seed, a fixed case's save
       // is matched by its package. Answers with the page to open (the list posts by script).
-      const { seed, text: saved } = unwrapSave((await readBody()) ?? "");
+      const { seed, level, text: saved } = unwrapSave((await readBody()) ?? "");
       if (seed !== null) {
-        const t = target(`zufall-${seed}`, lang)!;
+        const t = target(zufallSlug(seed, level), lang)!;
         loadInto(t, saved);
         return text(200, `/fall/${t.slug}`);
       }
@@ -384,9 +401,14 @@ export function createWebHandler(
     }
     if (method === "POST" && url.pathname === "/zufall") {
       // An empty seed picks one; anything else must be a whole number up to nine digits.
-      const raw = (new URLSearchParams((await readBody()) ?? "").get("seed") ?? "").trim();
+      // The difficulty is optional: empty means any, otherwise a level 1..5.
+      const form = new URLSearchParams((await readBody()) ?? "");
+      const raw = (form.get("seed") ?? "").trim();
+      const level = (form.get("stufe") ?? "").trim();
       const seed = raw === "" ? Math.floor(Math.random() * 1_000_000) : /^[0-9]{1,9}$/.test(raw) ? Number(raw) : null;
-      return seed === null ? text(400, m.badSeed) : redirect(`/fall/zufall-${seed}`);
+      if (seed === null) return text(400, m.badSeed);
+      if (level !== "" && !/^[1-5]$/.test(level)) return text(400, m.badLevel);
+      return redirect(`/fall/zufall-${seed}${level === "" ? "" : `-stufe-${level}`}`);
     }
     const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
     const t = match === null ? null : target(match[1], lang);
@@ -409,7 +431,7 @@ export function createWebHandler(
         return {
           status: 200,
           headers: { "content-type": "application/json; charset=utf-8", "content-disposition": `attachment; filename="${t.slug}.save.json"` },
-          body: t.seed === null ? saved.text : wrapSave(t.seed, saved.text),
+          body: t.seed === null ? saved.text : wrapSave(t.seed, t.level ?? null, saved.text),
         };
       }
       case "POST act": {
@@ -423,8 +445,8 @@ export function createWebHandler(
         // A generated case's save opens its own seed, wherever it was chosen.
         const body = await readBody();
         if (body === null) return text(413, m.tooLarge);
-        const { seed, text: saved } = unwrapSave(body);
-        const into = seed === null || seed === t.seed ? t : target(`zufall-${seed}`, lang)!;
+        const { seed, level, text: saved } = unwrapSave(body);
+        const into = seed === null || (seed === t.seed && level === (t.level ?? null)) ? t : target(zufallSlug(seed, level), lang)!;
         loadInto(into, saved);
         return redirect(`/fall/${into.slug}`);
       }

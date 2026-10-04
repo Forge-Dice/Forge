@@ -2,8 +2,10 @@ import { createInterface } from "node:readline/promises";
 import { checkCaseFolder, formatCaseCheck } from "./check-case.ts";
 import { CASE_SCHEMAS, MAX_SEED, generateCase, generatedClockOrigin, generatedPackage, writeGeneratedCase, type CaseSchema } from "./case-generator.ts";
 import { command, intro, newGame, type Game } from "../play/game.ts";
+import { generateCaseOfDifficulty, isDifficulty } from "./case-difficulty.ts";
+import { difficultyText } from "../play/difficulty.ts";
 
-// `npm run generate-case -- --seed N [--schema <schema>] [--out <ordner>] [--force] [--play]`: writes a
+// `npm run generate-case -- --seed N [--schema <schema> | --difficulty 1..5] [--out <ordner>] [--force] [--play]`: writes a
 // generated case folder, checks it with check-case and, with --play, starts it in the terminal. A
 // non-empty folder is only overwritten with --force.
 
@@ -16,12 +18,20 @@ const raw = option("--seed");
 // Digits only: Number("") is 0 and Number("0x10") is 16.
 const seed = raw !== undefined && /^[0-9]{1,10}$/.test(raw) ? Number(raw) : Number.NaN;
 const schema = option("--schema");
-if (!(seed <= MAX_SEED) || (schema !== undefined && !(CASE_SCHEMAS as readonly string[]).includes(schema))) {
-  console.log(`Aufruf: npm run generate-case -- --seed <0..${MAX_SEED}> [--schema ${CASE_SCHEMAS.join("|")}] [--out <ordner>] [--force] [--play]`);
+const level = option("--difficulty");
+const difficulty = level === undefined ? undefined : /^[1-5]$/.test(level) ? Number(level) : Number.NaN;
+if (!(seed <= MAX_SEED) || (schema !== undefined && !(CASE_SCHEMAS as readonly string[]).includes(schema)) || (difficulty !== undefined && (!isDifficulty(difficulty) || schema !== undefined))) {
+  console.log(`Aufruf: npm run generate-case -- --seed <0..${MAX_SEED}> [--schema ${CASE_SCHEMAS.join("|")} | --difficulty 1..5] [--out <ordner>] [--force] [--play]`);
   process.exitCode = 2;
 } else {
-  const generated = generateCase(seed, schema as CaseSchema | undefined);
-  const dir = option("--out") ?? `generated/fall-${seed}`;
+  // A wished difficulty: the playtest bot rates candidates until one matches (see case-difficulty.ts).
+  const wished = difficulty !== undefined && isDifficulty(difficulty) ? generateCaseOfDifficulty(seed, difficulty) : null;
+  const generated = wished?.generated ?? generateCase(seed, schema as CaseSchema | undefined);
+  if (wished !== null) {
+    const hit = wished.rating === wished.wished ? "getroffen" : `nicht getroffen, nächster Kandidat`;
+    console.log(`Stufe ${wished.wished} ${hit}: ${difficultyText(wished.rating)} (Kandidat ${wished.candidate}, Komplexität ${generated.complexity})`);
+  }
+  const dir = option("--out") ?? `generated/fall-${seed}${wished === null ? "" : `-stufe-${wished.wished}`}`;
   let files: string[];
   try {
     files = writeGeneratedCase(generated, dir, { force: args.includes("--force") });
@@ -29,7 +39,7 @@ if (!(seed <= MAX_SEED) || (schema !== undefined && !(CASE_SCHEMAS as readonly s
     console.log((error as Error).message);
     process.exit(2);
   }
-  console.log(`„${generated.title}“ (Seed ${seed}, Schema ${generated.schema}${generated.withLie ? ", mit Lüge" : ""}): ${files.length} Dateien in ${dir}`);
+  console.log(`„${generated.title}“ (Seed ${seed}${generated.seed === seed ? "" : `, Fallseed ${generated.seed}`}, Schema ${generated.schema}${generated.withLie ? ", mit Lüge" : ""}): ${files.length} Dateien in ${dir}`);
   const check = checkCaseFolder(dir);
   console.log(formatCaseCheck(check));
   if (!check.ok) process.exitCode = 1;

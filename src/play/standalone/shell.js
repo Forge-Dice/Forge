@@ -100,7 +100,7 @@
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i) || "";
         const slug = key.slice(KEY.length);
-        if (key.startsWith(KEY) && /^zufall-(0|[1-9][0-9]{0,8})$/.test(slug)) generated.push(slug);
+        if (key.startsWith(KEY) && /^zufall-(0|[1-9][0-9]{0,8})(-stufe-[1-5])?$/.test(slug)) generated.push(slug);
         if (key.startsWith(CASE_KEY)) own.push(key);
       }
     } catch {}
