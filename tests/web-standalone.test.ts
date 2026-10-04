@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { buildStandalone } from "../src/play/standalone/build.ts";
 import { createWebHandler, type WebHandler, type WebResponse } from "../src/play/web.ts";
 import { PLAY_CASES } from "../src/play/cases.ts";
@@ -10,11 +10,12 @@ import { readdirSync, readFileSync } from "node:fs";
 // response, save files included, must be identical.
 
 let html: string;
+let scripts: string[];
 let bundled: WebHandler;
 
 beforeAll(async () => {
   html = await buildStandalone();
-  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]!);
+  scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]!);
   expect(scripts).toHaveLength(3);
   // Files and bundle only (the page shell needs a DOM and is exercised in the browser), in this
   // realm: zod's plain-object checks would reject values crossing a vm context boundary.
@@ -179,3 +180,79 @@ describe("standalone browser build", () => {
   });
 });
 
+type ShellApp = { handle: WebHandler; slugs: string[] };
+type Shell = { app: ShellApp; frame: { srcdoc: string }; boot: { textContent: string }; kfFetch: (url: string, opts: { method?: string; body?: string }) => Promise<{ status: number }>; kfGo: (method: string, url: string, body?: string) => void };
+
+/**
+ * Boots the page shell (shell.js) on a fresh bundle, as when the file is opened, over a minimal
+ * stand-in for the DOM: `storage` plays localStorage and survives across boots like the browser's.
+ */
+async function bootShell(storage: Map<string, string>, hash = ""): Promise<Shell> {
+  const g = globalThis as { kriminalfaelle?: ShellApp };
+  (0, eval)(scripts[1]!);
+  const app = g.kriminalfaelle!;
+  delete g.kriminalfaelle;
+  const element = () => ({ hidden: true, textContent: "", srcdoc: "", style: {}, setAttribute() {}, addEventListener() {}, click() {}, remove() {} });
+  const frame = element();
+  const boot = element();
+  const window: Record<string, unknown> = {};
+  const location = { hash };
+  const document = { title: "", body: { append() {} }, getElementById: (id: string) => (id === "kf" ? frame : boot), createElement: element };
+  const localStorage = {
+    get length() { return storage.size; },
+    key: (i: number) => [...storage.keys()][i] ?? null,
+    getItem: (k: string) => storage.get(k) ?? null,
+    setItem: (k: string, v: string) => void storage.set(k, String(v)),
+    removeItem: (k: string) => void storage.delete(k),
+  };
+  const history = { replaceState: (_s: unknown, _t: string, h: string) => void (location.hash = h) };
+  const shell = new Function("globalThis", "window", "document", "localStorage", "history", "location", scripts[2]!);
+  shell({ kriminalfaelle: app }, window, document, localStorage, history, location);
+  await vi.waitFor(() => expect(frame.srcdoc).not.toBe(""), { timeout: 20_000 });
+  return { app, frame, boot, kfFetch: window.kfFetch as Shell["kfFetch"], kfGo: window.kfGo as Shell["kfGo"] };
+}
+
+const KEY = "kriminalfaelle.spielstand.";
+// A generated case's save is wrapped as {zufallsfall, spielstand}.
+const events = (save: string | undefined): number => {
+  const v = JSON.parse(save!) as { events?: unknown[]; spielstand?: string };
+  return v.spielstand !== undefined ? events(v.spielstand) : v.events!.length;
+};
+
+describe("standalone page shell", () => {
+  it("keeps every Zufallsfall save across a reload, beyond the server's 20 generated cases", async () => {
+    const storage = new Map<string, string>();
+    const first = await bootShell(storage);
+    for (let seed = 1; seed <= 21; seed++) {
+      expect((await first.kfFetch(`/fall/zufall-${seed}/act`, { method: "POST", body: "group=u&n=1&at=0" })).status).toBe(303);
+      expect(events(storage.get(`${KEY}zufall-${seed}`))).toBe(1);
+    }
+    const second = await bootShell(storage);
+    const inMemory = await second.app.handle("GET", "/fall/zufall-1/save", async () => null);
+    expect(events(inMemory.body)).toBe(1);
+    const page = (await second.app.handle("GET", "/fall/zufall-1", async () => null)).body;
+    const at = /name="at" value="([^"]+)"/.exec(page)![1]!;
+    await second.kfFetch("/fall/zufall-1/act", { method: "POST", body: `group=u&n=1&at=${at}` });
+    expect(events(storage.get(`${KEY}zufall-1`))).toBe(2);
+  }, 120_000);
+
+  it("backs up a stored save that no longer loads and tells the player", async () => {
+    const storage = new Map<string, string>();
+    const first = await bootShell(storage);
+    await first.kfFetch("/fall/vitrine/act", { method: "POST", body: "group=u&n=1&at=0" });
+    // As after an update of the file: the stored save names another package.
+    const stale = storage.get(`${KEY}vitrine`)!.replace(/"packageHash":"[0-9a-f]+"/, `"packageHash":"${"0".repeat(64)}"`);
+    storage.set(`${KEY}vitrine`, stale);
+    const second = await bootShell(storage);
+    expect(storage.get(`${KEY}vitrine.alt`)).toBe(stale);
+    second.kfGo("GET", "/fall/vitrine");
+    await vi.waitFor(() => expect(second.frame.srcdoc).toContain("Der Spielstand kann nicht geladen werden."));
+    await second.kfFetch("/fall/vitrine/act", { method: "POST", body: "group=u&n=1&at=0" });
+    expect(storage.get(`${KEY}vitrine.alt`)).toBe(stale);
+  }, 60_000);
+
+  it("opens the case list when the start address is a download", async () => {
+    const shell = await bootShell(new Map(), "#/fall/vitrine/save");
+    expect(shell.frame.srcdoc).toContain('href="/fall/vitrine"');
+  }, 60_000);
+});

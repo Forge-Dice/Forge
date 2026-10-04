@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { relative } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { dirname, relative, resolve } from "node:path";
 import { rolldown } from "rolldown";
 import { PLAY_CASES } from "../cases.ts";
 
@@ -86,9 +86,9 @@ iframe { display: block; width: 100%; height: 100%; border: 0; }
 `;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const out = process.argv[2] ?? `${repo}dist/kriminalfaelle.html`;
-  mkdirSync(new URL(".", `file://${out}`), { recursive: true });
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const out = resolve(process.argv[2] ?? `${repo}dist/kriminalfaelle.html`);
+  mkdirSync(dirname(out), { recursive: true });
   const html = await buildStandalone();
   writeFileSync(out, html);
   console.log(`${relative(process.cwd(), out)} geschrieben (${Math.round(html.length / 1024)} KB). Im Browser öffnen, kein Server nötig.`);

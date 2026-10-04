@@ -162,6 +162,8 @@ export function createWebHandler(
     readonly extraCase?: (slug: string) => ExtraCase | null;
     /** Progress of a slow step (the difficulty search), for the browser build's indicator. */
     readonly progress?: (text: string) => void;
+    /** Generated cases kept in memory (default MAX_GENERATED); the browser build keeps all. */
+    readonly maxGenerated?: number;
   } = {},
 ): WebHandler {
   // Given packages are the German ones; other languages load their locale variant on demand.
@@ -191,7 +193,9 @@ export function createWebHandler(
   };
   const slugOf = (name: PlayCaseName) => PLAY_CASES[name].dir;
   // Generated cases ("Zufallsfall"): one slot per seed, created on first visit; the oldest is
-  // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
+  // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound. The
+  // browser build keeps them all (its own player's cases, each with a save in localStorage).
+  const maxGenerated = options.maxGenerated ?? MAX_GENERATED;
   // zufall-<seed>, or zufall-<seed>-stufe-<1..5> for a wished difficulty (the playtest bot searches).
   const generated = new Map<string, { slot: Slot; clockOrigin: number; seed: number }>();
   const extras = new Map<string, { version: string; slot: Slot }>();
@@ -277,7 +281,7 @@ export function createWebHandler(
       const level = wished === null ? [] : [all.web.levelWished(wished.wished, `${difficultyDots(wished.rating)} ${all.difficulty[wished.rating]}`)];
       g = { slot: { game, feedback: { tone: "info", title: all.web.randomCase(seed), lines: [all.web.randomWelcome, ...level] }, fresh: new Set() }, clockOrigin, seed };
       generated.set(key, g);
-      if (generated.size > MAX_GENERATED) generated.delete(generated.keys().next().value!);
+      if (generated.size > maxGenerated) generated.delete(generated.keys().next().value!);
     }
     const { slot: s, clockOrigin } = g;
     if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = withLang(s.game, lang);
@@ -387,9 +391,10 @@ export function createWebHandler(
     }
     if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp(lang));
     if (method === "GET" && url.pathname === "/sprache") {
-      // Only local paths: never redirect to another host.
+      // Only the app's own pages: never another host (a tab or newline after "/" is dropped by
+      // browsers, "/\t/evil" becomes "//evil"), and nothing writeHead would reject.
       const back = url.searchParams.get("zurueck") ?? "/";
-      const to = back.startsWith("/") && !back.startsWith("//") && !back.includes("\\") ? back : "/";
+      const to = /^\/(hilfe|fall\/[a-z0-9-]+)?$/.test(back) ? back : "/";
       const chosen = parseLang(url.searchParams.get("l")) ?? DEFAULT_LANG;
       return { status: 303, headers: { location: to, "set-cookie": `${LANG_COOKIE}=${chosen}; Path=/; Max-Age=31536000; SameSite=Lax` }, body: "" };
     }
@@ -453,8 +458,9 @@ export function createWebHandler(
         if (body === null) return text(413, m.tooLarge);
         const { seed, level, text: saved } = unwrapSave(body);
         const into = seed === null || (seed === t.seed && level === (t.level ?? null)) ? t : target(zufallSlug(seed, level), lang)!;
-        loadInto(into, saved);
-        return redirect(`/fall/${into.slug}`);
+        const to = `/fall/${into.slug}`;
+        // The browser build's shell restores saves silently and needs to tell a failed load apart.
+        return loadInto(into, saved) ? redirect(to) : { status: 303, headers: { location: to, "x-load-failed": "1" }, body: "" };
       }
       case "POST new":
         [s.game, s.fresh] = [t.restart(), new Set()];

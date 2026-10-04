@@ -1,6 +1,6 @@
 import { caseLocales, checkCaseFolder, formatCaseCheck, writeFilledHashes } from "./check-case.ts";
 import { loadFolderPackage } from "../play/cases.ts";
-import { formatPlaytest, playtestCase } from "../play/playtest.ts";
+import { DEFAULT_SEEDS, formatPlaytest, playtestCase } from "../play/playtest.ts";
 
 // `npm run check-case -- [--fix] [--ohne-spieltest] <ordner>`: exit code 0 when the case folder is
 // valid and solvable. --fix writes computed hashes into TO_BE_COMPUTED placeholders and over
@@ -8,7 +8,8 @@ import { formatPlaytest, playtestCase } from "../play/playtest.ts";
 // printed as hints and never change the exit code. Locale variants (<ordner>/en/ …) are checked
 // after their base: a pure translation, still solvable.
 
-const PLAYTEST_SEEDS = 4;
+// Same seeds as `npm run playtest`, so check-case and the stored PLAY_CASES ratings agree.
+const PLAYTEST_SEEDS = DEFAULT_SEEDS;
 const args = process.argv.slice(2);
 const fix = args.includes("--fix");
 const playtest = !args.includes("--ohne-spieltest");

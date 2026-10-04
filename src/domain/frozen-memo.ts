@@ -10,9 +10,11 @@ function isDeepFrozen(value: unknown): boolean {
 export function memoFrozen<T extends object, R>(fn: (value: T) => R): (value: T) => R {
   const cache = new WeakMap<T, R>();
   return (value) => {
-    if (cache.has(value)) return cache.get(value) as R;
+    // WeakMap keys must be objects: a primitive is just recomputed.
+    const cacheable = typeof value === "object" && value !== null;
+    if (cacheable && cache.has(value)) return cache.get(value) as R;
     const result = fn(value);
-    if (isDeepFrozen(value)) cache.set(value, result);
+    if (cacheable && isDeepFrozen(value)) cache.set(value, result);
     return result;
   };
 }

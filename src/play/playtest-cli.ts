@@ -7,7 +7,8 @@ import { DEFAULT_SEEDS, formatPlaytest, playtestCase } from "./playtest.ts";
 
 const args = process.argv.slice(2);
 const seedsAt = args.indexOf("--seeds");
-const seeds = seedsAt === -1 ? DEFAULT_SEEDS : Number.parseInt(args[seedsAt + 1] ?? "", 10);
+const rawSeeds = args[seedsAt + 1] ?? "";
+const seeds = seedsAt === -1 ? DEFAULT_SEEDS : /^[1-9][0-9]*$/.test(rawSeeds) ? Number(rawSeeds) : Number.NaN;
 const names = args.filter((_, i) => seedsAt === -1 || (i !== seedsAt && i !== seedsAt + 1));
 const wanted = names.length === 0 || names.includes("all") ? (Object.keys(PLAY_CASES) as PlayCaseName[]) : names.map(playCaseName);
 

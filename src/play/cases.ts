@@ -31,13 +31,13 @@ export type PlayCase = {
 
 export const PLAY_CASES = {
   lernfall: { dir: "lernfall", npcs: ["jonas", "mila"], salt: "1ea51ea51ea51ea51ea51ea51ea51ea5", clockOrigin: 16 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 2, par: 10 },
-  vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5, par: 28 },
-  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4, par: 18 },
-  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 3, par: 8 },
-  "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4, par: 10 },
-  nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 4, par: 15 },
-  leuchtfeuer: { dir: "leuchtfeuer", npcs: ["hinrich", "frauke", "ole", "marlene", "jasper", "knut"], salt: "1e0c1e0c1e0c1e0c1e0c1e0c1e0c1e0c", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 4, par: 9 },
-  "preiskürbis": { dir: "preiskuerbis", npcs: ["alois", "hilde", "sepp", "lotte", "resi", "ferdl"], salt: "c4b1c4b1c4b1c4b1c4b1c4b1c4b1c4b1", clockOrigin: 14 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4, par: 10 },
+  vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5, par: 34 },
+  "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4, par: 24 },
+  geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 3, par: 14 },
+  "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5, par: 15 },
+  nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 4, par: 16 },
+  leuchtfeuer: { dir: "leuchtfeuer", npcs: ["hinrich", "frauke", "ole", "marlene", "jasper", "knut"], salt: "1e0c1e0c1e0c1e0c1e0c1e0c1e0c1e0c", clockOrigin: 0, rulesetVersion: "mystery-session-v3", difficulty: 4, par: 16 },
+  "preiskürbis": { dir: "preiskuerbis", npcs: ["alois", "hilde", "sepp", "lotte", "resi", "ferdl"], salt: "c4b1c4b1c4b1c4b1c4b1c4b1c4b1c4b1", clockOrigin: 14 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5, par: 15 },
 } as const satisfies Record<string, PlayCase>;
 export type PlayCaseName = keyof typeof PLAY_CASES;
 
@@ -75,12 +75,18 @@ export const LOCALE_FILES = ["public-content.json", "evidence-presentation.json"
 
 const readFixture = (c: PlayCase, name: string, lang: Lang = DEFAULT_LANG): unknown => {
   const localized = new URL(`${lang}/${name}`, fixtureDir(c));
-  const url = lang !== DEFAULT_LANG && (LOCALE_FILES as readonly string[]).includes(name) && existsSync(localized) ? localized : new URL(name, fixtureDir(c));
-  return JSON.parse(readFileSync(url, "utf8"));
+  const isLocale = lang !== DEFAULT_LANG && (LOCALE_FILES as readonly string[]).includes(name) && existsSync(new URL(`${lang}/public-content.json`, fixtureDir(c)));
+  // public-content.json marks the locale folder (the browser build embeds files, not folders).
+  // A locale folder must be complete: a missing file would mix German case text into English play.
+  if (isLocale && !existsSync(localized)) throw new Error(`Case ${c.dir}: ${lang}/${name} is missing`);
+  return JSON.parse(readFileSync(isLocale ? localized : new URL(name, fixtureDir(c)), "utf8"));
 };
 
 /** Languages a case has player text for: the default plus every locale folder. */
-export const caseLangs = (c: PlayCase): Lang[] => [DEFAULT_LANG, ...(["en"] as const).filter((l) => existsSync(new URL(`${l}/public-content.json`, fixtureDir(c))))];
+export const caseLangs = (c: PlayCase): Lang[] => [
+  DEFAULT_LANG,
+  ...(["en"] as const).filter((l) => LOCALE_FILES.every((f) => existsSync(new URL(`${l}/${f}`, fixtureDir(c))))),
+];
 
 /** The case list of the CLI: name, title and measured difficulty, one case per line. */
 export function caseListText(lang: Lang = DEFAULT_LANG): string {

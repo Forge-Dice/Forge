@@ -1,9 +1,9 @@
-import { cpSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { caseLocales, checkCaseFolder } from "../src/authoring/check-case.ts";
-import { PLAY_CASES, loadPlayPackage, loadSaveInLang, type PlayCaseName } from "../src/play/cases.ts";
+import { PLAY_CASES, caseLangs, loadPlayPackage, loadSaveInLang, playPackageInput, type PlayCaseName } from "../src/play/cases.ts";
 import { command, intro, newGame, saveText, switchLang, type Game } from "../src/play/game.ts";
 import { MESSAGES, parseLang } from "../src/play/messages.ts";
 import { renderGame } from "../src/play/web-page.ts";
@@ -203,6 +203,11 @@ describe("language switch in the web app", () => {
     expect(chosen.headers.location).toBe("/fall/vitrine");
     expect(chosen.headers["set-cookie"]).toMatch(/^sprache=en; Path=\/; Max-Age=\d+/);
     expect((await request(app, "GET", "/sprache?l=en&zurueck=%2F%2Fevil.example")).headers.location).toBe("/");
+    // Review: control characters crashed writeHead; a tab after "/" made "//evil.example".
+    for (const back of ["%2F%0Ax", "%2F%E2%82%AC", "%2F%09%2Fevil.example", "%2Ffall%2Fvitrine%3Fx%3D1"]) {
+      expect((await request(app, "GET", `/sprache?l=en&zurueck=${back}`)).headers.location).toBe("/");
+    }
+    expect((await request(app, "GET", "/sprache?l=en&zurueck=%2Fhilfe")).headers.location).toBe("/hilfe");
 
     expect((await request(app, "GET", "/fall/vitrine")).text).toContain("<h1>Die leere Vitrine</h1>");
     await request(app, "POST", "/fall/vitrine/act", "", "group=u&n=1&at=0");
@@ -249,5 +254,26 @@ describe("English version in the case editor", () => {
     expect(en.check.ok).toBe(true);
     expect(en.check.problems).toEqual([]);
     expect(JSON.parse(readFileSync(join(dir, "en", "public-content.json"), "utf8")).title).toBe("The Mute Violin");
+  });
+});
+
+describe("review fixes", () => {
+  it("parseLang accepts only de/en and their regional forms", () => {
+    expect(["de", "EN", "en-US", "de_AT"].map(parseLang)).toEqual(["de", "en", "en", "de"]);
+    expect(["denglish", "enx", "e", "", "fr"].map(parseLang)).toEqual([null, null, null, null, null]);
+  });
+
+  it("an English variant with a missing file is refused instead of mixing in German text", () => {
+    const fixtures = new URL("./fixtures/", import.meta.url).pathname;
+    const copy = mkdtempSync(join(fixtures, "..", "..", "i18n-review-"));
+    try {
+      cpSync(join(fixtures, PLAY_CASES.geige.dir), copy, { recursive: true });
+      rmSync(join(copy, "en", "evidence-presentation.json"));
+      const c = { ...PLAY_CASES.geige, dir: relative(fixtures, copy) };
+      expect(caseLangs(c)).toEqual(["de"]);
+      expect(() => playPackageInput(c, "en")).toThrow(/evidence-presentation\.json/);
+    } finally {
+      rmSync(copy, { recursive: true, force: true });
+    }
   });
 });

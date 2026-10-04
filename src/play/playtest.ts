@@ -37,7 +37,7 @@ export type CaseReport = {
   readonly rating: 1 | 2 | 3 | 4 | 5;
   readonly runs: readonly Run[];
   readonly metrics: {
-    /** Median actions to solve over the exploring styles (systematic and curious). */
+    /** Median of the per-style median actions to solve (systematic, curious); unsolved = MAX_ACTIONS. */
     readonly actionsToSolve: number;
     /** Average wrong accusations of the hasty style. */
     readonly wrongAccusations: number;
@@ -58,7 +58,7 @@ export type CaseReport = {
 };
 
 export const DEFAULT_SEEDS = 8;
-const MAX_ACTIONS = 150;
+export const MAX_ACTIONS = 150;
 const HASTY_EVERY = 3;
 
 // ---------- Deterministic randomness ----------
@@ -106,6 +106,15 @@ const solves = (game: Game, action: Action): boolean => {
   const result = reduceSession(game.pkg, game.state, action.event);
   return result.ok && result.output.type === "accuse" && result.output.verdict === "solved";
 };
+
+/** Salt-free sort key of an event: its PlayerRefs replaced by the internal ids they resolve to. */
+function stableKey(pkg: ResolvedCasePackage, event: unknown): string {
+  return JSON.stringify(event, (_, v) => (typeof v === "string" ? (pkg.refs.resolve(v)?.id ?? v) : v));
+}
+
+/** Menu entries in salt-free order, so the same case plays the same under any salt. */
+const stable = (pkg: ResolvedCasePackage, actions: Action[]): Action[] =>
+  actions.map((a) => [stableKey(pkg, a.event), a] as const).sort((x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0)).map(([, a]) => a);
 
 const personIdOf = (game: Game, action: Action): string => {
   const literals = (action.event as { literals: { claim: { person: string }; value: boolean }[] }).literals;
@@ -168,7 +177,7 @@ export function playRun(pkg: ResolvedCasePackage, style: Style, seed: number, pr
     sinceGuess++;
     apply(action.event);
   };
-  const fresh = (actions: Action[]) => actions.filter((a) => !done.has(JSON.stringify(a.event)));
+  const fresh = (actions: Action[]) => stable(pkg, actions.filter((a) => !done.has(JSON.stringify(a.event))));
   // Like a person would: first hold against someone the finds whose text names them.
   const pointed = (actions: Action[]): Action[] => {
     const names = (a: Action) => {
@@ -205,7 +214,7 @@ export function playRun(pkg: ResolvedCasePackage, style: Style, seed: number, pr
     if (style === "voreilig" && sinceGuess >= HASTY_EVERY) {
       // Guess the person the read claims mention most, never the same wrong person twice.
       const seen = mentions(game);
-      const guesses = accusations(game)
+      const guesses = stable(pkg, accusations(game))
         .filter((a) => accused[personIdOf(game, a)] === undefined)
         .map((a) => ({ a, score: (seen.get(pkg.refs.refFor("person", personIdOf(game, a))!) ?? 0) + rand() * 0.5 }))
         .sort((x, y) => y.score - x.score);
@@ -228,7 +237,7 @@ export function playRun(pkg: ResolvedCasePackage, style: Style, seed: number, pr
         const hint = result.output.hint;
         if (hint.kind === "accuse") {
           if (accuseRight()) break;
-        } else if (hint.target !== null && (hint.kind !== "interrogate" || hint.questionId !== null) && (hint.kind !== "confront" || hint.evidence !== null)) {
+        } else if (hint.target !== null && (hint.kind !== "interrogate" || hint.questionId !== null) && (hint.kind !== "confront" || (hint.questionId !== null && hint.evidence !== null))) {
           const event =
             hint.kind === "interrogate"
               ? { type: "interrogate", npc: hint.target, questionId: hint.questionId }
@@ -290,7 +299,7 @@ function exhaust(pkg: ResolvedCasePackage): Coverage {
   let game = newGame(pkg);
   const done = new Set<string>();
   for (;;) {
-    const next = [...investigations(game), ...questions(game), ...confrontations(game)].find((a) => !done.has(JSON.stringify(a.event)));
+    const next = [investigations(game), questions(game), confrontations(game)].flatMap((m) => stable(pkg, m)).find((a) => !done.has(JSON.stringify(a.event)));
     if (next === undefined || done.size >= MAX_ACTIONS * 2) break;
     done.add(JSON.stringify(next.event));
     const result = reduceSession(pkg, game.state, next.event);
@@ -317,7 +326,43 @@ const round2 = (x: number) => Math.round(x * 100) / 100;
  */
 export function difficulty(m: Pick<CaseReport["metrics"], "actionsToSolve" | "wrongAccusations" | "deadEndRate" | "hints">): 1 | 2 | 3 | 4 | 5 {
   const score = m.actionsToSolve / 10 + m.wrongAccusations / 2 + m.deadEndRate + m.hints / 10;
-  return score < 1.5 ? 1 : score < 2.75 ? 2 : score < 4 ? 3 : score < 5 ? 4 : 5;
+  // Calibrated after the review fixes (per-style medians, unsolved = MAX_ACTIONS): the easiest
+  // generated cases score about 2, the tutorial 2.5, the shipped cases 4.4 to 5.8.
+  return score < 2.25 ? 1 : score < 3.25 ? 2 : score < 4.5 ? 3 : score < 5.5 ? 4 : 5;
+}
+
+/**
+ * Median actions to solve over the exploring styles: the median of the per-style medians, so the
+ * deterministic style does not fill half the samples. An unsolved run counts as MAX_ACTIONS.
+ */
+export function actionsToSolve(runs: readonly Run[]): number {
+  const effort = (style: Style) => runs.filter((r) => r.style === style).map((r) => (r.solved ? r.actions : MAX_ACTIONS));
+  return median((["systematisch", "neugierig"] as const).map(effort).filter((xs) => xs.length > 0).map(median));
+}
+
+/**
+ * Evidence ids the proof stands on: cards it cites, evidence that forces an admission on its nodes,
+ * and evidence held against someone in a witness confrontation.
+ */
+export function proofFindIds(pkg: ResolvedCasePackage): Set<string> {
+  if (pkg.proof === null) return new Set();
+  const { profile } = pkg.proof;
+  const onNodes = new Set(profile.nodes.flatMap((n) => (n.kind === "observation" ? [n.observationId] : [])));
+  const manifest = JSON.parse(pkg.proof.releaseManifest) as Manifest;
+  const witness = new Set<string>(profile.witnessStepIds);
+  return new Set<string>([
+    ...profile.observations.flatMap((o) => ("source" in o && o.source.kind === "evidence" ? [o.source.evidenceId] : [])),
+    ...manifest.certificateData.observations
+      .filter((o) => onNodes.has(o.id))
+      .flatMap((o) => (o.alternatives ?? []).flatMap((alt) => (alt.kind === "admission" && typeof alt.evidenceId === "string" ? [alt.evidenceId] : []))),
+    ...manifest.certificateData.steps
+      .filter((s) => witness.has(s.stepId))
+      .flatMap((s) => {
+        const e = s.event as { type?: unknown; evidence?: unknown };
+        const id = e.type === "confront" && typeof e.evidence === "string" ? pkg.refs.resolve(e.evidence)?.id : undefined;
+        return id === undefined ? [] : [id];
+      }),
+  ]);
 }
 
 function labelOf(pkg: ResolvedCasePackage, kind: "person" | "evidence", id: string): string {
@@ -342,7 +387,7 @@ function ratingMetrics(runs: readonly Run[]) {
   const exploring = [...of("systematisch"), ...of("neugierig")];
   const hasty = of("voreilig");
   return {
-    actionsToSolve: median(exploring.filter((r) => r.solved).map((r) => r.actions)),
+    actionsToSolve: actionsToSolve(runs),
     wrongAccusations: round2(hasty.reduce((s, r) => s + r.wrongAccusations, 0) / Math.max(1, hasty.length)),
     deadEndRate: round2(exploring.reduce((s, r) => s + r.deadEnds, 0) / Math.max(1, exploring.reduce((s, r) => s + r.actions, 0))),
     hints: median(of("hinweise").map((r) => r.hints)),
@@ -365,15 +410,7 @@ export function playtestCase(pkg: ResolvedCasePackage, seeds = DEFAULT_SEEDS): C
   const herrings = suspects.filter((id) => !answerIds.has(id));
   const wrongTotal = of("voreilig").reduce((sum, r) => sum + r.wrongAccusations, 0);
   const pull = Object.fromEntries(herrings.map((id) => [id, wrongTotal === 0 ? 0 : round2(of("voreilig").reduce((s, r) => s + (r.accused[id] ?? 0), 0) / wrongTotal)]));
-  // Finds the proof stands on: evidence cards it cites, and evidence that forces an admission it uses.
-  const onNodes = new Set((pkg.proof?.profile.nodes ?? []).flatMap((n) => (n.kind === "observation" ? [n.observationId] : [])));
-  const manifest = pkg.proof === null ? null : (JSON.parse(pkg.proof.releaseManifest) as Manifest);
-  const proofFinds = new Set<string>([
-    ...(pkg.proof?.profile.observations ?? []).flatMap((o) => ("source" in o && o.source.kind === "evidence" ? [o.source.evidenceId] : [])),
-    ...(manifest?.certificateData.observations ?? [])
-      .filter((o) => onNodes.has(o.id))
-      .flatMap((o) => (o.alternatives ?? []).flatMap((alt) => (alt.kind === "admission" && typeof alt.evidenceId === "string" ? [alt.evidenceId] : []))),
-  ]);
+  const proofFinds = proofFindIds(pkg);
   const hasty = of("voreilig");
 
   const metrics = {
