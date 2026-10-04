@@ -145,7 +145,7 @@ describe("where the rating shows", () => {
     for (const c of Object.values(PLAY_CASES)) {
       expect(out.body).toContain(`title="Schwierigkeit ${c.difficulty} von 5"`);
     }
-    expect(out.body).toContain('<span class="visually-hidden">Schwierigkeit: </span><span class="dots" aria-hidden="true">●●●○○</span> mittel');
+    expect(out.body).toContain('<span class="visually-hidden">Schwierigkeit: </span><span class="dots" aria-hidden="true">●●●●○</span> schwer');
   });
 
   it("check-case: a valid folder loads as a playable package for the playtest", () => {
