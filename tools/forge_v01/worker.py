@@ -123,8 +123,15 @@ class DockerRunner:
         version = self._docker("version", "--format", "{{.Server.Version}}")
         security = self._docker("info", "--format", "{{json .SecurityOptions}}")
         image = self._docker("image", "inspect", "--format", "{{.Id}}", self.image)
-        if version.returncode or not version.stdout.strip() or security.returncode or b"name=seccomp" not in security.stdout \
-                or image.returncode:
+        try:
+            options = json.loads(security.stdout)
+        except ValueError:
+            options = None
+        options = options if type(options) is list and all(type(o) is str for o in options) else []
+        seccomp = [o for o in options if o == "name=seccomp" or o.startswith("name=seccomp,")]
+        # A daemon started with --seccomp-profile=unconfined still lists "name=seccomp,profile=unconfined".
+        if version.returncode or not version.stdout.strip() or security.returncode or not seccomp \
+                or any("profile=unconfined" in o.split(",") for o in seccomp) or image.returncode:
             raise fail("EXECUTION_SANDBOX", "worker")
         self.checked = True
 
@@ -141,7 +148,9 @@ class DockerRunner:
             done = process.run_bounded(docker_argv(spec.role, spec.mounts, self.image, name, spec.argv, spec.env, self.docker), self.env,
                                        deadline_seconds=spec.deadline, output_limit=TRANSPORT_LIMIT)
         except ForgeFail as failure:
-            self._docker("rm", "-f", name)  # killing the client does not stop the container
+            # killing the client does not stop the container; an unconfirmed removal may leave it running
+            if self._docker("rm", "-f", name).returncode != 0:
+                raise fail("EXECUTION_SANDBOX", "worker") from None
             if failure.code == "EXECUTION_TIMEOUT":
                 return Observed(None, True, b"")
             if failure.code == "EXECUTION_IO":

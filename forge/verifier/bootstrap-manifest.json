@@ -7,7 +7,7 @@
     },
     {
       "path": "tools/forge_v01/bootstrap.py",
-      "sha256": "50a99c9ea39b6ce440bb85e422854c391bee3fe575893edf83e7a918e61d8e6e"
+      "sha256": "2c175b328a8c662bb028530546b1880fda1bfe42e45d2b808b9bd732f30c335f"
     },
     {
       "path": "tools/forge_v01/contract-adapter.mjs",
@@ -39,7 +39,7 @@
     },
     {
       "path": "tools/forge_v01/materialize.py",
-      "sha256": "8ee20214e6e316b98984afc818f980e1652f8f47e1875dea3178e331ddccd156"
+      "sha256": "5337ff53be464886afd11e8ee12a241fca7969e1105a0bd96c4f8a976d53e962"
     },
     {
       "path": "tools/forge_v01/mutations.py",
@@ -67,11 +67,11 @@
     },
     {
       "path": "tools/forge_v01/scope.py",
-      "sha256": "2ebd1068c06a8655fcd1ee002a05d0b99ee9a9d34072efb3831c6f29e660976a"
+      "sha256": "a979073837b616f12ba345f1c07986aefe542d311bcfbd5a2bdd8de60efdf8d7"
     },
     {
       "path": "tools/forge_v01/stage0.py",
-      "sha256": "242825f06af567ce82d3064c8f866cd74ca21c1a9b27e1a8b6a0015f61f16f33"
+      "sha256": "e1ff71465b510f1af337a98b82fee80220b9a2875f3d7a148c78401ca45064eb"
     },
     {
       "path": "tools/forge_v01/vitest.config.mjs",
@@ -87,7 +87,7 @@
     },
     {
       "path": "tools/forge_v01/worker.py",
-      "sha256": "b1974e41788ca9de62971af584e4e3fd5dca7e6aadde55f80f67383f5b10b6ff"
+      "sha256": "af73ec06d0be9c92a01681aa161d8ce51c00fa6eeacf3f537a0854d019886325"
     },
     {
       "path": "src/forge/contract-document.ts",

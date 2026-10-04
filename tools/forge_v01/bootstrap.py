@@ -89,6 +89,11 @@ def positive_id(value) -> bool:
     return type(value) is int and 0 < value <= MAX_ID
 
 
+def same_id(value, expected: int) -> bool:
+    """`value` is the JSON integer ID `expected`; a bool (True == 1) or float never matches."""
+    return positive_id(value) and value == expected
+
+
 def is_sha(value) -> bool:
     return isinstance(value, str) and _SHA.fullmatch(value) is not None
 
@@ -117,8 +122,8 @@ def parse_event(event_bytes: bytes, runner_facts: dict) -> EventFacts:
         positive_id(facts.get("runId")),
         positive_id(facts.get("runAttempt")),
         positive_id(facts.get("actorId")),
-        isinstance(event, dict) and event.get("action") in ACTIONS,
-        positive_id(pr) and _get(event, "number") in (None, pr),
+        isinstance(event, dict) and isinstance(event.get("action"), str) and event["action"] in ACTIONS,
+        positive_id(pr) and (_get(event, "number") is None or same_id(_get(event, "number"), pr)),
         _get(event, "repository", "id") == REPO_ID and positive_id(_get(event, "repository", "id")),
         _get(event, "repository", "full_name") == REPO_NAME,
         _get(event, "pull_request", "base", "repo", "id") == REPO_ID,
@@ -200,7 +205,7 @@ def read_live(transport, event: EventFacts) -> LiveFacts:
         _get(repo, "id") == REPO_ID,
         _get(repo, "full_name") == REPO_NAME,
         _get(repo, "private") is False,
-        _get(pull, "number") == event.pr,
+        same_id(_get(pull, "number"), event.pr),
         _get(pull, "base", "repo", "id") == REPO_ID,
         _get(pull, "base", "ref") == "main",
         is_sha(_get(pull, "base", "sha")),
@@ -209,8 +214,8 @@ def read_live(transport, event: EventFacts) -> LiveFacts:
         isinstance(_get(pull, "draft"), bool),
         positive_id(_get(pull, "user", "id")),
         is_sha(_get(main, "commit", "sha")),
-        _get(run, "id") == event.run_id,
-        _get(run, "run_attempt") == event.run_attempt,
+        same_id(_get(run, "id"), event.run_id),
+        same_id(_get(run, "run_attempt"), event.run_attempt),
     )
     if not all(shape):
         raise fail("EXECUTION_API", "bootstrap")

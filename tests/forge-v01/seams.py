@@ -56,3 +56,28 @@ def run_for_test(event_bytes: bytes, runner_facts: dict, workspace: str, seams: 
     loaded = load_base_verifier(event_bytes, runner_facts, workspace, _seams=built)
     result = run_verifier(loaded, workspace, [], deadline_seconds=30.0)
     return {"loaded": loaded, "returncode": result.returncode, "stdout": result.stdout.decode("utf-8", "replace")}
+
+
+def docker_runner_for_test(docker: str, workspace: str, image: str, deadline: float | None = None) -> dict:
+    """Driver entry: worker.DockerRunner against a fake docker client binary (test only).
+
+    deadline None: only the pre-start check. Otherwise one probe-shaped run with that deadline.
+    """
+    import worker
+
+    runner = worker.DockerRunner(image, workspace, docker=docker)
+    runner.check()
+    if deadline is None:
+        return {"checked": True}
+    spec = worker.Spec("probe", (worker.NODE, worker.TRUSTED + "/probe.mjs"), tuple(sorted(worker.WORKER_ENV.items())),
+                       ((worker.CASE, workspace, True),), deadline)
+    seen = runner.run(spec)
+    return {"exitCode": seen.exit_code, "timedOut": seen.timed_out, "overflow": seen.overflow}
+
+
+def materialize_rows_for_test(store, rows: list, destination: str) -> str:
+    """Driver entry: materialize a Snapshot built from raw [path, mode, oid] rows (no A-side validation)."""
+    from materialize import materialize
+    from objects import Leaf, Snapshot
+
+    return materialize(store, Snapshot("", tuple(Leaf(p, m, o) for p, m, o in rows)), destination)

@@ -43,10 +43,10 @@ def _open_dir(name: str, dir_fd: int | None) -> int:
 
 def _check_leaves(snapshot, executable: frozenset) -> list:
     """API precondition before anything is created: valid paths, admissible modes, byte order."""
-    leaves = sorted(snapshot.leaves, key=lambda leaf: leaf.path.encode("ascii", "surrogateescape"))
+    if any(not isinstance(leaf.path, str) or not leaf.path.isascii() for leaf in snapshot.leaves):
+        raise fail("GIT_PATH", "paths")  # before sorting: the sort key cannot encode non-ASCII paths
+    leaves = sorted(snapshot.leaves, key=lambda leaf: leaf.path.encode("ascii"))
     for leaf in leaves:
-        if not isinstance(leaf.path, str) or not leaf.path.isascii():
-            raise fail("GIT_PATH", "paths")
         if validate_path(leaf.path.encode("ascii")) != leaf.path:
             raise fail("GIT_PATH", "paths", leaf.path.encode("ascii"))
         # Defense in depth only; admissibility of modes is Task B's SCOPE_MODE decision.
