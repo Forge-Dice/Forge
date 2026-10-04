@@ -203,9 +203,11 @@ function outputText(game: Game, output: SessionOutput): string {
     case "interrogate":
       return answerText(game, output.observation);
     case "accuse":
-      return output.verdict === "solved"
+      if (output.verdict !== "solved") return "Die Antwort erfüllt den Fallauftrag noch nicht. Ermittle weiter.";
+      // The epilogue is shown only here, after a solving accusation.
+      return game.pkg.publicContent.epilogue === undefined
         ? "Die Anklage sitzt. Fall gelöst!"
-        : "Die Antwort erfüllt den Fallauftrag noch nicht. Ermittle weiter.";
+        : `Die Anklage sitzt. Fall gelöst!\n\n=== Auflösung ===\n${game.pkg.publicContent.epilogue}`;
   }
 }
 

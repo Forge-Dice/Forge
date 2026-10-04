@@ -42,6 +42,7 @@ describe("check-case on the real fixtures", () => {
     expect(check.problems.filter((p) => p.severity === "error")).toEqual([]);
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });
     expect(check.ok).toBe(true);
+    expect(check.problems.some((p) => p.field === "epilogue")).toBe(false);
     expect(formatCaseCheck(check)).toMatch(/OK: \d+ Dateien geprüft, Fall lösbar\./);
   });
 });
@@ -104,6 +105,21 @@ describe("check-case names file and field for broken cases", () => {
     const check = checkCaseFolder(variant(BRIEF, { "public-content.json": (p) => (p.questionTexts[4].questionId = "question:q05") }));
     expect(check.ok).toBe(false);
     expect(errors(check).some((e) => e.startsWith("public-content.json › questionTexts"))).toBe(true);
+  });
+
+  it("public content: an epilogue that breaks the player text rules", () => {
+    const id = checkCaseFolder(variant(BRIEF, { "public-content.json": (p) => (p.epilogue = "Ben (person:ben) war es.") }));
+    expectError(id, "public-content.json", "epilogue");
+    const long = checkCaseFolder(variant(BRIEF, { "public-content.json": (p) => (p.epilogue = "x".repeat(4001)) }));
+    expectError(long, "public-content.json", "epilogue");
+    const blank = checkCaseFolder(variant(BRIEF, { "public-content.json": (p) => (p.epilogue = "  ") }));
+    expectError(blank, "public-content.json", "epilogue");
+  });
+
+  it("public content: a missing epilogue is only a warning", () => {
+    const check = checkCaseFolder(variant(BRIEF, { "public-content.json": (p) => delete p.epilogue }));
+    expect(check.ok).toBe(true);
+    expect(check.problems).toContainEqual(expect.objectContaining({ file: "public-content.json", field: "epilogue", severity: "warning" }));
   });
 
   it("release manifest: $playerRefOf on an unknown entity", () => {

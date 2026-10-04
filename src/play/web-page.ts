@@ -125,6 +125,7 @@ function closing(game: Game, slug: string): string {
   const tries = game.state.verdicts.length;
   return `<section class="closing"><h2>Fall gelöst</h2>
 <p class="big">${escape(name === null ? "Deine Anklage trifft zu." : `${name} war es.`)}</p>
+${publicContent.epilogue === undefined ? "" : `<div class="epilogue">${publicContent.epilogue.split(/\n{2,}/).map((p) => `<p>${escape(p)}</p>`).join("")}</div>`}
 <p><strong>${escape(publicContent.challengeQuestion)}</strong> – deine Antwort erfüllt den Fallauftrag.</p>
 <p>Du hast ${game.state.events.length} Aktionen gebraucht${tries > 1 ? ` und ${tries} Anklagen erhoben` : " und gleich die erste Anklage richtig gestellt"}.</p>
 ${evidence.length === 0 ? "" : `<h4>Deine Nachweise</h4><ul>${evidence.map((e) => `<li>${escape(e)}</li>`).join("")}</ul>`}
@@ -207,6 +208,8 @@ li.new { background: var(--new); border-radius: 4px; }
 .closing { border: 2px solid var(--ok); }
 .closing h2 { color: var(--ok); }
 .closing .actions { margin-top: 14px; }
+.epilogue { border-left: 3px solid var(--line); padding-left: 14px; margin: 6px 0 14px; font-size: 17px; }
+.epilogue p { margin: 0 0 10px; }
 .closing .big { font-size: 24px; margin: 4px 0 10px; }
 .journal { margin: 0; padding-left: 28px; }
 .journal li { white-space: pre-wrap; margin-bottom: 10px; padding: 4px 6px; }

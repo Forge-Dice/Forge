@@ -207,6 +207,10 @@ export function checkCaseFolder(dir: string): CaseCheck {
     for (const finding of resolved.findings) reportPackageFinding(finding, npcs.map((n) => n.name), c);
     return finish();
   }
+  // The epilogue is optional; without it a solved case ends without a narrated resolution.
+  if (resolved.package.publicContent.epilogue === undefined) {
+    c.warning(FILES.publicContent, "epilogue", "kein Epilog: nach der gelösten Anklage erscheint keine erzählte Auflösung");
+  }
 
   // ---- 4. Solvability with a witness on the real session.
   try {
