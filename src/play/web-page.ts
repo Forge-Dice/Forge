@@ -700,6 +700,8 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .masthead { max-width: 1000px; margin: 0 auto; padding: 64px 28px 24px; color: var(--paper); }
 .masthead h1 { margin: 6px 0 12px; font-size: clamp(38px, 6vw, 60px); letter-spacing: .01em; }
 .masthead .lead { font-size: 19px; max-width: 640px; color: #e2d5bd; }
+.masthead .lead a { color: var(--brass); text-underline-offset: 3px; }
+.masthead .lead a:hover { color: #fff; }
 .shelf { max-width: 1000px; margin: 0 auto; padding: 8px 28px 60px; }
 .cases { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 24px; }
 .case-card { position: relative; display: flex; flex-direction: column; height: 100%; padding: 26px 24px 20px; color: var(--ink); text-decoration: none; background: linear-gradient(#e8d6ab, #dfc995); border-radius: 3px 3px 4px 4px; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
@@ -731,6 +733,7 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .seed-form { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; margin-top: 14px; }
 .seed-form label { align-self: center; font: 700 12px var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--brass); }
 .seed-form input { width: 9.5em; min-height: 44px; padding: 8px 12px; font: 700 20px var(--type); letter-spacing: .08em; color: var(--ink); background: var(--paper); border: 2px solid #b9a789; border-radius: var(--radius); }
+.seed-form select { min-height: 44px; padding: 8px 10px; font: 600 16px var(--sans); color: var(--ink); background: var(--paper); border: 2px solid #b9a789; border-radius: var(--radius); }
 .seed-form input::placeholder { color: #9c8c75; font-weight: 400; letter-spacing: 0; }
 .seed-form input:invalid { border-color: var(--warn); }
 .seed-form button.primary { background: var(--brass); color: var(--desk); border-color: var(--brass); font-weight: 700; }
@@ -803,12 +806,12 @@ a.primary-link { background: var(--paper); font-weight: 600; }
 }
 @media (max-width: 760px) {
   body { font-size: 16px; }
-  .topbar { padding: 8px 16px; gap: 12px; flex-wrap: wrap; }
+  .topbar { padding: 6px 16px; gap: 12px; flex-wrap: wrap; }
   .topbar h1 { font-size: 20px; }
   .topbar .badge { font-size: 12px; padding: 3px 9px; }
   .badge-more { display: none; }
   .home { font-size: 0; } .home span { font-size: 20px; }
-  .tabs { padding: 10px 12px 0; position: sticky; top: 58px; z-index: 15; background: linear-gradient(var(--desk) 70%, transparent); }
+  .tabs { padding: 10px 12px 0; position: sticky; top: 52px; z-index: 15; background: linear-gradient(var(--desk) 70%, transparent); }
   .tabs a { padding: 8px 11px; font-size: 12px; letter-spacing: .08em; } .tabs kbd { display: none; }
   html { scroll-padding-top: 118px; }
   .desk { padding: 12px 12px 32px; gap: 16px; }
@@ -821,11 +824,18 @@ a.primary-link { background: var(--paper); font-weight: 600; }
   .stamp { font-size: 20px; top: 18px; }
   .notice { left: 8px; right: 8px; bottom: 8px; width: auto; max-height: 55vh; }
   .keys { padding: 0 16px 28px; } .key-list { display: none; }
-  .help-text { display: none; } .help-link { padding: 5px 7px; }
+  .help-text { display: none; } .help-link { min-width: 40px; min-height: 40px; justify-content: center; padding: 5px 7px; }
+  .home { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; }
+  .notice .close { min-width: 44px; min-height: 44px; }
   .intro-steps { padding: 8px 18px 4px; min-height: 300px; } .intro-steps h3 { font-size: 22px; } .intro-steps p { font-size: 17px; }
   .manual { padding: 16px 12px 36px; } .overview li { grid-template-columns: 40px 1fr; } .overview .step-no { display: none; }
   .tools { grid-template-columns: 1fr; }
   .masthead { padding: 40px 16px 16px; } .shelf { padding: 8px 16px 40px; }
+}
+@media (max-width: 420px) {
+  .topbar { gap: 8px; } .topbar .kicker { display: none; }
+  .topbar h1 { font-size: 16px; line-height: 1.15; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .closing .stamp:not(.small) { font-size: 16px; top: 14px; right: 12px; border-width: 3px; padding: 3px 9px; }
 }
 @media (forced-colors: active) { .tag, .badge, .stamp { border: 1px solid; } }
 `;
