@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "title": "Die Vereinskasse",
+  "brief": "Dein erster Fall, zum Kennenlernen. Im Sportverein ist um 17:00 Uhr die Vereinskasse aus dem Vereinsheim verschwunden. Am Nachmittag waren nur drei Mitglieder da: Platzwart Jonas, Trainerin Mila und Torwart Kurt.\n\nSo gehst du vor: Durchsuche das Vereinsheim und den Sportplatz. Befrage Jonas und Mila. Wenn eine Aussage nicht zu einem Fund passt, halte ihn der Person vor. Lies dann die Regeln in der Fallakte und erhebe Anklage.",
+  "challengeQuestion": "Wer hat die Vereinskasse genommen?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:jonas"
+      },
+      "label": "Jonas",
+      "role": "Platzwart"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:mila"
+      },
+      "label": "Mila",
+      "role": "Trainerin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:kurt"
+      },
+      "label": "Kurt",
+      "role": "Torwart"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:clubhouse"
+      },
+      "label": "Vereinsheim",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:field"
+      },
+      "label": "Sportplatz",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:cashbox"
+      },
+      "label": "Vereinskasse",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:theft"
+      },
+      "label": "Verschwinden der Kasse um 17:00",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:training"
+      },
+      "label": "Training",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:shoeprint"
+      },
+      "label": "Stollenabdruck",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:training-list"
+      },
+      "label": "Trainingsliste",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:jonas",
+      "questionId": "question:q01",
+      "text": "Waren Sie um 17:00 im Vereinsheim?"
+    },
+    {
+      "npc": "person:mila",
+      "questionId": "question:q01",
+      "text": "War Jonas um 17:00 im Vereinsheim?"
+    },
+    {
+      "npc": "person:mila",
+      "questionId": "question:q02",
+      "text": "Waren Sie um 17:00 auf dem Sportplatz?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Was ein Fundstück selbst zeigt, gilt als Tatsache. Aussagen von Personen können falsch oder gelogen sein."
+    },
+    {
+      "id": "rule:alibi",
+      "text": "Wer um 17:00 auf dem Sportplatz war, hat die Kasse nicht genommen."
+    },
+    {
+      "id": "rule:confession",
+      "text": "Wer, mit einem Fundstück konfrontiert, zugibt, um 17:00 im Vereinsheim gewesen zu sein, hat die Kasse genommen."
+    }
+  ],
+  "epilogue": "Jonas gibt auf, als du ihm den Stollenabdruck vorhältst. Er hatte Spielschulden und wusste, dass der Kassenschrank nach dem Training offen stand. Die Kasse liegt unter der Plane im Geräteschuppen.\n\nMila und Kurt waren die ganze Zeit auf dem Platz, die Trainingsliste beweist es. Gut gemacht: Du hast gesucht, befragt, eine Lüge mit einem Fund widerlegt und die Regeln angewendet. Genau so funktionieren auch die anderen Fälle."
+}

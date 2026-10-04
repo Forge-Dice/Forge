@@ -313,7 +313,7 @@ export function renderEditor(name: string, dir: string, check: CaseCheck, origin
 <div class="actions"><button type="submit" form="editor" class="primary">Speichern</button><a class="button" href="/editor/${escape(name)}">Verwerfen</a>${
       extra.canUndo ? `<form method="post" action="/editor/${escape(name)}/undo" class="inline-form" data-struct><button type="submit">Rückgängig</button></form>` : ""
     }</div>
-<p class="probe"><a class="button${check.ok ? "" : " disabled"}" id="probe" href="/fall/probe-${escape(name)}" target="_blank" rel="noopener"${check.ok ? "" : ` aria-disabled="true"`}>Probespielen ↗</a> <span class="muted small-text">gespeicherter Stand</span></p>${noticeHtml(feedback)}</section>
+<p class="probe"><a class="button${check.ok ? "" : " disabled"}" id="probe" href="/fall/probe-${escape(name)}" target="_blank" rel="noopener"${check.ok ? "" : ` aria-disabled="true"`}>Probespielen ↗</a> <a class="button${check.ok ? "" : " disabled"}" id="export" href="/editor/${escape(name)}/export" download${check.ok ? "" : ` aria-disabled="true" title="Erst ein gültiger Fall lässt sich im Spiel laden."`}>Exportieren</a> <span class="muted small-text">gespeicherter Stand</span></p>${noticeHtml(feedback)}</section>
 <section class="card" aria-live="polite"><h2>Spieltest</h2><div id="playtest">${extra.playtest}</div></section></aside>
 <div class="play">
 <form id="editor" method="post" action="/editor/${escape(name)}/save" class="stack">

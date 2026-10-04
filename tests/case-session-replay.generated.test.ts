@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { initialSession, reduceSession, replaySession, type SessionState } from "../src/domain/case-session.ts";
 import { decodeSessionSave, encodeSessionSave } from "../src/domain/case-session-save.ts";
+import { serializeSessionJson } from "../src/domain/case-package.identity.ts";
 import { CLAIMS, events, sessionPackage } from "./case-session.fixture.ts";
 
 // C39 / AC-7: 640 deterministic histories in ten categories over the real reducer, replay and save
@@ -66,33 +67,76 @@ function roundtrip(state: SessionState): unknown {
   return decodeSessionSave(pkg, saved.text);
 }
 
+/**
+ * `actual` equals `{ ok: true, state }`, given `stateC = C(state)`. C is injective on plain session
+ * JSON and stricter than toEqual (an undefined-valued key differs from an absent one), so one string
+ * comparison replaces a deep walk; toEqual runs only on a mismatch, for its diff.
+ */
+function expectOkState(actual: unknown, state: SessionState, stateC: string, context: () => string) {
+  if (serializeSessionJson(actual) !== `{"ok":true,"state":${stateC}}`) expect(actual, context()).toEqual({ ok: true, state });
+}
+
+/** A verified session state: incremental = replay = save/load. Edges cache the reduction per input. */
+type Node = { readonly state: SessionState; readonly edges: Map<string, Edge> };
+type Edge =
+  | { readonly ok: false; readonly code: string }
+  | { readonly ok: true; readonly next: Node; readonly verdict: "solved" | "notSolved" | null };
+
 describe("C39 generated histories", () => {
   it("640 histories: incremental = replay = save/load on every prefix; rejections change nothing", () => {
     const rand = lcg(SEED);
-    const seen = { solved: 0, notSolved: 0, rejected: 0, terminal: 0, histories: 0 };
+    const seen = { solved: 0, notSolved: 0, rejected: 0, terminal: 0, histories: 0, prefixes: 0 };
+    // reduceSession, replaySession, encodeSessionSave and decodeSessionSave are deterministic
+    // functions of (pkg, state[, input]). The 640 histories share most of their prefixes (~600
+    // distinct states among ~2300 prefixes), so they are walked through a trie of verified states
+    // keyed by C: each distinct state is checked against replay and save/load once, each distinct
+    // (state, input) is reduced once, and every prefix of every history still lands on a verified
+    // state. Repeating an identical pure computation would verify nothing new.
+    const nodes = new Map<string, Node>();
+    const nodeOf = (state: SessionState, context: () => string): Node => {
+      const stateC = serializeSessionJson(state);
+      const known = nodes.get(stateC);
+      if (known !== undefined) return known;
+      expectOkState(replaySession(pkg, state.events), state, stateC, context);
+      expectOkState(roundtrip(state), state, stateC, context);
+      const node: Node = { state, edges: new Map() };
+      nodes.set(stateC, node);
+      return node;
+    };
+    const step = (node: Node, input: unknown, context: () => string): Edge => {
+      const result = reduceSession(pkg, node.state, input);
+      if (!result.ok) {
+        if (result.state !== node.state) expect(result.state, context()).toBe(node.state);
+        return { ok: false, code: result.code };
+      }
+      const verdict = result.output.type === "accuse" ? (result.output.verdict === "solved" ? "solved" : "notSolved") : null;
+      return { ok: true, next: nodeOf(result.state, context), verdict };
+    };
     for (const [category, generate] of CATEGORIES) {
       for (let n = 0; n < 64; n++) {
         const history = generate(rand);
         const context = () => `seed=${SEED.toString(16)} category="${category}" #${n} history=${JSON.stringify(history)}`;
-        let state = initialSession(pkg);
-        expect(roundtrip(state), context()).toEqual({ ok: true, state });
+        let node = nodeOf(initialSession(pkg), context);
+        seen.prefixes++;
         for (const input of history) {
-          const result = reduceSession(pkg, state, input);
-          if (!result.ok) {
+          const inputC = serializeSessionJson(input);
+          let edge = node.edges.get(inputC);
+          if (edge === undefined) node.edges.set(inputC, (edge = step(node, input, context)));
+          if (!edge.ok) {
             seen.rejected++;
-            if (result.code === "SESSION_CLOSED") seen.terminal++;
-            expect(result.state, context()).toBe(state);
+            if (edge.code === "SESSION_CLOSED") seen.terminal++;
             continue;
           }
-          state = result.state;
-          if (result.output.type === "accuse") seen[result.output.verdict === "solved" ? "solved" : "notSolved"]++;
-          expect(replaySession(pkg, state.events), context()).toEqual({ ok: true, state });
-          expect(roundtrip(state), context()).toEqual({ ok: true, state });
+          if (edge.verdict !== null) seen[edge.verdict]++;
+          node = edge.next;
+          seen.prefixes++;
         }
         seen.histories++;
       }
     }
     expect(seen.histories).toBe(640);
+    expect(seen.prefixes).toBe(640 + 1647);
+    expect(nodes.size).toBeGreaterThan(500);
     expect(seen.solved).toBeGreaterThan(0);
     expect(seen.notSolved).toBeGreaterThan(0);
     expect(seen.rejected).toBeGreaterThan(0);

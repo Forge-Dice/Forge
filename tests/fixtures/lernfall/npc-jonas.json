@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+  "solutionHash": "cc15fcf1834a2659632bacaf046860dee74fb7dc0234df272168de760035445d",
+  "npcId": "person:jonas",
+  "revision": 1,
+  "asOf": 4200,
+  "awareness": [
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:jonas"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:mila"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:kurt"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:clubhouse"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:field"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "item",
+        "id": "item:cashbox"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "event",
+        "id": "event:theft"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    }
+  ],
+  "attitudes": [
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:jonas-in-clubhouse"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 3600,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:theft"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:jonas-at-theft"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 3600,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:theft"
+      }
+    }
+  ]
+}

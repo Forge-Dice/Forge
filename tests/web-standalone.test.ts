@@ -2,6 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { buildStandalone } from "../src/play/standalone/build.ts";
 import { createWebHandler, type WebHandler, type WebResponse } from "../src/play/web.ts";
 import { PLAY_CASES } from "../src/play/cases.ts";
+import { exportCaseFiles } from "../src/play/case-share.ts";
+import { readdirSync, readFileSync } from "node:fs";
 
 // The single-file browser build runs the same game as the server: the bundled handler (with its
 // embedded fixtures and browser SHA-256) is driven side by side with the node handler, and every
@@ -114,5 +116,23 @@ describe("standalone browser build", () => {
     }
     // The bundle's case list also lists the random cases earlier tests opened there.
     expect((await bundled("GET", "/", body(undefined), "sprache=en")).body).toContain("<h1>Detective Cases</h1>");
+  });
+
+  it("loads an exported case file exactly like the server and refuses a tampered one", async () => {
+    const dir = new URL("./fixtures/geige/", import.meta.url).pathname;
+    const share = exportCaseFiles(Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, readFileSync(dir + f, "utf8")])));
+    const server = createWebHandler();
+    const [a, b] = await Promise.all([server("POST", "/eigener-fall", body(share)), bundled("POST", "/eigener-fall", body(share))]);
+    expect(b).toEqual(a);
+    expect(a.status).toBe(200);
+    const slug = (JSON.parse(a.body) as { slug: string }).slug;
+    const [pa, pb] = await Promise.all([server("GET", `/fall/${slug}`, body(undefined)), bundled("GET", `/fall/${slug}`, body(undefined))]);
+    expect(pb).toEqual(pa);
+    expect(pa.body).toContain("Die verstummte Geige");
+    const tampered = JSON.parse(share) as { files: Record<string, string> };
+    tampered.files["public-content.json"] = tampered.files["public-content.json"]!.replace("Die verstummte Geige", "Die laute Geige");
+    const bad = await bundled("POST", "/eigener-fall", body(JSON.stringify(tampered)));
+    expect(bad.status).toBe(422);
+    expect(JSON.parse(bad.body)).toMatchObject({ ok: false, title: "Die Fall-Datei wurde verändert." });
   });
 });

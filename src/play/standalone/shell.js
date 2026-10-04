@@ -7,6 +7,8 @@
   const frame = document.getElementById("kf");
   const boot = document.getElementById("boot");
   const KEY = "kriminalfaelle.spielstand.";
+  // Imported cases ("Eigenen Fall laden") are kept as their checked file and re-imported on start.
+  const CASE_KEY = "kriminalfaelle.eigenerfall.";
   const store = {
     get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
     set: (k, v) => { try { localStorage.setItem(k, v); } catch {} },
@@ -24,6 +26,9 @@
 
   async function request(method, url, body) {
     const res = await handle(method, url, body === undefined ? none : async () => body);
+    if (method === "POST" && url === "/eigener-fall" && res.status === 200) {
+      try { store.set(CASE_KEY + JSON.parse(res.body).slug, body); } catch {}
+    }
     const changed = method === "POST" && /^\/fall\/([a-z0-9-]+)\/(act|new|load)$/.exec(url);
     if (changed) {
       const saved = await handle("GET", `/fall/${changed[1]}/save`, none);
@@ -90,12 +95,20 @@
     // Restore every saved case silently, then open the page the address names. A Zufallsfall's
     // seed is part of its slug (zufall-<seed>), so its save key alone recreates the case.
     const generated = [];
+    const own = [];
     try {
       for (let i = 0; i < localStorage.length; i++) {
-        const slug = (localStorage.key(i) || "").slice(KEY.length);
-        if (localStorage.key(i).startsWith(KEY) && /^zufall-(0|[1-9][0-9]{0,8})$/.test(slug)) generated.push(slug);
+        const key = localStorage.key(i) || "";
+        const slug = key.slice(KEY.length);
+        if (key.startsWith(KEY) && /^zufall-(0|[1-9][0-9]{0,8})$/.test(slug)) generated.push(slug);
+        if (key.startsWith(CASE_KEY)) own.push(key);
       }
     } catch {}
+    // Each stored case file goes through the full import check again.
+    for (const key of own.sort()) {
+      const res = await app.handle("POST", "/eigener-fall", async () => store.get(key));
+      if (res.status === 200) generated.push(JSON.parse(res.body).slug);
+    }
     for (const slug of [...app.slugs, ...generated.sort()]) {
       const saved = store.get(KEY + slug);
       if (saved === null) continue;

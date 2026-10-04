@@ -76,7 +76,7 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false, e
   const cards = cases
     .map((c, i) => {
       const solved = c.progress === m.solvedBadge;
-      const badge = c.progress === null ? `<span class="badge">${m.newBadge}</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
+      const badge = c.progress === null ? `<span class="badge">${c.slug === "lernfall" ? m.learnBadge : m.newBadge}</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
       return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">${m.fileNo(String(i + 1).padStart(3, "0"))}</span><h2>${escape(c.title)}</h2>${difficultyTag(c.difficulty, MESSAGES[lang])}<p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">${m.openFile}</span></span>${
         solved ? `<span class="stamp small" aria-hidden="true">${m.solvedBadge}</span>` : ""
       }</a></li>`;
@@ -85,7 +85,7 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false, e
   return layout(
     m.casesTitle,
     `<a class="skip" href="#faelle">${m.skipCases}</a>
-<header class="masthead"><p class="kicker">${m.office}</p><h1>${m.appTitle}</h1><p class="lead">${escape(m.lead)}</p><p><a class="button ghost" href="/hilfe">${m.howTo} <span aria-hidden="true">→</span></a>${editorLink ? ` <a class="button ghost" href="/editor">${m.editor}</a>` : ""} ${langSwitch(MESSAGES[lang], "/")}</p></header>
+<header class="masthead"><p class="kicker">${m.office}</p><h1>${m.appTitle}</h1><p class="lead">${escape(m.lead)}</p><p class="lead">${m.newHere(`<a href="/fall/lernfall">${escape(m.learnTitle)}</a>`)}</p><p><a class="button ghost" href="/hilfe">${m.howTo} <span aria-hidden="true">→</span></a>${editorLink ? ` <a class="button ghost" href="/editor">${m.editor}</a>` : ""} ${langSwitch(MESSAGES[lang], "/")}</p></header>
 <main id="faelle" class="shelf"><h2 class="visually-hidden">${m.openFiles}</h2><ul class="cases">${cards}</ul>
 <div class="tools">
 <section class="random-case dice-box" aria-labelledby="zufall"><div class="tool-head">${DIE}<div><p class="kicker">${m.randomKicker}</p><h2 id="zufall">${m.randomTitle}</h2></div></div><p>${escape(m.randomText)}</p><form method="post" action="/zufall" class="seed-form"><label for="seed">Seed</label><input id="seed" name="seed" inputmode="numeric" pattern="[0-9]{0,9}" maxlength="9" placeholder="${escape(m.seedPlaceholder)}" autocomplete="off"><button type="submit" class="primary">${m.openRandom}</button></form>${
@@ -94,6 +94,7 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false, e
         : `<h3>${m.recentTitle}</h3><ul class="recent">${recent.map((r) => `<li><a href="/fall/${escape(r.slug)}">${escape(r.title)}</a>${r.progress === null ? "" : ` <span class="badge${r.progress === m.solvedBadge ? " solved" : ""}">${escape(r.progress)}</span>`}</li>`).join("")}</ul>`
     }</section>
 <section class="load-any" aria-labelledby="laden"><h2 id="laden">${m.loadAnyTitle}</h2><p>${escape(m.loadAnyText)}</p><label class="button" tabindex="0" role="button" id="load-any-label">${m.chooseFile}<input type="file" id="load-any" accept=".json,application/json" hidden></label></section>
+<section class="load-any" aria-labelledby="eigen"><h2 id="eigen">${m.ownCaseTitle}</h2><p>${escape(m.ownCaseText)}</p><a class="button" href="/eigener-fall">${m.ownCaseButton}</a></section>
 </div>
 <p class="hint">${escape(m.casesHint)}</p></main>
 ${extras.feedback ? notice(extras.feedback, MESSAGES[lang]) : ""}

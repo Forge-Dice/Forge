@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+  "solutionHash": "cc15fcf1834a2659632bacaf046860dee74fb7dc0234df272168de760035445d",
+  "allowedClaims": [
+    {
+      "kind": "personResponsibleForEvent",
+      "personId": "person:jonas",
+      "eventId": "event:theft"
+    },
+    {
+      "kind": "personResponsibleForEvent",
+      "personId": "person:mila",
+      "eventId": "event:theft"
+    },
+    {
+      "kind": "personResponsibleForEvent",
+      "personId": "person:kurt",
+      "eventId": "event:theft"
+    }
+  ]
+}

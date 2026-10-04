@@ -133,14 +133,27 @@ class Collector {
   }
 }
 
-function readJson(dir: string, file: string, c: Collector): unknown {
-  const path = join(dir, file);
-  if (!existsSync(path)) {
+/** The files of one case: a folder on disk or an in-memory map (an imported case file). */
+export type CaseFiles = { readonly list: () => readonly string[]; readonly read: (file: string) => string | undefined };
+
+export const folderFiles = (dir: string): CaseFiles => ({
+  list: () => readdirSync(dir),
+  read: (file) => (existsSync(join(dir, file)) ? readFileSync(join(dir, file), "utf8") : undefined),
+});
+
+export const mapFiles = (files: Readonly<Record<string, string>>): CaseFiles => ({
+  list: () => Object.keys(files),
+  read: (file) => (Object.hasOwn(files, file) ? files[file] : undefined),
+});
+
+function readJson(files: CaseFiles, file: string, c: Collector): unknown {
+  const text = files.read(file);
+  if (text === undefined) {
     c.error(file, "(Datei)", "Datei fehlt");
     return undefined;
   }
   try {
-    return JSON.parse(readFileSync(path, "utf8"));
+    return JSON.parse(text);
   } catch (error) {
     c.error(file, "(Datei)", `kein gültiges JSON: ${(error as Error).message}`);
     return undefined;
@@ -148,9 +161,9 @@ function readJson(dir: string, file: string, c: Collector): unknown {
 }
 
 /** NPC names from matching npc-<name>.json / interrogation-<name>.json pairs. */
-function npcNames(dir: string, c: Collector): string[] {
+function npcNames(files: CaseFiles, c: Collector): string[] {
   const names = (prefix: string) =>
-    readdirSync(dir).filter((f) => f.startsWith(prefix) && f.endsWith(".json")).map((f) => f.slice(prefix.length, -".json".length));
+    files.list().filter((f) => f.startsWith(prefix) && f.endsWith(".json")).map((f) => f.slice(prefix.length, -".json".length));
   const snapshots = names("npc-");
   const profiles = names("interrogation-");
   for (const n of snapshots.filter((n) => !profiles.includes(n))) c.error(`npc-${n}.json`, "(Datei)", `interrogation-${n}.json fehlt`);
@@ -174,6 +187,11 @@ export const caseLocales = (dir: string): string[] =>
  * recomputed for the variant and never written back.
  */
 export function checkCaseFolder(dir: string, lang?: string): CaseCheck {
+  return checkCaseFiles(existsSync(dir) ? folderFiles(dir) : null, dir, lang);
+}
+
+/** check-case on any case files; `dir` names them in the result (a folder, or an imported file). */
+export function checkCaseFiles(files: CaseFiles | null, dir: string, lang?: string): CaseCheck {
   const c = new Collector();
   const localeFile = (file: string) => (lang !== undefined && Object.entries(FILES).some(([k, f]) => f === file && isLocaleKey(k)) ? `${lang}/${file}` : file);
   let play: CaseCheck["play"];
@@ -189,17 +207,17 @@ export function checkCaseFolder(dir: string, lang?: string): CaseCheck {
     routes,
     ok: c.problems.every((p) => p.severity !== "error") && routes.length > 0 && routes.every((r) => r.report.status === "pass"),
   });
-  if (!existsSync(dir)) {
+  if (files === null) {
     c.error(dir, "(Ordner)", "Ordner nicht gefunden");
     return finish();
   }
   const raw = Object.fromEntries(
-    Object.entries(FILES).map(([key, file]) => [key, readJson(lang !== undefined && isLocaleKey(key) ? join(dir, lang) : dir, file, c)]),
+    Object.entries(FILES).map(([key, file]) => [key, readJson(files, lang !== undefined && isLocaleKey(key) ? `${lang}/${file}` : file, c)]),
   ) as Record<keyof typeof FILES, unknown>;
   if (lang !== undefined) {
-    const source = readJson(join(dir, lang), SOURCE_FILE, c);
+    const source = readJson(files, `${lang}/${SOURCE_FILE}`, c);
     for (const key of LOCALE_KEYS) {
-      const base = readJson(dir, FILES[key], new Collector());
+      const base = readJson(files, FILES[key], new Collector());
       checkTranslation(base, raw[key], FILES[key], c);
       // The variant records which German text it translates: an edit of the base text shows up here.
       if (base !== undefined && source !== undefined) checkSource(`${lang}/${SOURCE_FILE}`, source, key, textDigest(base), c);
@@ -207,8 +225,8 @@ export function checkCaseFolder(dir: string, lang?: string): CaseCheck {
     raw.releaseManifest = unbind(raw.releaseManifest, []);
     raw.proofProfile = unbind(raw.proofProfile, ["bindings"]);
   }
-  const npcs = npcNames(dir, c).map((name) => ({ name, snapshot: readJson(dir, `npc-${name}.json`, c), profile: readJson(dir, `interrogation-${name}.json`, c) }));
-  const caseConfig = existsSync(join(dir, "case.json")) ? readJson(dir, "case.json", c) : {};
+  const npcs = npcNames(files, c).map((name) => ({ name, snapshot: readJson(files, `npc-${name}.json`, c), profile: readJson(files, `interrogation-${name}.json`, c) }));
+  const caseConfig = files.read("case.json") !== undefined ? readJson(files, "case.json", c) : {};
   const salt = (caseConfig as { refSalt?: unknown }).refSalt ?? DEFAULT_CHECK_SALT;
   if (typeof salt === "string") play = { npcs: npcs.map((n) => n.name), salt };
 

@@ -25,12 +25,15 @@ import { renderCaseList, renderGame, renderHelp, type Feedback } from "./web-pag
 import { PLAY_CASES, loadPlayPackage, loadSaveInLang, playCaseName, type PlayCaseName } from "./cases.ts";
 import { DEFAULT_LANG, MESSAGES, parseLang, type Lang } from "./messages.ts";
 import { generateCase, generatedClockOrigin, generatedPackage } from "../authoring/case-generator.ts";
+import { importCaseText, MAX_SHARE_BYTES } from "./case-share.ts";
+import { renderImport } from "./import-page.ts";
 
 // `npm run play:web`: the playable cases in the browser, one local player, same session logic as
 // the CLI. The server holds one game per case in memory; saves are the Session C text.
 
 const MAX_GENERATED = 20;
-const MAX_BODY = 1024 * 1024 + 4096; // one Session C save plus slack for a form body
+const MAX_IMPORTED = 20;
+const MAX_BODY = Math.max(1024 * 1024, MAX_SHARE_BYTES) + 4096; // one Session C save or case file plus slack
 
 // The language (de default, en) is the player's choice, remembered in a cookie; switching keeps
 // the game (its events replay on the other language's package). Generated cases exist only in
@@ -178,6 +181,8 @@ export function createWebHandler(
   // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
   const generated = new Map<number, { slot: Slot; clockOrigin: number }>();
   const extras = new Map<string, { version: string; slot: Slot }>();
+  // Imported cases ("Eigenen Fall laden"), keyed by eigen-<digest>; the oldest is dropped beyond MAX_IMPORTED.
+  const imported = new Map<string, { slot: Slot; clockOrigin: number; title: string }>();
   type Target = {
     readonly slot: Slot;
     readonly slug: string;
@@ -198,6 +203,23 @@ export function createWebHandler(
         seed: null,
         restart: () => start(name, lang),
         load: (text) => loadSaveInLang(name, lang, text, (l) => pkgFor(name, l)),
+      };
+    }
+    const own = slug === undefined ? undefined : imported.get(slug);
+    if (own !== undefined) {
+      // Its own (author's) case text in the request's language frame, like a generated case.
+      const s = own.slot;
+      if ((s.game.lang ?? DEFAULT_LANG) !== lang) s.game = withLang(s.game, lang);
+      return {
+        slot: s,
+        slug: slug!,
+        clockOrigin: own.clockOrigin,
+        seed: null,
+        restart: () => withLang(newGame(s.game.pkg, own.clockOrigin), lang),
+        load: (text) => {
+          const loaded = loadText(s.game.pkg, text, own.clockOrigin, lang === DEFAULT_LANG ? undefined : lang);
+          return loaded.ok ? loaded : { ok: false, text: MESSAGES[lang].loadFailed };
+        },
       };
     }
     const extra = slug === undefined || options.extraCase === undefined ? null : options.extraCase(slug);
@@ -253,6 +275,7 @@ export function createWebHandler(
   const redirect = (to: string): WebResponse => ({ status: 303, headers: { location: to }, body: "" });
   const html = (body: string): WebResponse => ({ status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }, body });
   const text = (status: number, body: string): WebResponse => ({ status, headers: { "content-type": "text/plain; charset=utf-8" }, body });
+  const json = (status: number, body: unknown): WebResponse => ({ status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }, body: JSON.stringify(body) });
 
   // The case list's own result sheet (a save that fits no case); shown once.
   let homeFeedback: Feedback | null = null;
@@ -346,6 +369,18 @@ export function createWebHandler(
       const to = back.startsWith("/") && !back.startsWith("//") && !back.includes("\\") ? back : "/";
       const chosen = parseLang(url.searchParams.get("l")) ?? DEFAULT_LANG;
       return { status: 303, headers: { location: to, "set-cookie": `${LANG_COOKIE}=${chosen}; Path=/; Max-Age=31536000; SameSite=Lax` }, body: "" };
+    }
+    if (method === "GET" && url.pathname === "/eigener-fall") return html(renderImport([...imported].map(([slug, c]) => ({ slug, title: c.title }))));
+    if (method === "POST" && url.pathname === "/eigener-fall") {
+      const body = await readBody();
+      const result = body === null ? { ok: false as const, title: "Die Datei ist zu groß.", problems: [] } : importCaseText(body);
+      if (!result.ok) return json(422, { ok: false, title: result.title, problems: result.problems });
+      if (!imported.has(result.slug)) {
+        const game = withLang(newGame(result.pkg, result.clockOrigin), lang);
+        imported.set(result.slug, { slot: { game, feedback: { tone: "info", title: m.ownCaseTitle, lines: [m.ownCaseLine] }, fresh: new Set() }, clockOrigin: result.clockOrigin, title: result.title });
+        if (imported.size > MAX_IMPORTED) imported.delete(imported.keys().next().value!);
+      }
+      return json(200, { ok: true, slug: result.slug, title: result.title });
     }
     if (method === "POST" && url.pathname === "/zufall") {
       // An empty seed picks one; anything else must be a whole number up to nine digits.

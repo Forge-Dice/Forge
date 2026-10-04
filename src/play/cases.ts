@@ -27,6 +27,7 @@ export type PlayCase = {
 };
 
 export const PLAY_CASES = {
+  lernfall: { dir: "lernfall", npcs: ["jonas", "mila"], salt: "1ea51ea51ea51ea51ea51ea51ea51ea5", clockOrigin: 16 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 2 },
   vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5 },
   "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4 },
   geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 3 },
@@ -148,4 +149,13 @@ export function loadSaveInLang(
 export function loadFolderPackage(dir: string, npcs: readonly string[], salt: string): ResolvedCasePackage {
   const read = (name: string): unknown => JSON.parse(readFileSync(join(dir, name), "utf8"));
   return bindAndResolve(read, packageInputFrom(read, npcs, "mystery-session-v3"), salt, dir);
+}
+
+/** An imported case (file name -> text, already passed check-case) as a package under the play ruleset. */
+export function loadFilesPackage(files: Readonly<Record<string, string>>, npcs: readonly string[], salt: string, what: string): ResolvedCasePackage {
+  const read = (name: string): unknown => {
+    if (!Object.hasOwn(files, name)) throw new Error(`${name} fehlt`);
+    return JSON.parse(files[name]!);
+  };
+  return bindAndResolve(read, packageInputFrom(read, npcs, "mystery-session-v3"), salt, what);
 }
