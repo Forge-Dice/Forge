@@ -31,11 +31,12 @@ const ATTEMPT = 2;
 const OWNER = 315180734;
 const DEV = 337272506;
 const TASK = "FORGE-DRILL-0001";
-const BRANCH = `forge/run/codex/${TASK}/clamp-1`;
+const BRANCH = { DEV: `forge/run/codex/${TASK}/clamp-1`, OWNER_OPS: `forge/owner/${TASK}/ops-1` };
 const WORKFLOW = ".github/workflows/forge-v01.yml";
 const CLAMP = "src/forge-drill/clamp-at-zero.ts";
 const ADDED_TEST = "tests/forge-drill/clamp-at-zero-ternary.test.ts";
 const BASE_TEST = "tests/forge-v01/clamp-at-zero.test.ts";
+const APPROVAL = `forge/approvals/${TASK}.md`; // a TCB path only an OWNER_OPS plan can approve
 
 type Obj = Record<string, unknown>;
 const sha256 = (data: string | Buffer) => createHash("sha256").update(data).digest("hex");
@@ -95,11 +96,80 @@ describe("clampAtZero", () => {
 `;
 // Manipulated: the named test no longer pins the value, so the `return n` mutant survives.
 const WEAK_TEST = GOOD_TEST.replace("expect(clampAtZero(-5)).toBe(0);\n    expect(clampAtZero(-1)).toBe(0);", "expect(clampAtZero(-5)).toBeLessThanOrEqual(0);");
+// HEAD content a Codex PR could contain, appended inside the describe block of GOOD_TEST.
+const withTest = (extra: string) => GOOD_TEST.replace(/\n\}\);\n$/, `\n${extra}\n});\n`);
+// Crash: the Vitest fork running this file SIGKILLs itself mid-run.
+const CRASH_TEST = withTest(`  test("worker dies", () => {\n    process.kill(process.pid, "SIGKILL");\n  });`);
+// Hang: a synchronous endless loop; Vitest's testTimeout cannot interrupt it, only the supervisor deadline.
+const HANG_TEST = withTest(`  test("never returns", () => {\n    for (;;) {}\n  });`);
 
-type Fixture = { remote: string; seed: string; base: string; head: string; contractHash: string; policyHash: string; contract: string };
+// Manipulated output: the trusted reporter's frame, forged for this fixture's exact identities.
+const PROJECT = "forge-v01";
+const id = (file: string, title: string) => [file, PROJECT, ["clampAtZero"], title, 0];
+const NAMED = id(ADDED_TEST, "negative input clamps to zero");
+function forgedFrame(files: string[], tests: { id: unknown[]; status: string }[]): string {
+  const key = (v: unknown) => Buffer.from(JSON.stringify(v), "utf8");
+  const failed = tests.filter((t) => t.status === "failed");
+  const payload = {
+    format: 1,
+    inventory: {
+      format: 1, files: files.map((file) => ({ file, project: PROJECT, collection: "ok" })),
+      tests: [...tests].sort((a, b) => Buffer.compare(key(a.id), key(b.id))), errors: [], reason: failed.length ? "failed" : "passed",
+    },
+    failures: failed.map((t) => ({ id: t.id, errorNames: ["AssertionError"] })),
+  };
+  const body = JSON.stringify(payload);
+  return `FORGE-REPORT-V1 ${Buffer.byteLength(body)}\n${body}`;
+}
+// HEAD run: everything passed. Mutant run (only ADDED_TEST): exactly the named test failed with an assertion.
+const FORGED_HEAD = forgedFrame([ADDED_TEST, BASE_TEST], [
+  ...["negative input clamps to zero", "non-negative input is unchanged"].map((t) => ({ id: id(ADDED_TEST, t), status: "passed" })),
+  ...["negative input clamps to zero", "zero stays zero", "positive input is unchanged"].map((t) => ({ id: id(BASE_TEST, t), status: "passed" })),
+]);
+const FORGED_MUTANT = forgedFrame([ADDED_TEST], [
+  { id: NAMED, status: "failed" }, { id: id(ADDED_TEST, "non-negative input is unchanged"), status: "passed" },
+]);
+// The test really fails (7 -> 8), so the honest verdict is a failure. Before any test runs, the file writes
+// a success frame and a fake PASS record to stdout and pre-creates the report file the trusted reporter
+// writes later ("wx"), choosing the HEAD or the mutant forgery from the source under test.
+const FORGED_TEST = `import { readFileSync, writeFileSync } from "node:fs";
+import { describe, expect, test } from "vitest";
+import { clampAtZero } from "../../src/forge-drill/clamp-at-zero.ts";
 
-/** BASE = registered clampAtZero task (contract, plan, policy, verifier files); HEAD = BASE + headFiles. */
-function fixture(root: string, name: string, headFiles: Record<string, string>): Fixture {
+const source = readFileSync(new URL("../../src/forge-drill/clamp-at-zero.ts", import.meta.url), "utf8");
+const forged = source.includes("? 0 : n") ? ${JSON.stringify(FORGED_HEAD)} : ${JSON.stringify(FORGED_MUTANT)};
+process.stdout.write(forged + "\\n");
+console.log(JSON.stringify({ format: 1, outcome: "PASS", policyAssurance: "owner_attested" }));
+try {
+  writeFileSync(process.env["FORGE_REPORT_PATH"] ?? "/out/report", forged, { flag: "wx" });
+} catch {
+  // the report file exists already: keep running the tests
+}
+
+describe("clampAtZero", () => {
+  test("negative input clamps to zero", () => {
+    expect(clampAtZero(-5)).toBe(0);
+  });
+
+  test("non-negative input is unchanged", () => {
+    expect(clampAtZero(7)).toBe(8);
+  });
+});
+`;
+
+type Profile = "DEV" | "OWNER_OPS";
+type Fixture = {
+  remote: string; seed: string; base: string; head: string; contractHash: string; policyHash: string; contract: string;
+  profile: Profile; branch: string; author: number;
+};
+
+/**
+ * BASE = registered clampAtZero task (contract, plan, policy, verifier files); HEAD = BASE + headFiles.
+ * DEV (default): scope create ADDED_TEST, modify CLAMP, mutant `return n`. OWNER_OPS: the Owner's own PR on
+ * forge/owner/; scope additionally creates APPROVAL (the plan's only approvedTcbPaths entry), no mutants.
+ */
+function fixture(root: string, name: string, headFiles: Record<string, string>, profile: Profile = "DEV"): Fixture {
+  const ops = profile === "OWNER_OPS";
   const repo = new FixtureRepo(join(root, name));
   const seed = repo.commit(repo.tree({ "README.md": "seed\n" }), [], "seed");
   const meta = {
@@ -108,20 +178,20 @@ function fixture(root: string, name: string, headFiles: Record<string, string>):
     contractVersion: 1,
     baseCommit: seed,
     dependencies: [],
-    scope: { create: [ADDED_TEST], modify: [CLAMP] },
+    scope: { create: ops ? [APPROVAL, ADDED_TEST] : [ADDED_TEST], modify: [CLAMP] },
     requiredChecks: [
       { name: "typecheck", command: "forge-v01:typecheck" },
       { name: "test", command: "forge-v01:test" },
-      { name: "mutations", command: "forge-v01:mutations" },
+      ...(ops ? [] : [{ name: "mutations", command: "forge-v01:mutations" }]),
     ],
-    mutationSmoke: "required",
+    mutationSmoke: ops ? "none" : "required",
   };
   const contract = `---json\n${JSON.stringify(meta, null, 2)}\n---\n\n# ${TASK}\n\nRewrite clampAtZero as the equivalent ternary and pin the negative case.\n`;
   const contractHash = sha256("forge-contract-v1\n" + contract);
   const plan = canonical({
-    format: 1, taskId: TASK, contractHash, profile: "DEV", approvedTcbPaths: [], addedTestFiles: [ADDED_TEST],
+    format: 1, taskId: TASK, contractHash, profile, approvedTcbPaths: ops ? [APPROVAL] : [], addedTestFiles: [ADDED_TEST],
     checks: meta.requiredChecks,
-    mutants: [{
+    mutants: ops ? [] : [{
       id: "return-n", path: CLAMP, anchorBase64: b64("return n < 0 ? 0 : n;"), replacementBase64: b64("return n;"),
       testFiles: [ADDED_TEST], namedTests: [[ADDED_TEST, "forge-v01", ["clampAtZero"], "negative input clamps to zero", 0]],
     }],
@@ -149,18 +219,22 @@ function fixture(root: string, name: string, headFiles: Record<string, string>):
   const head = repo.commit(repo.tree(nest({ ...baseFiles, ...headFiles })), [base], "head");
   repo.setRef("refs/heads/main", base);
   repo.setRef(`refs/pull/${PR}/head`, head);
-  return { remote: repo.odb, seed, base, head, contractHash, policyHash: sha256("forge-policy-v1\n" + policy), contract };
+  return { remote: repo.odb, seed, base, head, contractHash, policyHash: sha256("forge-policy-v1\n" + policy), contract,
+    profile, branch: BRANCH[profile], author: ops ? OWNER : DEV };
 }
 
 // ------------------------------------------------------------------ fake GitHub (FixedTransport answers)
 
-type Attest = { result?: "approve" | "request_changes"; head?: string; checkedAt?: string };
+type Attest = { result?: "approve" | "request_changes"; head?: string; checkedAt?: string; provider?: "anthropic" | "openai" };
 
-/** The Owner's FORGE-ATTESTATION-V1 review body; `opts` bends one field for the negative cases. */
+const bindingOf = (f: Fixture, head = f.head) =>
+  ({ repoId: REPO_ID, pr: PR, base: f.base, head, contractHash: f.contractHash, verifierSha: f.base, policyHash: f.policyHash });
+
+/** The Owner's FORGE-ATTESTATION-V1 approve body; `opts` bends one field for the negative cases. */
 function attestation(f: Fixture, opts: Attest = {}): string {
   const result = opts.result ?? "approve";
-  const binding = { repoId: REPO_ID, pr: PR, base: f.base, head: opts.head ?? f.head, contractHash: f.contractHash, verifierSha: f.base, policyHash: f.policyHash };
-  const reviewer = { provider: "anthropic", model: "claude-drill" };
+  const binding = bindingOf(f, opts.head);
+  const reviewer = { provider: opts.provider ?? "anthropic", model: "claude-drill" };
   const findings = result === "approve" ? [] : [{ id: "weak-test", severity: "major", summary: "negative case is not pinned" }];
   const report = Buffer.from(JSON.stringify({ format: 1, binding, reviewer, result, findings }), "utf8");
   return "FORGE-ATTESTATION-V1\n" + canonical({
@@ -171,58 +245,75 @@ function attestation(f: Fixture, opts: Attest = {}): string {
   });
 }
 
-const ownerReview = (f: Fixture, body: string) => ({
-  id: 901, node_id: "x", user: { id: OWNER, login: "owner" }, body, state: "COMMENTED", html_url: "x",
-  commit_id: f.head, submitted_at: "2026-10-04T10:00:00Z", author_association: "OWNER",
-});
+/** The revoke variant (reviews.py REVOKE_KEYS): same binding, no report, empty supersedes. */
+const revocation = (f: Fixture) =>
+  "FORGE-ATTESTATION-V1\n" + canonical({ format: 1, ...bindingOf(f), runId: RUN, runAttempt: ATTEMPT, action: "revoke", supersedes: [] });
 
-/** Every API read of gate and verify; `reviews` is the PR review list GitHub returns. */
-function answers(f: Fixture, reviews: Obj[]): Obj {
+type By = { id?: number; user?: number; at?: string };
+
+/** One published COMMENTED review on H; by default the Owner's review 901. */
+const review = (f: Fixture, body: string, by: By = {}) => ({
+  id: by.id ?? 901, node_id: "x", user: { id: by.user ?? OWNER, login: by.user === DEV ? "forge-codex" : "owner" }, body,
+  state: "COMMENTED", html_url: "x", commit_id: f.head, submitted_at: by.at ?? "2026-10-04T10:00:00Z",
+  author_association: by.user === DEV ? "CONTRIBUTOR" : "OWNER",
+});
+const ownerReview = (f: Fixture, body: string) => review(f, body);
+
+const REVIEWS = `${REPO}/pulls/${PR}/reviews?per_page=100&page=1`;
+
+/**
+ * Every API read of gate and verify; `reviews` is the PR review list GitHub returns. With `later`, the
+ * first review read of a process sees `reviews` and every further one `later` (an edit during the run).
+ */
+function answers(f: Fixture, reviews: Obj[], later?: Obj[]): Obj {
   const job = (id: number, name: string, status: string, conclusion: string | null) =>
     ({ id, run_id: RUN, run_attempt: ATTEMPT, name, status, conclusion, head_sha: f.base, workflow_name: "Forge V0.1" });
   const jobs = [job(9001, "forge-gate", "completed", "success"), job(9002, "forge-verify", "in_progress", null)];
+  const author = { id: f.author, login: f.author === OWNER ? "owner" : "codex" };
   return {
     [REPO]: { id: REPO_ID, full_name: "Forge-Dice/Forge", private: false },
     [`${REPO}/pulls/${PR}`]: {
-      number: PR, state: "open", draft: false, user: { id: DEV, login: "codex" },
+      number: PR, state: "open", draft: false, user: author,
       base: { ref: "main", sha: f.base, repo: { id: REPO_ID, full_name: "Forge-Dice/Forge" } },
-      head: { ref: BRANCH, sha: f.head, repo: { id: REPO_ID } },
+      head: { ref: f.branch, sha: f.head, repo: { id: REPO_ID } },
     },
     [`${REPO}/branches/main`]: { name: "main", commit: { sha: f.base }, protected: true },
     [`${REPO}/actions/runs/${RUN}/attempts/${ATTEMPT}`]: {
       id: RUN, name: "Forge V0.1", run_attempt: ATTEMPT, event: "pull_request_target", path: WORKFLOW, workflow_id: 77,
-      head_sha: f.base, repository: { id: REPO_ID }, actor: { id: DEV, login: "codex" }, triggering_actor: { id: OWNER, login: "owner" },
+      head_sha: f.base, repository: { id: REPO_ID }, actor: author, triggering_actor: { id: OWNER, login: "owner" },
     },
-    // FixedTransport treats a list as successive bodies: one body, itself the review list.
-    [`${REPO}/pulls/${PR}/reviews?per_page=100&page=1`]: [reviews],
+    // FixedTransport treats a list as successive bodies (the last one repeats): each body is a review list.
+    [REVIEWS]: later ? [reviews, later] : [reviews],
     [`${REPO}/actions/runs/${RUN}/attempts/${ATTEMPT}/jobs?per_page=100&page=1`]: { total_count: jobs.length, jobs },
   };
 }
-
 // ------------------------------------------------------------------ one stage0 run inside the image
 
 let root = "";
 let runs = 0;
 
-type Run = { status: number | null; record: Obj | null; stdout: string; stderr: string; seconds: number };
+type Run = { status: number | null; record: Obj | null; stdout: string; stderr: string; seconds: number; requests: string[] };
+/** facts: extra runner facts; mounts: extra docker run flags; suiteDeadline: lowered BASE/HEAD suite deadline (s). */
+type RunOpts = { facts?: Obj; mounts?: string[]; suiteDeadline?: number };
 
-function inImage(mode: "stage0" | "adapter", f: Fixture, api: Obj, job: string, extra: Obj = {}, mounts: string[] = []): Run {
+function inImage(mode: "stage0" | "adapter", f: Fixture, api: Obj, job: string, opts: RunOpts = {}): Run {
   const dir = join(root, `run-${++runs}`);
   const ws = join(dir, "ws");
   mkdirSync(ws, { recursive: true, mode: 0o700 });
   const event = {
     action: "synchronize", number: PR, repository: { id: REPO_ID, full_name: "Forge-Dice/Forge" },
-    pull_request: { number: PR, base: { sha: f.base, ref: "main", repo: { id: REPO_ID } }, head: { sha: f.head, ref: BRANCH, repo: { id: REPO_ID } } },
+    pull_request: { number: PR, base: { sha: f.base, ref: "main", repo: { id: REPO_ID } }, head: { sha: f.head, ref: f.branch, repo: { id: REPO_ID } } },
   };
-  const facts = { eventName: "pull_request_target", githubSha: f.base, runId: RUN, runAttempt: ATTEMPT, actorId: OWNER, job, image: IMAGE, ...extra };
+  const facts = { eventName: "pull_request_target", githubSha: f.base, runId: RUN, runAttempt: ATTEMPT, actorId: OWNER, job, image: IMAGE, ...opts.facts };
   writeFileSync(join(dir, "event.json"), JSON.stringify(event));
   writeFileSync(join(dir, "facts.json"), JSON.stringify(facts));
   writeFileSync(join(dir, "answers.json"), JSON.stringify(api));
   writeFileSync(join(dir, "contract.md"), f.contract);
+  if (opts.suiteDeadline !== undefined) writeFileSync(join(dir, "budgets.json"), JSON.stringify({ suiteDeadline: opts.suiteDeadline }));
   const sock = DOCKER_HOST!.replace(/^unix:\/\//, "");
   const argv = [
     "run", "--rm", "--network=none", `--volume=${sock}:/var/run/docker.sock`, `--volume=${HERE}:${HERE}:ro`, `--volume=${root}:${root}`,
-    ...mounts, "--entrypoint", PY, IMAGE!, "-I", "-B", join(HERE, "e2e_harness.py"), mode, join(dir, "answers.json"), f.remote,
+    ...(opts.mounts ?? []), "--entrypoint", PY, IMAGE!, "-I", "-B", join(HERE, "e2e_harness.py"), mode, join(dir, "answers.json"), f.remote,
     ...(mode === "adapter" ? [join(dir, "contract.md")] : []), "--event", join(dir, "event.json"), "--facts", join(dir, "facts.json"), "--workspace", ws,
   ];
   const started = Date.now();
@@ -234,7 +325,13 @@ function inImage(mode: "stage0" | "adapter", f: Fixture, api: Obj, job: string, 
   } catch {
     record = null;
   }
-  return { status: r.status, record, stdout: r.stdout ?? "", stderr: r.stderr ?? "", seconds: (Date.now() - started) / 1000 };
+  let requests: string[] = [];
+  try {
+    requests = JSON.parse(readFileSync(join(dir, "requests.json"), "utf8")) as string[];
+  } catch {
+    requests = []; // the verifier was never reached
+  }
+  return { status: r.status, record, stdout: r.stdout ?? "", stderr: r.stderr ?? "", seconds: (Date.now() - started) / 1000, requests };
 }
 
 // ------------------------------------------------------------------ drill table
@@ -282,16 +379,30 @@ function drill(name: string, body: (rows: Row[]) => void, timeout: number) {
 const enabled = Boolean(DOCKER_HOST) && IMAGE !== null;
 
 describe.skipIf(!enabled)("forge drill: stage0.main in the real image, real DockerRunner, fake GitHub", () => {
-  let good: Fixture, weak: Fixture, outOfScope: Fixture;
+  let good: Fixture, weak: Fixture, outOfScope: Fixture, crash: Fixture, hang: Fixture, forged: Fixture, ops: Fixture, opsSrc: Fixture;
   const gate = (f: Fixture, api: Obj) => () => inImage("stage0", f, api, "forge-gate");
-  const verify = (f: Fixture, api: Obj, g: Run) => () => inImage("stage0", f, api, "forge-verify", { receipt: g.record?.["receipt"] ?? null });
-  const approved = (f: Fixture) => answers(f, [ownerReview(f, attestation(f))]);
+  const verify = (f: Fixture, api: Obj, g: Run, opts: RunOpts = {}) => () =>
+    inImage("stage0", f, api, "forge-verify", { ...opts, facts: { receipt: g.record?.["receipt"] ?? null } });
+  const approved = (f: Fixture, opts: Attest = {}) => answers(f, [ownerReview(f, attestation(f, opts))]);
+  const reviewReads = (r: Run) => r.requests.filter((p) => p === REVIEWS).length;
+  /** Gate must pass with the review present; returns the gate run for its receipt. */
+  const gatePasses = (name: string, f: Fixture, api: Obj, rows: Row[]) => {
+    const g = step(name, "gate", "GATE_PASS reviewPending=false", gate(f, api), rows);
+    expect(shown(g)).toBe("GATE_PASS reviewPending=false");
+    return g;
+  };
 
   beforeAll(() => {
     root = tempRoot("forge-drill");
     good = fixture(root, "good", { [CLAMP]: TERNARY, [ADDED_TEST]: GOOD_TEST });
     weak = fixture(root, "weak", { [CLAMP]: TERNARY, [ADDED_TEST]: WEAK_TEST });
     outOfScope = fixture(root, "scope", { [CLAMP]: TERNARY, [ADDED_TEST]: GOOD_TEST, "src/forge-drill/extra.ts": "export const extra = 1;\n" });
+    crash = fixture(root, "crash", { [CLAMP]: TERNARY, [ADDED_TEST]: CRASH_TEST });
+    hang = fixture(root, "hang", { [CLAMP]: TERNARY, [ADDED_TEST]: HANG_TEST });
+    forged = fixture(root, "forged", { [CLAMP]: TERNARY, [ADDED_TEST]: FORGED_TEST });
+    const record = `# ${TASK} Owner record\n\nDrill approval note (OWNER_OPS).\n`;
+    ops = fixture(root, "ops", { [APPROVAL]: record, [ADDED_TEST]: GOOD_TEST }, "OWNER_OPS");
+    opsSrc = fixture(root, "ops-src", { [APPROVAL]: record, [ADDED_TEST]: GOOD_TEST, [CLAMP]: TERNARY }, "OWNER_OPS");
   });
   afterAll(() => {
     if (table.length) console.log(`\nFORGE DRILL SUMMARY (image ${IMAGE})\n${render(table)}\n`);
@@ -312,7 +423,7 @@ describe.skipIf(!enabled)("forge drill: stage0.main in the real image, real Dock
     expect(parsed!.slashNodeModules).toBe("/trusted/node_modules");
     // The same run with the image Zod hidden: the parser cannot resolve "zod" from anywhere else.
     const hidden = step("0 image parser", "parse, Zod hidden", "fail EXECUTION_INTERNAL",
-      () => inImage("adapter", good, approved(good), "forge-gate", {}, ["--tmpfs=/trusted/node_modules:ro"]), rows);
+      () => inImage("adapter", good, approved(good), "forge-gate", { mounts: ["--tmpfs=/trusted/node_modules:ro"] }), rows);
     const code = (hidden.record as { fail?: { code: string } } | null)?.fail?.code;
     rows.at(-1)!.actual = code ? `fail ${code}` : shown(hidden);
     expect(code).toBe("EXECUTION_INTERNAL");
@@ -371,5 +482,77 @@ describe.skipIf(!enabled)("forge drill: stage0.main in the real image, real Dock
     const edited = answers(good, [ownerReview(good, attestation(good, { checkedAt: new Date(Date.now() - 30_000).toISOString().replace(/\.\d{3}Z$/, "Z") }))]);
     const v = step("7 review edited", "verify", "FAIL REVIEW_CHANGED (final)", verify(good, edited, g), rows);
     expect(shown(v)).toBe("FAIL REVIEW_CHANGED (final)");
+    expect(reviewReads(v)).toBe(1); // decided at the Stage-2 start, before any worker
   }, 300_000);
+  drill("8 Owner approve, then a valid revoke", (rows) => {
+    // reviews.py select_attestation: the latest published Owner review decides; a revoke is never an approve.
+    const api = answers(good, [ownerReview(good, attestation(good)), review(good, revocation(good), { id: 902, at: "2026-10-04T10:05:00Z" })]);
+    const g = step("8 revoked", "gate", "FAIL REVIEW_BLOCKED (review)", gate(good, api), rows);
+    expect(shown(g)).toBe("FAIL REVIEW_BLOCKED (review)");
+  }, 300_000);
+
+  drill("9a HEAD test kills its own Vitest worker", (rows) => {
+    const api = approved(crash);
+    const g = gatePasses("9a crash", crash, api, rows);
+    // Vitest still exits 1 with a frame, but the killed file's tests are "pending", a status the strict report
+    // parser rejects (worker.read_report): TEST_INVENTORY before any inventory comparison.
+    const v = step("9a crash", "verify", "FAIL TEST_INVENTORY (worker)", verify(crash, api, g), rows);
+    expect(shown(v)).toBe("FAIL TEST_INVENTORY (worker)");
+  }, 900_000);
+
+  drill("9b HEAD test never finishes", (rows) => {
+    const api = approved(hang);
+    const g = gatePasses("9b hang", hang, api, rows);
+    // Lowered suite deadline (test-only, lower-only main.main(_suite_deadline=)); production stays 120 s.
+    const v = step("9b hang", "verify (suite 10 s)", "FAIL EXECUTION_TIMEOUT (worker)", verify(hang, api, g, { suiteDeadline: 10 }), rows);
+    expect(shown(v)).toBe("FAIL EXECUTION_TIMEOUT (worker)");
+  }, 900_000);
+
+  drill("9c HEAD test forges the report channel and stdout", (rows) => {
+    const api = approved(forged);
+    const g = gatePasses("9c forged report", forged, api, rows);
+    // stdout never reaches the supervisor (worker-entry.mjs discards it). The pre-created report file makes the
+    // reporter's "wx" write fail, so Vitest exits 1 while the forged frame says "passed": worker.run_tests
+    // rejects a frame that disagrees with the observed exit (before that check this case was a full PASS).
+    const v = step("9c forged report", "verify", "FAIL TEST_INVENTORY (worker)", verify(forged, api, g), rows);
+    expect(v.record?.["outcome"]).not.toBe("PASS");
+    expect(shown(v)).toBe("FAIL TEST_INVENTORY (worker)");
+    expect(v.stdout.trim().split("\n")).toHaveLength(1); // the verifier's one record; nothing from the test
+  }, 900_000);
+
+  drill("9d Owner review edited while the worker runs", (rows) => {
+    // Gate and Stage-2 start see the original review; both final rounds see the edited body.
+    const original = [ownerReview(good, attestation(good))];
+    const edited = [ownerReview(good, attestation(good, { checkedAt: new Date(Date.now() - 30_000).toISOString().replace(/\.\d{3}Z$/, "Z") }))];
+    const api = answers(good, original, edited);
+    const g = gatePasses("9d edit during run", good, api, rows);
+    const v = step("9d edit during run", "verify", "FAIL REVIEW_CHANGED (final)", verify(good, api, g), rows);
+    expect(shown(v)).toBe("FAIL REVIEW_CHANGED (final)");
+    expect(reviewReads(v)).toBe(3); // start read + both final rounds: decided by the final recheck
+  }, 900_000);
+
+  drill("10a OWNER_OPS: approved TCB path, openai external reviewer", (rows) => {
+    // DEV-only provider rule (reviews.py): an openai reviewer is fine when the Owner's own PR is reviewed.
+    const api = approved(ops, { provider: "openai" });
+    const g = gatePasses("10a OWNER_OPS", ops, api, rows);
+    const v = step("10a OWNER_OPS", "verify", "PASS", verify(ops, api, g), rows);
+    expect(shown(v)).toBe("PASS");
+    expect(v.record).toMatchObject({ taskId: TASK, profile: "OWNER_OPS", H: ops.head });
+  }, 900_000);
+
+  drill("10b OWNER_OPS: non-TCB source change in contract scope", (rows) => {
+    // scope.py _in_class: an OWNER_OPS change outside tests/ must be an approvedTcbPaths entry; CLAMP is in
+    // the contract's modify scope (allowed for DEV) but not a TCB path.
+    const g = step("10b OWNER_OPS src", "gate", "FAIL SCOPE_PATH (scope)", gate(opsSrc, approved(opsSrc)), rows);
+    expect(shown(g)).toBe("FAIL SCOPE_PATH (scope)");
+  }, 300_000);
+
+  drill("11 attestation posted by forge-codex instead of the Owner", (rows) => {
+    // reviews.py _owner_reviews: only the numeric policy ownerId is authority; other users are skipped.
+    const api = answers(good, [review(good, attestation(good), { user: DEV })]);
+    const g = step("11 wrong reviewer", "gate", "GATE_PASS reviewPending=true", gate(good, api), rows);
+    expect(shown(g)).toBe("GATE_PASS reviewPending=true");
+    const v = step("11 wrong reviewer", "verify", "FAIL REVIEW_MISSING (review)", verify(good, api, g), rows);
+    expect(shown(v)).toBe("FAIL REVIEW_MISSING (review)");
+  }, 900_000);
 });

@@ -33,8 +33,8 @@ inputs_hash() {
 }
 
 build() {
-  local ctx; ctx=$(mktemp -d "${TMPDIR:-/tmp}/forge-drill-ctx.XXXXXX")
-  trap 'rm -rf "$ctx"' RETURN
+  ctx=$(mktemp -d "${TMPDIR:-/tmp}/forge-drill-ctx.XXXXXX")
+  trap 'rm -rf "$ctx"' EXIT  # also on a failed build (set -e exits skip RETURN traps)
   mkdir -p "$CACHE" "$ctx/kernel"
   for row in "${ARCHIVES[@]}"; do
     IFS='|' read -r name url sum <<<"$row"

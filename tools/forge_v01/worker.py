@@ -315,7 +315,8 @@ def run_tests(case_root: str, node_modules: str, workspace: str, include: list, 
               image: str | None = None, docker_host=None, deadline: float = SUITE_DEADLINE, _runner=None) -> dict:
     """Fixed Vitest argv over the exact include list. Returns {timedOut, exitCode, report} as observed.
 
-    For base/head a timeout is EXECUTION_TIMEOUT (AV-119) and a bad report TEST_INVENTORY; for a mutant
+    For base/head a timeout is EXECUTION_TIMEOUT (AV-119) and a bad report, or one that disagrees with the
+    observed exit (exit 0 iff reason "passed", nothing but 0/1), TEST_INVENTORY; for a mutant
     both stay observations (report None) for the classifier.
     """
     limit = MUTANT_DEADLINE if role == "mutant" else SUITE_DEADLINE
@@ -329,7 +330,13 @@ def run_tests(case_root: str, node_modules: str, workspace: str, include: list, 
     if role != "mutant":
         if seen.timed_out:
             raise fail("EXECUTION_TIMEOUT", "worker")
-        return {"timedOut": False, "exitCode": code, "report": read_report(seen.stdout)}
+        report = read_report(seen.stdout)
+        # PKG §6 transport: only the self-observed exit plus the checked report count, so they must agree. A frame
+        # HEAD code wrote to the report file itself makes the reporter's exclusive ("wx") write fail: Vitest exits
+        # 1 while the forged frame claims "passed". Signals and other exits are FAIL (PKG §2).
+        if code not in (0, 1) or (code == 0) != (report.inventory.reason == "passed"):
+            raise fail("TEST_INVENTORY", "worker")
+        return {"timedOut": False, "exitCode": code, "report": report}
     try:
         report = None if seen.timed_out or seen.overflow else read_report(seen.stdout, mutant=True)
     except ForgeFail:

@@ -262,6 +262,24 @@ describe("real worker runs through the TEST-ONLY LocalRunner (no sandbox)", () =
     expect(readdirSync(ws)).toEqual([]);
   }, 15_000);
 
+  it("forged report channel: a test pre-creating FORGE_REPORT_PATH never outvotes the observed exit", () => {
+    const ws = freshDir("forged");
+    const id = (title: string) => ["tests/a.test.ts", "forge-v01", ["S"], title, 0];
+    const body = JSON.stringify({ format: 1, failures: [], inventory: { format: 1, files: [{ file: "tests/a.test.ts", project: "forge-v01", collection: "ok" }],
+      tests: [{ id: id("one"), status: "passed" }, { id: id("two"), status: "passed" }], errors: [], reason: "passed" } });
+    const frame = `FORGE-REPORT-V1 ${body.length}\n${body}`;
+    const forge = (assertion: string) => `async () => {\n    const fs = await import('node:fs');\n` +
+      `    fs.writeFileSync(process.env['FORGE_REPORT_PATH'] ?? '', ${JSON.stringify(frame)}, { flag: 'wx' });\n    ${assertion};\n  }`;
+    const failing = caseTree({ "tests/a.test.ts": TEST(forge("expect(one()).toBe(2)")) });
+    const passing = caseTree({ "tests/a.test.ts": TEST(forge("expect(one()).toBe(1)")) });
+    // Both runs: the reporter's exclusive write fails, Vitest exits 1, the file holds the forged all-passed frame.
+    for (const role of ["head", "base"]) {
+      const rs = py([failing, passing].map((root) => ({ fn: "worker.run_tests", args: [root, NODE_MODULES, ws, ["tests/a.test.ts"]], kwargs: { role, _runner: process.execPath } })));
+      expect(rs.map(outcome), role).toEqual(["TEST_INVENTORY", "TEST_INVENTORY"]);
+    }
+    expect(readdirSync(ws)).toEqual([]);
+  }, 20_000);
+
   it("AV-122 injection fixture: real offline npm ci never runs root or dependency lifecycle scripts; HEAD .npmrc never used", () => {
     const ws = freshDir("install");
     const dep = freshDir("dep");

@@ -10,7 +10,9 @@ everything else is the image's own code path, entered through stage0.main itself
       ...], clean env, cwd = BASE root) and execs `verifier` below instead of main.py directly.
   python -I -B e2e_harness.py verifier <answers.json> <remote> <BASE main.py> --bootstrap-version=1 ...
       BASE verifier process: imports the materialized BASE main.py and returns
-      main.main(argv, _seams=<the same test seams>) (one record on stdout).
+      main.main(argv, _seams=<the same test seams>) (one record on stdout). Two optional files next to
+      <answers.json>: budgets.json ({"suiteDeadline": s} -> main.main(_suite_deadline=s), lower-only) is
+      read; requests.json (the API paths the verifier requested, in order) is written afterwards.
   python -I -B e2e_harness.py adapter <answers.json> <remote> <contract> --event E --facts F --workspace W
       stage0.main as above, but the _exec hook execs `parse <BASE root> <contract> <private>`, which runs
       the BASE policy.parse_contract with the fixed image node over the materialized BASE root.
@@ -59,7 +61,17 @@ def main() -> int:
         sys.path[:0] = [os.path.dirname(entry), HERE]
         import main as verifier  # noqa: E402  (materialized BASE copies from here on)
 
-        return verifier.main(argv, _seams=_seams(answers, remote))
+        here = os.path.dirname(answers)
+        budgets = {}
+        if os.path.exists(os.path.join(here, "budgets.json")):
+            with open(os.path.join(here, "budgets.json"), "rb") as handle:
+                budgets = {"_suite_deadline": json.loads(handle.read())["suiteDeadline"]}
+        seams = _seams(answers, remote)
+        try:
+            return verifier.main(argv, _seams=seams, **budgets)
+        finally:
+            with open(os.path.join(here, "requests.json"), "w") as handle:
+                handle.write(json.dumps(seams.transport.requests))
     if mode == "parse":
         contract, entry, argv = rest[0], rest[1], rest[2:]
         root = os.path.dirname(os.path.dirname(os.path.dirname(entry)))

@@ -131,6 +131,7 @@ def run_worker(g: dict, ws: str) -> None:
 
 def _worker_steps(g: dict, ws: str) -> None:
     trusted, plan, image = g["trusted"], g["bound"]["plan"], g["image"]
+    suite = g.get("suiteDeadline", worker.SUITE_DEADLINE)
     with trusted.store() as store:
         base = store.collect_tree(store.read_commit(trusted.base).tree)
         head = store.collect_tree(store.read_commit(trusted.head).tree)  # scope passed: only approved paths differ
@@ -143,11 +144,13 @@ def _worker_steps(g: dict, ws: str) -> None:
         head_tests = sorted(set(base_tests) | set(plan["addedTestFiles"]), key=str.encode)
         base_root = materialize(store, base, _subdir(ws, "base"), executable=executable)
         worker.prepare_case(base_root)
-        base_run = worker.run_tests(base_root, modules, _subdir(ws, "base-run"), base_tests, role="base", image=image)
+        base_run = worker.run_tests(base_root, modules, _subdir(ws, "base-run"), base_tests, role="base", image=image,
+                                    deadline=suite)
         head_root = materialize(store, head, _subdir(ws, "head"), executable=executable)
         worker.prepare_case(head_root)
         worker.run_typecheck(head_root, modules, _subdir(ws, "head-tsc"), image=image)
-        head_run = worker.run_tests(head_root, modules, _subdir(ws, "head-run"), head_tests, role="head", image=image)
+        head_run = worker.run_tests(head_root, modules, _subdir(ws, "head-run"), head_tests, role="head", image=image,
+                                    deadline=suite)
         inventory.compare_inventory(base_run["report"].inventory, head_run["report"].inventory,
                                     plan["addedTestFiles"], head_tests)
         if plan["mutants"]:
@@ -176,9 +179,13 @@ def run_verify(g: dict, facts: dict, ws: str) -> dict:
             "attestationId": bound["attestationId"], "executionIsolation": "not_established"}
 
 
-def main(argv: list, *, _seams=None) -> int:
-    """`_seams`: keyword-only and test-only (bootstrap.Seams, lower-only budgets); `__main__` passes none."""
+def main(argv: list, *, _seams=None, _suite_deadline=None) -> int:
+    """`_seams`, `_suite_deadline`: keyword-only and test-only (bootstrap.Seams with lower-only budgets; a
+    BASE/HEAD suite deadline that may only lower worker.SUITE_DEADLINE); `__main__` passes neither."""
     try:
+        if _suite_deadline is not None and (type(_suite_deadline) not in (int, float)
+                                            or not 0 < _suite_deadline <= worker.SUITE_DEADLINE):
+            raise fail("EXECUTION_INTERNAL", "gate")
         args = parse_argv(argv)
         event = _read(args["event"], bootstrap.EVENT_LIMIT)
         facts = bootstrap.strict_json(_read(args["facts"], FACTS_LIMIT), FACTS_LIMIT, "PR_INPUT", "gate")
@@ -187,6 +194,8 @@ def main(argv: list, *, _seams=None) -> int:
             raise fail("PR_INPUT", "gate")
         ws = _subdir(args["workspace"], "verifier")
         g = gate_checks(args, event, facts, ws, _seams=_seams)
+        if _suite_deadline is not None:
+            g["suiteDeadline"] = _suite_deadline
         record = run_gate(g) if command == "gate" else run_verify(g, facts, ws)
     except ForgeFail as failure:
         record = failure.record()

@@ -3,7 +3,7 @@
   "files": [
     {
       "path": "tools/forge_v01/main.py",
-      "sha256": "62d66a6b7f751363898f01e91e4e7e071b5e61d01156b4bfd69bfbcc582be47e"
+      "sha256": "e5808d598f79e6bc998e71df09b2515b01c1159aca8609f9928d21aaf3a77a7d"
     },
     {
       "path": "tools/forge_v01/bootstrap.py",
@@ -91,7 +91,7 @@
     },
     {
       "path": "tools/forge_v01/worker.py",
-      "sha256": "e15b223357d1ba55060f3887f215167cb5c9a3abddd84966aab89a4ea2addb98"
+      "sha256": "60dd2999795ea0d224b923fbceb0d34f5c040efa8524dfbe6cdd5c276eca9130"
     },
     {
       "path": "src/forge/contract-document.ts",
