@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -14,7 +15,9 @@ export type CaseSource = { readonly key: string; readonly label: string; readonl
 export type Edit =
   | { readonly kind: "field"; readonly file: string; readonly field: string; readonly value: string }
   | { readonly kind: "act"; readonly file: string; readonly rule: number; readonly act: string; readonly stance: string | null }
-  | { readonly kind: "raw"; readonly file: string; readonly text: string };
+  | { readonly kind: "raw"; readonly file: string; readonly text: string }
+  /** Digest of the file as the page showed it; a save is refused for a file changed since. */
+  | { readonly kind: "base"; readonly file: string; readonly digest: string };
 export type ApplyResult = { readonly applied: number; readonly errors: readonly { file: string; field: string; message: string }[] };
 
 const NAME = /^[a-z0-9][a-z0-9-]{0,63}$/;
@@ -92,21 +95,26 @@ function setAt(json: unknown, field: string, value: string): boolean {
 
 // ---------- Applying edits ----------
 
-/** Edits from the editor form: f:<file>:<field>, act:<file>:<rule>, stance:<file>:<rule>, raw:<file>. */
+/** Digest of a file's text, rendered into the page so a save can tell that the file changed since. */
+export const fileDigest = (text: string): string => createHash("sha256").update(text, "utf8").digest("hex").slice(0, 16);
+
+/** Edits from the editor form: f:<file>:<field>, act:<file>:<rule>, stance:<file>:<rule>, raw:<file>, base:<file>. */
 export function editsFromForm(form: URLSearchParams): Edit[] {
   const edits: Edit[] = [];
   for (const [key, value] of form) {
-    const m = /^(f|raw|act):([^:]+)(?::(.*))?$/s.exec(key);
+    const m = /^(f|raw|act|base):([^:]+)(?::(.*))?$/s.exec(key);
     if (m === null || !FILE.test(m[2]!)) continue;
     const [, kind, file, rest] = m as unknown as [string, string, string, string | undefined];
     if (kind === "f" && rest !== undefined) edits.push({ kind: "field", file, field: rest, value: value.replace(/\r\n/g, "\n") });
     if (kind === "raw") edits.push({ kind: "raw", file, text: value });
+    if (kind === "base" && rest === undefined) edits.push({ kind: "base", file, digest: value });
     if (kind === "act" && rest !== undefined && /^\d{1,4}$/.test(rest)) {
       edits.push({ kind: "act", file, rule: Number(rest), act: value, stance: form.get(`stance:${file}:${rest}`) });
     }
   }
-  // Whole-file replacements first; field edits that equal the file's value are then no-ops.
-  return [...edits.filter((e) => e.kind === "raw"), ...edits.filter((e) => e.kind !== "raw")];
+  // Base digests first, then whole-file replacements, then fields (skipped for a replaced file).
+  const order = (e: Edit) => (e.kind === "base" ? 0 : e.kind === "raw" ? 1 : 2);
+  return [...edits].sort((a, b) => order(a) - order(b));
 }
 
 /** Applies edits to the JSON files of dir (in place). Only values that differ are written. */
@@ -119,11 +127,24 @@ export function applyEdits(dir: string, edits: readonly Edit[]): ApplyResult {
     return files.get(file);
   };
   let applied = 0;
+  // Files changed on disk since the page was rendered (another tab): their edits would undo that change.
+  const stale = new Set<string>();
+  // Files replaced by a whole-file edit: the page still sends their old field values, which must not win.
+  const replaced = new Set<string>();
   for (const edit of edits) {
     if (!existsSync(join(dir, edit.file))) {
       errors.push({ file: edit.file, field: "(Datei)", message: "Datei fehlt im Arbeitsordner" });
       continue;
     }
+    if (stale.has(edit.file)) continue;
+    if (edit.kind === "base") {
+      if (fileDigest(readFileSync(join(dir, edit.file), "utf8")) !== edit.digest) {
+        stale.add(edit.file);
+        errors.push({ file: edit.file, field: "(Datei)", message: "inzwischen anderswo geändert: Seite neu laden, Änderungen an dieser Datei wurden nicht gespeichert" });
+      }
+      continue;
+    }
+    if (edit.kind !== "raw" && replaced.has(edit.file)) continue;
     if (edit.kind === "raw") {
       let parsed: unknown;
       try {
@@ -134,6 +155,7 @@ export function applyEdits(dir: string, edits: readonly Edit[]): ApplyResult {
       }
       if (JSON.stringify(parsed) === JSON.stringify(json(edit.file))) continue;
       files.set(edit.file, parsed);
+      replaced.add(edit.file);
     } else if (edit.kind === "field") {
       const before = getAt(json(edit.file), edit.field);
       if (before === edit.value || (before === undefined && edit.field === "epilogue" && edit.value.trim() === "")) continue;
@@ -198,13 +220,16 @@ export class CaseWorkspace {
     if (reset) rmSync(target, { recursive: true, force: true });
     if (!existsSync(target)) {
       mkdirSync(this.root, { recursive: true });
-      cpSync(source.dir, target, { recursive: true });
+      // Dereferenced: a symlink in the source must not let a save write outside the working folder.
+      cpSync(source.dir, target, { recursive: true, dereference: true });
     }
     return name;
   }
   /** A freshly generated case, written straight into the working folder. */
   generate(seed: number): string {
     const name = `fall-${seed}`;
+    // An existing working copy of this seed is opened, not overwritten (it may hold edits).
+    if (this.dirOf(name) !== null) return name;
     writeGeneratedCase(generateCase(seed), join(this.root, name));
     return name;
   }

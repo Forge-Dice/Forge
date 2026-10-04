@@ -21,8 +21,10 @@ function readBody(req: IncomingMessage): Promise<string | null> {
     req.on("data", (chunk: Buffer) => {
       size += chunk.length;
       if (size > MAX_EDITOR_BODY) {
+        // Stop collecting but drain the rest, so the route can still answer 413.
+        req.removeAllListeners("data");
+        req.resume();
         resolve(null);
-        req.destroy();
       } else chunks.push(chunk);
     });
     req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));

@@ -3,7 +3,7 @@ import { rulesetAllows, type CasePackageIdentity, type ResolvedCasePackage } fro
 import { serializeSessionJson, utf8Length, validateSessionJson } from "./case-package.identity.ts";
 import { parseAccusation, type Accusation } from "./case-accusation.ts";
 import { evaluateChallengeAccusation } from "./accusation-challenge.ts";
-import { claimKey, type ConclusionClaim } from "./case-solution.ts";
+import { claimKey, evaluateConclusionClaim, type ConclusionClaim } from "./case-solution.ts";
 import { resolveInvestigation, type InvestigationAction } from "./evidence-access.ts";
 import { PLAYER_REF_PATTERN, releaseEvidence, type EvidenceObservation } from "./evidence-presentation.ts";
 import { QuestionIdSchema } from "./interrogation-authoring.ts";
@@ -332,6 +332,8 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
  * Late suspects: a player can only name persons they know, so every in-scope person claim about a
  * person they do not know yet counts as "not accused" (value false). Accusing before the culprit is
  * known therefore stays not_solved, and the accusation never reveals how many suspects exist.
+ * Only claims that are false are filled in: a true or undetermined claim about an unknown person
+ * would otherwise make every accusation fail until the player meets them.
  */
 function unknownSuspects(
   pkg: ResolvedCasePackage,
@@ -343,6 +345,10 @@ function unknownSuspects(
   return pkg.challenge.allowedClaims
     .filter((claim) => (claim.kind === "personRoleForEvent" || claim.kind === "personResponsibleForEvent") && !knownPersons.has(claim.personId))
     .filter((claim) => !keys.has(claimKey(claim as ConclusionClaim)))
+    .filter((claim) => {
+      const evaluation = evaluateConclusionClaim(pkg.truth, pkg.solution, claim);
+      return evaluation.success && evaluation.status === false;
+    })
     .map((claim) => ({ claim: structuredClone(claim) as ConclusionClaim, value: false as const }));
 }
 

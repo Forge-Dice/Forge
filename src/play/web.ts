@@ -8,6 +8,8 @@ import {
   confrontations,
   evidenceText,
   hintText,
+  pageToken,
+  hintUnavailableText,
   investigations,
   known,
   loadText,
@@ -202,7 +204,7 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
 
   function act(s: Slot, group: string | null, n: string | null, at: string | null): void {
     const { game } = s;
-    if (at !== String(game.state.events.length)) {
+    if (at !== pageToken(game)) {
       s.feedback = { tone: "warn", title: msg(game).web.stale, lines: [msg(game).web.staleLine] };
       return;
     }
@@ -211,7 +213,8 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
     if (action === undefined) return;
     const result = reduceSession(game.pkg, game.state, action.event);
     if (!result.ok) {
-      s.feedback = { tone: "warn", title: msg(game).errors[result.code]!, lines: [] };
+      const title = group === "h" && result.code === "ACTION_UNAVAILABLE" ? hintUnavailableText(game) : msg(game).errors[result.code]!;
+      s.feedback = { tone: "warn", title, lines: [] };
       return;
     }
     s.game = { ...game, state: result.state };

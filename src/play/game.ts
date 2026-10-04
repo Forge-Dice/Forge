@@ -19,6 +19,18 @@ export type Step = { readonly game: Game; readonly text: string; readonly quit?:
 export type Action = { readonly label: string; readonly event: unknown };
 
 
+/**
+ * Identifies the history a page was rendered from, so a stale form is refused even when another
+ * history (new game, loaded save) has the same number of events. "0" for a fresh game.
+ */
+export function pageToken(game: Game): string {
+  const { events } = game.state;
+  if (events.length === 0) return "0";
+  let hash = 0x811c9dc5;
+  for (const unit of JSON.stringify(events)) hash = Math.imul(hash ^ unit.charCodeAt(0), 0x01000193) >>> 0;
+  return `${events.length}-${hash.toString(16).padStart(8, "0")}`;
+}
+
 export const newGame = (pkg: ResolvedCasePackage, clockOrigin = 0, lang?: Lang): Game => ({ pkg, state: initialSession(pkg), clockOrigin, ...(lang === undefined ? {} : { lang }) });
 
 /** UI text table of the game's language. */
@@ -161,10 +173,11 @@ export function confrontations(game: Game): Action[] {
 export function accusations(game: Game): Action[] {
   const { pkg } = game;
   const ref = (kind: "person" | "event", id: string) => pkg.refs.refFor(kind, id)!;
-  const isKnown = (id: string) => game.state.knowledge.known.some((k) => k.kind === "person" && k.ref === ref("person", id));
+  const isKnown = (kind: "person" | "event", id: string) => game.state.knowledge.known.some((k) => k.kind === kind && k.ref === ref(kind, id));
+  // The player can only name what they know: the person and the crime event.
   const candidates = pkg.challenge.allowedClaims
     .filter((c) => c.kind === "personRoleForEvent" || c.kind === "personResponsibleForEvent")
-    .filter((c) => isKnown(c.personId));
+    .filter((c) => isKnown("person", c.personId) && isKnown("event", c.eventId));
   const claim = (c: (typeof candidates)[number]) => {
     const base = { kind: c.kind, person: ref("person", c.personId), event: ref("event", c.eventId) };
     return c.kind === "personRoleForEvent" ? { ...base, role: c.role } : base;

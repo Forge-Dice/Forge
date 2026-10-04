@@ -101,10 +101,10 @@ describe("HTTP fuzz over the web server", () => {
     for (let step = 0; step < 120; step++) {
       const page = await timed(slug);
       check(`GET ${step}`, page);
-      const at = /name="at" value="(\d+)"/.exec(page.body)?.[1] ?? "0";
+      const at = /name="at" value="([^"]+)"/.exec(page.body)?.[1] ?? "0";
       const group = ["u", "f", "a", "h", "x", ""][Math.floor(rand() * 6)]!;
       const n = rand() < 0.85 ? String(1 + Math.floor(rand() * 12)) : ["0", "-1", "abc", "99999", "1e3", ""][Math.floor(rand() * 6)]!;
-      const stale = rand() < 0.1 ? String(Number(at) + 1) : at;
+      const stale = rand() < 0.1 ? `${at}x` : at;
       check(`POST act ${step}`, await timed(`${slug}/act`, form({ group, n, at: stale })));
       if (rand() < 0.15) {
         const saved = await timed(`${slug}/save`);
