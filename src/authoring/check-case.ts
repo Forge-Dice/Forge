@@ -314,7 +314,7 @@ function releaseContextHash(
 }
 
 type ManifestStep = { stepId: string; event: unknown };
-type ManifestAlternative = { report?: unknown; kind?: string; questionId?: string; claim?: unknown; stance?: string };
+type ManifestAlternative = { report?: unknown; kind?: string; questionId?: string; evidenceId?: string; claim?: unknown; stance?: string };
 type ManifestObservation = ReleasedObservation & { alternatives?: ManifestAlternative[]; ruleId?: string; afterObservations?: string[] };
 type Manifest = {
   schemaVersion: 1;
@@ -377,7 +377,8 @@ function sortedJson(value: unknown): string {
 /**
  * Witness port on the real session: replays the steps with reduceSession. An OBSERVED record is
  * released only if its evidence card was released with one of its alternative reports; a
- * REPORTED_BY_NPC once that NPC gave one of its "npc" alternatives (question, stance, statement);
+ * REPORTED_BY_NPC once that NPC gave one of its "npc" alternatives (question, stance, statement)
+ * or, confronted, one of its "admission" alternatives;
  * a PUBLIC_RULE once all of its afterObservations are released.
  */
 export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, releaseHash: string): WitnessReplay {
@@ -398,13 +399,22 @@ export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, rel
       if (answer !== null && answer.act === "answer" && answer.stance !== "does_not_know") {
         said.add(sortedJson([pkg.refs.resolve(answer.npc)!.id, answer.questionId, answer.stance, answer.statement]));
       }
+      const admission = result.output.type === "confront" ? result.output.observation : null;
+      if (admission !== null && admission.act === "admit") {
+        const evidenceId = pkg.refs.resolve(admission.evidence)!.id;
+        said.add(sortedJson([pkg.refs.resolve(admission.npc)!.id, "admission", admission.questionId, evidenceId, admission.stance, admission.statement]));
+      }
     }
     const released = new Set<string>();
     const records: ReleasedObservation[] = [];
     const payload = ({ alternatives, ruleId, afterObservations, ...rest }: ManifestObservation) => rest as ReleasedObservation;
     for (const o of manifest.certificateData.observations) {
       if (o.kind === "REPORTED_BY_NPC") {
-        if (o.alternatives?.some((alt) => alt.kind === "npc" && said.has(sortedJson([o.npcId, alt.questionId, alt.stance, alt.claim])))) {
+        const heard = (alt: ManifestAlternative) =>
+          alt.kind === "npc"
+            ? said.has(sortedJson([o.npcId, alt.questionId, alt.stance, alt.claim]))
+            : alt.kind === "admission" && said.has(sortedJson([o.npcId, "admission", alt.questionId, alt.evidenceId, alt.stance, alt.claim]));
+        if (o.alternatives?.some(heard)) {
           released.add(o.id);
           records.push(payload(o));
         }

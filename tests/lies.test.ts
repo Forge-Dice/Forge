@@ -96,11 +96,13 @@ describe("solvability never trusts a lie", () => {
         p.observations.find((o: any) => o.id === "public-rule:participation").rules[0].allOf = ["observation:ben-denies"];
         p.nodes.push({ id: "observation:ben-denies", kind: "observation", observationId: "reported:ben-denies" });
         p.edges.find((e: any) => e.id === "responsible:ben").allOf = ["observation:ben-denies", "license:participation"];
+        p.witnessStepIds = p.witnessStepIds.filter((id: string) => id !== "confront-ben"); // no cuff, no confrontation
       },
       "release-manifest.json": (m) => {
         const rule = m.certificateData.observations.find((o: any) => o.id === "public-rule:participation");
         rule.rules[0].allOf = ["observation:ben-denies"];
         rule.afterObservations = ["reported:ben-denies"];
+        m.certificateData.steps = m.certificateData.steps.filter((s: any) => s.stepId !== "confront-ben");
       },
     });
 

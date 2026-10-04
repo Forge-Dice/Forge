@@ -43,6 +43,25 @@
           },
           "questionId": "question:q01"
         }
+      },
+      {
+        "stepId": "confront-ben",
+        "event": {
+          "type": "confront",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ben"
+            }
+          },
+          "questionId": "question:q01",
+          "evidence": {
+            "$playerRefOf": {
+              "kind": "evidence",
+              "id": "evidence:cuff-button"
+            }
+          }
+        }
       }
     ],
     "observations": [
@@ -75,6 +94,39 @@
               }
             },
             "stance": "denies"
+          }
+        ]
+      },
+      {
+        "id": "reported:ben-admits",
+        "kind": "REPORTED_BY_NPC",
+        "npcId": "person:ben",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:ben-at-murder",
+          "value": true
+        },
+        "alternatives": [
+          {
+            "kind": "admission",
+            "questionId": "question:q01",
+            "evidenceId": "evidence:cuff-button",
+            "claim": {
+              "kind": "eventHasParticipant",
+              "event": {
+                "$playerRefOf": {
+                  "kind": "event",
+                  "id": "event:murder"
+                }
+              },
+              "person": {
+                "$playerRefOf": {
+                  "kind": "person",
+                  "id": "person:ben"
+                }
+              }
+            },
+            "stance": "affirms"
           }
         ]
       },

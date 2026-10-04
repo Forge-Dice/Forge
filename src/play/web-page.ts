@@ -1,6 +1,4 @@
-import type { EvidenceObservation } from "../domain/evidence-presentation.ts";
-import type { InterrogationObservation } from "../domain/interrogation.ts";
-import { accusations, answerText, evidenceText, investigations, known, questions, type Action, type Game } from "./game.ts";
+import { accusations, confrontations, investigations, known, questions, recordText, type Action, type Game } from "./game.ts";
 
 // HTML views of the local browser front end. Pure: (game, feedback) -> page. Every label comes from
 // PublicContent or released observations through the CLI's own helpers; actions are addressed by
@@ -61,12 +59,12 @@ export function renderCaseList(cases: readonly CaseCard[]): string {
 
 // ---------- Game page ----------
 
-function actionForm(game: Game, slug: string, group: "u" | "f" | "a", index: number, label: string, cls = ""): string {
+function actionForm(game: Game, slug: string, group: "u" | "f" | "v" | "a", index: number, label: string, cls = ""): string {
   const confirm = group === "a" ? ` onsubmit="return confirm('Wirklich ${escape(label).replace(/'/g, "")} anklagen? Eine falsche Anklage beendet den Fall nicht, wird aber im Journal vermerkt.')"` : "";
   return `<form method="post" action="/fall/${slug}/act"${confirm}><input type="hidden" name="group" value="${group}"><input type="hidden" name="n" value="${index + 1}"><input type="hidden" name="at" value="${game.state.events.length}"><button type="submit"${cls === "" ? "" : ` class="${cls}"`}>${escape(label)}</button></form>`;
 }
 
-function actionList(game: Game, slug: string, group: "u" | "a", actions: Action[], empty: string): string {
+function actionList(game: Game, slug: string, group: "u" | "v" | "a", actions: Action[], empty: string): string {
   if (actions.length === 0) return `<p class="muted">${escape(empty)}</p>`;
   return `<div class="actions">${actions.map((a, i) => actionForm(game, slug, group, i, a.label)).join("")}</div>`;
 }
@@ -91,8 +89,7 @@ function journal(game: Game): string {
   return `<ol class="journal" reversed>${[...records]
     .reverse()
     .map((r) => {
-      const text =
-        r.source.kind === "evidence" ? evidenceText(game, r.observation as EvidenceObservation) : answerText(game, r.observation as InterrogationObservation);
+      const text = recordText(game, r);
       const fresh = isNew(game, r.source.eventIndex);
       return `<li value="${r.source.eventIndex + 1}" class="${r.source.kind}${fresh ? " new" : ""}">${fresh ? `<span class="tag">neu</span>` : ""}${escape(text)}</li>`;
     })
@@ -156,6 +153,7 @@ ${feedback === null ? "" : `<section class="notice ${feedback.tone}"><h3>${escap
 ${solved ? closing(game, slug) : ""}
 <section><h2>Untersuchen</h2>${solved ? closed : actionList(game, slug, "u", investigations(game), "Gerade nichts zu untersuchen.")}</section>
 <section><h2>Verhören</h2>${solved ? closed : questionList(game, slug)}</section>
+${solved || confrontations(game).length === 0 ? "" : `<section><h2>Vorhalten</h2>${actionList(game, slug, "v", confrontations(game), "")}</section>`}
 <section><h2>Journal</h2>${journal(game)}</section>
 <section><h2>Anklage</h2><p>${escape(publicContent.challengeQuestion)}</p>${solved ? closed : actionList(game, slug, "a", accusations(game), "Keine Anklage möglich.")}</section>
 </div>
