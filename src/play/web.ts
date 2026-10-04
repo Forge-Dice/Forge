@@ -140,7 +140,12 @@ export type ExtraCase = { readonly pkg: ResolvedCasePackage; readonly clockOrigi
 
 export function createWebHandler(
   packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {},
-  options: { readonly editorLink?: boolean; readonly extraCase?: (slug: string) => ExtraCase | null } = {},
+  options: {
+    readonly editorLink?: boolean;
+    readonly extraCase?: (slug: string) => ExtraCase | null;
+    /** Progress of a slow step (the difficulty search), for the browser build's indicator. */
+    readonly progress?: (text: string) => void;
+  } = {},
 ): WebHandler {
   const slots = new Map<PlayCaseName, Slot>();
   const slot = (name: PlayCaseName): Slot => {
@@ -182,7 +187,8 @@ export function createWebHandler(
     const wishedLevel = m[2] === undefined ? null : (Number(m[2]) as Difficulty);
     let g = generated.get(key);
     if (g === undefined) {
-      const wished = wishedLevel === null ? null : generateCaseOfDifficulty(seed, wishedLevel);
+      const wished =
+        wishedLevel === null ? null : generateCaseOfDifficulty(seed, wishedLevel, (k, max) => options.progress?.(`Der Spieltest prüft Kandidat ${k + 1} (höchstens ${max}) für Stufe ${wishedLevel} …`));
       const generatedCase = wished?.generated ?? generateCase(seed);
       const clockOrigin = generatedClockOrigin(generatedCase);
       const game = newGame(generatedPackage(generatedCase), clockOrigin);
