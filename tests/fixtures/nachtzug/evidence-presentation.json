@@ -112,7 +112,7 @@
     },
     {
       "evidenceId": "evidence:bildschirmfoto",
-      "text": "Felix zeigt dir sein Handy. Ein Bildschirmfoto seines Videoanrufs, 01:12 Uhr: Er liegt auf seiner Liege im Liegewagen, hinter ihm der Vorhang mit dem Wappen der Bahn.",
+      "text": "Felix hält dir sein Handy hin, sichtlich nervös. Ein Bildschirmfoto seines Videoanrufs, 01:12 Uhr: Er liegt auf seiner Liege im Liegewagen, hinter ihm der Vorhang mit dem Wappen der Bahn.",
       "mentions": [
         {
           "kind": "person",

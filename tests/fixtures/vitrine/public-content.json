@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "title": "Die leere Vitrine",
-  "brief": "Es ist 18:08 Uhr. Die Goldmedaille „Morgenstern“ fehlt. Der authentifizierte Sensor setzt die eigenhändige Entnahme auf 18:04:00 in der Galerie. Prüfe die vier verbliebenen Personen. Unabhängige Nachweise helfen dir, den Fall zu lösen.\n\nDein Auftrag: Wähle genau eine der vier Personen als eigenhändigen Entnehmer. Die Nachweise helfen dir beim Deduzieren. Eine vollständige richtige Antwort löst den Fall auch ohne gesammelte oder zitierte Belege. not_solved bedeutet, dass die eingereichte Antwort den Fallauftrag noch nicht erfüllt; es nennt keine falschen Einzelaussagen.\n\nOrte: Galerie – die leere Vitrine und die Besuchsaufzeichnungen. Innenhof – der Bereich des Fototermins. Archiv – Aufsicht, Arbeitsaufzeichnungen und Schlüsselverwaltung. Werkstatt – Restaurierung und Transportmaterial. Foyer – Schließung und Anwesenheitsliste.\n\nDeine Aktionen: Orte durchsuchen, verfügbare strukturierte Fragen an Personen stellen, freigegebene Gerätenachweise auslesen und eine vollständige Antwort abgeben. Neue bekannte Entitäten können weitere Fragen oder Nachweise verfügbar machen. Fragen und Untersuchungen sind wiederholbar; sie verbrauchen in diesem ersten Fall keine Zeit und keine Punkte.\n\nAussagen von Personen gehören ins Berichtsjournal. Unabhängige Beobachtungen bleiben getrennt. Eine Gesprächsverweigerung und ein bloßer früherer Besuch sind keine Schuldbeweise.",
-  "challengeQuestion": "Wer entnahm die Medaille eigenhändig?",
+  "brief": "Museum am Domplatz, 18:08 Uhr. Die Besucher sind fort, die Türen verschlossen, und die Vitrine in der Galerie ist leer. Die Goldmedaille „Morgenstern“, Leihgabe für die große Ausstellung, ist verschwunden. Der Sensor der Vitrine hat die Entnahme auf die Sekunde festgehalten: 18:04:00 Uhr. Wer die Medaille herausnahm, zeigt er nicht.\n\nIm Haus sind noch vier Menschen: der Historiker Max Brandt, die Restauratorin Lina Kern, die Fotografin Nora Weiss und Oskar Falk, der Aufseher mit dem Schlüsselbund. Einer von ihnen hat die Medaille mit eigenen Händen genommen.\n\nDurchsuche Galerie, Innenhof, Archiv, Werkstatt und Foyer, untersuche, was du findest, und befrage die vier. Jeder Fund kann neue Fragen und neue Spuren öffnen. Du hast alle Zeit der Welt: Fragen und Untersuchungen kosten nichts.\n\nHalte auseinander, was Menschen dir erzählen und was Aufnahmen und Protokolle beweisen. Wer schweigt, ist deshalb noch nicht schuldig, und wer früher am Abend in der Galerie war, war es nicht unbedingt um 18:04.",
+  "challengeQuestion": "Wer hat die Medaille um 18:04 eigenhändig aus der Vitrine genommen?",
   "labels": [
     {
       "entity": {
@@ -226,7 +226,7 @@
         "id": "person:max"
       },
       "label": "Max Brandt",
-      "role": "Historiker und Vertreter der ehemaligen Eigentümerfamilie"
+      "role": "Historiker, Erbe der früheren Eigentümer"
     },
     {
       "entity": {
@@ -242,7 +242,7 @@
         "id": "person:oskar"
       },
       "label": "Oskar Falk",
-      "role": "Aufsicht und Schlüsselverwalter"
+      "role": "Aufseher und Schlüsselverwalter"
     }
   ],
   "questionTexts": [
@@ -269,7 +269,7 @@
     {
       "npc": "person:lina",
       "questionId": "question:q20",
-      "text": "Möchten Sie zur Entnahme Stellung nehmen?"
+      "text": "Wollen Sie mir etwas zur Medaille sagen?"
     },
     {
       "npc": "person:max",
@@ -294,7 +294,7 @@
     {
       "npc": "person:max",
       "questionId": "question:q05",
-      "text": "Wo ist der vollständige Fotonachweis?"
+      "text": "Wurde der Fototermin im Hof vollständig gefilmt?"
     },
     {
       "npc": "person:nora",
@@ -309,7 +309,7 @@
     {
       "npc": "person:nora",
       "questionId": "question:q08",
-      "text": "Kann ich den vollständigen Film dieses Hoffototermins sehen?"
+      "text": "Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?"
     },
     {
       "npc": "person:nora",
@@ -339,7 +339,7 @@
     {
       "npc": "person:oskar",
       "questionId": "question:q14",
-      "text": "Wo ist der unabhängige Archivnachweis?"
+      "text": "Zeichnet im Archiv ein Gerät auf, wer dort arbeitet?"
     },
     {
       "npc": "person:oskar",
@@ -350,16 +350,16 @@
   "publicRules": [
     {
       "id": "rule:certified-sources",
-      "text": "Die als Beobachtung freigegebenen Bildnachweise sind in diesem Fall unverfälscht und mit dem Entnahmesensor synchronisiert. Zeugenaussagen können irren. Ein Besuch zu einer anderen Uhrzeit und eine Gesprächsverweigerung beweisen keine eigenhändige Entnahme."
+      "text": "Kamerabilder und Protokolle mit Uhrzeit sind echt und mit dem Sensor der Vitrine synchron. Zeugen können sich irren. Ein Besuch zu einer anderen Uhrzeit und ein Schweigen beweisen keine Tat."
     },
     {
       "id": "rule:closed-roster",
-      "text": "Nur Max, Lina, Nora und Oskar kommen als direkte Entnehmer in Betracht. Es gab genau einen direkten Entnehmer. Sind drei ausgeschlossen, bleibt die vierte Person."
+      "text": "Nur Max, Lina, Nora und Oskar kommen in Frage, und genau eine Person hat die Medaille genommen. Sind drei ausgeschlossen, bleibt die vierte."
     },
     {
       "id": "rule:manual-presence",
-      "text": "Die Medaille wurde um 18:04:00 in der Galerie von einer einzelnen Person eigenhändig entnommen. Wer nachweislich zu genau diesem Zeitpunkt an einem anderen Ort war, scheidet als direkter Entnehmer aus."
+      "text": "Die Medaille wurde um 18:04:00 in der Galerie von einer einzigen Person mit eigenen Händen genommen. Wer zu genau dieser Sekunde nachweislich an einem anderen Ort war, scheidet aus."
     }
   ],
-  "epilogue": "Lina Kern gibt auf. Um 18:04 nahm sie die Goldmedaille „Morgenstern“ selbst aus der Vitrine und legte sie eine Minute später in der Werkstatt in die Transportkassette. Sie wollte eine unerlaubte Reparatur verbergen, bevor der Leihgeber die Medaille am nächsten Morgen prüft.\n\nMax Brandt war zwar um 18:02 in der Galerie, doch zur Tatzeit stand er mit Nora Weiss im Innenhof, wie der vollständige Hoffilm zeigt. Oskar Falk irrte sich ehrlich, als er Max um 18:04 in der Galerie sah: Die Archivkamera zeigt ihn selbst zu dieser Minute im Archiv. Die Medaille liegt in der Transportkassette in der Werkstatt."
+  "epilogue": "Lina Kern legt den Schlüssel auf den Tisch. „Ich wollte sie nur retten“, sagt sie leise. Bei einer Reinigung im Frühjahr hatte sie die Medaille beschädigt und den Kratzer eigenmächtig ausgebessert. Am nächsten Morgen sollte der Leihgeber sie prüfen. Um 18:03 ließ sie sich von Oskar den Schlüssel geben, um 18:04 nahm sie die Medaille aus der Vitrine, und um 18:05 legte sie sie in der Werkstatt in die Transportkassette.\n\nMax Brandt war um 18:02 in der Galerie, doch zur Tatzeit stand er mit Nora Weiss im Innenhof, wie der vollständige Film zeigt. Oskar Falk irrte sich ehrlich, als er Max um 18:04 in der Galerie gesehen haben wollte: Die Archivkamera zeigt Oskar selbst zu dieser Sekunde im Archiv. Die Medaille liegt unversehrt in der Transportkassette."
 }
