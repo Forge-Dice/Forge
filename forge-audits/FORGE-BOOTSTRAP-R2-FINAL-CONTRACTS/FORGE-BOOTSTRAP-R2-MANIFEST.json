@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "package": "FORGE-BOOTSTRAP-R2",
+  "packageRevision": "r2",
+  "repository": "Forge-Dice/Forge",
+  "createdAt": "2026-10-04",
+  "author": "Claude (Anthropic), contract authoring; no approval granted",
+  "mainBefore": "3d7545d843883418348004e68717399a64da7a7d",
+  "mainAtManifest": "3d7545d843883418348004e68717399a64da7a7d",
+  "contracts": [
+    {
+      "taskId": "FORGE-BOOTSTRAP-0001A",
+      "file": "FORGE-BOOTSTRAP-0001A-v2.contract.md",
+      "forgeContractFormat": 1,
+      "contractVersion": 2,
+      "baseCommit": "3d7545d843883418348004e68717399a64da7a7d",
+      "dependencies": [],
+      "rawSha256": "c84c507ca11087ca7bfe18ffb478a7136ad1f5ea701cbb7c225165ddde4c0362",
+      "bytes": 22760,
+      "forgeContractV1ContentHash": "d5d3843c1643ff8c66e1268ff6817fdeabd9bbd08daee9638a976961362720ea",
+      "parsedWith": "parseContractDocument + nodeSha256Utf8 from main 3d7545d (ok)",
+      "mutants": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5"
+      ],
+      "status": "READY FOR INDEPENDENT ARCHITECTURE REVIEW",
+      "execution": "NOT AUTHORIZED (requires independent architecture approval + Owner registration on main)"
+    },
+    {
+      "taskId": "FORGE-BOOTSTRAP-0001B",
+      "file": "FORGE-BOOTSTRAP-0001B-v2.contract.md",
+      "forgeContractFormat": 1,
+      "contractVersion": 2,
+      "baseCommit": "3d7545d843883418348004e68717399a64da7a7d",
+      "dependencies": [
+        {
+          "taskId": "FORGE-BOOTSTRAP-0001A",
+          "acceptedCommit": null
+        }
+      ],
+      "rawSha256": "2a9d736ebc9a4a4985be9009b1ad01736de6ecd911aacf3cd934f5ad358a2d08",
+      "bytes": 21932,
+      "forgeContractV1ContentHash": "7aaa8de965bca735290e867210e572d997f0d6cbdc162ee1c372d87209f20957",
+      "parsedWith": "parseContractDocument + nodeSha256Utf8 from main 3d7545d (ok)",
+      "mutants": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5"
+      ],
+      "status": "READY FOR INDEPENDENT ARCHITECTURE REVIEW",
+      "execution": "BLOCKED until real accepted A commit (revision v3)"
+    },
+    {
+      "taskId": "FORGE-BOOTSTRAP-0001C",
+      "file": "FORGE-BOOTSTRAP-0001C-v2.contract.md",
+      "forgeContractFormat": 1,
+      "contractVersion": 2,
+      "baseCommit": "3d7545d843883418348004e68717399a64da7a7d",
+      "dependencies": [
+        {
+          "taskId": "FORGE-BOOTSTRAP-0001B",
+          "acceptedCommit": null
+        }
+      ],
+      "rawSha256": "1a67681cb3385e4eeacde38d86331f6690d4f5e024cbb634350e58299015f07c",
+      "bytes": 25491,
+      "forgeContractV1ContentHash": "178fb4e30cf811426e821adac1fdd6c7b9fd5e3a544ce0e77ea7d4660081211d",
+      "parsedWith": "parseContractDocument + nodeSha256Utf8 from main 3d7545d (ok)",
+      "mutants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5"
+      ],
+      "status": "READY FOR INDEPENDENT ARCHITECTURE REVIEW",
+      "execution": "BLOCKED until real accepted B commit (revision v3)",
+      "activation": "BLOCKED by execution-isolation deployment gate (EI-20 live proof, current lab verdict NO-GO)"
+    }
+  ],
+  "report": {
+    "file": "FORGE-BOOTSTRAP-R2-AUTHORING-REPORT.md",
+    "rawSha256": "1c3bae3a190ccb35e6337521100cd9aa0f416ed7c607928222dbb8273465c6b6",
+    "bytes": 16043
+  },
+  "normativeBinding": {
+    "pkgR1Html": {
+      "file": "FORGE-MINIMUM-VERIFIER-IMPLEMENTATION-PACKAGE.html",
+      "sha256": "27bb408d01725e5a56306428470802c62ea7089bbeaa970f0a3594010e0eec89",
+      "covers": "sections 1-18"
+    },
+    "pkgR1SectionHash1to15": "0e6d89179623535ed431206b2352dfdb66d8edbfad3340d6f10b77ef63c4f0d4",
+    "eiAcceptanceContract": {
+      "file": "EI-ACCEPTANCE-CONTRACT.md",
+      "sha256": "7eaac082b0fb5a1737b331598d88616a512bf27409131fd275c86594f8a06273"
+    },
+    "hcoV2Corpus": {
+      "file": "corpus/high-confidence.json",
+      "sha256": "b0137cb49da4a0966159d519daa3a8de53f4794c46670cbda61e0d210a822534"
+    },
+    "ownerReconciliation": {
+      "sha256": "7dbcb852519a48a832f3041e9cee28a8755562c7c7a1d35495482485c45949c4",
+      "decisionsBound": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7"
+      ]
+    },
+    "precedence": [
+      "r2 contract",
+      "retained r1 same-task draft text",
+      "PKG r1",
+      "Architecture Freeze as amended by D1-D7"
+    ]
+  },
+  "supersedes": [
+    {
+      "taskId": "FORGE-BOOTSTRAP-0001A",
+      "contractVersion": 1,
+      "rawSha256": "db206a9834a9ff460fade6e8ee88d2dd099873e84bb1b2a779879d94c88d0084"
+    },
+    {
+      "taskId": "FORGE-BOOTSTRAP-0001B",
+      "contractVersion": 1,
+      "rawSha256": "b6aa76ffdd5035ffdf5d7ad402659bf83bf861ef39000d6d582429785a3852f2"
+    },
+    {
+      "taskId": "FORGE-BOOTSTRAP-0001C",
+      "contractVersion": 1,
+      "rawSha256": "cdddfc96bddc159eb572d84d47babf24af6a1991fe596fabc65c7985c16bcbd1"
+    }
+  ],
+  "repairBasis": {
+    "workCandidates": {
+      "branch": "forge/owner/audits/FORGE-VERIFIER-ABC-REPAIR",
+      "commit": "5fdc41696c003765c217e7ad9b365bd9ee843200",
+      "candidateParseOnMain": "FRONTMATTER_NOT_CANONICAL (all three)"
+    },
+    "acceptanceMutantDeltaSha256": "bb9ef39d315ff7f70d7f854287072c9e85789a285491f83102c85ee2ff5e8c1b"
+  },
+  "sources": [
+    {
+      "name": "Final Owner Reconciliation",
+      "branch": "forge/owner/audits/FORGE-MYSTERY-FINAL-OWNER-RECONCILIATION",
+      "commit": "52dab20bb7825a9ced0da2c572cc9be9033754bd"
+    },
+    {
+      "name": "FORGE-VERIFIER-ABC-REPAIR (Work)",
+      "branch": "forge/owner/audits/FORGE-VERIFIER-ABC-REPAIR",
+      "commit": "5fdc41696c003765c217e7ad9b365bd9ee843200"
+    },
+    {
+      "name": "A/B/C Independent Certification",
+      "branch": "forge/owner/audits/VERIFIER-ABC-INDEPENDENT-CERTIFICATION",
+      "commit": "b854b11379b5cb43c3d6bc77fedacde7e96511fd"
+    },
+    {
+      "name": "A/B/C Implementation Package + r1 drafts",
+      "branch": "forge/owner/audits/FORGE-MINIMUM-VERIFIER-IMPLEMENTATION",
+      "commit": "bb525bfd230128d3d98f3db744ba23217196c53c"
+    },
+    {
+      "name": "Bootstrap Experimental Report",
+      "branch": "forge/owner/audits/FORGE-V0.1-BOOTSTRAP",
+      "commit": "da9b3d51398819db3d03af59582e1b1da3750728"
+    },
+    {
+      "name": "High-Confidence Oracle V2",
+      "branch": "forge/owner/audits/FORGE-HIGH-CONFIDENCE-ORACLE-V2",
+      "commit": "ea46c266717ca59f2767c069b5d88a57d2046d69",
+      "note": "report truncated by binary bytes from section 4"
+    },
+    {
+      "name": "Execution Isolation",
+      "branch": "forge/owner/audits/FORGE-EXECUTION-ISOLATION",
+      "commit": "372b196e0c3c7da73b230de03c43d7ba9252c1f9"
+    },
+    {
+      "name": "Ruleset Live Drill",
+      "branch": "forge/owner/audits/FORGE-RULESET-LIVE-DRILL",
+      "commit": "005bcd092008fc4cf5453e208f455814aa7ebb25"
+    },
+    {
+      "name": "First Drill Pre-Mortem",
+      "branch": "forge/owner/audits/FORGE-FIRST-DRILL-PRE-MORTEM",
+      "commit": "9e5789e054c88eb8c0c43d80e9a361a4bc3d3051"
+    },
+    {
+      "name": "Architecture Freeze",
+      "branch": "forge/owner/audits/FORGE-V0.1-ARCHITECTURE-FREEZE",
+      "commit": "a5302309ce321fcfccdd26aee1cf566f7a137096"
+    }
+  ],
+  "persistence": {
+    "status": "BLOCKED",
+    "reason": "authenticated GitHub identity is Wuerfelduell (id 315180734), not a dedicated Claude contributor identity",
+    "targetBranch": "forge/owner/audits/FORGE-BOOTSTRAP-R2-FINAL-CONTRACTS",
+    "targetPath": "forge-audits/FORGE-BOOTSTRAP-R2-FINAL-CONTRACTS/",
+    "commit": null,
+    "remoteVerified": false
+  },
+  "noActions": [
+    "push",
+    "branch creation",
+    "PR",
+    "merge",
+    "force-push",
+    "rebase",
+    "settings change",
+    "main change",
+    "approval"
+  ]
+}
