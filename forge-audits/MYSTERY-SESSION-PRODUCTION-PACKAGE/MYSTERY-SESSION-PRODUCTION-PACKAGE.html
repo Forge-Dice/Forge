@@ -1,0 +1,1748 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MYSTERY SESSION PRODUCTION PACKAGE</title><style>body{font:16px/1.55 system-ui,sans-serif;color:#182231;max-width:1140px;margin:40px auto;padding:0 24px;background:#fafbfc}h1{font-size:36px;color:#103951}h2{margin-top:52px;padding-top:20px;border-top:2px solid #b5cad3;color:#103951}h3{margin-top:28px}table{width:100%;border-collapse:collapse;font-size:14px;margin:24px 0}th,td{padding:9px;border:1px solid #cbd6dc;text-align:left;vertical-align:top;overflow-wrap:anywhere}th{background:#deebf0}code{font-family:ui-monospace,monospace;font-size:.88em}pre{background:#eaf0f3;padding:18px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}a{color:#006e9f}@media print{body{max-width:none;margin:0;font-size:11px}h2{break-before:page}tr{break-inside:avoid}pre{font-size:10px}}</style><body><h1>MYSTERY SESSION PRODUCTION PACKAGE</h1>
+<p>Stand 2026-10-04. Read-only gegen Forge-Dice/Forge. Verifiziertes Remote-main: 3d7545d843883418348004e68717399a64da7a7d. Die lokale Referenzkopie hat exakt diesen HEAD und keinen Diff. Alle neuen Dateien liegen außerhalb dieser Kopie. Dieser Bericht ist eine abgeschlossene Spezifikation, keine Implementierung und keine Startfreigabe.</p>
+<p>Statuswörter: IMPLEMENTED = am genannten main gelesen; DESIGN INPUT = verfügbarer Draft, nicht ausführbarer main-Code; PROPOSED = Entscheidung dieses Labs; EXPERIMENTALLY VERIFIED = tatsächlich ausgeführte, ausdrücklich begrenzte Scratch-Prüfung; UNKNOWN = Quelle/API/Abnahme nicht verifiziert. Die Bezeichnung „Production Package“ meint die Contract-Lieferung, nicht ein fertiges Produktionssystem.</p>
+<h2>1. Reconciliation</h2>
+<p>IMPLEMENTED: CaseTruth, Semantic Validation, CaseSolution, NPC Knowledge und Projection. src/domain/case-truth.ts:132–153 enthält drei Proposition-Claims; case-solution.ts:78–95 sechs Conclusion-Claims. Die dreifache Conclusion-Auswertung bleibt private in case-solution.ts:126–152. parseCaseTruth, parseCaseSolution, parseNpcKnowledge und projectNpcKnowledge sind vorhanden; Session, PlayerKnowledge, Save, Access, Presentation, Interrogation, Challenge und Solvability sind es nicht. Die neue Fixture-Prüfung verwendet die unveränderten main-Dateien, nicht historische Branches.</p>
+<table>
+<thead>
+<tr>
+<th>Quelle</th>
+<th>Verifizierte Oberfläche / Entscheidung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MYST-0002.contract.FINAL-CANDIDATE.md</td>
+<td>DESIGN INPUT. parseAccusation(input,truth), evaluateAccusation(truth,solution,accusation), evaluateConclusionClaim(truth,solution,claim), exportiertes claimKey. Neutraler Consistency-Core; undetermined bleibt neutral. Ersetzt für dieses Lab den älteren MYST-0002-Draft als Quelle.</td>
+</tr>
+<tr>
+<td>MYST-CHALLENGE-0001.contract.DRAFT.md §§3–5</td>
+<td>DESIGN INPUT. parseAccusationChallenge(input,truth,solution); evaluateChallengeAccusation(truth,solution,challenge,accusation). Core solved UND jeder Claim erlaubt UND bestimmter Status exakt gleich eingereichtem Boolean. Kein Beleg- oder Knowledge-Check. Der dort gepinnte alte MYST-0002-Inhaltshash ist veraltet: vor Start auf FINAL CANDIDATE/akzeptierten Code reconciliieren. Signaturen und ausgewertete Semantik sind kompatibel.</td>
+</tr>
+<tr>
+<td>MYST-0003-EVIDENCE-ACCESS-V1.contract.DRAFT.md §§4–6</td>
+<td>DESIGN INPUT. parseEvidenceAccessMap(input,truth), resolveInvestigation(map,known,action), hashEvidenceAccessMap. Canonical-ID-Raum; genau drei Action-Arten. Resultat found ist intern. Evidence.source ist kein Zugriffspfad.</td>
+</tr>
+<tr>
+<td>MYST-0004-EVIDENCE-PRESENTATION-V1.contract.DRAFT.md, 2026-10-04</td>
+<td>DESIGN INPUT. parseEvidencePresentation(input,truth), releaseEvidence(presentation,evidenceId,translator), hashEvidencePresentation. Output EvidenceObservation = schemaVersion/evidence/text/mentions/reports. reports enthalten drei Proposition-Claim-Arten, stance und observation/testimony als Quelle. Auch source=observation ist KEIN kanonisches Truth-Zertifikat.</td>
+</tr>
+<tr>
+<td>MYST-0005A/B</td>
+<td>DESIGN INPUT. parseQuestionCatalogue, parseInterrogationProfile, hashQuestionCatalogue, hashInterrogationProfile; interrogate({truth,solution,snapshot,catalogue,profile,refs,known,questionId}). Typ heißt InterrogationProfile, Brand NpcInterrogationProfile. Snapshot hat keinen existierenden Hash. Bridge aus 5B fehlt heute.</td>
+</tr>
+<tr>
+<td>MYST-SOLVABILITY-0001</td>
+<td>DESIGN INPUT. parseCaseProofProfile(input,truth,solution); checkCaseSolvability(truth,solution,profile,replayWitness). Profile.bindings.releaseHash und geordnete witnessStepIds. Release-Port ist explizit noch nicht implementiert.</td>
+</tr>
+<tr>
+<td>Die leere Vitrine, HEADLESS-SPEC und Case-Pack</td>
+<td>DESIGN INPUT / CASE-SPECIFIC PROPOSAL. 4 NPC-Snapshots, 20 Fragen, 8 Evidence. Alte Host-Aktionen search/read_record/ask, provisorische PlayerRef-Erzeugung, requireReleasedProof und Evidence.observed sind keine künftigen Session-APIs.</td>
+</tr>
+<tr>
+<td>Vollständiger PlayerRef-Contract / alter VS-5-Preflight</td>
+<td>UNKNOWN. Exakte Titelsuche und inhaltliche Suche lieferten Verweise, aber nicht diese vollständigen Dokumente. Das ist keine Behauptung, dass sie nirgendwo existieren. Sekundär verifiziert sind die Namen buildPlayerRefIndex/playerRefFor/resolvePlayerRef und der Translator-Port aus 4/5B, nicht deren vollständige Konstruktorsignaturen oder Hash-Präimage.</td>
+</tr>
+</tbody></table>
+<p>PROPOSED: Kein Import, Copy/Paste oder Weiterbetrieb der alten Scratch-Engine. Der neue Versuch nutzt eine explizite Fixture-Ref-Tabelle, aktuelle Domainparser als Oracle und frisch spezifizierte Draft-Adapter. Diese Tabelle implementiert keinen PlayerRef-Algorithmus. Historische Dateien werden nicht gelöscht oder umgeschrieben. „Mocks entfernen“ bedeutet: aus Contract und Produktionsabhängigkeiten entfernen; in Tests bleiben klar benannte Doubles zulässig und sind kein Integrationsnachweis.</p>
+<p>Reconciliation-Entscheidungen: Session-Event heißt interrogate, nicht das alte ask aus 5B §6. Es transportiert weiterhin npc und questionId unverändert. Keine automatisch veröffentlichten VisibleRefs. Keine Wahrheitstabelle in Session. Keine Citation-/Proof-Evaluation in Challenge oder Reducer. Keine dynamischen NPC-Snapshots im V1-Verlauf. Keine aus Evidence.links abgeleiteten Beobachtungen. Keine sprechenden kanonischen IDs im Eventlog.</p>
+<h2>2. Package Identity</h2>
+<p>PROPOSED normativ: Eine Session ist exakt an EIN unveränderliches Package, EINE Challenge, EINE Presentation-Sprache und EINEN Ruleset gebunden. Der Host wählt das Package. Ein Save wählt keinen beliebigen Pfad, URL, Modulnamen oder ausführbaren Resolver.</p>
+<pre><code class="language-ts">type CasePackageIdentity = Readonly&lt;{
+  schemaVersion: 1;
+  packageHash: string; // 64 lowercase hex
+  rulesetVersion: &quot;mystery-session-v1&quot;;
+}&gt;;
+type EntityRef = {kind:&quot;person&quot;|&quot;location&quot;|&quot;item&quot;|&quot;event&quot;|&quot;evidence&quot;; id:string};
+type InitialSetup = {
+  schemaVersion:1;
+  known: readonly EntityRef[]; // unique set; existing entities
+};
+// NEW trusted boundary contract, not an asserted MYST-0001 export:
+type PackageRefSource = {
+  caseId:string; truthHash:string;
+  config:{profile:string; saltHex:string}; // exact profile name; 32 lowercase hex
+  refFor(kind:EntityRef[&quot;kind&quot;],id:string):string|null;
+  resolve(ref:string):EntityRef|null;
+};
+</code></pre>
+<p>PackageRefSource ist ein synchroner vertrauenswürdiger Adapter um den tatsächlichen PlayerRefIndex. Vor Produktionsstart muss seine Konstruktion gegen den vollständigen, akzeptierten PlayerRef-Contract festgelegt werden. Dieses Lab definiert absichtlich keinen alternativen Hash-Algorithmus. Ein gültiges syntaktisches Token beweist keine Autorisierung.</p>
+<pre><code class="language-ts">type CasePackageInput = {
+  schemaVersion:1; rulesetVersion:&quot;mystery-session-v1&quot;;
+  truth:unknown; solution:unknown; access:unknown; presentation:unknown;
+  catalogue:unknown;
+  npcs:readonly {snapshot:unknown; profile:unknown}[];
+  initial:InitialSetup; challenge:unknown;
+  proof:null|{profile:unknown; releaseManifest:string};
+};
+// Trusted-only; output of resolveCasePackage, deeply readonly.
+type ResolvedCasePackage = {
+  identity:CasePackageIdentity;
+  truth:CaseTruth; solution:CaseSolution;
+  access:EvidenceAccessMap; presentation:EvidencePresentation;
+  catalogue:QuestionCatalogue;
+  npcs:readonly {snapshot:NpcKnowledgeSnapshot; profile:InterrogationProfile}[];
+  initial:InitialSetup; challenge:AccusationChallenge;
+  proof:null|{profile:CaseProofProfile; releaseManifest:string; releaseHash:string};
+  refs: {refFor(kind:EntityRef[&quot;kind&quot;],id:string):string|null;
+         resolve(ref:string):EntityRef|null};
+};
+type PackageFinding = {code:&quot;SHAPE&quot;|&quot;BINDING&quot;|&quot;REFERENCE&quot;|&quot;REF_MAPPING&quot;|
+ &quot;LIMIT&quot;|&quot;PROOF_BINDING&quot;; path:readonly(string|number)[]};
+resolveCasePackage(input:unknown, source:PackageRefSource):
+ | {ok:true; package:ResolvedCasePackage}
+ | {ok:false; findings:readonly PackageFinding[]};
+</code></pre>
+<p>Resolver-Schritte: bounded JSON-like Input prüfen; Truth/Solution mit echten Parsern parsen; Semantic Validation muss für Veröffentlichung eine leere findings-Liste haben (das heutige SemanticFinding hat kein severity-Feld) (dieser Package-Resolver ist keine neue Semantik-Engine); Draft-Parser für Access, Presentation, Catalogue, NPC-Profile/Snapshots und Challenge verwenden. Alle Bindungen tatsächlich neu berechnen. Je NPC genau ein Profil + Snapshot mit derselben npcId; Duplikate ablehnen, leere NPC-Menge für technische Cases erlaubt. NPCs müssen existieren, aber nicht alle Personen müssen NPCs sein. Initial known muss vollständig referenzvalidiert sein; leere Menge erlaubt. Jeder initial bekannte Evidence-Ref bedeutet hier nur Awareness, KEINE Discovery und KEINE Inhaltsfreigabe.</p>
+<p>Ref-Tabelle einmal für alle fünf Entity-Arten bauen. Jedes Ergebnis muss dem in 4/5B vorgeschriebenen Muster entsprechen, global injektiv sein und durch source.resolve exakt auf kind/id zurückführen. Unvollständige Tabelle, Kollision und falsche Rückauflösung sind Packagefehler. Kopierte Tabellen werden eingefroren; spätere source-Mutation oder Portwechsel wirkt nicht auf ein bereits aufgelöstes Package. Die Produktionsintegration darf einen anderen Ref-Namespace nur als neues Package laden.</p>
+<p>Kein CasePackageIdentity.caseId nötig: der vollständige Identitätshash bindet es transitiv. Dadurch braucht der Save keine potentiell sprechende Case-ID oder private Solution-/Component-Hashes. Der Host kann außerhalb des Save einen menschenlesbaren Titel anzeigen. Packageidentity ist kein Geheimnis und keine Signatur.</p>
+<h3>Komponenten und kanonische Identität</h3>
+<p>H(tag,x) = SHA-256 UTF-8(tag + LF + C(x)). C ist ein NEUES strukturelles JSON-Profil: Objektschlüssel rekursiv nach UTF-16-Codeeinheiten sortieren; Arrays in ihrer vorhandenen Reihenfolge erhalten; JSON.stringify-Primitivdarstellung, kein Whitespace, keine Normalisierung, nur wohlgeformte Unicode-Strings und endliche sichere Integer für die hier neu eingeführten Zahlen. Ein globales „alle Arrays sortieren“ ist für Save/Witness falsch. Mengen werden ausschließlich an den folgenden typisierten Grenzen vorher sortiert und auf Duplikate geprüft.</p>
+<table>
+<thead>
+<tr>
+<th>Komponente</th>
+<th>Autoritative Bytes / Normalisierung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>truthHash / solutionHash</td>
+<td>existierende hashCaseTruth / hashCaseSolution unverändert; diese behandeln ihre Domainarrays als Mengen</td>
+</tr>
+<tr>
+<td>accessHash / presentationHash</td>
+<td>jeweiliger Draft-Hash; Presentation.text vollständig enthalten</td>
+</tr>
+<tr>
+<td>catalogueHash / profileHash</td>
+<td>hashQuestionCatalogue / hashInterrogationProfile; keine eigene Kopie dieser Kanonisierung</td>
+</tr>
+<tr>
+<td>snapshotHash</td>
+<td>NEW H(&quot;forge-npc-snapshot-v1&quot;, snapshot mit awareness/attitudes nach C sortiert); kompletter geparster Snapshot einschließlich revision, asOf, acquiredAt, provenance und Bindungen. Keine sonstigen Arrayfelder.</td>
+</tr>
+<tr>
+<td>npcBundleHash</td>
+<td>NEW H(&quot;forge-session-npcs-v1&quot;, nach npcId sortierte Einträge {npcId,snapshotHash,profileHash}); npcId unique</td>
+</tr>
+<tr>
+<td>initialHash</td>
+<td>NEW H(&quot;forge-session-initial-v1&quot;, initial mit known nach kind/id sortiert)</td>
+</tr>
+<tr>
+<td>challengeHash</td>
+<td>NEW H(&quot;forge-session-challenge-v1&quot;, Challenge mit allowedClaims nach claimKey sortiert); Challenge-Draft hat noch keinen Hash</td>
+</tr>
+<tr>
+<td>refsHash</td>
+<td>NEW H(&quot;forge-session-refs-v1&quot;, {config,caseId,truthHash,mapping}); mapping ist die vollständige nach kind/id sortierte {kind,id,ref}-Tabelle. Verwendet die tatsächlichen PlayerRef-Ausgaben, keinen angenommenen Algorithmus.</td>
+</tr>
+<tr>
+<td>releaseContextHash</td>
+<td>NEW H(&quot;forge-session-release-context-v1&quot;, {rulesetVersion,truthHash,solutionHash,accessHash,presentationHash,catalogueHash,npcBundleHash,initialHash,refsHash,challengeHash})</td>
+</tr>
+<tr>
+<td>releaseHash, falls proof vorhanden</td>
+<td>NEW SHA-256 UTF-8(&quot;forge-session-release-v1\n&quot; + releaseManifest). releaseManifest ist kanonisches JSON C mit festem Envelope {schemaVersion:1,releaseContextHash,adapterVersion,certificateData}; kein packageHash/proofHash, kein ausführbarer Code. certificateData ist bounded authoring JSON, KEINE ausführbare Runtime-Policy und keine Solvability-Autorität.</td>
+</tr>
+<tr>
+<td>proofHash</td>
+<td>NEW H(&quot;forge-session-proof-v1&quot;, vollständiges geparstes ProofProfile), mit ausschließlich answerScope/observations/nodes/edges/allOf/rules als typisierten Mengen sortiert; witnessStepIds strikt geordnet. Alternativ konservativ C ohne Mengennormalisierung zulässig? NEIN: Vertrag fordert die hier genannten Pfade exakt.</td>
+</tr>
+<tr>
+<td>packageHash</td>
+<td>NEW H(&quot;forge-case-package-v1&quot;, {schemaVersion:1,rulesetVersion,releaseContextHash,releaseHash:null</td>
+</tr>
+</tbody></table>
+<p>Hash-DAG: Komponenten → releaseContextHash → releaseManifest/releaseHash → ProofProfile.bindings.releaseHash → proofHash → packageHash. Kein Packagehash im eigenen Input, kein Identity-Hash im PlayerRef-Adapter-Input dieses Contracts. Falls der tatsächliche PlayerRef-Draft eine vollständige Packagehash-Abhängigkeit verlangt, ist das ein expliziter Reconciliation-Blocker: vor Start muss ein vorgelagerter, eigenständiger Ref-Namespace vereinbart werden. Nicht durch einen Fixed-Point-Hash oder leeren Dummyhash umgehen.</p>
+<p>ResolvedCasePackage ist kein Transport-DTO. Funktionen und private Dokumente gehen nie an UI oder Save. Der Factory-Output erhält eine toJSON-Methode, die wirft; strukturierte Clones scheitern an Funktionen. Das ist Unfallschutz, keine Sandbox gegen vertrauenswidrigen Hostcode. Public output wird aus einem eigenen Allowlist-DTO konstruiert.</p>
+<h3>Proof-Bindung ohne vorgetäuschte Zertifizierung</h3>
+<p>Package A parst das ProofProfile mit dessen echtem Parser, prüft T/S-Bindungen, berechnet releaseHash und verlangt dessen exakte Übereinstimmung mit profile.bindings.releaseHash. Im Manifest muss releaseContextHash stimmen. Der Resolver führt certificateData NICHT aus und behauptet niemals „solvable“, nur „gebunden“. proof:null ist für technische Sessiontests zulässig; ein veröffentlichter Vitrine-Slice braucht einen separaten positiven echten Witness-Lauf.</p>
+<p>Der Solvability-Port gehört in die Fall-Abnahme: witnessStepIds → ausdrücklich authored endliche Eventtabelle → replaySession desselben Packages → Release-Trace. Evidence-Report und NPC-Observation werden anhand exakter freigegebener Payloads auf Profile-Observationen gemappt. OBSERVED erfordert eine separate reviewte Faktivitätslizenz; source=observation allein reicht nicht. REPORTED_BY_NPC wird aus affirms/denies und dem passenden Claim erzeugt, nicht aus interner knowledge/belief; uncertainty darf nicht als Boolean-Bericht erfunden werden. PUBLIC_RULE braucht ein wirklich veröffentlichtes Regelpayload. Profile.observations dürfen niemals einfach als Replayausgabe zurückgegeben werden.</p>
+<p>UNKNOWN/BLOCKER: Der aktuelle Draft liefert keinen vollständigen standardisierten Zertifikats-/Public-Rule-Präsentationsadapter. Dieses Lab erfindet ihn nicht als vorhandene API. Das Manifest bindet die später reviewten Adapterdaten und deren Version; der echte Vitrine-Witness ist eine Publikationsabnahme, kein vierter Session-Produktionstask. Ein Stub-PASS reicht nicht. Änderung von certificateData/Adapterversion invalidiert Package und Save.</p>
+<h3>Ergänzung: genaue A-Helfer und größenbedingte B/C-Abhängigkeit</h3>
+<p>PROPOSED normativ. player-knowledge.ts exportiert Typen KnownEntity, ObservationRecord, PlayerKnowledge sowie initialPlayerKnowledge(pkg), recordEvidence(knowledge,observation,eventIndex), recordInterrogation(knowledge,observation,eventIndex). Initial überführt ausschließlich pkg.initial.known mit pkg.refs; recordEvidence nimmt die Evidence selbst und Mentions auf, entdeckt genau einmal; recordInterrogation nimmt ausschließlich Mentions auf und hängt jeden Empfang an. Alle drei geben eine neue deeply frozen Kopie zurück, keine Mutation. Sie sind trusted-only und werden erst nach vollständiger Port-/Ref-Validierung von B verwendet. Eine reine helper-Funktion darf keine Eigenautorität zum Evidence-Release erhalten.</p>
+<p>case-package.identity.ts exportiert serializeSessionJson(value) für das beschriebene C, hashSessionJson(profile,value) für H sowie die konkreten package-internen Componenthashfunktionen. Keine Nutzung des Truth-Serializers für Historien. Die JSON-Safety-Prüfung validateSessionJson(value,{maxDepth,maxNodes}) arbeitet iterativ und meldet Limit/Shape vor rekursiver Serialisierung; keine Caller-konfigurierbare Semantik, nur die hier festgelegten Konstanten. Sie wird in A/C wiederverwendet und gehört zum A-Zeilenbudget. Plain JSON bedeutet keine Funktionen, undefined, Symbole, BigInt, NaN/Infinity, unsichere Integer, Accessoren, Zyklen oder fremde Prototypen. Fremder ausführbarer JS-Code, der Proxies liefert, ist keine unterstützte untrusted Schnittstelle.</p>
+<p>B prüft die prospektive Savegröße ohne Import von C: C({schemaVersion:1,packageIdentity:pkg.identity,events:prospectiveEvents,checksum:&quot;0&quot;.repeat(64)}) in UTF-8. Alle echten Checksums sind genau 64 ASCIIzeichen; die Länge ist deshalb exakt. C verwendet denselben Serializer und dieselbe Envelopeform. Kein Dependencyzyklus. B kann den Check vor vollständiger Gameplayauswertung ausführen, sobald ein Event geparst ist; die Abnahme/Commitentscheidung bleibt nach allen Portprüfungen atomar.</p>
+<p>Strict private Packageinput-JSON darf proof.releaseManifest als String enthalten. Dessen nach JSON.parse geprüfter Envelope hat exakt schemaVersion/releaseContextHash/adapterVersion/certificateData; adapterVersion ASCII [a-z][a-z0-9._-]{0,63}, certificateData ausschließlich bounded JSON. A akzeptiert ihn als gebundenes authoring artifact und führt weder Witness noch Zertifikatsinterpretation aus. Nicht vorhandener standardisierter Adapter bleibt eine ausdrücklich spätere Fall-Abnahme, kein stillschweigender Solvability-PASS.</p>
+<h2>3. PlayerKnowledge</h2>
+<p>PROPOSED: PlayerKnowledge V1 ist ein quellengebundenes Informationsjournal, kein Set objektiv wahrer Propositionen und keine neue menschliche Logik-Engine.</p>
+<pre><code class="language-ts">type KnownEntity = {kind:EntityRef[&quot;kind&quot;]; ref:string;
+  firstSeen:{kind:&quot;initial&quot;}|{kind:&quot;event&quot;;eventIndex:number}};
+type ObservationRecord =
+ | {source:{kind:&quot;evidence&quot;;eventIndex:number;evidence:string};
+    observation:EvidenceObservation}
+ | {source:{kind:&quot;npc&quot;;eventIndex:number;npc:string;questionId:string};
+    observation:InterrogationObservation};
+type PlayerKnowledge = {
+  schemaVersion:1;
+  known:readonly KnownEntity[];
+  discoveries:readonly {evidence:string;firstDiscoveryEvent:number}[];
+  observations:readonly ObservationRecord[];
+};
+type VerdictRecord={eventIndex:number;verdict:&quot;solved&quot;|&quot;not_solved&quot;};
+type SessionState={identity:CasePackageIdentity;phase:&quot;active&quot;|&quot;solved&quot;;
+  events:readonly SessionEvent[];knowledge:PlayerKnowledge;
+  verdicts:readonly VerdictRecord[]};
+</code></pre>
+<p>eventIndex ist nullbasiert im akzeptierten Log. Keine eingehende seq, kein Timestamp, kein Versuchszähler als separate Autorität. Bekannte Entities nach ref sortieren; erste Herkunft bleibt erhalten. Discoveries nach evidence-Ref sortieren; erste Fundaktion bleibt erhalten. Observations chronologisch; bei mehreren Evidence-Funden derselben Aktion nach öffentlichem Evidence-Ref sortieren. NPC-Wiederholungen erzeugen je einen ObservationRecord, weil es zwei Gesprächsereignisse sind. Der Payload bleibt gleich bei gleichen Inputs. Wiederholte Suche erzeugt ein Event, aber keinen zweiten Discovery-/EvidenceObservation-Eintrag. Eine Summary-Ansicht darf identische Berichte gruppieren, bleibt rein abgeleitet.</p>
+<p>Nur initial.known, neu veröffentlichte Evidence selbst und observation.mentions vergrößern Known. Kein Nachziehen aus Evidence.source/links, Report.claim, Truth/Eventpartizipanten, Solution, interner NPC-Awareness oder NPC-Provenance. Die Release-Module garantieren Referenzabdeckung; Session verlangt zusätzlich jede freigegebene Mention rückauflösbar, artkorrekt und paketgebunden. Ein referenzierter Report-Claim außerhalb der erlaubten Mentions ist ein Host-Invariantfehler, keine Gelegenheit zum stillen Freischalten.</p>
+<p>Observation provenance ist Spieler-Empfangsherkunft: WANN im akzeptierten Log, WELCHE Evidence oder WELCHER NPC und WELCHE Frage. NPC internal provenance (witnessed_event/told_by_person etc.) bleibt privat. EvidenceObservation.reports[].source ist eine freigegebene Aussagequelle und bleibt erhalten, kann aber weder als objective truth noch als interner NPC-Erkenntnisweg verwendet werden. Widersprüchliche NPC-Berichte koexistieren. Leans/uncertain/does_not_know/decline sind jeweils genau der Draft-Payload. Kein automatisches Überschreiben früherer Reports und kein automatischer Faktengewinn.</p>
+<p>Keine PlayerKnowledge-Loadfunktion aus untrusted JSON. Verlässlicher Zustand entsteht durch initialSession und Reducer/Replaying. Eine TypeScript-Brand ist nur Typdisziplin, keine Authentisierung. Server-Host bzw. headless Runner verwaltet den Zustand; direkt manipulierter JS-Heap ist außerhalb dieser Vertrauensgrenze.</p>
+<h2>4. Event Vocabulary</h2>
+<p>PROPOSED exakt drei strikt geparste Shapes, keine optionalen semantischen Felder:</p>
+<pre><code class="language-ts">type SessionEvent =
+ | {type:&quot;investigate&quot;;action:&quot;search_location&quot;|&quot;examine_item&quot;|&quot;examine_person&quot;;target:string}
+ | {type:&quot;interrogate&quot;;npc:string;questionId:string}
+ | {type:&quot;accuse&quot;;literals:readonly {claim:PlayerConclusionClaim;value:boolean}[]};
+type PlayerConclusionClaim =
+ | {kind:&quot;personResponsibleForEvent&quot;;person:string;event:string}
+ | {kind:&quot;personRoleForEvent&quot;;person:string;event:string;role:&quot;direct_actor&quot;|&quot;planner&quot;|&quot;facilitator&quot;}
+ | {kind:&quot;noPersonResponsibleForEvent&quot;;event:string}
+ | {kind:&quot;eventCausedEvent&quot;;causeEvent:string;event:string}
+ | {kind:&quot;eventIntent&quot;;event:string;value:&quot;intended&quot;|&quot;unintended&quot;|&quot;not_applicable&quot;}
+ | {kind:&quot;eventMechanism&quot;;event:string;value:&quot;ordinary&quot;|&quot;supernatural&quot;|&quot;mixed&quot;};
+</code></pre>
+<p>Refstrings erfüllen das Draft-Muster /^pr1_[0-9a-hjkmnp-tv-z]{16}$/. questionId übernimmt QuestionIdSchema aus 5A; keine frei erfundene Frage. Der PlayerConclusionClaim enthält genau die sechs Conclusion-Arten aus dem neunfachen 5B-PlayerClaim. Session überträgt sie feldweise in Canonical-IDs; das ist Transportkonversion, keine neue Statusauflösung. Die sechs Varianten müssen explizit getestet werden. role/value heißen wie im Original; das äußere literal.value bleibt Boolean.</p>
+<p>Einzelnes Event ≤16 KiB kanonisches UTF-8; maximal 32 Literale. Claims innerhalb einer Accusation behalten Eingabereihenfolge. Duplikate/Widersprüche derselben Claimstruktur werden durch parseAccusation abgewiesen, nicht zusammengelegt. Keine clientseitigen truthHash/caseId/challengeId/solutionHash-Felder. Leere Anklage ist als syntaktisch gültiges Event zulässig und ergibt abhängig von der echten Challenge/Core-Semantik einen Verdict; keine frei erfundene Sonderregel. Package-Publikation verlangt für den ersten Fall mindestens eine requiredConclusion und nichtleeren Challenge-Scope.</p>
+<p>Vorhandensein und Kind jedes Ref müssen passen UND jedes eingehende Entity-Ref muss bereits im Known des Präfixes liegen. Das betrifft auch event/causeEvent in Accusations. Alle gültigen, aber unbekannten Refs werden genauso abgewiesen wie nicht existente Refs. Keine Token-Auflösung gewährt selbst Known. Nicht verfügbare Fragen und unbekannte NPCs ergeben dasselbe öffentliche ACTION_UNAVAILABLE.</p>
+<h2>5. Reducer</h2>
+<pre><code class="language-ts">initialSession(pkg:ResolvedCasePackage):SessionState;
+reduceSession(pkg:ResolvedCasePackage,state:SessionState,input:unknown):
+ | {ok:true;state:SessionState;output:SessionOutput}
+ | {ok:false;state:SessionState;code:&quot;ACTION_UNAVAILABLE&quot;|&quot;SESSION_CLOSED&quot;|&quot;LIMIT_REACHED&quot;}
+ | {ok:false;state:SessionState;code:&quot;HOST_FAILURE&quot;}; // trusted-only branch
+type SessionOutput =
+ | {type:&quot;investigate&quot;;observations:readonly EvidenceObservation[]}
+ | {type:&quot;interrogate&quot;;observation:InterrogationObservation}
+ | {type:&quot;accuse&quot;;verdict:&quot;solved&quot;|&quot;not_solved&quot;};
+</code></pre>
+<p>HOST_FAILURE wird im Playertransport in eine allgemeine technische Nichtverfügbarkeit übersetzt, niemals in not_solved oder Domain-IDs. Detaillierter interner Diagnosepfad ist nur für Tests/Hostlog. Resultate sind neu konstruiert und tief readonly/frozen; bei Ablehnung dieselbe unveränderte State-Referenz zurückgeben. Trusted Portthrows können am äußeren Session-Einstieg in HOST_FAILURE gefangen werden; keine behauptete Isolation bösartigen Hostcodes.</p>
+<p>Normative Reihenfolge: (1) Package-/Stateidentity prüfen → HOST_FAILURE. (2) solved → SESSION_CLOSED für jede Eingabe, ohne irgendeinen Gameplayport aufzurufen. (3) Historylimit → LIMIT_REACHED. (4) Raw-Event-Limits und Shape; Refauflösung, Kind und prefix-Known. (5) Ports synchron auf temporärem Zustand auswerten. (6) alle Releases, Refbindings, Outputlimits und vollständigen Prospective-Save-Bytes prüfen. (7) einmal atomar neuen State und Event publizieren. Fehler in einem von mehreren Releases führt zum vollständigen Rollback, einschließlich Known und Discovery.</p>
+<p>investigate: target auflösen; exakte Canonical-Action mit locationId/itemId/personId aufbauen; known als Canonical EntityRef[] aus dem Präfix; resolveInvestigation verwenden. Neue IDs = found minus discoveries. Found muss existierende Evidence sein; Übersetzung vor öffentlicher Sortierung. Für alle neuen IDs releaseEvidence aufrufen, deren Output validieren; erst dann Evidence+Mentions und Records übernehmen. Leere Ergebnisse und bereits komplett entdeckte Suchresultate sind akzeptierte Aktionen. Keine cascading Investigation in derselben Aktion: ein dadurch bekannt gewordenes Item verlangt ein nächstes Event.</p>
+<p>interrogate: NPC muss als person bekannt und mit Snapshot/Profil im Package vorhanden sein. Snapshot/Profil auswählen; catalogue, refs, prefix-known, questionId an interrogate übergeben. QUESTION_NOT_AVAILABLE wird ACTION_UNAVAILABLE; Binding/Ref-Fehler werden HOST_FAILURE. Erfolgreiche decline/does_not_know sind akzeptierte Beobachtungen, keine Fehler. Der Reducer liest nie internen NPC-Stance zur eigenen Antwortentscheidung.</p>
+<p>accuse: alle Claims übersetzen, parseAccusation({schemaVersion:1,caseId:pkg.truth.caseId,truthHash:hashCaseTruth(pkg.truth),literals},pkg.truth), dann evaluateChallengeAccusation mit exakt pkg.challenge. Gültiges not_solved wird geloggt und lässt phase active. solved wird geloggt, phase solved. Technische Core-/Challengefehler werden nicht als Fehlanklage verschleiert. Es gibt keinen frei wählbaren Core-only-Modus.</p>
+<p>Terminal: nach dem ersten solved keine weiteren akzeptierten Events, auch keine Beobachtungen, Fehlanklagen oder leeren Suchen. Views/Save dürfen weiter gelesen werden. Replay eines Logs mit Events nach solved ist INVALID_HISTORY; niemals abschneiden. Wiederholtes Event bedeutet keine Netzwerk-Retry-Idempotenz. Ein eventId-/Idempotency-Key-Feature gehört nicht in V1; ein Transport muss unbestätigte Requests bewusst behandeln.</p>
+<h2>6. Challenge Integration</h2>
+<p>DESIGN INPUT + PROPOSED: Der Spieler liefert die Antwort, der Host wählt die Challenge. Ein Package enthält genau eine Challenge. Dadurch braucht accuse kein challengeId und kann nicht auf einen leichteren Scope umschalten. Derselbe Truthzustand mit anderer Challenge oder Solution erhält anderen packageHash und inkompatiblen Save.</p>
+<p>Challenge-Result solved ist die einzige technische Siegbedingung im V1-Sessionloop. Known autorisiert verwendete Entitäten, aber nicht die Wahrheit der Behauptungen. Kein Nachweiszwang, keine inferred journal facts, keine Solvability-Abfrage pro Anklage. Undetermined ist weiterhin ein legitimer Core-Status, der im Challenge-Wrapper eine eingereichte Antwort nicht erfüllt.</p>
+<p>CASE-SPECIFIC CHANGE REQUIRED: Die Vitrine verlangt im bisherigen Scratch-Host requireReleasedProof und zitierte Evidence. Der aktuelle Challenge-Draft kann das nicht ausdrücken. Empfehlung für den minimalen Slice: Belege zum Deduzieren anbieten, aber diese zusätzliche technische Siegsperre entfernen; die vollständige vierteilige Täterantwort bleibt erforderlich. Ein UI kann eine Auswahl deterministisch in vier positive/negative Rollenliterale expandieren, jedoch ist das eine ausdrücklich festzulegende UI-Konvention, keine neue Session-Aktion. Wer die Belegpflicht behalten will, braucht zuerst einen eigenen, kleinen Challenge-Policy-Contract; dieses Paket aktiviert sie nicht durch versteckte Sessionbedingungen.</p>
+<p>EXPERIMENTALLY VERIFIED im Scratch-Modell: Die richtige vollständige Antwort kann im Initialzustand solved ergeben. Das ist kein Replayfehler, sondern die konkrete verbleibende Produktentscheidung. Brute-force über mehrere komplette Antworten wird weder durch neutrale Core-Truth noch durch Exactness allein verhindert. Für den ersten Slice akzeptabel nach expliziter Case-Spec-Korrektur; kein Anti-Cheat-Claim.</p>
+<h2>7. Interrogation Replay</h2>
+<p>PROPOSED: Jeder Replay beginnt mit initialSession desselben aufgelösten Packages. NPC, questionId und Known werden aus Event und Präfix rekonstruiert. Bei jedem akzeptierten interrogate läuft die echte 5B-Pipeline erneut: projectNpcKnowledgeWithBridge → decideResponse → ReleaseTranslator → InterrogationObservation. Bridgeobjekte sind frisch und bleiben transient. Kein VisibleRef, kein lokaler Index, kein ResponseDecision, keine frühere Antwort und kein NPC-Provenance-Dump wird persistiert.</p>
+<p>Snapshots ändern sich in diesem V1 nicht mit Sessionevents. asOf ist der im Package eingefrorene NPC-Zeitpunkt, keine Sessionuhr. Player-Known beeinflusst Askability; es überschreibt nicht NPC-Wissen. Zwei Replays mit denselben Komponenten und demselben Ruleset müssen dieselben Antworten liefern. Ein verändertes NPC-belief, eine Revision, ein Provenancefeld oder ein Profil erzeugt neue Identität; auch wenn einzelne Antworten zufällig gleich bleiben. Keine heuristische Rückwärtskompatibilität.</p>
+<pre><code class="language-ts">replaySession(pkg:ResolvedCasePackage,events:unknown):
+ | {ok:true;state:SessionState}
+ | {ok:false;code:&quot;INVALID_HISTORY&quot;|&quot;LIMIT_REACHED&quot;|&quot;HOST_FAILURE&quot;;
+    eventIndex:number|null};
+</code></pre>
+<p>Replay prüft zunächst Collection-/Bytelimits, dann denselben Reducer in Reihenfolge. Beim ersten abgewiesenen Event abbrechen; keine Teilzustände an Spieler und keine Fortsetzung hinter einem ungültigen Präfix. eventIndex ist eine interne Diagnose und wird nicht mit privaten Codes öffentlich erklärt. Replay verschluckt abgewiesene Events NICHT. Ein akzeptiertes Log enthält definitionsgemäß nur Inputs, die damals am jeweiligen Präfix akzeptiert wurden.</p>
+<h2>8. Save Format</h2>
+<p>PROPOSED normativ:</p>
+<pre><code class="language-json">{&quot;schemaVersion&quot;:1,&quot;packageIdentity&quot;:{&quot;schemaVersion&quot;:1,&quot;packageHash&quot;:&quot;&lt;64hex&gt;&quot;,&quot;rulesetVersion&quot;:&quot;mystery-session-v1&quot;},&quot;events&quot;:[],&quot;checksum&quot;:&quot;&lt;64hex&gt;&quot;}
+</code></pre>
+<p>Der Block zeigt das Shape, nicht die kanonische Schlüsselreihenfolge. Tatsächliche Wireform ist C(envelope), dessen Schlüssel nach UTF-16 sortiert sind. Body = Envelope ohne checksum. checksum = H(&quot;forge-session-save-v1&quot;,body). rulesetVersion steht genau einmal in packageIdentity; keine zweite potentiell widersprüchliche Version. Keine Derived-Felder, kein solved, keine NPC-Observationen, kein bekanntes Entityset, keine Verdicts, keine Evidence discoveries.</p>
+<pre><code class="language-ts">encodeSessionSave(pkg:ResolvedCasePackage,state:SessionState):
+ | {ok:true;text:string}|{ok:false;code:&quot;INVALID_STATE&quot;|&quot;LIMIT_REACHED&quot;|&quot;HOST_FAILURE&quot;};
+decodeSessionSave(pkg:ResolvedCasePackage,text:unknown):
+ | {ok:true;state:SessionState}
+ | {ok:false;code:&quot;INVALID_SAVE&quot;|&quot;INCOMPATIBLE_PACKAGE&quot;|&quot;LIMIT_REACHED&quot;|
+   &quot;CHECKSUM_MISMATCH&quot;|&quot;INVALID_HISTORY&quot;|&quot;HOST_FAILURE&quot;};
+</code></pre>
+<p>Encode vertraut keiner übergebenen Derived-Kopie: Packageidentity prüfen, accepted events mit replaySession neu ableiten, resultierende Derived-Sicht mit dem State vergleichen. Abweichung → INVALID_STATE. Erst dann Body/Checksum aus Identity und Events bilden. Das ist eine Konsistenzprüfung innerhalb trusted Hostcode, keine Signatur. Alternativ still eine beschädigte State-Sicht zu reparieren ist hier ausdrücklich nicht der Contract.</p>
+<p>Decode: Stringtyp und UTF-8-Bytelimit; JSON.parse in try; iterativer Plain-JSON-Depth/Node/Unicode/number-Check; exact root/nested Shapes; Serialisierung C(parsed) muss exakt Eingabestring ergeben. Damit werden Whitespacevarianten, doppelte JSON-Keys, Escapeschreibvarianten, BOM und -0 statt 0 fail-closed abgewiesen, ohne einen eigenen JSON-Parser zu bauen. Kanonische Saves sind kein allgemein tolerant editierbares JSON-Importformat. Dann Versions-/Packagevergleich, Checksumprüfung, Replay. Jeder Schritt arbeitet auf geparsten eigenen Daten, nicht mehrfach auf unbekannten Getterobjekten. JSON mit unpaired surrogate ist ungültig; keine Unicode-Normalisierung. Checksummenvergleich braucht kein Geheimnis und keine Timing-Schutzbehauptung.</p>
+<p>Ein gekürzter, neu korrekt checksummierter gültiger Verlauf ist ein gültiger früherer Save. Eine neu erzeugte ebenfalls gültige Historie ist ebenfalls gültig. Akzeptierter Eventinhalt kann geändert und neu gehasht werden; wenn Replay ihn akzeptiert, wird er geladen. Das ist gewollte Grenze dieses lokalen V1-Saveformats.</p>
+<h2>9. Compatibility</h2>
+<p>PROPOSED: V1 verwendet exact-package/exact-ruleset. Keine Migration, kein „best effort“, kein Überspringen von Events und kein automatisches Upgrade auf das neueste Package. Ein Host kann alte Packages und den passenden Ruleset getrennt archivieren und Saves gegen genau diese Version laden. Ist sie nicht vorhanden, lautet das Ergebnis inkompatibel/unverfügbar, nicht beschädigt.</p>
+<table>
+<thead>
+<tr>
+<th>Änderung</th>
+<th>V1 Save</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Truth, Solution, Access, Challenge oder initial known</td>
+<td>invalidieren</td>
+</tr>
+<tr>
+<td>NPC-Snapshot/Profil/Catalogue, auch nur private Provenance</td>
+<td>invalidieren; konservativer Snapshotvertrag</td>
+</tr>
+<tr>
+<td>Presentation.text, Leerzeichen, NFC/NFD, Report, Mention</td>
+<td>invalidieren</td>
+</tr>
+<tr>
+<td>Zertifikatsmanifest, ProofProfile, Witnessreihenfolge</td>
+<td>invalidieren</td>
+</tr>
+<tr>
+<td>PlayerRef-Salt/Profil oder tatsächliche Mappingtabelle</td>
+<td>invalidieren</td>
+</tr>
+<tr>
+<td>Ruleset-Verhalten oder geänderte Auswahl-/Release-/Verdictlogik</td>
+<td>neue rulesetVersion + neue Packageidentity erforderlich</td>
+</tr>
+<tr>
+<td>Sourcecode-Refactoring mit unveränderter spezifizierter Semantik</td>
+<td>keine Änderung nötig; Regression-/Golden-Tests Pflicht</td>
+</tr>
+<tr>
+<td>Sortierung einer ausdrücklich mengenartigen Component-Collection</td>
+<td>keine Änderung nach typisierter Normalisierung</td>
+</tr>
+<tr>
+<td>Reihenfolge der Events oder witnessStepIds</td>
+<td>immer signifikant</td>
+</tr>
+<tr>
+<td>UI-Schrift, Layout, Codeformatierung außerhalb Package</td>
+<td>unverändert</td>
+</tr>
+</tbody></table>
+<p>Textänderungen invalidieren HEUTE zu Recht: Evidence Presentation hash bindet Text, und Text kann Hinweise, Negationen oder Zeitangaben ändern. Aus „nur kosmetisch“ ist mechanisch keine sichere semantische Klassifikation ableitbar. Schon CaseTruth.name/description sind Teil des heutigen Truthhash; blindes Strippen wäre eine neue Domänenidentität, keine Sessionoptimierung.</p>
+<p>Lokalisierung später: stabiler semantischer Contentkern + getrennte Locale-Bundles mit versionierten message keys, Parametern und Review gegen dieselben Release-Reports. Dann könnte gameplayIdentity gleich und displayIdentity verschieden sein. Das verlangt eine ausdrückliche MYST-0004-/CaseTruth-Identitätsrevision und Replaydefinition: semantisch gleich versus wortgleich. Für V1 ein Package pro Sprache. Keine automatische Übersetzung und kein Runtime-LLM.</p>
+<h2>10. Security Boundary</h2>
+<p>IMPLEMENTED/DESIGN INPUT Grenzen bleiben erhalten. Trusted: geparste Domainkomponenten, Packageprovider, Ref-Adapter, Domainmodule, Rulesetcode, reviewed Authoring. Untrusted: Sessionevent-JSON und Save-String. Client liefert niemals den trusted Packageinput als Autorität. Opaque Refs reduzieren versehentliche ID-Spoiler, sind aber keine Secrets oder Capability-Tokens.</p>
+<p>Session autorisiert jeden eingehenden Ref gegen prefix-Known, sperrt direkte Evidence-Release-Aufrufe aus Spielerinput und nimmt nur explizite Mentions auf. Malformed/fremde/stale/unbekannte Refs erhalten dieselbe Actionfehlermeldung. Keine internen Bindings oder private Solverdiagnosen in Spieleroutput. Public Observation kann nach Authoring trotzdem einen narrativen Spoiler enthalten; Textreview bleibt nötig. questionId kann selbst sprechend sein: opaque neutrale IDs wie question:q08 sind Autorenkonvention, kein durch Session gelöstes Problem.</p>
+<p>Checksum erkennt versehentliche Beschädigung, nicht gezielte Neuberechnung. Keine Anti-Cheat-, Autorenvertrauens-, Origin- oder Serverauthentizitätsgarantie. Signierte Saves, Online-Autorität, Geheimhaltung lokaler Assets, Manipulationsschutz des JS-Heaps und Netzwerk-Retryschutz sind Non-goals. Kein pauschales „Save sicher“.</p>
+<h2>11. Resource Limits</h2>
+<p>PROPOSED konservative Budgets, keine Performance-Messwerte und keine universelle Fallgrößengrenze. Sie gelten zusätzlich zu strengeren Componentlimits. Die Vitrine braucht fünf zentrale Untersuchung/Befragungsaktionen, 20 Fragen und 8 Evidence: deutlicher Spielraum ohne offene Endlosschleifen.</p>
+<table>
+<thead>
+<tr>
+<th>Grenze</th>
+<th>Wert / Grund</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>accepted events</td>
+<td>512. Über 25 vollständige Runden aller 20 Fragen; begrenzt Replay und NPC-Observationswachstum</td>
+</tr>
+<tr>
+<td>Anklageliterale pro Event</td>
+<td>32, deutlich über vier Pflichtliteralen, unter Challenge-Scope-Maximum 256; keine Veränderung der Core-API</td>
+</tr>
+<tr>
+<td>Eventbytes</td>
+<td>16 KiB UTF-8, ausreichend für 32 streng geformte Claims; Inputbudget vor tiefer Validation</td>
+</tr>
+<tr>
+<td>Savebytes</td>
+<td>1 MiB UTF-8, global verbindlich; 512×16KiB ist NICHT automatisch zulässig. Reducer prüft Prospective-Savegröße vor Annahme, damit jeder akzeptierte Zustand speicherbar bleibt</td>
+</tr>
+<tr>
+<td>Raw Package JSON</td>
+<td>2 MiB vor Domainparse; ref source ist separater trusted Port</td>
+</tr>
+<tr>
+<td>Package Entities insgesamt</td>
+<td>256 über fünf Ref-Arten, initial known höchstens 256, keine unbekannten Initialrefs</td>
+</tr>
+<tr>
+<td>Evidence / NPCs / Fragen</td>
+<td>64 / 16 / 128; je NPC höchstens 128 Regeln; stets Componentlimits zusätzlich</td>
+</tr>
+<tr>
+<td>Accesspfade pro Evidence</td>
+<td>16; 64×16 begrenzt linearen Resolver für diesen Slice</td>
+</tr>
+<tr>
+<td>Presentation</td>
+<td>bestehende 1000 UTF-16 units/Text, 16 Mentions, 8 Reports beibehalten; kein zusätzlicher Freitext pro Event</td>
+</tr>
+<tr>
+<td>neue/abgeleitete Observationen</td>
+<td>≤512 NPC-Records +64 einmalige Evidence-Records =576; Known ≤256</td>
+</tr>
+<tr>
+<td>JSON-Tiefe / Knoten</td>
+<td>32 / 100000 für Package und Save; iterativ prüfen, bevor rekursive Canonicalizer/Validatoren laufen</td>
+</tr>
+<tr>
+<td>Proof</td>
+<td>bestehende Maxima: 6 Answerdimensionen, 64 Observations, 128 Nodes/Edges, Witness 256; releaseManifest ≤256 KiB innerhalb Packagebudget</td>
+</tr>
+<tr>
+<td>Hashes / salt</td>
+<td>64 lowercase hex / 32 lowercase hex; kein Nullplaceholder als automatisch freigegebene Referenz</td>
+</tr>
+</tbody></table>
+<p>Zeitlimits in Millisekunden werden nicht Teil des deterministischen Reducers. Ein äußerer Test-Runner kann hängenbleibende trusted Ports abbrechen; der synchrone Runtimevertrag lässt keine fremden Scripts zu. Hashes und Refindizes werden einmal beim Package-Resolve gebaut, nicht pro Historyprefix neu. Bei 512 Events ist simples Replay vor Encode vertretbar; keine Snapshots oder inkrementellen Savechains nötig. Tatsächliche Laufzeit-/Speichermessung folgt mit echten Modulen. Die hier gemessene Python-Labzeit ist kein Produktionsbenchmark.</p>
+<h2>12. 100+ Cases</h2>
+<p>Die separate normative Matrix enthält 120 konkrete Abnahmefälle: A01–A40 Package/Knowledge, B01–B40 Reducer, C01–C40 Save/Replay. Sie definiert Inputvariation und erwarteten Ausgang. Zusätzlich ist die tatsächlich ausgeführte Scratch-Matrix X001… im Evidencearchiv enthalten. Diese Mengen werden nicht als getestete Produktionsfälle addiert. Nur X-Fälle und die genannten main-Prüfungen sind jetzt ausgeführt; A/B/C sind verbindliche zukünftige Production-Acceptance-Tests.</p>
+<h2>13. Generated Replay Results</h2>
+<p>EXPERIMENTALLY VERIFIED: siehe angehängte unveränderte replay-results.json und adversarial-results.json. Frischer Python-Scratch-Reducer, keine Produktion. Zehn gezielte Kategorien mit je 64 Seeds ergeben 640 unterschiedliche Inputhistorien. Jede enthält bewusst konstruierte Kategoriepräfixe und deterministisch erzeugte Variation; kein ausschließlich zufälliger Smoke-Test. Kategorien: normal, exhaustive, accusation spam, repeat search, repeat question, wrong order, minimal, contradictory, stale refs, post solved.</p>
+<p>Geprüft: fortgeschriebener Zustand = Replay akzeptierter Events = Save/Load-Ergebnis; zusätzlich jeder Präfix; jede Ablehnung unverändert; Terminalverhalten; gleichbleibende NPC-Payloads; unterschiedliche Empfangsprovenance; Scope/Wrong-actor; invalides Save mit gültiger Checksum aber ungültiger Reihenfolge; Rechecksum einer neuen gültigen Historie ausdrücklich akzeptiert. Der Modell-Codec nimmt für einige Formatreparaturen tolerantes JSON an; der normative Produktionscodec fordert zusätzlich exakte Wirekanonisierung und generische Depth/Node-Grenzen. Diese zusätzlichen Anforderungen sind in C-Tests enthalten, aber nicht durch die Pythonhistorien bewiesen.</p>
+<p>Main-Integration tatsächlich neu ausgeführt: Vitrine-Truth/Solution mit realen Parsern, Semantic Validation, alle vier NPC-Snapshots und Projection; null Semantikfindings. Conclusionstatus wurde nur im Experiment über den bestehenden Parser als Black-box-Oracle bestimmt. Die zukünftige Produktion MUSS evaluateConclusionClaim/Challenge verwenden, niemals dieses Parser-Orakel kopieren. PlayerRef, Presentation, Access, Interrogation-Bridge und Challenge sind im Modell Draft-Adapter, keine integrierten heutigen Implementierungen.</p>
+<h3>Tatsächlich ausgeführte Ergebnisse</h3>
+<table>
+<thead>
+<tr>
+<th>Kennzahl</th>
+<th>Ergebnis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>scope</td>
+<td>Scratch reference semantics; fixture token table NOT PlayerRef; draft ports simulated, no production integration claim</td>
+</tr>
+<tr>
+<td>adversarialCases</td>
+<td>124</td>
+</tr>
+<tr>
+<td>passed</td>
+<td>124</td>
+</tr>
+<tr>
+<td>generatedHistories</td>
+<td>640</td>
+</tr>
+<tr>
+<td>distinctHistories</td>
+<td>640</td>
+</tr>
+<tr>
+<td>attemptedActions</td>
+<td>16900</td>
+</tr>
+<tr>
+<td>acceptedActions</td>
+<td>13584</td>
+</tr>
+<tr>
+<td>replayFailures</td>
+<td>0</td>
+</tr>
+<tr>
+<td>prefixReplayFailures</td>
+<td>0</td>
+</tr>
+<tr>
+<td>confirmedDesignDifference</td>
+<td>Correct complete answer can solve with zero evidence. Citation requirement is absent from Challenge draft.</td>
+</tr>
+</tbody></table>
+<h2>14. Task Split</h2>
+<p>PROPOSED genau drei Tasks. Keine neue Runtime-Dependency. Neue Produktionsdateien ausschließlich src/domain, Tests in tests. Keine Änderung an Truth/Solution-Wahrheitstabellen, Component-Drafts oder historischen Artefakten.</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Dateien / Verantwortung</th>
+<th>Zielbudget</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MYST-SESSION-0001A</td>
+<td>case-package.ts, case-package.identity.ts, player-knowledge.ts; Package factory, Refadapter-Grenze, Componenthashes, InitialKnowledge und pure Knowledge-Übernahme</td>
+<td>340–399 Produktionszeilen</td>
+</tr>
+<tr>
+<td>MYST-SESSION-0001B</td>
+<td>case-session.ts; Eventparser, Autorisierung, atomarer Reducer, Challenge-Anbindung, terminal, replaySession</td>
+<td>300–399</td>
+</tr>
+<tr>
+<td>MYST-SESSION-0001C</td>
+<td>case-session-save.ts; kanonischer Codec, Checksum, Compatibility, Replaying beim Load und Encodeprüfung</td>
+<td>180–280</td>
+</tr>
+</tbody></table>
+<p>&lt;400 ist bevorzugtes Budget, keine Einladung zur Codeverdichtung. Vollständige fremde Shapes nicht in A nachbauen; Domainparser wiederverwenden. Neue Hashhelper dürfen über A intern gemeinsam genutzt werden. Wenn tatsächliche akzeptierte APIs das Budget sauber sprengen, Contract vor Start revidieren; keine Anforderungen streichen. Zeilenzahlen sind Planung, nicht gemessene Implementierung. Testcode zählt nicht zum Produktionsbudget.</p>
+<p>Minimaler Dependency-Punkt: A nach akzeptierten PlayerRef/2/3/4/5A/5B/Challenge/Solvability-APIs; B nach A; C nach B. Einige Typen können vorab reviewed werden, aber kein startbarer Forge-Run mit erfundenen Dependency-Commits. A bindet Proof nur; echter Solvability-Witness folgt in der Fallabnahme nach B, ohne Runtime-Proofengine in Session. Task-IDs sind Vorschläge, nicht global reserviert; keine Kollision im gelesenen main, externe Reservierungen UNKNOWN.</p>
+<h2>15. Draft Contracts</h2>
+<p>Drei eigenständige DRAFT-Dateien liegen bei. Format 1 mit kanonischem ---json-Frontmatter, aktuellem baseCommit und echten taskId/acceptedCommit:null-Dependencyplätzen. Null bedeutet ausdrücklich ungelöst und blockiert Freigabe im heutigen Kernel. Parserprüfung bestätigt nur Format, keine Abhängigkeitserfüllung und keine semantische Freigabe. Jeder Contract enthält die normativen gemeinsamen Abschnitte, eigenen Scope, Acceptance-Matrix, Mutanten, Limits und Non-goals. Vor Registrierung benötigen sie eine neue Revision auf den dann akzeptierten Commitstand.</p>
+<p>Kein bloßer Contract-Name wird als implementierte API behandelt. Die exakten Input-Drafts und deren SHA-256-Snapshots sind im Evidencearchiv inventarisiert. Der alte VS-5-Preflight wurde mangels zugänglicher Vollquelle nicht behauptet gelesen oder vollständig redlined.</p>
+<h2>16. GO / NO-GO</h2>
+<p>PROPOSED Urteil: GO für den dreiteiligen Architektur-/Contract-Review. NO-GO für unmittelbaren Produktionsstart oder die Behauptung, VS-5 sei jetzt integrierbar.</p>
+<p>Startblocker in Reihenfolge: (1) vollständigen PlayerRef-Vertrag beschaffen und Ref-Namespace/Adapter verbindlich reconciliieren; keine neue Ref-Krypto erfinden. (2) akzeptierte vorgelagerte APIs pinnen, insbesondere Challenge auf neuen MYST-0002-Stand beziehen. (3) Vitrine-Belegpflicht bewusst entfernen oder vorher separat in Challenge spezifizieren; Empfehlung hier: entfernen. (4) Package-/Reducer-/Codec-Tasks A→B→C mit echten Modulen abnehmen, alle 120 Fälle und Generated-History-Tests ausführen. (5) echten Vitrine-Witness samt reviewed Faktivitäts-/Public-Rule-Adapter gegen exakt dieses Package prüfen. Erst danach GO für den headless Slice.</p>
+<p>Der Hauptgewinn ist eine einzige Laufzeitautorität: accepted events + exact package + ruleset. Knowledge, Discoveries, Observations und Verdicts werden reproduzierbar daraus gewonnen. Die offenen Abhängigkeiten werden dabei weder mit alten Scratch-Mocks noch mit einer zweiten Conclusion-Wahrheitstabelle verdeckt.</p>
+<h2>Evidence Appendix</h2>
+<p>Remote: <a href="https://github.com/Forge-Dice/Forge/commit/3d7545d843883418348004e68717399a64da7a7d">https://github.com/Forge-Dice/Forge/commit/3d7545d843883418348004e68717399a64da7a7d</a> . Lokale Referenzdateien im Scratch-Lauf unverändert.</p>
+<h3>Normative 120er-Matrix</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Fall</th>
+<th>Erwartung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A01</td>
+<td>Truth unbekanntes Rootfeld</td>
+<td>SHAPE; keine Packageausgabe</td>
+</tr>
+<tr>
+<td>A02</td>
+<td>Solution falscher truthHash</td>
+<td>BINDING vor Folgeprüfung</td>
+</tr>
+<tr>
+<td>A03</td>
+<td>Access fremder Case</td>
+<td>BINDING</td>
+</tr>
+<tr>
+<td>A04</td>
+<td>Presentation stale truthHash</td>
+<td>BINDING</td>
+</tr>
+<tr>
+<td>A05</td>
+<td>Catalogue anderer Truthstand</td>
+<td>BINDING</td>
+</tr>
+<tr>
+<td>A06</td>
+<td>NPC-Profil falscher catalogueHash</td>
+<td>BINDING</td>
+</tr>
+<tr>
+<td>A07</td>
+<td>Snapshot andere solutionHash</td>
+<td>BINDING</td>
+</tr>
+<tr>
+<td>A08</td>
+<td>Snapshot/Profil verschiedene npcId</td>
+<td>BINDING</td>
+</tr>
+<tr>
+<td>A09</td>
+<td>Doppeltes NPC-Paar</td>
+<td>REFERENCE</td>
+</tr>
+<tr>
+<td>A10</td>
+<td>NPC nicht in Truth.persons</td>
+<td>REFERENCE</td>
+</tr>
+<tr>
+<td>A11</td>
+<td>Initialref unbekannte Entity</td>
+<td>REFERENCE</td>
+</tr>
+<tr>
+<td>A12</td>
+<td>Initialref falsche Art</td>
+<td>REFERENCE</td>
+</tr>
+<tr>
+<td>A13</td>
+<td>Doppelte initial known</td>
+<td>SHAPE/REFERENCE</td>
+</tr>
+<tr>
+<td>A14</td>
+<td>Initial bekannte Evidence</td>
+<td>Known, aber keine Discovery/Observation</td>
+</tr>
+<tr>
+<td>A15</td>
+<td>Leeres initial known</td>
+<td>gültig; keine automatische Freigabe</td>
+</tr>
+<tr>
+<td>A16</td>
+<td>Refsource falscher caseId</td>
+<td>REF_MAPPING</td>
+</tr>
+<tr>
+<td>A17</td>
+<td>Refsource falscher truthHash</td>
+<td>REF_MAPPING</td>
+</tr>
+<tr>
+<td>A18</td>
+<td>Refsource salt 31/33 Hexzeichen</td>
+<td>SHAPE</td>
+</tr>
+<tr>
+<td>A19</td>
+<td>Ref fehlt für eine verborgene Entity</td>
+<td>REF_MAPPING</td>
+</tr>
+<tr>
+<td>A20</td>
+<td>Zwei Entities gleicher Token</td>
+<td>REF_MAPPING</td>
+</tr>
+<tr>
+<td>A21</td>
+<td>Refinverse andere Art/ID</td>
+<td>REF_MAPPING</td>
+</tr>
+<tr>
+<td>A22</td>
+<td>Ref syntaktisch ungültig</td>
+<td>REF_MAPPING</td>
+</tr>
+<tr>
+<td>A23</td>
+<td>Source nach Resolve verändert</td>
+<td>bestehendes Package unverändert</td>
+</tr>
+<tr>
+<td>A24</td>
+<td>Snapshot private Provenance geändert</td>
+<td>snapshotHash und packageHash ändern</td>
+</tr>
+<tr>
+<td>A25</td>
+<td>Snapshot asOf/revision geändert</td>
+<td>packageHash ändert</td>
+</tr>
+<tr>
+<td>A26</td>
+<td>Challenge Scope hinzugefügt</td>
+<td>packageHash ändert</td>
+</tr>
+<tr>
+<td>A27</td>
+<td>Nur Scope-Reihenfolge geändert</td>
+<td>Hash gleich</td>
+</tr>
+<tr>
+<td>A28</td>
+<td>Known-Reihenfolge geändert</td>
+<td>Hash gleich</td>
+</tr>
+<tr>
+<td>A29</td>
+<td>Witness-Schritte vertauscht</td>
+<td>proofHash/packageHash ändern</td>
+</tr>
+<tr>
+<td>A30</td>
+<td>Proof binding.releaseHash falsch</td>
+<td>PROOF_BINDING</td>
+</tr>
+<tr>
+<td>A31</td>
+<td>Manifest releaseContextHash falsch</td>
+<td>PROOF_BINDING</td>
+</tr>
+<tr>
+<td>A32</td>
+<td>Manifest executable JS als String</td>
+<td>nie ausführen; nur Daten; keine PASS-Behauptung</td>
+</tr>
+<tr>
+<td>A33</td>
+<td>proof null</td>
+<td>technisches Package zulässig; Slice-Publikation noch nicht zertifiziert</td>
+</tr>
+<tr>
+<td>A34</td>
+<td>proof pass-artiges Zusatzflag</td>
+<td>Schemafehler; keine abgeleitete Autorität</td>
+</tr>
+<tr>
+<td>A35</td>
+<td>Presentation ein Leerzeichen verändert</td>
+<td>packageHash ändert</td>
+</tr>
+<tr>
+<td>A36</td>
+<td>Salt verändert bei gleichem Mapping</td>
+<td>refsHash/packageHash ändern</td>
+</tr>
+<tr>
+<td>A37</td>
+<td>Mapping verändert bei gleicher Config</td>
+<td>refsHash/packageHash ändern</td>
+</tr>
+<tr>
+<td>A38</td>
+<td>257 Entities oder 65 Evidence</td>
+<td>LIMIT</td>
+</tr>
+<tr>
+<td>A39</td>
+<td>Package über 2MiB/Depth32/100000 Nodes</td>
+<td>LIMIT vor Domainparse</td>
+</tr>
+<tr>
+<td>A40</td>
+<td>ResolvedPackage JSON.stringify</td>
+<td>wirft; Public DTO bleibt serialisierbar</td>
+</tr>
+<tr>
+<td>B01</td>
+<td>Verfügbaren Ort untersuchen</td>
+<td>akzeptiert; passende Evidence released</td>
+</tr>
+<tr>
+<td>B02</td>
+<td>Validen unbekannten Ort raten</td>
+<td>ACTION_UNAVAILABLE</td>
+</tr>
+<tr>
+<td>B03</td>
+<td>Nicht existierenden Ref raten</td>
+<td>derselbe öffentliche Fehler</td>
+</tr>
+<tr>
+<td>B04</td>
+<td>Item als search_location</td>
+<td>ACTION_UNAVAILABLE</td>
+</tr>
+<tr>
+<td>B05</td>
+<td>Bekannte Person ohne Evidence untersuchen</td>
+<td>akzeptiert; leere Ausgabe</td>
+</tr>
+<tr>
+<td>B06</td>
+<td>Gleichen Ort zweimal durchsuchen</td>
+<td>zwei Events, nur erste Discovery/Observation</td>
+</tr>
+<tr>
+<td>B07</td>
+<td>Mehrere Evidence bei einem Fund</td>
+<td>öffentliche Ref-Sortierung, atomare Übernahme</td>
+</tr>
+<tr>
+<td>B08</td>
+<td>Zweiter Evidence-Release fehlschlägt</td>
+<td>HOST_FAILURE, kompletter Rollback</td>
+</tr>
+<tr>
+<td>B09</td>
+<td>Evidence.source ohne Accesspfad</td>
+<td>kein impliziter Fund</td>
+</tr>
+<tr>
+<td>B10</td>
+<td>Neues Item durch Evidence mention</td>
+<td>Known; Untersuchung erst im nächsten Event</td>
+</tr>
+<tr>
+<td>B11</td>
+<td>Report-Claim mit nicht autorisiertem Ref</td>
+<td>HOST_FAILURE, keine automatische Known-Erweiterung</td>
+</tr>
+<tr>
+<td>B12</td>
+<td>Bekannte Evidence nur erwähnt</td>
+<td>keine physische Discovery</td>
+</tr>
+<tr>
+<td>B13</td>
+<td>NPC-Frage verfügbar</td>
+<td>exakter 5B-Output plus Empfangsprovenance</td>
+</tr>
+<tr>
+<td>B14</td>
+<td>Frage über unbekannte Person</td>
+<td>ACTION_UNAVAILABLE; kein Existenzorakel</td>
+</tr>
+<tr>
+<td>B15</td>
+<td>Unbekannte questionId</td>
+<td>derselbe öffentliche Fehler</td>
+</tr>
+<tr>
+<td>B16</td>
+<td>Bekannte Person ohne NPC-Profil</td>
+<td>ACTION_UNAVAILABLE</td>
+</tr>
+<tr>
+<td>B17</td>
+<td>NPC decline</td>
+<td>akzeptiertes Event; kein Statement erfunden</td>
+</tr>
+<tr>
+<td>B18</td>
+<td>NPC does_not_know</td>
+<td>akzeptiert; keine Mentions erfunden</td>
+</tr>
+<tr>
+<td>B19</td>
+<td>NPC false belief</td>
+<td>als Report erhalten; kein objective truth</td>
+</tr>
+<tr>
+<td>B20</td>
+<td>NPC uncertain</td>
+<td>genaue Stance; keine Boolean-Konversion</td>
+</tr>
+<tr>
+<td>B21</td>
+<td>Gleiche Frage wiederholen</td>
+<td>gleicher Payload, zwei Records mit verschiedenen eventIndex</td>
+</tr>
+<tr>
+<td>B22</td>
+<td>Widersprüchliche NPC-Berichte</td>
+<td>beide erhalten; kein Last-writer-wins-Fakt</td>
+</tr>
+<tr>
+<td>B23</td>
+<td>NPC kennt mehr als Spieler</td>
+<td>nur explizit erlaubte Reveal-Mentions</td>
+</tr>
+<tr>
+<td>B24</td>
+<td>Spieler kennt mehr als NPC</td>
+<td>NPC-Snapshot unverändert; does_not_know möglich</td>
+</tr>
+<tr>
+<td>B25</td>
+<td>Richtige vollständige Anklage</td>
+<td>Challenge solved; terminal</td>
+</tr>
+<tr>
+<td>B26</td>
+<td>Falsche bestimmte Anklage</td>
+<td>akzeptiert not_solved; weiter active</td>
+</tr>
+<tr>
+<td>B27</td>
+<td>Undetermined Extra in Scope</td>
+<td>not_solved, kein false-Rewrite</td>
+</tr>
+<tr>
+<td>B28</td>
+<td>Wahres Extra außerhalb Scope</td>
+<td>not_solved</td>
+</tr>
+<tr>
+<td>B29</td>
+<td>Wahres Extra innerhalb Scope</td>
+<td>solved wenn Required vollständig</td>
+</tr>
+<tr>
+<td>B30</td>
+<td>Fehlendes negatives Requiredliteral</td>
+<td>not_solved</td>
+</tr>
+<tr>
+<td>B31</td>
+<td>Doppelclaim mit gleicher/anderer Polarität</td>
+<td>ACTION_UNAVAILABLE, kein Logeintrag</td>
+</tr>
+<tr>
+<td>B32</td>
+<td>Alle sechs PlayerConclusionClaim-Arten</td>
+<td>feldweise korrekte Canonical-Übersetzung</td>
+</tr>
+<tr>
+<td>B33</td>
+<td>eventCausedEvent falscher Kind/stale causeEvent</td>
+<td>ACTION_UNAVAILABLE</td>
+</tr>
+<tr>
+<td>B34</td>
+<td>Event ohne neue Infos aber gültig</td>
+<td>trotzdem geloggt</td>
+</tr>
+<tr>
+<td>B35</td>
+<td>Event nach solved inkl. malformed</td>
+<td>SESSION_CLOSED; keine Portaufrufe</td>
+</tr>
+<tr>
+<td>B36</td>
+<td>Fremde Packageidentity im State</td>
+<td>HOST_FAILURE vor terminal</td>
+</tr>
+<tr>
+<td>B37</td>
+<td>33 Anklageliterale oder &gt;16KiB</td>
+<td>ACTION_UNAVAILABLE; unverändert</td>
+</tr>
+<tr>
+<td>B38</td>
+<td>513. gültiges Event</td>
+<td>LIMIT_REACHED; unverändert</td>
+</tr>
+<tr>
+<td>B39</td>
+<td>Prospective Save überschreitet 1MiB</td>
+<td>LIMIT_REACHED vor Commit</td>
+</tr>
+<tr>
+<td>B40</td>
+<td>Raw Event/Output nach Aufruf mutieren</td>
+<td>eigener frozen State bleibt unverändert</td>
+</tr>
+<tr>
+<td>C01</td>
+<td>Leere Historie speichern/laden</td>
+<td>initialSession identisch</td>
+</tr>
+<tr>
+<td>C02</td>
+<td>Vollständiger Vitrine-Witness roundtrip</td>
+<td>Known/Discoveries/Records identisch</td>
+</tr>
+<tr>
+<td>C03</td>
+<td>Solved-Historie roundtrip</td>
+<td>terminal unverändert</td>
+</tr>
+<tr>
+<td>C04</td>
+<td>State Derived-Knowledge manipuliert beim Encode</td>
+<td>INVALID_STATE</td>
+</tr>
+<tr>
+<td>C05</td>
+<td>State Verdict manipuliert beim Encode</td>
+<td>INVALID_STATE</td>
+</tr>
+<tr>
+<td>C06</td>
+<td>Save mit knowledge-Zusatzfeld</td>
+<td>INVALID_SAVE</td>
+</tr>
+<tr>
+<td>C07</td>
+<td>Save mit phase/snapshot-Zusatzfeld</td>
+<td>INVALID_SAVE</td>
+</tr>
+<tr>
+<td>C08</td>
+<td>Save root schemaVersion=2</td>
+<td>INVALID_SAVE</td>
+</tr>
+<tr>
+<td>C09</td>
+<td>Unbekannter rulesetVersion</td>
+<td>INCOMPATIBLE_PACKAGE</td>
+</tr>
+<tr>
+<td>C10</td>
+<td>Geänderter packageHash</td>
+<td>INCOMPATIBLE_PACKAGE</td>
+</tr>
+<tr>
+<td>C11</td>
+<td>Nur Presentationtext neuer Packageversion</td>
+<td>INCOMPATIBLE_PACKAGE</td>
+</tr>
+<tr>
+<td>C12</td>
+<td>Nur NPC-Provenance neuer Packageversion</td>
+<td>INCOMPATIBLE_PACKAGE</td>
+</tr>
+<tr>
+<td>C13</td>
+<td>Alter Save mit archiviertem exakten Package</td>
+<td>erfolgreich bei gleichem Ruleset</td>
+</tr>
+<tr>
+<td>C14</td>
+<td>Geändertes Event ohne Checksumupdate</td>
+<td>CHECKSUM_MISMATCH</td>
+</tr>
+<tr>
+<td>C15</td>
+<td>Checksum uppercase/falsche Länge</td>
+<td>INVALID_SAVE</td>
+</tr>
+<tr>
+<td>C16</td>
+<td>Neuer gültiger Verlauf mit neuer Checksum</td>
+<td>akzeptiert; keine Anti-Cheat-Garantie</td>
+</tr>
+<tr>
+<td>C17</td>
+<td>Kürzeres gültiges Präfix neu checksummiert</td>
+<td>akzeptiert; kein Rollbackschutz</td>
+</tr>
+<tr>
+<td>C18</td>
+<td>Historie umgeordnet, Checksum neu</td>
+<td>Replay entscheidet; ungültiges Präfix INVALID_HISTORY</td>
+</tr>
+<tr>
+<td>C19</td>
+<td>Historie nach solved, Checksum neu</td>
+<td>INVALID_HISTORY, kein Abschneiden</td>
+</tr>
+<tr>
+<td>C20</td>
+<td>Abgewiesenes Event zwischen gültigen</td>
+<td>INVALID_HISTORY, kein Überspringen</td>
+</tr>
+<tr>
+<td>C21</td>
+<td>Unbekannte/stale Refs in neu checksummiertem Log</td>
+<td>INVALID_HISTORY</td>
+</tr>
+<tr>
+<td>C22</td>
+<td>Unsinniges accepted=true-Zusatzfeld</td>
+<td>INVALID_HISTORY/INVALID_SAVE; nie Autorität</td>
+</tr>
+<tr>
+<td>C23</td>
+<td>Doppelte JSON-Rootkeys</td>
+<td>INVALID_SAVE durch Wirekanonisierung</td>
+</tr>
+<tr>
+<td>C24</td>
+<td>Doppelte verschachtelte Keys</td>
+<td>INVALID_SAVE</td>
+</tr>
+<tr>
+<td>C25</td>
+<td>Whitespace vor/nach JSON</td>
+<td>INVALID_SAVE; Codec akzeptiert seine kanonische Form</td>
+</tr>
+<tr>
+<td>C26</td>
+<td>BOM/invalid JSON</td>
+<td>INVALID_SAVE</td>
+</tr>
+<tr>
+<td>C27</td>
+<td>String mit lone surrogate</td>
+<td>INVALID_SAVE</td>
+</tr>
+<tr>
+<td>C28</td>
+<td>NFC versus NFD</td>
+<td>keine Normalisierung; verschiedene Bytes</td>
+</tr>
+<tr>
+<td>C29</td>
+<td>JSON -0 versus 0</td>
+<td>nichtkanonisches -0 abweisen</td>
+</tr>
+<tr>
+<td>C30</td>
+<td>Propertyorder nicht kanonisch</td>
+<td>INVALID_SAVE; intern C ordnet Objekte</td>
+</tr>
+<tr>
+<td>C31</td>
+<td>Events vertauschen im Checksumpräimage</td>
+<td>Checksum verschieden</td>
+</tr>
+<tr>
+<td>C32</td>
+<td>Literale innerhalb Event vertauschen</td>
+<td>Verlaufbytes verschieden; semantischer Verdict kann gleich sein</td>
+</tr>
+<tr>
+<td>C33</td>
+<td>Save exakt 1MiB und ein Byte darüber</td>
+<td>Grenze inklusive / LIMIT_REACHED</td>
+</tr>
+<tr>
+<td>C34</td>
+<td>Mehr als 512 Events vor Replay</td>
+<td>LIMIT_REACHED</td>
+</tr>
+<tr>
+<td>C35</td>
+<td>Tiefe 33 / über 100000 Nodes</td>
+<td>LIMIT_REACHED vor rekursiven Funktionen</td>
+</tr>
+<tr>
+<td>C36</td>
+<td>Replay-Port wirft</td>
+<td>HOST_FAILURE; keine Teilzustandsausgabe</td>
+</tr>
+<tr>
+<td>C37</td>
+<td>Replay ohne alte Packageversion</td>
+<td>kein automatisches Upgrade</td>
+</tr>
+<tr>
+<td>C38</td>
+<td>Gleiche Historie zweimal replayen</td>
+<td>tiefe Gleichheit, keine geteilte veränderliche Stateautorität</td>
+</tr>
+<tr>
+<td>C39</td>
+<td>640 generierte Historien mit Präfixvergleich</td>
+<td>incremental = replay = load, Reject unverändert</td>
+</tr>
+<tr>
+<td>C40</td>
+<td>Checksum korrekt aber technischer Bindingfehler</td>
+<td>HOST_FAILURE/inkompatibel, niemals not_solved</td>
+</tr>
+</tbody></table>
+<h3>Ausgeführte 124er-Scratch-Matrix</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Prüfung</th>
+<th>Ergebnis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>X001</td>
+<td>ordered witness releases both sources</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X002</td>
+<td>wrong order cannot read camera</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X003</td>
+<td>unknown question indistinguishable</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X004</td>
+<td>empty search accepted</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X005</td>
+<td>repeat search no new observation</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X006</td>
+<td>repeat search still an event</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X007</td>
+<td>repeat question two provenance occurrences</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X008</td>
+<td>repeat NPC payload stable</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X009</td>
+<td>second release failure atomic</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X010</td>
+<td>correct guess solved without evidence by Challenge design</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X011</td>
+<td>wrong accusation accepted not solved</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X012</td>
+<td>terminal rejects {&quot;action&quot;:&quot;search_location&quot;,&quot;target&quot;:&quot;pr1_0000000000000019&quot;,&quot;type&quot;:&quot;investigate&quot;}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X013</td>
+<td>terminal rejects {&quot;npc&quot;:&quot;pr1_000000000000001d&quot;,&quot;questionId&quot;:&quot;question:q08&quot;,&quot;type&quot;:&quot;interrogate&quot;}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X014</td>
+<td>terminal rejects {&quot;action&quot;:&quot;examine_item&quot;,&quot;target&quot;:&quot;pr1_0000000000000011&quot;,&quot;type&quot;:&quot;investigate&quot;}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X015</td>
+<td>terminal rejects {&quot;npc&quot;:&quot;pr1_000000000000001e&quot;,&quot;questionId&quot;:&quot;question:q14&quot;,&quot;type&quot;:&quot;interrogate&quot;}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X016</td>
+<td>terminal rejects {&quot;action&quot;:&quot;examine_item&quot;,&quot;target&quot;:&quot;pr1_0000000000000015&quot;,&quot;type&quot;:&quot;investigate&quot;}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X017</td>
+<td>terminal rejects {&quot;literals&quot;:[{&quot;claim&quot;:{&quot;event&quot;:&quot;pr1_0000000000000004&quot;,&quot;kind&quot;:&quot;personRoleForEvent&quot;,&quot;person&quot;:&quot;pr1_000000000000001c&quot;,&quot;role&quot;:&quot;direct_actor&quot;},&quot;value&quot;:false},{&quot;claim&quot;:{&quot;event&quot;:&quot;pr1_0000000000000004&quot;,&quot;kind&quot;:&quot;personRoleForEvent&quot;,&quot;person&quot;:&quot;pr1_000000000000001b&quot;,&quot;role&quot;:&quot;direct_actor&quot;},&quot;value&quot;:true},{&quot;claim&quot;:{&quot;event&quot;:&quot;pr1_0000000000000004&quot;,&quot;kind&quot;:&quot;personRoleForEvent&quot;,&quot;person&quot;:&quot;pr1_000000000000001d&quot;,&quot;role&quot;:&quot;direct_actor&quot;},&quot;value&quot;:false},{&quot;claim&quot;:{&quot;event&quot;:&quot;pr1_0000000000000004&quot;,&quot;kind&quot;:&quot;personRoleForEvent&quot;,&quot;person&quot;:&quot;pr1_000000000000001e&quot;,&quot;role&quot;:&quot;direct_actor&quot;},&quot;value&quot;:false}],&quot;type&quot;:&quot;accuse&quot;}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X018</td>
+<td>terminal rejects {&quot;type&quot;:&quot;bad&quot;}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X019</td>
+<td>save contains only permitted fields</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X020</td>
+<td>roundtrip exact derived state</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X021</td>
+<td>checksum sees order</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X022</td>
+<td>valid checksum does not authorize wrong order</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X023</td>
+<td>empty history valid</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X024</td>
+<td>newly generated solved history accepted no anti-cheat</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X025</td>
+<td>derived/extra save field knowledge</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X026</td>
+<td>derived/extra save field phase</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X027</td>
+<td>derived/extra save field observations</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X028</td>
+<td>derived/extra save field verdicts</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X029</td>
+<td>derived/extra save field discoveries</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X030</td>
+<td>derived/extra save field snapshot</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X031</td>
+<td>derived/extra save field solution</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X032</td>
+<td>derived/extra save field proof</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X033</td>
+<td>derived/extra save field seq</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X034</td>
+<td>derived/extra save field timestamp</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X035</td>
+<td>event investigate extra seq</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X036</td>
+<td>event investigate extra timestamp</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X037</td>
+<td>event investigate extra proof</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X038</td>
+<td>event investigate extra verdict</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X039</td>
+<td>event investigate extra observation</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X040</td>
+<td>event investigate extra known</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X041</td>
+<td>event investigate extra packageHash</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X042</td>
+<td>event investigate extra truthHash</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X043</td>
+<td>event investigate extra solution</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X044</td>
+<td>event investigate extra debug</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X045</td>
+<td>event interrogate extra seq</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X046</td>
+<td>event interrogate extra timestamp</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X047</td>
+<td>event interrogate extra proof</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X048</td>
+<td>event interrogate extra verdict</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X049</td>
+<td>event interrogate extra observation</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X050</td>
+<td>event interrogate extra known</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X051</td>
+<td>event interrogate extra packageHash</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X052</td>
+<td>event interrogate extra truthHash</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X053</td>
+<td>event interrogate extra solution</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X054</td>
+<td>event interrogate extra debug</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X055</td>
+<td>event accuse extra seq</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X056</td>
+<td>event accuse extra timestamp</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X057</td>
+<td>event accuse extra proof</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X058</td>
+<td>event accuse extra verdict</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X059</td>
+<td>event accuse extra observation</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X060</td>
+<td>event accuse extra known</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X061</td>
+<td>event accuse extra packageHash</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X062</td>
+<td>event accuse extra truthHash</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X063</td>
+<td>event accuse extra solution</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X064</td>
+<td>event accuse extra debug</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X065</td>
+<td>wrong kind search event:e01</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X066</td>
+<td>wrong kind search event:e02</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X067</td>
+<td>wrong kind search event:e03</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X068</td>
+<td>wrong kind search event:e04</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X069</td>
+<td>wrong kind search event:e05</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X070</td>
+<td>wrong kind search event:e06</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X071</td>
+<td>wrong kind search event:e07</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X072</td>
+<td>wrong kind search event:e08</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X073</td>
+<td>wrong kind search evidence:d01</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X074</td>
+<td>wrong kind search evidence:d02</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X075</td>
+<td>wrong kind search evidence:d03</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X076</td>
+<td>wrong kind search evidence:d04</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X077</td>
+<td>wrong kind search evidence:d05</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X078</td>
+<td>wrong kind search evidence:d06</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X079</td>
+<td>wrong kind search evidence:d07</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X080</td>
+<td>wrong kind search evidence:d08</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X081</td>
+<td>wrong kind search item:kamera</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X082</td>
+<td>wrong kind search item:kassette</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X083</td>
+<td>wrong kind search item:medaille</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X084</td>
+<td>wrong kind search item:schluessel</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X085</td>
+<td>wrong kind search item:terminal</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X086</td>
+<td>literal Boolean strict None</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X087</td>
+<td>literal Boolean strict False</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X088</td>
+<td>literal Boolean strict 0</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X089</td>
+<td>literal Boolean strict 1</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X090</td>
+<td>literal Boolean strict []</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X091</td>
+<td>literal Boolean strict {}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X092</td>
+<td>literal Boolean strict &#39;true&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X093</td>
+<td>literal Boolean strict &#39;false&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X094</td>
+<td>identity drift schemaVersion</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X095</td>
+<td>identity drift packageHash</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X096</td>
+<td>identity drift rulesetVersion</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X097</td>
+<td>duplicate/size literals 0</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X098</td>
+<td>duplicate/size literals 1</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X099</td>
+<td>duplicate/size literals 31</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X100</td>
+<td>duplicate/size literals 32</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X101</td>
+<td>duplicate/size literals 33</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X102</td>
+<td>duplicate/size literals 50</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X103</td>
+<td>four answer vectors max</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X104</td>
+<td>four answer vectors lina</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X105</td>
+<td>four answer vectors nora</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X106</td>
+<td>four answer vectors oskar</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X107</td>
+<td>investigate hostile ref &#39;pr1_ffffffffffffffff&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X108</td>
+<td>investigate hostile ref &#39;pr1_0000000000000000&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X109</td>
+<td>investigate hostile ref &#39;person:lina&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X110</td>
+<td>investigate hostile ref &#39;&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X111</td>
+<td>investigate hostile ref {&#39;kind&#39;: &#39;person&#39;, &#39;index&#39;: 1}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X112</td>
+<td>investigate hostile ref None</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X113</td>
+<td>interrogate hostile ref &#39;pr1_ffffffffffffffff&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X114</td>
+<td>interrogate hostile ref &#39;pr1_0000000000000000&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X115</td>
+<td>interrogate hostile ref &#39;person:lina&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X116</td>
+<td>interrogate hostile ref &#39;&#39;</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X117</td>
+<td>interrogate hostile ref {&#39;kind&#39;: &#39;person&#39;, &#39;index&#39;: 1}</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X118</td>
+<td>interrogate hostile ref None</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X119</td>
+<td>conflicting reports retained</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X120</td>
+<td>no report to objective fact field</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X121</td>
+<td>512 accepted</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X122</td>
+<td>513 rejected atomically</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X123</td>
+<td>oversized JSON rejected</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X124</td>
+<td>duplicate JSON rejected</td>
+<td>PASS</td>
+</tr>
+</tbody></table>
+<h3>Quellensnapshots</h3>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>SHA-256</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DIE-LEERE-VITRINE-HEADLESS-SPEC.html</td>
+<td>7dfde28de876e9e9fc261394e0ffed022d01389501aafe70898ad00c509f3141</td>
+</tr>
+<tr>
+<td>MYST-0002.contract.FINAL-CANDIDATE.md</td>
+<td>f8f72fa58115fec37b1994c551a697470fd29a87d627736a2060b85a8708b84c</td>
+</tr>
+<tr>
+<td>MYST-0003-EVIDENCE-ACCESS-V1.contract.DRAFT.md</td>
+<td>dd39b7fc8c36eab5745f6b1c9ba505f3e7595bd22d6dbc99c62e4c89a6c84f35</td>
+</tr>
+<tr>
+<td>MYST-0004-EVIDENCE-PRESENTATION-V1.contract.DRAFT.md</td>
+<td>6a2e155f7767f9cc09ba5324fa0e5cd2913826a2b5b3c6801b33d8136d992973</td>
+</tr>
+<tr>
+<td>MYST-0005A-INTERROGATION-AUTHORING-V1.contract.DRAFT.md</td>
+<td>fc4c7a633ccd88082b38ba1ebad4fed1e835a9e6c7cf62ea34c6ec66db123e0e</td>
+</tr>
+<tr>
+<td>MYST-0005B-INTERROGATION-RELEASE-V1.contract.DRAFT.md</td>
+<td>abcb3a4879dbf19de1d32f9fd5be898b207995219cedd8364b4cf7afc4f6a180</td>
+</tr>
+<tr>
+<td>MYST-CHALLENGE-0001.contract.DRAFT.md</td>
+<td>9888f9b55da5955eb161014c5f34a74ee9e4ce65483007f5adc9b397686f58f4</td>
+</tr>
+<tr>
+<td>MYST-SOLVABILITY-0001.contract.DRAFT.md</td>
+<td>06b0e5f2774d22ce520ef6787e91c8b84ed6907983cfee2d0f0d3432391e09d8</td>
+</tr>
+</tbody></table>
+<h3>Zusätzliche Hashprüfung</h3>
+<p>Drei Save-Kanonisierungs-/Checksumvektoren wurden unabhängig in Python und Node reproduziert. Sie liegen als evidence/save-golden-vectors.json bei und stehen in allen drei Contracts. Der Ordnungswechsel der Events verändert den Hash. Dies ist kein Test der noch fehlenden Produktionscodec-Implementierung.</p>
+</body></html>
