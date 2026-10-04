@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CaseIdSchema, ClaimSchema, PersonIdSchema, type CaseTruth, type DeepReadonly } from "./case-truth.ts";
+import { CaseIdSchema, ClaimSchema, EvidenceIdSchema, PersonIdSchema, type CaseTruth, type DeepReadonly } from "./case-truth.ts";
 import { hashCaseTruth } from "./case-truth.identity.ts";
 import { ConclusionClaimSchema } from "./case-solution.ts";
 import { AwarenessSubjectSchema } from "./npc-knowledge.ts";
@@ -161,6 +161,18 @@ const InterrogationProfileShapeSchema = z.strictObject({
   npcId: PersonIdSchema,
   revision: z.int().positive(),
   rules: z.array(RuleSchema),
+  // V2: a lie gives way when the player holds the refuting evidence against it; the admission is a
+  // sincere answer to `claim`, released like an answer to the lie's question (plus `reveal`).
+  confrontations: z
+    .array(
+      z.strictObject({
+        questionId: QuestionIdSchema,
+        evidenceId: EvidenceIdSchema,
+        claim: StatementClaimSchema,
+        reveal: z.array(AwarenessSubjectSchema),
+      }),
+    )
+    .optional(),
 });
 type InterrogationProfileShape = z.output<typeof InterrogationProfileShapeSchema>;
 type Binding = { readonly truthHash: string; readonly catalogueHash: string; readonly catalogueBound: boolean };
@@ -182,36 +194,64 @@ function checkProfile(p: InterrogationProfileShape, truth: CaseTruth, catalogue:
     if (seen.has(rule.questionId)) issue(`Duplicate rule for "${rule.questionId}"`, ["rules", j, "questionId"]);
     seen.add(rule.questionId);
   });
+  /** References known and release rules R1-R4 for a stated claim answering `question`. */
+  const releaseOk = (
+    rule: { readonly claim: StatementClaim; readonly reveal: readonly EntityRef[] },
+    question: { readonly mentions: readonly EntityRef[] },
+    at: Path,
+  ): boolean => {
+    let referencesOk = true;
+    for (const [field, kind, id] of claimFields(rule.claim)) {
+      if (!known[kind].has(id)) referencesOk = failed(issue, `Unknown ${kind} "${id}"`, [...at, "claim", field]);
+    }
+    rule.reveal.forEach(({ kind, id }, j) => {
+      if (!known[kind].has(id)) referencesOk = failed(issue, `Unknown ${kind} "${id}"`, [...at, "reveal", j, "id"]);
+    });
+    if (!referencesOk) return false;
+    const mentionKeys = new Set(question.mentions.map(refKey));
+    const revealKeys = rule.reveal.map(refKey);
+    const claimKeys = new Set(statementClaimReferences(rule.claim).map(refKey));
+    const allowed = new Set([...mentionKeys, npcKey, ...revealKeys]);
+    if ([...claimKeys].some((key) => !allowed.has(key))) issue("R1: claim shows an unreleased entity", [...at, "claim"]);
+    const revealed = new Set<string>();
+    revealKeys.forEach((key, j) => {
+      if (!claimKeys.has(key)) issue("R2: a revealed entity must occur in the claim", [...at, "reveal", j]);
+      if (mentionKeys.has(key) || key === npcKey) issue("R3: a revealed entity must be new", [...at, "reveal", j]);
+      if (revealed.has(key)) issue("R4: duplicate reveal", [...at, "reveal", j]);
+      revealed.add(key);
+    });
+    return true;
+  };
   p.rules.forEach((rule, i) => {
     const question = questions.get(rule.questionId);
     if (question === undefined) return issue(`Unknown question "${rule.questionId}"`, ["rules", i, "questionId"]);
     if (rule.act === "decline") return;
-    let referencesOk = true;
-    for (const [field, kind, id] of claimFields(rule.claim)) {
-      if (!known[kind].has(id)) referencesOk = failed(issue, `Unknown ${kind} "${id}"`, ["rules", i, "claim", field]);
-    }
-    rule.reveal.forEach(({ kind, id }, j) => {
-      if (!known[kind].has(id)) referencesOk = failed(issue, `Unknown ${kind} "${id}"`, ["rules", i, "reveal", j, "id"]);
-    });
-    if (!referencesOk) return;
+    if (!releaseOk(rule, question, ["rules", i])) return;
     if (rule.act === "lie") {
       const proposition = lieProposition(truth, rule.claim);
       if (proposition === undefined) issue("A lie must state a proposition of the truth", ["rules", i, "claim"]);
       else if ((rule.stance === "affirms") === proposition.truth) issue("A lie must contradict the truth", ["rules", i, "stance"]);
     }
+  });
 
-    const mentionKeys = new Set(question.mentions.map(refKey));
-    const revealKeys = rule.reveal.map(refKey);
-    const claimKeys = new Set(statementClaimReferences(rule.claim).map(refKey));
-    const allowed = new Set([...mentionKeys, npcKey, ...revealKeys]);
-    if ([...claimKeys].some((key) => !allowed.has(key))) issue("R1: claim shows an unreleased entity", ["rules", i, "claim"]);
-    const revealed = new Set<string>();
-    revealKeys.forEach((key, j) => {
-      if (!claimKeys.has(key)) issue("R2: a revealed entity must occur in the claim", ["rules", i, "reveal", j]);
-      if (mentionKeys.has(key) || key === npcKey) issue("R3: a revealed entity must be new", ["rules", i, "reveal", j]);
-      if (revealed.has(key)) issue("R4: duplicate reveal", ["rules", i, "reveal", j]);
-      revealed.add(key);
-    });
+  const pairs = new Set<string>();
+  (p.confrontations ?? []).forEach((c, i) => {
+    const path = ["confrontations", i];
+    const pair = `${c.questionId}|${c.evidenceId}`;
+    if (pairs.has(pair)) issue("Duplicate confrontation", path);
+    pairs.add(pair);
+    const rule = p.rules.find((r) => r.questionId === c.questionId);
+    const question = questions.get(c.questionId);
+    if (rule === undefined || question === undefined) return issue(`No rule for "${c.questionId}"`, [...path, "questionId"]);
+    if (rule.act !== "lie") return issue("Only a lie can be confronted", [...path, "questionId"]);
+    const evidence = truth.evidence.find((e) => e.id === c.evidenceId);
+    if (evidence === undefined) return issue(`Unknown evidence "${c.evidenceId}"`, [...path, "evidenceId"]);
+    const proposition = lieProposition(truth, rule.claim);
+    const refutes = evidence.links.some(
+      (l) => l.propositionId === proposition?.id && (l.direction === "supports") !== (rule.stance === "affirms"),
+    );
+    if (!refutes) issue("The evidence does not refute the lie", [...path, "evidenceId"]);
+    releaseOk(c, question, path);
   });
 }
 

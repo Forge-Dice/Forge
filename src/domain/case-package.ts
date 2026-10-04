@@ -409,6 +409,8 @@ const PlayerReportSchema = z.strictObject({
 });
 const ReportSelectorSchema = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.literal("npc"), questionId: QuestionIdSchema, claim: z.unknown(), stance: Affirmation }),
+  // V2: what the NPC admits when confronted with this evidence over this question.
+  z.strictObject({ kind: z.literal("admission"), questionId: QuestionIdSchema, evidenceId: z.string(), claim: z.unknown(), stance: Affirmation }),
   z.strictObject({ kind: z.literal("testimony"), evidenceId: z.string(), report: PlayerReportSchema }),
 ]);
 const Alternatives = <T extends z.ZodType>(item: T) => z.array(item).min(1).max(16);
@@ -434,6 +436,7 @@ const PremiseMapSchema = z.discriminatedUnion("kind", [
 const SessionEventSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("investigate"), action: z.enum(["search_location", "examine_item", "examine_person"]), target: Ref }),
   z.strictObject({ type: z.literal("interrogate"), npc: Ref, questionId: QuestionIdSchema }),
+  z.strictObject({ type: z.literal("confront"), npc: Ref, questionId: QuestionIdSchema, evidence: Ref }),
   z.strictObject({ type: z.literal("accuse"), literals: z.array(z.strictObject({ claim: z.unknown(), value: z.boolean() })).max(32) }),
 ]);
 const ManifestSchema = z.strictObject({
@@ -569,6 +572,7 @@ function awarenessReach(ctx: ProofContext): Set<string> {
       const question = ctx.catalogue.questions.find((q) => q.id === rule.questionId);
       [...(question?.mentions ?? []), ...rule.reveal, { kind: "person" as const, id: profile.npcId }].forEach((e) => reach.add(entityKey(e.kind, e.id)));
     }
+    for (const c of profile.confrontations ?? []) c.reveal.forEach((e) => reach.add(entityKey(e.kind, e.id)));
   }
   return reach;
 }
@@ -601,6 +605,15 @@ function checkPremise(o: PremiseMap, i: number, ctx: ProofContext, kinds: Readon
         if ((alt.stance === "affirms") !== o.literal.value) reject("PROOF_BINDING", [...at, "stance"]);
         return bindLiteral(o.literal, claim, ctx, at);
       }
+      if (alt.kind === "admission") {
+        const profile = ctx.npcs.find((n) => n.profile.npcId === o.npcId)?.profile;
+        const rule = profile?.confrontations?.find((c) => c.questionId === alt.questionId && c.evidenceId === alt.evidenceId);
+        if (rule === undefined) return reject("REFERENCE", [...at, "evidenceId"]);
+        const claim = claimOf(alt.claim, StatementClaimSchema, ctx.resolve, [...at, "claim"]);
+        if (C(claim) !== C(rule.claim)) reject("PROOF_BINDING", [...at, "claim"]);
+        if ((alt.stance === "affirms") !== o.literal.value) reject("PROOF_BINDING", [...at, "stance"]);
+        return bindLiteral(o.literal, claim, ctx, at);
+      }
       if (!evidenceExists(alt.evidenceId)) reject("REFERENCE", [...at, "evidenceId"]);
       const source = alt.report.source;
       if (source.kind !== "testimony" || C(ctx.resolve(source.person)) !== C({ kind: "person", id: o.npcId })) {
@@ -629,8 +642,9 @@ function checkEvent(event: Certificate["steps"][number]["event"], ctx: ProofCont
   if (utf8Length(C(event)) > MAX_EVENT_BYTES) reject("LIMIT", path);
   const expect = (ref: string, kind: EntityRef["kind"], at: Path) => ctx.resolve(ref)?.kind === kind || reject("REFERENCE", at);
   if (event.type === "investigate") expect(event.target, ACTION_TARGET[event.action], [...path, "target"]);
-  else if (event.type === "interrogate") {
+  else if (event.type === "interrogate" || event.type === "confront") {
     expect(event.npc, "person", [...path, "npc"]);
+    if (event.type === "confront") expect(event.evidence, "evidence", [...path, "evidence"]);
     if (!ctx.catalogue.questions.some((q) => q.id === event.questionId)) reject("REFERENCE", [...path, "questionId"]);
   } else event.literals.forEach((l, k) => claimOf(l.claim, ConclusionClaimSchema, ctx.resolve, [...path, "literals", k, "claim"]));
 }

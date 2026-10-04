@@ -43,5 +43,17 @@
       },
       "reveal": []
     }
+  ],
+  "confrontations": [
+    {
+      "questionId": "question:q01",
+      "evidenceId": "evidence:cuff-button",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:murder",
+        "personId": "person:ben"
+      },
+      "reveal": []
+    }
   ]
 }

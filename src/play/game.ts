@@ -2,7 +2,7 @@ import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
 import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
 import type { EvidenceObservation, PlayerClaim as EvidenceClaim } from "../domain/evidence-presentation.ts";
-import type { InterrogationObservation, PlayerClaim } from "../domain/interrogation.ts";
+import type { ConfrontationObservation, InterrogationObservation, PlayerClaim } from "../domain/interrogation.ts";
 
 // Text front end over the real session reducer. Pure: every command maps (game, line) to a new game
 // and the text to print; file I/O lives in cli.ts. The player sees only PublicContent, released
@@ -22,6 +22,7 @@ const HELP = [
   "  bekannt           alles, was du bisher kennst",
   "  untersuchen | u   mögliche Untersuchungen anzeigen; u <nr> ausführen",
   "  fragen | f        verfügbare Fragen anzeigen; f <nr> stellen",
+  "  vorhalten | v     einer Aussage einen Fund vorhalten; v <nr> ausführen",
   "  journal | j       alle bisherigen Funde und Aussagen",
   "  anklage | a       Verdächtige anzeigen; a <nr> anklagen",
   "  speichern [datei] Spielstand sichern; laden [datei] Spielstand laden",
@@ -66,6 +67,9 @@ export function command(game: Game, line: string): Step {
     case "fragen":
     case "f":
       return choose(game, questions(game), pick, "Fragen");
+    case "vorhalten":
+    case "v":
+      return choose(game, confrontations(game), pick, "Vorhalten");
     case "anklage":
     case "a":
       return choose(game, accusations(game), pick, `Anklage. ${game.pkg.publicContent.challengeQuestion}`);
@@ -112,6 +116,29 @@ export function questions(game: Game): Action[] {
       .filter((q) => q.npc === npcId)
       .map((q) => ({ label: `${label}: ${q.text}`, event: { type: "interrogate", npc: ref, questionId: q.questionId } }))
       .filter((action) => state.phase === "active" && reduceSession(pkg, state, action.event).ok);
+  });
+}
+
+/**
+ * Confrontations the session would accept now: every earlier statement of an NPC (one per
+ * question) against every found evidence. Offered alike for true statements and lies.
+ */
+export function confrontations(game: Game): Action[] {
+  const { pkg, state } = game;
+  if (state.phase !== "active") return [];
+  const statements = new Map<string, { npc: string; questionId: string }>();
+  for (const r of state.knowledge.observations) {
+    if (r.source.kind === "npc" && "statement" in r.observation) statements.set(`${r.source.npc}|${r.source.questionId}`, r.source);
+  }
+  return [...statements.values()].flatMap(({ npc, questionId }) => {
+    const npcId = pkg.refs.resolve(npc)?.id;
+    const text = pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === questionId)?.text ?? questionId;
+    return state.knowledge.discoveries
+      .map((d) => ({
+        label: `${labelOf(game, npc)} zu „${text}“ vorhalten: ${labelOf(game, d.evidence)}`,
+        event: { type: "confront", npc, questionId, evidence: d.evidence },
+      }))
+      .filter((action) => reduceSession(pkg, state, action.event).ok);
   });
 }
 
@@ -196,12 +223,20 @@ export function answerText(game: Game, o: InterrogationObservation): string {
   return "statement" in o ? `${said}\n  (zur Behauptung: ${claimText(game, o.statement)})` : said;
 }
 
+export function confrontationText(game: Game, o: ConfrontationObservation): string {
+  const head = `${labelOf(game, o.npc)}, mit „${labelOf(game, o.evidence)}“ konfrontiert`;
+  if (o.act === "stands_by") return `${head}: „Ich bleibe bei dem, was ich gesagt habe.“`;
+  return `${head}, gibt nach: „${STANCES[o.stance]}“\n  (zur Behauptung: ${claimText(game, o.statement)})`;
+}
+
 function outputText(game: Game, output: SessionOutput): string {
   switch (output.type) {
     case "investigate":
       return output.observations.length === 0 ? "Nichts Neues gefunden." : output.observations.map((o) => evidenceText(game, o)).join("\n");
     case "interrogate":
       return answerText(game, output.observation);
+    case "confront":
+      return confrontationText(game, output.observation);
     case "accuse":
       if (output.verdict !== "solved") return "Die Antwort erfüllt den Fallauftrag noch nicht. Ermittle weiter.";
       // The epilogue is shown only here, after a solving accusation.
@@ -227,8 +262,19 @@ function journalText(game: Game): string {
   const records = game.state.knowledge.observations;
   if (records.length === 0) return "Das Journal ist noch leer.";
   return records
-    .map((r) => `[${r.source.eventIndex + 1}] ${r.source.kind === "evidence" ? evidenceText(game, r.observation as EvidenceObservation) : answerText(game, r.observation as InterrogationObservation)}`)
+    .map((r) => `[${r.source.eventIndex + 1}] ${recordText(game, r)}`)
     .join("\n");
+}
+
+export function recordText(game: Game, r: SessionState["knowledge"]["observations"][number]): string {
+  switch (r.source.kind) {
+    case "evidence":
+      return evidenceText(game, r.observation as EvidenceObservation);
+    case "npc":
+      return answerText(game, r.observation as InterrogationObservation);
+    case "confrontation":
+      return confrontationText(game, r.observation as ConfrontationObservation);
+  }
 }
 
 // ---------- Save / load: the Session C save format (MYST-SESSION-0001C) ----------
