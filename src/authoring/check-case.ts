@@ -503,3 +503,34 @@ export function writeFilledHashes(check: CaseCheck): string[] {
   }
   return [...byFile.keys()];
 }
+
+/**
+ * Binds a case's authored proof (release manifest and proof profile with TO_BE_COMPUTED
+ * placeholders) to a package input, as the case check does. Used by the play host so that
+ * packages under ruleset mystery-session-v3 carry the witness that hints are derived from.
+ * Hashes already filled in (certified under v1/v2) are recomputed for the input's ruleset:
+ * stale values are the case check's finding, not the play host's.
+ */
+export function bindCaseProof(
+  input: { rulesetVersion: RulesetVersion; truth: unknown; solution: unknown; catalogue: unknown; initial: unknown; npcs: Npc[]; access: unknown; presentation: unknown; challenge: unknown; publicContent: unknown },
+  rawManifest: unknown,
+  rawProfile: unknown,
+  salt: string,
+): { profile: unknown; releaseManifest: string } {
+  const c = new Collector();
+  const truth = parseCaseTruth(input.truth);
+  const solution = parseCaseSolution(input.solution, truth);
+  const catalogue = parseQuestionCatalogue(input.catalogue, truth);
+  const index = buildPlayerRefIndex(truth, salt);
+  if (!index.success) throw new Error(`PlayerRef index: ${index.code}`);
+  const unbound = "TO_BE_COMPUTED_FOR_PLAY";
+  const manifestInput = typeof rawManifest === "object" && rawManifest !== null ? { ...rawManifest, releaseContextHash: unbound } : rawManifest;
+  const bindings = (rawProfile as { bindings?: object } | null)?.bindings;
+  const profileInput = typeof bindings === "object" && bindings !== null ? { ...(rawProfile as object), bindings: { ...bindings, releaseHash: unbound } } : rawProfile;
+  const contextHash = releaseContextHash(input, truth, solution, catalogue, index.index, salt, c);
+  const manifest = contextHash === null ? null : bindManifest(manifestInput, contextHash, index.index, c);
+  const releaseManifest = manifest === null ? null : serializeSessionJson(manifest);
+  const profile = releaseManifest === null ? null : bindProfile(profileInput, hashReleaseManifest(releaseManifest), c);
+  if (profile === null || releaseManifest === null || c.problems.length > 0) throw new Error(`Proof not bindable: ${JSON.stringify(c.problems)}`);
+  return { profile, releaseManifest };
+}

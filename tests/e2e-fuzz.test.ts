@@ -34,7 +34,7 @@ describe.each(CASES)("game layer fuzz: %s", (name) => {
         const roll = rand();
         const menu = roll < 0.45 ? investigations(game) : roll < 0.85 ? questions(game) : accusations(game);
         const raw = rand() < 0.1 ? { type: "interrogate", npc: pick(game.state.knowledge.known)?.ref, questionId: pick(pkg.catalogue.questions)?.id } : undefined;
-        const event = raw ?? pick(menu)?.event;
+        const event = rand() < 0.05 ? { type: "hint" } : (raw ?? pick(menu)?.event);
         if (event === undefined) continue;
         const result = reduceSession(pkg, game.state, event);
         if (!result.ok) {
@@ -102,7 +102,7 @@ describe("HTTP fuzz over the web server", () => {
       const page = await timed(slug);
       check(`GET ${step}`, page);
       const at = /name="at" value="(\d+)"/.exec(page.body)?.[1] ?? "0";
-      const group = ["u", "f", "a", "x", ""][Math.floor(rand() * 5)]!;
+      const group = ["u", "f", "a", "h", "x", ""][Math.floor(rand() * 6)]!;
       const n = rand() < 0.85 ? String(1 + Math.floor(rand() * 12)) : ["0", "-1", "abc", "99999", "1e3", ""][Math.floor(rand() * 6)]!;
       const stale = rand() < 0.1 ? String(Number(at) + 1) : at;
       check(`POST act ${step}`, await timed(`${slug}/act`, form({ group, n, at: stale })));

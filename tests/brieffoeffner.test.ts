@@ -58,11 +58,12 @@ describe("Der Brieföffner: components with the real parsers", () => {
     expect(pkg.refs.truthHash).toBe(hashCaseTruth(truth));
   });
 
-  it("the play package is the same package without proof", () => {
+  it("the play package is this package: ruleset v3, proof bound on load (hints need the witness)", () => {
     const play = loadPlayPackage("brieföffner");
-    expect(play.proof).toBeNull();
+    expect(play.proof!.releaseHash).toBe(briefReleaseHash());
     expect(pkg.proof!.releaseHash).toBe(briefReleaseHash());
-    expect(play.identity.packageHash).not.toBe(pkg.identity.packageHash);
+    expect(play.identity).toEqual(pkg.identity);
+    expect(play.identity.rulesetVersion).toBe("mystery-session-v3");
   });
 });
 
@@ -153,7 +154,7 @@ describe("Der Brieföffner: played through the real session", () => {
     // Refuted by evidence: the cuff button puts Ben at the murder, the garden trail Anna outside.
     const cards = JSON.stringify(state.knowledge.observations.filter((o) => o.source.kind !== "npc"));
     expect(cards).toContain(`"stance":"affirms"`);
-    expect(pkg.identity.rulesetVersion).toBe("mystery-session-v2");
+    expect(pkg.identity.rulesetVersion).toBe("mystery-session-v3");
   });
 
   it("the full walkthrough replays to the same state", () => {
