@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "known": [
+    {
+      "kind": "person",
+      "id": "person:rosa"
+    },
+    {
+      "kind": "person",
+      "id": "person:lukas"
+    },
+    {
+      "kind": "person",
+      "id": "person:mira"
+    },
+    {
+      "kind": "person",
+      "id": "person:gerd"
+    },
+    {
+      "kind": "person",
+      "id": "person:johanna"
+    },
+    {
+      "kind": "person",
+      "id": "person:tobias"
+    },
+    {
+      "kind": "location",
+      "id": "location:stube"
+    },
+    {
+      "kind": "location",
+      "id": "location:funkraum"
+    },
+    {
+      "kind": "location",
+      "id": "location:terrasse"
+    },
+    {
+      "kind": "location",
+      "id": "location:lager"
+    },
+    {
+      "kind": "item",
+      "id": "item:kasse"
+    },
+    {
+      "kind": "event",
+      "id": "event:diebstahl"
+    }
+  ]
+}

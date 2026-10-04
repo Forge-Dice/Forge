@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "title": "Die verstummte Geige",
+  "brief": "Pause im Konzerthaus. Als die Solistin Marta Weil um 20:50 in ihre Garderobe zurückkehrt, ist ihr Geigenkasten leer. Der Bewegungsmelder der Garderobe hat genau einmal ausgelöst: um 20:40 Uhr.\n\nDein Auftrag: Finde heraus, wer die Geige eigenhändig genommen hat. In Frage kommen Ida Reiner, Paul Adler, Kurt Mohn, Vera Lind und Henrik Sand. Durchsuche die Räume, untersuche, was du findest, und befrage Ida, Paul, Kurt und Vera. Nicht jede Spur führt zur Täterin oder zum Täter, und eine verweigerte Antwort ist kein Geständnis.",
+  "challengeQuestion": "Wer hat die Geige um 20:40 aus der Garderobe genommen?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:ida"
+      },
+      "label": "Ida Reiner",
+      "role": "Bratschistin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:paul"
+      },
+      "label": "Paul Adler",
+      "role": "Dirigent"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:kurt"
+      },
+      "label": "Kurt Mohn",
+      "role": "Hausmeister"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:vera"
+      },
+      "label": "Vera Lind",
+      "role": "Musikkritikerin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:henrik"
+      },
+      "label": "Henrik Sand",
+      "role": "Mäzen"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:marta"
+      },
+      "label": "Marta Weil",
+      "role": "Solistin"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:buehne"
+      },
+      "label": "Bühne",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:foyer"
+      },
+      "label": "Foyer",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:garderobe"
+      },
+      "label": "Solistengarderobe",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:keller"
+      },
+      "label": "Heizungskeller",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:loge"
+      },
+      "label": "Ehrenloge",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:geige"
+      },
+      "label": "Martas Geige",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:schaltschrank"
+      },
+      "label": "Schaltschrank",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:diebstahl"
+      },
+      "label": "Verschwinden der Geige um 20:40",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:pause"
+      },
+      "label": "Konzertpause",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:wartung"
+      },
+      "label": "Heizungswartung",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:telefonat"
+      },
+      "label": "Telefonat in der Loge",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:entdeckung"
+      },
+      "label": "Entdeckung des leeren Kastens",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:pausenfoto"
+      },
+      "label": "Pressefoto aus dem Foyer",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:heizungsprotokoll"
+      },
+      "label": "Schaltschrank-Anmeldung",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:logenprotokoll"
+      },
+      "label": "Logenschloss-Protokoll",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kellerplan"
+      },
+      "label": "Wartungsplan",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:haar"
+      },
+      "label": "Graues Haar",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:vera",
+      "questionId": "question:q02",
+      "text": "War Paul Adler um 20:40 im Foyer?"
+    },
+    {
+      "npc": "person:vera",
+      "questionId": "question:q03",
+      "text": "War Henrik Sand um 20:40 in der Ehrenloge?"
+    },
+    {
+      "npc": "person:vera",
+      "questionId": "question:q04",
+      "text": "War Ida Reiner um 20:40 auf der Bühne?"
+    },
+    {
+      "npc": "person:kurt",
+      "questionId": "question:q01",
+      "text": "Waren Sie um 20:40 im Heizungskeller?"
+    },
+    {
+      "npc": "person:kurt",
+      "questionId": "question:q07",
+      "text": "Was haben Sie im Heizungskeller gemacht?"
+    },
+    {
+      "npc": "person:kurt",
+      "questionId": "question:q05",
+      "text": "War Paul Adler um 20:40 in der Garderobe?"
+    },
+    {
+      "npc": "person:kurt",
+      "questionId": "question:q04",
+      "text": "War Ida Reiner um 20:40 auf der Bühne?"
+    },
+    {
+      "npc": "person:paul",
+      "questionId": "question:q02",
+      "text": "Waren Sie um 20:40 im Foyer?"
+    },
+    {
+      "npc": "person:paul",
+      "questionId": "question:q04",
+      "text": "War Ida Reiner um 20:40 auf der Bühne?"
+    },
+    {
+      "npc": "person:paul",
+      "questionId": "question:q05",
+      "text": "Waren Sie um 20:40 in der Garderobe?"
+    },
+    {
+      "npc": "person:ida",
+      "questionId": "question:q04",
+      "text": "Waren Sie um 20:40 auf der Bühne?"
+    },
+    {
+      "npc": "person:ida",
+      "questionId": "question:q06",
+      "text": "Waren Sie um 20:40 in der Garderobe?"
+    },
+    {
+      "npc": "person:ida",
+      "questionId": "question:q05",
+      "text": "War Paul Adler um 20:40 in der Garderobe?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Was ein Fundstück mit Zeitstempel zeigt, gilt als Tatsache. Aussagen von Personen können irren."
+    },
+    {
+      "id": "rule:presence",
+      "text": "Die Geige wurde um 20:40 in der Solistengarderobe von genau einer Person genommen. Wer um 20:40 nachweislich an einem anderen Ort war, scheidet aus."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Nur Ida Reiner, Paul Adler, Kurt Mohn, Vera Lind und Henrik Sand kommen in Frage. Sind vier ausgeschlossen, bleibt die fünfte Person."
+    }
+  ],
+  "epilogue": "Ida Reiner gesteht. Sie spielte seit Jahren die zweite Geige hinter Marta Weil und wollte das Solo im zweiten Teil selbst übernehmen. Um 20:40, als alle Welt im Foyer stand, nahm sie die Geige aus der Garderobe.\n\nPaul Adler und Vera Lind sind auf dem Pressefoto aus dem Foyer zu sehen, Henrik Sand telefonierte hinter der verschlossenen Ehrenloge, und Kurt Mohn war zu dieser Minute am Schaltschrank im Keller angemeldet. Das graue Haar am Geigenkasten war eine falsche Spur: Paul hatte den Kasten am Nachmittag beim Aufbau getragen."
+}

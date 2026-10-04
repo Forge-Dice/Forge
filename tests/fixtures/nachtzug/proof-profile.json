@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "bindings": {
+    "caseId": "case:nachtzug",
+    "truthHash": "f17c172ce85d4206a7f2025e08f555f3419d08e08a7aaff94b5ec538a427094b",
+    "solutionHash": "4e864a8f60f51a008b6261683e701a9ed10bb67a727afee755d43a56b187e737",
+    "releaseHash": "c54914e506b15b3c3a78a181c008c6e974e1a481f53522092490dd0a0793b146"
+  },
+  "answerScope": [
+    "conclusion:actor-bruno",
+    "conclusion:actor-clara",
+    "conclusion:actor-felix",
+    "conclusion:actor-janek",
+    "conclusion:actor-dora"
+  ],
+  "ambiguityPolicy": "must_disambiguate",
+  "question": {
+    "kind": "required_literals"
+  },
+  "observations": [
+    {
+      "id": "observed:tuer",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:tuer-verriegelt",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:riegelvermerk"
+      }
+    },
+    {
+      "id": "observed:bruno",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:bruno-wein",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:kassenjournal"
+      }
+    },
+    {
+      "id": "public-rule:bruno",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:bruno",
+          "allOf": [
+            "observation:bruno",
+            "observation:tuer"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-bruno",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:felix",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:felix-anruf",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:bildschirmfoto"
+      }
+    },
+    {
+      "id": "public-rule:felix",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:felix",
+          "allOf": [
+            "observation:felix",
+            "observation:tuer"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-felix",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:janek",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:janek-bahnsteig",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:abfertigung"
+      }
+    },
+    {
+      "id": "public-rule:janek",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:janek",
+          "allOf": [
+            "observation:janek"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-janek",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:dora",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:dora-abteil",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:tuerlog"
+      }
+    },
+    {
+      "id": "public-rule:dora",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:dora",
+          "allOf": [
+            "observation:dora"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-dora",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "public-rule:clara",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "remaining:clara",
+          "allOf": [
+            "literal:bruno",
+            "literal:felix",
+            "literal:janek",
+            "literal:dora"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-clara",
+            "value": true
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "observation:tuer",
+      "kind": "observation",
+      "observationId": "observed:tuer"
+    },
+    {
+      "id": "observation:bruno",
+      "kind": "observation",
+      "observationId": "observed:bruno"
+    },
+    {
+      "id": "license:bruno",
+      "kind": "observation",
+      "observationId": "public-rule:bruno"
+    },
+    {
+      "id": "literal:bruno",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-bruno",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:felix",
+      "kind": "observation",
+      "observationId": "observed:felix"
+    },
+    {
+      "id": "license:felix",
+      "kind": "observation",
+      "observationId": "public-rule:felix"
+    },
+    {
+      "id": "literal:felix",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-felix",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:janek",
+      "kind": "observation",
+      "observationId": "observed:janek"
+    },
+    {
+      "id": "license:janek",
+      "kind": "observation",
+      "observationId": "public-rule:janek"
+    },
+    {
+      "id": "literal:janek",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-janek",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:dora",
+      "kind": "observation",
+      "observationId": "observed:dora"
+    },
+    {
+      "id": "license:dora",
+      "kind": "observation",
+      "observationId": "public-rule:dora"
+    },
+    {
+      "id": "literal:dora",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-dora",
+        "value": false
+      }
+    },
+    {
+      "id": "license:clara",
+      "kind": "observation",
+      "observationId": "public-rule:clara"
+    },
+    {
+      "id": "literal:clara",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-clara",
+        "value": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "exclude:bruno",
+      "allOf": [
+        "observation:bruno",
+        "observation:tuer",
+        "license:bruno"
+      ],
+      "to": "literal:bruno",
+      "license": "license:bruno"
+    },
+    {
+      "id": "exclude:felix",
+      "allOf": [
+        "observation:felix",
+        "observation:tuer",
+        "license:felix"
+      ],
+      "to": "literal:felix",
+      "license": "license:felix"
+    },
+    {
+      "id": "exclude:janek",
+      "allOf": [
+        "observation:janek",
+        "license:janek"
+      ],
+      "to": "literal:janek",
+      "license": "license:janek"
+    },
+    {
+      "id": "exclude:dora",
+      "allOf": [
+        "observation:dora",
+        "license:dora"
+      ],
+      "to": "literal:dora",
+      "license": "license:dora"
+    },
+    {
+      "id": "remaining:clara",
+      "allOf": [
+        "literal:bruno",
+        "literal:felix",
+        "literal:janek",
+        "literal:dora",
+        "license:clara"
+      ],
+      "to": "literal:clara",
+      "license": "license:clara"
+    }
+  ],
+  "witnessStepIds": [
+    "search-speisewagen",
+    "ask-janek-nacht",
+    "read-dienstbuch",
+    "examine-felix",
+    "search-schlafwagen",
+    "read-terminal"
+  ]
+}

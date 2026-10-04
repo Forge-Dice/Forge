@@ -53,12 +53,14 @@ async function click(label: string, path = V): Promise<string> {
 const INTERNAL = /\b(case|person|location|item|event|evidence|proposition|conclusion|question|relationship|motive|secret|red-herring):[a-z0-9]/;
 
 describe("play:web", () => {
-  it("the start page offers both cases", async () => {
+  it("the start page offers every case", async () => {
     const html = await page("/");
     expect(html).toContain('href="/fall/vitrine"');
     expect(html).toContain('href="/fall/brieffoeffner"');
     expect(html).toContain("Die leere Vitrine");
     expect(html).toContain("Der Brieföffner");
+    expect(html).toContain('href="/fall/geige"');
+    expect(html).toContain("Die verstummte Geige");
   });
 
   it("shows the case file, known entities and actions from PublicContent", async () => {

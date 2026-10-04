@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:nachtzug",
+  "truthHash": "f17c172ce85d4206a7f2025e08f555f3419d08e08a7aaff94b5ec538a427094b",
+  "entries": [
+    {
+      "evidenceId": "evidence:kassenjournal",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:speisewagen"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:riegelvermerk",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:liegewagen"
+          },
+          {
+            "kind": "examine_item",
+            "itemId": "item:dienstbuch"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:abfertigung",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:dienstbuch"
+          },
+          {
+            "kind": "examine_person",
+            "personId": "person:janek"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:bildschirmfoto",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_person",
+            "personId": "person:felix"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:terminalhinweis",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:schlafwagen"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:tuerlog",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:terminal"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:korken",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:abteil7"
+          }
+        ]
+      }
+    }
+  ]
+}

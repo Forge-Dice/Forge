@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "title": "Die Hüttenkasse",
+  "brief": "Sturm über dem Gletscher. Seit 22:00 Uhr ist die Hütte eingeschneit, die Tür lässt sich nicht mehr öffnen. Um 23:20 findet die Wirtin Rosa Egger den Kassenschrank in der Gaststube offen, die Hüttenkasse mit den Einnahmen der Saison ist verschwunden. Die Glocke am Schrank hat genau einmal geläutet: um 23:10 Uhr.\n\nBeim Abendessen saßen Lukas Brandl, Mira Hofer, Gerd Sailer und Johanna Pichler mit Rosa am Tisch. Dr. Pichler hat sich mit Migräne zurückgezogen und spricht heute mit niemandem. Der Skitourengeher Tobias Wenger hat am Morgen ausgecheckt und ist, so glaubt Rosa, vor dem Sturm ins Tal abgefahren. Finde heraus, wer die Kasse eigenhändig genommen hat, und prüfe genau, wer heute Nacht wirklich im Haus ist.",
+  "challengeQuestion": "Wer hat die Hüttenkasse um 23:10 aus der Gaststube genommen?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:rosa"
+      },
+      "label": "Rosa Egger",
+      "role": "Hüttenwirtin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:lukas"
+      },
+      "label": "Lukas Brandl",
+      "role": "Bergführer"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:mira"
+      },
+      "label": "Mira Hofer",
+      "role": "Geologiestudentin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:gerd"
+      },
+      "label": "Gerd Sailer",
+      "role": "Naturfotograf"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:johanna"
+      },
+      "label": "Johanna Pichler",
+      "role": "Ärztin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:tobias"
+      },
+      "label": "Tobias Wenger",
+      "role": "Skitourengeher, laut Rosa am Morgen abgereist"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:stube"
+      },
+      "label": "Gaststube",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:funkraum"
+      },
+      "label": "Funkraum",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:terrasse"
+      },
+      "label": "Sonnenterrasse",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:lager"
+      },
+      "label": "Matratzenlager",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:winterraum"
+      },
+      "label": "Winterraum",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kasse"
+      },
+      "label": "Hüttenkasse",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:buch"
+      },
+      "label": "Hüttenbuch",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:funkgeraet"
+      },
+      "label": "Funkgerät",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "label": "Gerds Kamera",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:abendessen"
+      },
+      "label": "Abendessen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:eintrag"
+      },
+      "label": "Eintrag im Hüttenbuch",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:funkspruch"
+      },
+      "label": "Funkspruch zur Bergwacht",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:sternfoto"
+      },
+      "label": "Sternenfotos",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:diebstahl"
+      },
+      "label": "Verschwinden der Hüttenkasse um 23:10",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:entdeckung"
+      },
+      "label": "Entdeckung des offenen Schranks",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:schrank"
+      },
+      "label": "Offener Kassenschrank",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:abdruck"
+      },
+      "label": "Stiefelabdruck",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:eintrag"
+      },
+      "label": "Eintrag im Hüttenbuch",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:funkbuch"
+      },
+      "label": "Funkbuch",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:funkprotokoll"
+      },
+      "label": "Funkprotokoll",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:stativ"
+      },
+      "label": "Stativ auf der Terrasse",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:sternserie"
+      },
+      "label": "Sternenserie",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:felle"
+      },
+      "label": "Steigfelle",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:rosa",
+      "questionId": "question:q04",
+      "text": "Steht im Hüttenbuch ein Eintrag von heute Abend?"
+    },
+    {
+      "npc": "person:rosa",
+      "questionId": "question:q03",
+      "text": "War Lukas Brandl um 23:10 in der Gaststube?"
+    },
+    {
+      "npc": "person:lukas",
+      "questionId": "question:q01",
+      "text": "Haben Sie um 23:10 im Funkraum gefunkt?"
+    },
+    {
+      "npc": "person:lukas",
+      "questionId": "question:q03",
+      "text": "Waren Sie um 23:10 in der Gaststube?"
+    },
+    {
+      "npc": "person:mira",
+      "questionId": "question:q03",
+      "text": "War Lukas Brandl um 23:10 in der Gaststube?"
+    },
+    {
+      "npc": "person:mira",
+      "questionId": "question:q02",
+      "text": "Hat Gerd Sailer um 23:10 auf der Terrasse fotografiert?"
+    },
+    {
+      "npc": "person:gerd",
+      "questionId": "question:q02",
+      "text": "Haben Sie um 23:10 auf der Terrasse fotografiert?"
+    },
+    {
+      "npc": "person:gerd",
+      "questionId": "question:q03",
+      "text": "War Lukas Brandl um 23:10 in der Gaststube?"
+    },
+    {
+      "npc": "person:tobias",
+      "questionId": "question:q06",
+      "text": "Haben Sie sich um 21:40 im Winterraum eingerichtet?"
+    },
+    {
+      "npc": "person:tobias",
+      "questionId": "question:q05",
+      "text": "Waren Sie um 23:10 in der Gaststube?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Was ein Gerät, ein Foto oder ein Eintrag mit Uhrzeit festhält, gilt als Tatsache. Aussagen von Personen können irren."
+    },
+    {
+      "id": "rule:presence",
+      "text": "Die Hüttenkasse wurde um 23:10 in der Gaststube von genau einer Person genommen. Wer um 23:10 nachweislich an einem anderen Ort war, scheidet aus."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Seit 22:00 ist die Hütte eingeschneit, niemand kam hinein oder hinaus. In Frage kommt jede Person, die heute Abend in der Hütte war, auch wer nicht beim Essen saß. Sind alle anderen ausgeschlossen, bleibt die letzte Person."
+    }
+  ],
+  "epilogue": "Tobias Wenger öffnet die Tür des Winterraums ohne Widerstand. Er war am Morgen abgefahren, um 21:40 vor dem Sturm umgekehrt, hatte sich still eingetragen und keinen Platz am Tisch genommen, weil er die zweite Nacht nicht bezahlen konnte. Um 23:10, als alle anderen funkten oder fotografierten, holte er die Kasse aus dem Schrank. Seine Tourenstiefel tragen dasselbe grobe Profil wie die eines Bergführers.\n\nLukas Brandl stand die ganze Zeit am Funkgerät. Der Abdruck vor dem Schrank war eine falsche Spur, und Mira hat sich ehrlich geirrt, als sie ihn in der Stube vermutete. Die Kasse liegt unter Tobias' Schlafsack, vollständig."
+}

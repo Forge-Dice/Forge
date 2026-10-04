@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:verstummte-geige",
+  "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
+  "revision": 1,
+  "questions": [
+    {
+      "id": "question:q01",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:kurt"
+        },
+        {
+          "kind": "location",
+          "id": "location:keller"
+        }
+      ]
+    },
+    {
+      "id": "question:q02",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:paul"
+        },
+        {
+          "kind": "location",
+          "id": "location:foyer"
+        }
+      ]
+    },
+    {
+      "id": "question:q03",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:henrik"
+        },
+        {
+          "kind": "location",
+          "id": "location:loge"
+        }
+      ]
+    },
+    {
+      "id": "question:q04",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ida"
+        },
+        {
+          "kind": "location",
+          "id": "location:buehne"
+        }
+      ]
+    },
+    {
+      "id": "question:q05",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:paul"
+        },
+        {
+          "kind": "location",
+          "id": "location:garderobe"
+        }
+      ]
+    },
+    {
+      "id": "question:q06",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ida"
+        },
+        {
+          "kind": "location",
+          "id": "location:garderobe"
+        }
+      ]
+    },
+    {
+      "id": "question:q07",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:kurt"
+        },
+        {
+          "kind": "location",
+          "id": "location:keller"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "known": [
+    {
+      "kind": "person",
+      "id": "person:henriette"
+    },
+    {
+      "kind": "person",
+      "id": "person:bruno"
+    },
+    {
+      "kind": "person",
+      "id": "person:clara"
+    },
+    {
+      "kind": "person",
+      "id": "person:felix"
+    },
+    {
+      "kind": "person",
+      "id": "person:janek"
+    },
+    {
+      "kind": "person",
+      "id": "person:dora"
+    },
+    {
+      "kind": "location",
+      "id": "location:speisewagen"
+    },
+    {
+      "kind": "location",
+      "id": "location:liegewagen"
+    },
+    {
+      "kind": "location",
+      "id": "location:schlafwagen"
+    },
+    {
+      "kind": "location",
+      "id": "location:abteil6"
+    },
+    {
+      "kind": "location",
+      "id": "location:abteil7"
+    },
+    {
+      "kind": "item",
+      "id": "item:collier"
+    },
+    {
+      "kind": "event",
+      "id": "event:diebstahl"
+    }
+  ]
+}

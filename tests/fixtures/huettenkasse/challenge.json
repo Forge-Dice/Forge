@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:huettenkasse",
+  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+  "solutionHash": "0eab35f9323533920749057ce9c68b1ac63752d6bdcd3aaa4b55c0925ed4707f",
+  "allowedClaims": [
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:lukas",
+      "eventId": "event:diebstahl",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:mira",
+      "eventId": "event:diebstahl",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:gerd",
+      "eventId": "event:diebstahl",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:johanna",
+      "eventId": "event:diebstahl",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:tobias",
+      "eventId": "event:diebstahl",
+      "role": "direct_actor"
+    }
+  ]
+}

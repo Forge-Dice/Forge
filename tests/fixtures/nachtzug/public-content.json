@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "title": "Der Nachtzug nach Triest",
+  "brief": "Nachtzug Wien–Triest, Schlafwagen. Um 01:40 Uhr bemerkt Henriette von Arx in Abteil 7, dass ihr Collier aus dem Etui verschwunden ist. Henriette schlief mit Ohrstöpseln. Das Etui hat einen Kontakt: Es wurde genau einmal geöffnet, um 01:20 Uhr.\n\nIn Frage kommen Bruno Kessler und Felix Roth aus dem Liegewagen, Clara Mai aus Abteil 5, Dora Lenz aus Abteil 6 und der Zugbegleiter Janek Novak. Clara sagt, sie habe zur Tatzeit im Speisewagen gesessen, und mehr als einer glaubt ihr. Ein Alibi muss nicht genau um 01:20 liegen, um zu zählen, und nicht jedes Alibi um 01:20 hält. Achte darauf, wer wann wohin gelangen konnte.",
+  "challengeQuestion": "Wer hat das Collier um 01:20 aus Abteil 7 genommen?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:henriette"
+      },
+      "label": "Henriette von Arx",
+      "role": "Reisende in Abteil 7"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:bruno"
+      },
+      "label": "Bruno Kessler",
+      "role": "Weinhändler, Liegewagen"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:clara"
+      },
+      "label": "Clara Mai",
+      "role": "Henriettes Nichte, Abteil 5"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:felix"
+      },
+      "label": "Felix Roth",
+      "role": "Student, Liegewagen"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:janek"
+      },
+      "label": "Janek Novak",
+      "role": "Zugbegleiter"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:dora"
+      },
+      "label": "Dora Lenz",
+      "role": "Schriftstellerin, Abteil 6"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:speisewagen"
+      },
+      "label": "Speisewagen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:liegewagen"
+      },
+      "label": "Liegewagen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:schlafwagen"
+      },
+      "label": "Gang im Schlafwagen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:abteil6"
+      },
+      "label": "Abteil 6",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:abteil7"
+      },
+      "label": "Abteil 7",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:bahnsteig"
+      },
+      "label": "Bahnsteig Villach Hbf",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:collier"
+      },
+      "label": "Henriettes Collier",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:tuer"
+      },
+      "label": "Verbindungstür Liegewagen–Schlafwagen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:dienstbuch"
+      },
+      "label": "Janeks Dienstbuch",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:terminal"
+      },
+      "label": "Türterminal im Schlafwagen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:tee"
+      },
+      "label": "Tee im Speisewagen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:wein"
+      },
+      "label": "Wein im Speisewagen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:verriegelung"
+      },
+      "label": "Verriegelung der Verbindungstür",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:anruf"
+      },
+      "label": "Videoanruf",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:halt"
+      },
+      "label": "Halt in Villach",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:einschluss"
+      },
+      "label": "Dora schließt sich ein",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:diebstahl"
+      },
+      "label": "Verschwinden des Colliers um 01:20",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:entdeckung"
+      },
+      "label": "Entdeckung des leeren Etuis",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kassenjournal"
+      },
+      "label": "Kassenjournal",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:riegelvermerk"
+      },
+      "label": "Riegelvermerk",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:abfertigung"
+      },
+      "label": "Abfertigungsmeldung",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:bildschirmfoto"
+      },
+      "label": "Bildschirmfoto",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:terminalhinweis"
+      },
+      "label": "Türterminal",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:tuerlog"
+      },
+      "label": "Türprotokoll",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:korken"
+      },
+      "label": "Weinkorken",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:janek",
+      "questionId": "question:q01",
+      "text": "Haben Sie heute Nacht die Tür zum Schlafwagen verriegelt?"
+    },
+    {
+      "npc": "person:janek",
+      "questionId": "question:q02",
+      "text": "War Clara Mai um 01:20 im Speisewagen?"
+    },
+    {
+      "npc": "person:felix",
+      "questionId": "question:q06",
+      "text": "Waren Sie um 01:12 im Liegewagen?"
+    },
+    {
+      "npc": "person:felix",
+      "questionId": "question:q02",
+      "text": "War Clara Mai um 01:20 im Speisewagen?"
+    },
+    {
+      "npc": "person:bruno",
+      "questionId": "question:q05",
+      "text": "Waren Sie nach 01:00 noch im Speisewagen?"
+    },
+    {
+      "npc": "person:bruno",
+      "questionId": "question:q03",
+      "text": "Waren Sie um 01:20 in Abteil 7?"
+    },
+    {
+      "npc": "person:bruno",
+      "questionId": "question:q02",
+      "text": "War Clara Mai um 01:20 im Speisewagen?"
+    },
+    {
+      "npc": "person:dora",
+      "questionId": "question:q04",
+      "text": "Waren Sie um 01:20 in Ihrem Abteil eingeschlossen?"
+    },
+    {
+      "npc": "person:dora",
+      "questionId": "question:q03",
+      "text": "War Bruno Kessler um 01:20 in Abteil 7?"
+    },
+    {
+      "npc": "person:clara",
+      "questionId": "question:q02",
+      "text": "Waren Sie um 01:20 im Speisewagen?"
+    },
+    {
+      "npc": "person:clara",
+      "questionId": "question:q03",
+      "text": "War Bruno Kessler um 01:20 in Abteil 7?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Was ein Journal, ein Protokoll oder ein Bildschirmfoto mit Uhrzeit festhält, gilt als Tatsache. Aussagen von Personen können irren."
+    },
+    {
+      "id": "rule:presence",
+      "text": "Das Collier wurde um 01:20 in Abteil 7 von genau einer Person genommen. Wer um 01:20 nachweislich an einem anderen Ort war, scheidet aus."
+    },
+    {
+      "id": "rule:door",
+      "text": "Der Schlafwagen ist der letzte Wagen. Hinein kommt man nur durch die Verbindungstür vom Liegewagen, und nur der Zugbegleiter hat den Schlüssel. War die Tür ab 01:00 verriegelt, scheidet aus, wer danach und vor 01:20 nachweislich im Speisewagen oder im Liegewagen war."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Nur Bruno Kessler, Clara Mai, Felix Roth, Janek Novak und Dora Lenz kommen in Frage. Sind vier ausgeschlossen, bleibt die fünfte Person."
+    }
+  ],
+  "epilogue": "Clara Mai gesteht im Morgengrauen vor Ljubljana. Um 00:50 hatte sie im Speisewagen einen Tee bezahlt, gut sichtbar, und war vor 01:00 zurück in ihr Abteil gegangen, bevor Janek die Verbindungstür verriegelte. Um 01:20, während der Zug in Villach hielt, öffnete sie Abteil 7. Sie fürchtete, dass ihre Tante das Collier verkaufen und das Erbe verspielen würde.\n\nBruno Kessler saß um 01:05 im Speisewagen und kam bei verriegelter Tür nicht mehr in den Schlafwagen. Den Korken hatte Henriette selbst am Abend von ihm geschenkt bekommen. Felix glaubte ehrlich, Clara im Speisewagen gesehen zu haben, doch das war eine halbe Stunde früher. Das Collier steckt im Futter von Claras Reisetasche."
+}

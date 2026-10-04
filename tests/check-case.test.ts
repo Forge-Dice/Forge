@@ -3,7 +3,7 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, unlinkSync, writeFileSync } 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { checkCaseFolder, formatCaseCheck, type CaseCheck } from "../src/authoring/check-case.ts";
+import { checkCaseFolder, formatCaseCheck, writeFilledHashes, type CaseCheck } from "../src/authoring/check-case.ts";
 
 const FIXTURES = new URL("./fixtures/", import.meta.url).pathname;
 const VITRINE = join(FIXTURES, "vitrine");
@@ -37,7 +37,7 @@ function expectError(check: CaseCheck, file: string, field: string, message?: Re
 }
 
 describe("check-case on the real fixtures", () => {
-  it.each([["vitrine", VITRINE], ["brieföffner", BRIEF]])("%s is valid and solvable", (_name, dir) => {
+  it.each([["vitrine", VITRINE], ["brieföffner", BRIEF], ["geige", join(FIXTURES, "geige")], ["hüttenkasse", join(FIXTURES, "huettenkasse")], ["nachtzug", join(FIXTURES, "nachtzug")]])("%s is valid and solvable", (_name, dir) => {
     const check = checkCaseFolder(dir);
     expect(check.problems.filter((p) => p.severity === "error")).toEqual([]);
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });
@@ -140,6 +140,21 @@ describe("check-case names file and field for broken cases", () => {
     );
   });
 
+  it("an edited player text makes the release hashes stale; one --fix pass repairs both", () => {
+    const dir = variant(join(FIXTURES, "geige"), { "public-content.json": (p) => (p.epilogue = "Ida gesteht.") });
+    const check = checkCaseFolder(dir);
+    expectError(check, "release-manifest.json", "releaseContextHash", /veraltet.*--fix/);
+    expectError(check, "proof-profile.json", "bindings.releaseHash", /veraltet/);
+    expect(check.filled.map((f) => [f.file, f.field, f.stale])).toEqual([
+      ["release-manifest.json", "releaseContextHash", true],
+      ["proof-profile.json", "bindings.releaseHash", true],
+    ]);
+    expect(writeFilledHashes(check)).toEqual(["release-manifest.json", "proof-profile.json"]);
+    const fixed = checkCaseFolder(dir);
+    expect(fixed.ok).toBe(true);
+    expect(fixed.filled).toEqual([]);
+  });
+
   it("solvability fails when the decisive evidence is unreachable", () => {
     const check = checkCaseFolder(variant(BRIEF, { "evidence-access.json": (a) => (a.entries[0].access = { kind: "inaccessible" }) }));
     expect(check.solvability?.status).toBe("fail");
@@ -159,7 +174,7 @@ describe("check-case names file and field for broken cases", () => {
         m.certificateData.steps.push({ stepId: "read-gloves", event: { type: "investigate", action: "examine_item", target: { $playerRefOf: { kind: "item", id: "item:gloves" } } } }),
       "proof-profile.json": (p) => (p.witnessStepIds = ["read-gloves", "search-library", "search-garden"]),
     });
-    expectError(checkCaseFolder(early), "release-manifest.json", "certificateData.steps", /Beweis passt nicht/);
+    expectError(checkCaseFolder(early), "release-manifest.json", "certificateData.steps", /witnessStepIds/);
   });
 });
 

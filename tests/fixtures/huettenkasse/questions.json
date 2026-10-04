@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:huettenkasse",
+  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+  "revision": 1,
+  "questions": [
+    {
+      "id": "question:q01",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lukas"
+        },
+        {
+          "kind": "location",
+          "id": "location:funkraum"
+        }
+      ]
+    },
+    {
+      "id": "question:q02",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:gerd"
+        },
+        {
+          "kind": "location",
+          "id": "location:terrasse"
+        }
+      ]
+    },
+    {
+      "id": "question:q03",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lukas"
+        },
+        {
+          "kind": "location",
+          "id": "location:stube"
+        }
+      ]
+    },
+    {
+      "id": "question:q04",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:rosa"
+        },
+        {
+          "kind": "location",
+          "id": "location:stube"
+        }
+      ]
+    },
+    {
+      "id": "question:q05",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:tobias"
+        },
+        {
+          "kind": "location",
+          "id": "location:winterraum"
+        },
+        {
+          "kind": "location",
+          "id": "location:stube"
+        }
+      ]
+    },
+    {
+      "id": "question:q06",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:tobias"
+        },
+        {
+          "kind": "location",
+          "id": "location:winterraum"
+        }
+      ]
+    }
+  ]
+}

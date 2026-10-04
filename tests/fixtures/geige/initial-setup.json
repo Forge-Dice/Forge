@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "known": [
+    {
+      "kind": "person",
+      "id": "person:ida"
+    },
+    {
+      "kind": "person",
+      "id": "person:paul"
+    },
+    {
+      "kind": "person",
+      "id": "person:kurt"
+    },
+    {
+      "kind": "person",
+      "id": "person:vera"
+    },
+    {
+      "kind": "person",
+      "id": "person:henrik"
+    },
+    {
+      "kind": "person",
+      "id": "person:marta"
+    },
+    {
+      "kind": "location",
+      "id": "location:buehne"
+    },
+    {
+      "kind": "location",
+      "id": "location:foyer"
+    },
+    {
+      "kind": "location",
+      "id": "location:garderobe"
+    },
+    {
+      "kind": "location",
+      "id": "location:keller"
+    },
+    {
+      "kind": "location",
+      "id": "location:loge"
+    },
+    {
+      "kind": "item",
+      "id": "item:geige"
+    },
+    {
+      "kind": "event",
+      "id": "event:diebstahl"
+    }
+  ]
+}

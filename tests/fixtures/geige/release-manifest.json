@@ -1,0 +1,348 @@
+{
+  "schemaVersion": 1,
+  "releaseContextHash": "ec96c3afda80cb0d96543a18abe2b7e49bdde8105dc8d4a7832c16b983459d6a",
+  "adapterVersion": "forge-release-proof-v1",
+  "certificateData": {
+    "schemaVersion": 1,
+    "steps": [
+      {
+        "stepId": "search-foyer",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:foyer"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-kurt-keller",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:kurt"
+            }
+          },
+          "questionId": "question:q07"
+        }
+      },
+      {
+        "stepId": "search-keller",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:keller"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-schaltschrank",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:schaltschrank"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-loge",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:loge"
+            }
+          }
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "observed:paul",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:paul-foyer",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:pausenfoto"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:paul"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:foyer"
+                  }
+                },
+                "at": 2400
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:paul",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:paul",
+            "allOf": [
+              "observation:paul"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-paul",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:paul"
+        ]
+      },
+      {
+        "id": "observed:vera",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:vera-foyer",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:pausenfoto"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:vera"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:foyer"
+                  }
+                },
+                "at": 2400
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:vera",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:vera",
+            "allOf": [
+              "observation:vera"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-vera",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:vera"
+        ]
+      },
+      {
+        "id": "observed:kurt",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:kurt-keller",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:heizungsprotokoll"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:kurt"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:keller"
+                  }
+                },
+                "at": 2400
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:kurt",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:kurt",
+            "allOf": [
+              "observation:kurt"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-kurt",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:kurt"
+        ]
+      },
+      {
+        "id": "observed:henrik",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:henrik-loge",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:logenprotokoll"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:henrik"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:loge"
+                  }
+                },
+                "at": 2400
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:henrik",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:henrik",
+            "allOf": [
+              "observation:henrik"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-henrik",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:henrik"
+        ]
+      },
+      {
+        "id": "public-rule:remaining",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "remaining:ida",
+            "allOf": [
+              "literal:paul",
+              "literal:vera",
+              "literal:kurt",
+              "literal:henrik"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-ida",
+              "value": true
+            }
+          }
+        ],
+        "ruleId": "rule:roster",
+        "afterObservations": [
+          "observed:paul",
+          "observed:vera",
+          "observed:kurt",
+          "observed:henrik"
+        ]
+      }
+    ]
+  }
+}

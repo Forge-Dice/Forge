@@ -1,0 +1,430 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:huettenkasse",
+  "revision": 1,
+  "title": "Die Hüttenkasse",
+  "timeline": {
+    "unit": "second",
+    "originLabel": "21:00 Uhr, Abendessen auf der Hütte"
+  },
+  "persons": [
+    {
+      "id": "person:rosa",
+      "name": "Rosa Egger"
+    },
+    {
+      "id": "person:lukas",
+      "name": "Lukas Brandl"
+    },
+    {
+      "id": "person:mira",
+      "name": "Mira Hofer"
+    },
+    {
+      "id": "person:gerd",
+      "name": "Gerd Sailer"
+    },
+    {
+      "id": "person:johanna",
+      "name": "Johanna Pichler"
+    },
+    {
+      "id": "person:tobias",
+      "name": "Tobias Wenger"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location:stube",
+      "name": "Gaststube"
+    },
+    {
+      "id": "location:funkraum",
+      "name": "Funkraum"
+    },
+    {
+      "id": "location:terrasse",
+      "name": "Sonnenterrasse"
+    },
+    {
+      "id": "location:lager",
+      "name": "Matratzenlager"
+    },
+    {
+      "id": "location:winterraum",
+      "name": "Winterraum"
+    }
+  ],
+  "items": [
+    {
+      "id": "item:kasse",
+      "name": "Hüttenkasse"
+    },
+    {
+      "id": "item:buch",
+      "name": "Hüttenbuch"
+    },
+    {
+      "id": "item:funkgeraet",
+      "name": "Funkgerät"
+    },
+    {
+      "id": "item:kamera",
+      "name": "Gerds Kamera"
+    }
+  ],
+  "relationships": [],
+  "events": [
+    {
+      "id": "event:abendessen",
+      "description": "Abendessen in der Gaststube",
+      "time": {
+        "kind": "interval",
+        "start": 0,
+        "end": 3600
+      },
+      "locationId": "location:stube",
+      "participantIds": [
+        "person:rosa",
+        "person:lukas",
+        "person:mira",
+        "person:gerd",
+        "person:johanna"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:eintrag",
+      "description": "Tobias trägt sich im Hüttenbuch ein und bezieht den Winterraum",
+      "time": {
+        "kind": "instant",
+        "at": 2400
+      },
+      "locationId": "location:winterraum",
+      "participantIds": [
+        "person:tobias"
+      ],
+      "itemIds": [
+        "item:buch"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:funkspruch",
+      "description": "Lukas und Johanna funken mit der Bergwacht",
+      "time": {
+        "kind": "interval",
+        "start": 7500,
+        "end": 8100
+      },
+      "locationId": "location:funkraum",
+      "participantIds": [
+        "person:lukas",
+        "person:johanna"
+      ],
+      "itemIds": [
+        "item:funkgeraet"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:sternfoto",
+      "description": "Gerd und Mira fotografieren den Sternenhimmel",
+      "time": {
+        "kind": "interval",
+        "start": 7200,
+        "end": 8400
+      },
+      "locationId": "location:terrasse",
+      "participantIds": [
+        "person:gerd",
+        "person:mira"
+      ],
+      "itemIds": [
+        "item:kamera"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:diebstahl",
+      "description": "Tobias nimmt die Hüttenkasse aus dem Schrank in der Gaststube",
+      "time": {
+        "kind": "instant",
+        "at": 7800
+      },
+      "locationId": "location:stube",
+      "participantIds": [
+        "person:tobias"
+      ],
+      "itemIds": [
+        "item:kasse"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:entdeckung",
+      "description": "Rosa findet den Kassenschrank offen",
+      "time": {
+        "kind": "instant",
+        "at": 8400
+      },
+      "locationId": "location:stube",
+      "participantIds": [
+        "person:rosa"
+      ],
+      "itemIds": [],
+      "causedByEventIds": [
+        "event:diebstahl"
+      ]
+    }
+  ],
+  "motives": [
+    {
+      "id": "motive:schulden",
+      "personId": "person:tobias",
+      "eventIds": [
+        "event:diebstahl"
+      ],
+      "description": "Tobias kann seine Schulden nicht bezahlen"
+    }
+  ],
+  "propositions": [
+    {
+      "id": "proposition:lukas-funk",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:lukas",
+        "locationId": "location:funkraum",
+        "at": 7800
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:johanna-funk",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:johanna",
+        "locationId": "location:funkraum",
+        "at": 7800
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:gerd-terrasse",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:gerd",
+        "locationId": "location:terrasse",
+        "at": 7800
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:mira-terrasse",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:mira",
+        "locationId": "location:terrasse",
+        "at": 7800
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:tobias-eintrag",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:tobias",
+        "locationId": "location:winterraum",
+        "at": 2400
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:tobias-stube",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:tobias",
+        "locationId": "location:stube",
+        "at": 7800
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:lukas-stube",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:lukas",
+        "locationId": "location:stube",
+        "at": 7800
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:funk-geraet",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:funkspruch",
+        "itemId": "item:funkgeraet"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:foto-kamera",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:sternfoto",
+        "itemId": "item:kamera"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:buch-eintrag",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:eintrag",
+        "itemId": "item:buch"
+      },
+      "truth": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence:schrank",
+      "description": "Offener Kassenschrank mit Hüttenbuch",
+      "source": {
+        "kind": "location",
+        "id": "location:stube"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:buch-eintrag",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:abdruck",
+      "description": "Nasser Stiefelabdruck vor dem Schrank",
+      "source": {
+        "kind": "location",
+        "id": "location:stube"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:lukas-stube",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:eintrag",
+      "description": "Letzter Eintrag im Hüttenbuch",
+      "source": {
+        "kind": "item",
+        "id": "item:buch"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:tobias-eintrag",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:funkbuch",
+      "description": "Funkbuch neben dem Gerät",
+      "source": {
+        "kind": "location",
+        "id": "location:funkraum"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:funk-geraet",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:funkprotokoll",
+      "description": "Gespeichertes Funkprotokoll",
+      "source": {
+        "kind": "item",
+        "id": "item:funkgeraet"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:lukas-funk",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:johanna-funk",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:stativ",
+      "description": "Kamera auf dem Stativ",
+      "source": {
+        "kind": "location",
+        "id": "location:terrasse"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:foto-kamera",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:sternserie",
+      "description": "Intervallaufnahme mit Zeitstempel",
+      "source": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:gerd-terrasse",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:mira-terrasse",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:felle",
+      "description": "Nasse Steigfelle im Winterraum",
+      "source": {
+        "kind": "location",
+        "id": "location:winterraum"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:tobias-eintrag",
+          "direction": "supports"
+        }
+      ]
+    }
+  ],
+  "secrets": [
+    {
+      "id": "secret:schulden",
+      "propositionIds": [
+        "proposition:tobias-stube"
+      ]
+    }
+  ],
+  "redHerrings": [
+    {
+      "id": "red-herring:abdruck",
+      "evidenceIds": [
+        "evidence:abdruck"
+      ],
+      "misleadingPropositionId": "proposition:lukas-stube"
+    }
+  ]
+}

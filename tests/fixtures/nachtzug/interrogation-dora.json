@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:nachtzug",
+  "truthHash": "f17c172ce85d4206a7f2025e08f555f3419d08e08a7aaff94b5ec538a427094b",
+  "catalogueHash": "6479b77768ecfd4422a741d5d12f4eaa94764b56844a71ef3f49622c0ee41d43",
+  "npcId": "person:dora",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q04",
+      "act": "answer",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:einschluss",
+        "itemId": "item:terminal"
+      },
+      "reveal": [
+        {
+          "kind": "event",
+          "id": "event:einschluss"
+        },
+        {
+          "kind": "item",
+          "id": "item:terminal"
+        }
+      ]
+    },
+    {
+      "questionId": "question:q03",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:bruno",
+        "locationId": "location:abteil7",
+        "at": 4800
+      },
+      "reveal": []
+    }
+  ]
+}

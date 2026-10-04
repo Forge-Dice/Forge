@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "releaseContextHash": "632372e781018ad947da831d852f396a3be5e880b1227587d209dda80f61fe6f",
+  "adapterVersion": "forge-release-proof-v1",
+  "certificateData": {
+    "schemaVersion": 1,
+    "steps": [
+      {
+        "stepId": "search-speisewagen",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:speisewagen"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-janek-nacht",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:janek"
+            }
+          },
+          "questionId": "question:q01"
+        }
+      },
+      {
+        "stepId": "read-dienstbuch",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:dienstbuch"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "examine-felix",
+        "event": {
+          "type": "investigate",
+          "action": "examine_person",
+          "target": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:felix"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-schlafwagen",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:schlafwagen"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-terminal",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:terminal"
+            }
+          }
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "observed:tuer",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:tuer-verriegelt",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:riegelvermerk"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "eventHasItem",
+                "event": {
+                  "$playerRefOf": {
+                    "kind": "event",
+                    "id": "event:verriegelung"
+                  }
+                },
+                "item": {
+                  "$playerRefOf": {
+                    "kind": "item",
+                    "id": "item:tuer"
+                  }
+                }
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "observed:bruno",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:bruno-wein",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:kassenjournal"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:bruno"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:speisewagen"
+                  }
+                },
+                "at": 3900
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:bruno",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:bruno",
+            "allOf": [
+              "observation:bruno",
+              "observation:tuer"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-bruno",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:door",
+        "afterObservations": [
+          "observed:bruno",
+          "observed:tuer"
+        ]
+      },
+      {
+        "id": "observed:felix",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:felix-anruf",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:bildschirmfoto"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:felix"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:liegewagen"
+                  }
+                },
+                "at": 4320
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:felix",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:felix",
+            "allOf": [
+              "observation:felix",
+              "observation:tuer"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-felix",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:door",
+        "afterObservations": [
+          "observed:felix",
+          "observed:tuer"
+        ]
+      },
+      {
+        "id": "observed:janek",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:janek-bahnsteig",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:abfertigung"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:janek"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:bahnsteig"
+                  }
+                },
+                "at": 4800
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:janek",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:janek",
+            "allOf": [
+              "observation:janek"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-janek",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:janek"
+        ]
+      },
+      {
+        "id": "observed:dora",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:dora-abteil",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:tuerlog"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:dora"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:abteil6"
+                  }
+                },
+                "at": 4800
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:dora",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:dora",
+            "allOf": [
+              "observation:dora"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-dora",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:dora"
+        ]
+      },
+      {
+        "id": "public-rule:clara",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "remaining:clara",
+            "allOf": [
+              "literal:bruno",
+              "literal:felix",
+              "literal:janek",
+              "literal:dora"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-clara",
+              "value": true
+            }
+          }
+        ],
+        "ruleId": "rule:roster",
+        "afterObservations": [
+          "observed:bruno",
+          "observed:tuer",
+          "observed:felix",
+          "observed:janek",
+          "observed:dora"
+        ]
+      }
+    ]
+  }
+}

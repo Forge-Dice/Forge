@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:huettenkasse",
+  "revision": 1,
+  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+  "resolutions": [
+    {
+      "eventId": "event:diebstahl",
+      "targets": [
+        {
+          "kind": "item",
+          "id": "item:kasse"
+        }
+      ],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": [
+          {
+            "personId": "person:tobias",
+            "roles": [
+              "direct_actor"
+            ]
+          }
+        ]
+      },
+      "intent": "intended",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "conclusion:actor-lukas",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:lukas",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-mira",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:mira",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-gerd",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:gerd",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-johanna",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:johanna",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-tobias",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:tobias",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    }
+  ],
+  "requiredConclusions": [
+    {
+      "conclusionId": "conclusion:actor-lukas",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-mira",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-gerd",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-johanna",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-tobias",
+      "value": true
+    }
+  ]
+}

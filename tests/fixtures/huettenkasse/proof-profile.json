@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "bindings": {
+    "caseId": "case:huettenkasse",
+    "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+    "solutionHash": "0eab35f9323533920749057ce9c68b1ac63752d6bdcd3aaa4b55c0925ed4707f",
+    "releaseHash": "be95bf984784569f563b56341566fbe9a330c62cc52f8a5310564c46e6d89188"
+  },
+  "answerScope": [
+    "conclusion:actor-lukas",
+    "conclusion:actor-mira",
+    "conclusion:actor-gerd",
+    "conclusion:actor-johanna",
+    "conclusion:actor-tobias"
+  ],
+  "ambiguityPolicy": "must_disambiguate",
+  "question": {
+    "kind": "required_literals"
+  },
+  "observations": [
+    {
+      "id": "observed:lukas",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:lukas-funk",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:funkprotokoll"
+      }
+    },
+    {
+      "id": "public-rule:lukas",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:lukas",
+          "allOf": [
+            "observation:lukas"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-lukas",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:johanna",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:johanna-funk",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:funkprotokoll"
+      }
+    },
+    {
+      "id": "public-rule:johanna",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:johanna",
+          "allOf": [
+            "observation:johanna"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-johanna",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:gerd",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:gerd-terrasse",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:sternserie"
+      }
+    },
+    {
+      "id": "public-rule:gerd",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:gerd",
+          "allOf": [
+            "observation:gerd"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-gerd",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:mira",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:mira-terrasse",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:sternserie"
+      }
+    },
+    {
+      "id": "public-rule:mira",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:mira",
+          "allOf": [
+            "observation:mira"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-mira",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:tobias",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:tobias-eintrag",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:eintrag"
+      }
+    },
+    {
+      "id": "public-rule:tobias",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "remaining:tobias",
+          "allOf": [
+            "literal:lukas",
+            "literal:johanna",
+            "literal:gerd",
+            "literal:mira",
+            "observation:tobias"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-tobias",
+            "value": true
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "observation:lukas",
+      "kind": "observation",
+      "observationId": "observed:lukas"
+    },
+    {
+      "id": "license:lukas",
+      "kind": "observation",
+      "observationId": "public-rule:lukas"
+    },
+    {
+      "id": "literal:lukas",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-lukas",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:johanna",
+      "kind": "observation",
+      "observationId": "observed:johanna"
+    },
+    {
+      "id": "license:johanna",
+      "kind": "observation",
+      "observationId": "public-rule:johanna"
+    },
+    {
+      "id": "literal:johanna",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-johanna",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:gerd",
+      "kind": "observation",
+      "observationId": "observed:gerd"
+    },
+    {
+      "id": "license:gerd",
+      "kind": "observation",
+      "observationId": "public-rule:gerd"
+    },
+    {
+      "id": "literal:gerd",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-gerd",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:mira",
+      "kind": "observation",
+      "observationId": "observed:mira"
+    },
+    {
+      "id": "license:mira",
+      "kind": "observation",
+      "observationId": "public-rule:mira"
+    },
+    {
+      "id": "literal:mira",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-mira",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:tobias",
+      "kind": "observation",
+      "observationId": "observed:tobias"
+    },
+    {
+      "id": "license:tobias",
+      "kind": "observation",
+      "observationId": "public-rule:tobias"
+    },
+    {
+      "id": "literal:tobias",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-tobias",
+        "value": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "exclude:lukas",
+      "allOf": [
+        "observation:lukas",
+        "license:lukas"
+      ],
+      "to": "literal:lukas",
+      "license": "license:lukas"
+    },
+    {
+      "id": "exclude:johanna",
+      "allOf": [
+        "observation:johanna",
+        "license:johanna"
+      ],
+      "to": "literal:johanna",
+      "license": "license:johanna"
+    },
+    {
+      "id": "exclude:gerd",
+      "allOf": [
+        "observation:gerd",
+        "license:gerd"
+      ],
+      "to": "literal:gerd",
+      "license": "license:gerd"
+    },
+    {
+      "id": "exclude:mira",
+      "allOf": [
+        "observation:mira",
+        "license:mira"
+      ],
+      "to": "literal:mira",
+      "license": "license:mira"
+    },
+    {
+      "id": "remaining:tobias",
+      "allOf": [
+        "literal:lukas",
+        "literal:johanna",
+        "literal:gerd",
+        "literal:mira",
+        "observation:tobias",
+        "license:tobias"
+      ],
+      "to": "literal:tobias",
+      "license": "license:tobias"
+    }
+  ],
+  "witnessStepIds": [
+    "search-stube",
+    "read-buch",
+    "ask-lukas-funk",
+    "read-funkgeraet",
+    "search-terrasse",
+    "read-kamera"
+  ]
+}

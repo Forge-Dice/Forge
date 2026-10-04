@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:nachtzug",
+  "truthHash": "f17c172ce85d4206a7f2025e08f555f3419d08e08a7aaff94b5ec538a427094b",
+  "revision": 1,
+  "questions": [
+    {
+      "id": "question:q01",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:janek"
+        },
+        {
+          "kind": "location",
+          "id": "location:schlafwagen"
+        }
+      ]
+    },
+    {
+      "id": "question:q02",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:clara"
+        },
+        {
+          "kind": "location",
+          "id": "location:speisewagen"
+        }
+      ]
+    },
+    {
+      "id": "question:q03",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:bruno"
+        },
+        {
+          "kind": "location",
+          "id": "location:abteil7"
+        }
+      ]
+    },
+    {
+      "id": "question:q04",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:dora"
+        },
+        {
+          "kind": "location",
+          "id": "location:abteil6"
+        }
+      ]
+    },
+    {
+      "id": "question:q05",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:bruno"
+        },
+        {
+          "kind": "location",
+          "id": "location:speisewagen"
+        }
+      ]
+    },
+    {
+      "id": "question:q06",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:felix"
+        },
+        {
+          "kind": "location",
+          "id": "location:liegewagen"
+        }
+      ]
+    }
+  ]
+}
