@@ -1,0 +1,368 @@
+{
+ "checks": [
+  {
+   "id": "X01",
+   "check": "Candidates parse with main@3d7545d parseContractDocument; contentHash equals sha256('forge-contract-v1\\n'+text)",
+   "result": "PASS",
+   "detail": {
+    "MYST-0002.contract.CANDIDATE-v2.md": {
+     "taskId": "MYST-0002",
+     "contractVersion": 2,
+     "contentHash": "65b12f758d6eda6f23427e1bd897be27a3e8f01c8e9dea8853d7a41de21517ef"
+    },
+    "MYST-0004.contract.CANDIDATE-v2.md": {
+     "taskId": "MYST-0004",
+     "contractVersion": 2,
+     "contentHash": "18e383d06a8e15a4bbcb26e892d5f1324528be99d5a14e37c7323a365e189e9b"
+    },
+    "MYST-0005B.contract.CANDIDATE-v2.md": {
+     "taskId": "MYST-0005B",
+     "contractVersion": 2,
+     "contentHash": "ad57024880898acc187f81c5abe4b3a8dd186773c14ccd9451e3ba80f65db7c5"
+    },
+    "MYST-CHALLENGE-0001.contract.CANDIDATE-v2.md": {
+     "taskId": "MYST-CHALLENGE-0001",
+     "contractVersion": 2,
+     "contentHash": "b29fab7b7039043c987ac225f11a7218d40ca8cb0d479ab4028d1df187938fbd"
+    },
+    "MYST-SESSION-0001A.contract.CANDIDATE-v2.md": {
+     "taskId": "MYST-SESSION-0001A",
+     "contractVersion": 2,
+     "contentHash": "f48559e0ba61ed88071dbde6c9ee7895736e9aea1c1db5b8ce839f986def7a6d"
+    },
+    "MYST-SESSION-0001B.contract.CANDIDATE-v2.md": {
+     "taskId": "MYST-SESSION-0001B",
+     "contractVersion": 2,
+     "contentHash": "deeeef0589080ae15f51ca56110f9cdfd27f9af8a40c8d05ef74cd1e7fd1bacb"
+    },
+    "MYST-SESSION-0001C.contract.CANDIDATE-v2.md": {
+     "taskId": "MYST-SESSION-0001C",
+     "contractVersion": 2,
+     "contentHash": "8df316a1663829ea31b740563551fab7406261fc6a70a0836cd2579e815db11b"
+    }
+   }
+  },
+  {
+   "id": "X02",
+   "check": "contractVersion: revised = 2, unchanged = 1",
+   "result": "PASS",
+   "detail": {
+    "MYST-0002": 2,
+    "MYST-CHALLENGE-0001": 2,
+    "MYST-0004": 2,
+    "MYST-0005B": 2,
+    "MYST-SESSION-0001A": 2,
+    "MYST-SESSION-0001B": 2,
+    "MYST-SESSION-0001C": 2,
+    "MYST-0001": 1,
+    "MYST-0003": 1,
+    "MYST-0005A": 1,
+    "MYST-SOLVABILITY-0001": 1
+   }
+  },
+  {
+   "id": "X03",
+   "check": "Frontmatter dependency graph closed and acyclic",
+   "result": "PASS",
+   "detail": {
+    "deps": {
+     "MYST-0002": [],
+     "MYST-CHALLENGE-0001": [
+      "MYST-0002"
+     ],
+     "MYST-0004": [],
+     "MYST-0005B": [
+      "MYST-0005A"
+     ],
+     "MYST-SESSION-0001A": [
+      "MYST-0001",
+      "MYST-0002",
+      "MYST-0003",
+      "MYST-0004",
+      "MYST-0005A",
+      "MYST-0005B",
+      "MYST-CHALLENGE-0001",
+      "MYST-SOLVABILITY-0001"
+     ],
+     "MYST-SESSION-0001B": [
+      "MYST-SESSION-0001A"
+     ],
+     "MYST-SESSION-0001C": [
+      "MYST-SESSION-0001A",
+      "MYST-SESSION-0001B"
+     ],
+     "MYST-0001": [
+      "TASK-0001"
+     ],
+     "MYST-0003": [],
+     "MYST-0005A": [],
+     "MYST-SOLVABILITY-0001": [
+      "MYST-0002"
+     ]
+    },
+    "unknown": {
+     "MYST-0002": [],
+     "MYST-CHALLENGE-0001": [],
+     "MYST-0004": [],
+     "MYST-0005B": [],
+     "MYST-SESSION-0001A": [],
+     "MYST-SESSION-0001B": [],
+     "MYST-SESSION-0001C": [],
+     "MYST-0001": [],
+     "MYST-0003": [],
+     "MYST-0005A": [],
+     "MYST-SOLVABILITY-0001": []
+    },
+    "cycles": []
+   }
+  },
+  {
+   "id": "X04",
+   "check": "Version/hash pins resolve to the exact candidate or accepted unchanged identity; no stale M2 pin used as dependency",
+   "result": "PASS",
+   "detail": {
+    "pins": [
+     [
+      "CH->M2v2",
+      true
+     ],
+     [
+      "M4->M1",
+      true
+     ],
+     [
+      "M5B->M1",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->M1",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->MYST-0001",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->MYST-0002",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->MYST-0003",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->MYST-0004",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->MYST-0005A",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->MYST-0005B",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->MYST-CHALLENGE-0001",
+      true
+     ],
+     [
+      "MYST-SESSION-0001A->MYST-SOLVABILITY-0001",
+      true
+     ],
+     [
+      "MYST-SESSION-0001B->M1",
+      true
+     ],
+     [
+      "MYST-SESSION-0001B->MYST-SESSION-0001A",
+      true
+     ],
+     [
+      "MYST-SESSION-0001C->M1",
+      true
+     ],
+     [
+      "MYST-SESSION-0001C->MYST-SESSION-0001A",
+      true
+     ],
+     [
+      "MYST-SESSION-0001C->MYST-SESSION-0001B",
+      true
+     ]
+    ],
+    "historicalMentionsOfFinalCandidateHash": []
+   }
+  },
+  {
+   "id": "X05",
+   "check": "Shared Session §§ (Startgate, Reads, §2–§11) byte-identical in SA/SB/SC",
+   "result": "PASS",
+   "detail": {
+    "sharedSectionSha256": "42a1a5e3e53a53e7037cf79f1d382446a680f61861fb0ff36713e97f18dd6638"
+   }
+  },
+  {
+   "id": "X06",
+   "check": "Every hash/profile name used is in the final V1 registry (contract-hash profiles and adapterVersion excepted)",
+   "result": "PASS",
+   "detail": {
+    "names": [
+     "forge-case-c14n-v1",
+     "forge-case-package-v1",
+     "forge-contract-v1",
+     "forge-contract-v2",
+     "forge-evidence-access-c14n-v1",
+     "forge-evidence-presentation-c14n-v1",
+     "forge-interrogation-catalogue-c14n-v1",
+     "forge-interrogation-profile-c14n-v1",
+     "forge-mystery-playerref-v1",
+     "forge-npc-snapshot-v1",
+     "forge-release-proof-v1",
+     "forge-session-challenge-v1",
+     "forge-session-initial-v1",
+     "forge-session-npcs-v1",
+     "forge-session-proof-v1",
+     "forge-session-public-content-v1",
+     "forge-session-refs-v1",
+     "forge-session-release-context-v1",
+     "forge-session-release-v1",
+     "forge-session-save-v1",
+     "forge-solution-c14n-v1"
+    ],
+    "notInRegistry": []
+   }
+  },
+  {
+   "id": "X07",
+   "check": "releaseContextHash input list includes publicContentHash everywhere",
+   "result": "PASS",
+   "detail": {
+    "withoutPublicContent": []
+   }
+  },
+  {
+   "id": "X08",
+   "check": "No superseded normative wording remains in the candidate set",
+   "result": "PASS",
+   "detail": {
+    "persisted ask event": [],
+    "UNKNOWN/BLOCKER adapter": [],
+    "secondary MYST-0001": [],
+    "Required-only absolute ban": [],
+    "per-accuse truth rehash": [],
+    "full copy per event": [],
+    "prefix reserialization": [],
+    "proof receipt gate flag": [],
+    "citation in accuse": [],
+    "superseded premise keys": [],
+    "unbounded unknown no-throw": [],
+    "scratch ref namespace": [],
+    "generic profile string": []
+   }
+  },
+  {
+   "id": "X09",
+   "check": "Unique type ownership: Session duplicates governed by P01 single-owner rule; cross-module equal names resolved",
+   "result": "PASS",
+   "detail": {
+    "sessionCopies(P01 owner rule)": [
+     "CasePackageIdentity",
+     "CasePackageInput",
+     "InitialSetup",
+     "KnownEntity",
+     "ObservationRecord",
+     "PackageFinding",
+     "PackageRefSource",
+     "PlayerConclusionClaim",
+     "PlayerKnowledge",
+     "ResolvedCasePackage",
+     "SessionEvent",
+     "SessionOutput",
+     "SessionState",
+     "VerdictRecord"
+    ],
+    "crossModule": {
+     "PlayerRefTranslator": [
+      [
+       "MYST-0004",
+       "MYST-0005B"
+      ],
+      "MYST-0005B declares it 'strukturell identisch MYST-0004 §5.1'; SA refs is a structural superset (B.9)"
+     ],
+     "PlayerClaim": [
+      [
+       "MYST-0004",
+       "MYST-0005B"
+      ],
+      "module-local: MYST-0004 §5.4 (3 variants) vs MYST-0005B (9 variants); SA IR-05 fixes which one each annex selector uses; shared variants structurally identical"
+     ],
+     "EntityRef": [
+      [
+       "MYST-0005A",
+       "MYST-SESSION-0001A",
+       "MYST-SESSION-0001B",
+       "MYST-SESSION-0001C"
+      ],
+      "MYST-0005A EntityRef = branded AwarenessSubject; SA EntityRef {kind,id:string} is its structural supertype; SB passes resolved branded refs (B.9)"
+     ]
+    },
+    "unresolved": []
+   }
+  },
+  {
+   "id": "X10",
+   "check": "Unique persistent-data ownership",
+   "result": "PASS",
+   "detail": {
+    "Save envelope owned by SC §8 (four fields)": true,
+    "Event vocabulary owned by SB §4; M5B persists SB interrogate": true,
+    "No persisted PlayerKnowledge/VisibleRef/NPC engine/derived verdict": true,
+    "Salt never in Save/Event/DTO": true,
+    "PublicContent sole owner of public wording": true,
+    "Single-owner rule SA §§2–3 / SB §§4–7 / SC §§8–9": true
+   }
+  },
+  {
+   "id": "X11",
+   "check": "Proof, Challenge, Session and Replay semantics consistent (positive anchors)",
+   "result": "PASS",
+   "detail": {
+    "Proof: OBSERVED needs explicit authored license, no NPC/evidence promotion": true,
+    "Proof: uncertainty never Boolean": true,
+    "Proof: no canned expected roots": true,
+    "Proof: SOL REPORTED_BY_NPC = report occurrence, not truth": true,
+    "Proof: MYST-0002 sole conclusion authority": true,
+    "Challenge: allowedClaims without winning polarity, secret-derived scope forbidden": true,
+    "Challenge: public pre-fixed single role = required_literals": true,
+    "Challenge/Session D8: correct complete answer solved, no proof gate": true,
+    "Session: terminal solved, no events after": true,
+    "Session: atomic rollback on failure": true,
+    "Session: no O(n²) copy mandate": true,
+    "Replay: exact ruleset, no latest fallback": true,
+    "Replay: resolve verifies once, replay reuses binding": true,
+    "Replay: public load error constant": true,
+    "No anti-cheat claim": true
+   }
+  },
+  {
+   "id": "X12",
+   "check": "CasePackageIdentity descriptor is exactly the original three fields",
+   "result": "PASS",
+   "detail": {}
+  },
+  {
+   "id": "X13",
+   "check": "PlayerRef, NPC snapshot and PublicContent identities bound",
+   "result": "PASS",
+   "detail": {
+    "PlayerRef config profile literal": true,
+    "refsHash binds config+mapping": true,
+    "NPC snapshot full parsed identity": true,
+    "PublicContent hash in release context": true
+   }
+  }
+ ],
+ "pass": 13,
+ "fail": 0
+}
