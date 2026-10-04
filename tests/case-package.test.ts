@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { resolveCasePackage, type PackageFinding, type PackageRefSource } from "../src/domain/case-package.ts";
-import { OTHER_SALT, SALT, packageInput, refSource, resolved, truthOf } from "./case-package.fixture.ts";
+import {
+  OTHER_SALT,
+  SALT,
+  packageInput,
+  proofPackageInput,
+  refSource,
+  resolved,
+  truthOf,
+  withProofContent,
+  type ProofEdit,
+} from "./case-package.fixture.ts";
+import { hashPackage, hashReleaseManifest } from "../src/domain/case-package.identity.ts";
 import { buildPlayerRefIndex } from "../src/domain/player-ref.ts";
 
 // Contract MYST-SESSION-0001A acceptance matrix A01..A43 (package side). Proof cases that need
@@ -366,5 +377,263 @@ describe("trusted-only package", () => {
     resolveCasePackage(input, refSource(truthOf(input)));
     expect(input).toEqual(before);
     expect(Object.isFrozen(input.truth)).toBe(false);
+  });
+});
+
+// ---------- Proof binding (A29-A34, A43; annex forge-release-proof-v1) ----------
+
+function bindWith(edit: ProofEdit = {}, after: (p: any) => void = () => {}) {
+  const input = proofPackageInput(edit);
+  after(input);
+  return resolveCasePackage(input, refSource(truthOf(input)));
+}
+function proofFindings(edit: ProofEdit, after?: (p: any) => void): PackageFinding[] {
+  const result = bindWith(edit, after);
+  expect(result.ok).toBe(false);
+  return result.ok ? [] : [...result.findings];
+}
+const CERT = ["proof", "releaseManifest", "certificateData"];
+const OBS = (i: number, ...rest: (string | number)[]) => [...CERT, "observations", i, ...rest];
+const one = (fs: PackageFinding[]) => {
+  expect(fs).toHaveLength(1);
+  return fs[0]!;
+};
+const FAKE_REF = "pr1_0000000000000000";
+
+describe("proof binding", () => {
+  const bound = bindWith();
+  if (!bound.ok) throw new Error(JSON.stringify(bound.findings));
+  const pkg = bound.package;
+
+  it("binds a complete profile and manifest, without any solvability claim", () => {
+    expect(pkg.proof!.releaseHash).toBe(hashReleaseManifest(pkg.proof!.releaseManifest));
+    expect(pkg.proof!.profile.bindings.releaseHash).toBe(pkg.proof!.releaseHash);
+    expect(Object.keys(pkg.proof!).sort()).toEqual(["profile", "releaseHash", "releaseManifest"]);
+    expect(Object.isFrozen(pkg.proof!.profile)).toBe(true);
+    expect(JSON.stringify(Object.keys(pkg))).not.toMatch(/solvable|pass|verdict/i);
+  });
+
+  it("A33 proof null is a technical package with both proof hashes null", () => {
+    const plain = resolved((p) => withProofContent(p));
+    expect(plain.proof).toBeNull();
+    expect(plain.identity.packageHash).not.toBe(pkg.identity.packageHash);
+    const other = resolved();
+    expect(other.identity.packageHash).not.toBe(plain.identity.packageHash);
+    expect(hashPackage({ rulesetVersion: "mystery-session-v1", releaseContextHash: "a".repeat(64), releaseHash: null, proofHash: null })).not.toBe(
+      hashPackage({ rulesetVersion: "mystery-session-v1", releaseContextHash: "a".repeat(64), releaseHash: "", proofHash: "" }),
+    );
+  });
+
+  it("A29 swapped witness steps change the package; SET permutations do not", () => {
+    const swapped = bindWith({ cert: (c) => c.steps.reverse() });
+    expect(swapped.ok && swapped.package.identity.packageHash).not.toBe(pkg.identity.packageHash);
+    const permuted = bindWith({ profile: (p) => (p.nodes.reverse(), p.answerScope.reverse(), p.edges[0].allOf.reverse()) });
+    expect(permuted.ok && permuted.package.identity.packageHash).toBe(pkg.identity.packageHash);
+    const witnessOnly = proofFindings({ profile: (p) => p.witnessStepIds.reverse() });
+    expect(one(witnessOnly)).toEqual({ code: "PROOF_BINDING", path: [...CERT, "steps"] });
+  });
+
+  it("certificate arrays stay ORDERED: permuting alternatives changes releaseHash", () => {
+    const permuted = bindWith({ cert: (c) => c.observations[1].alternatives.reverse() });
+    expect(permuted.ok && permuted.package.proof!.releaseHash).not.toBe(pkg.proof!.releaseHash);
+  });
+
+  it("A30 wrong profile releaseHash and T/S bindings", () => {
+    expect(one(proofFindings({ profile: (p) => (p.bindings.releaseHash = "0".repeat(64)) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: ["proof", "profile", "bindings", "releaseHash"],
+    });
+    expect(codes(proofFindings({ profile: (p) => (p.bindings.truthHash = "0".repeat(64)) }))).toEqual(["PROOF_BINDING"]);
+    expect(codes(proofFindings({ profile: (p) => (p.bindings.solutionHash = "0".repeat(64)) }))).toEqual(["PROOF_BINDING"]);
+  });
+
+  it("A31 wrong manifest releaseContextHash", () => {
+    expect(one(proofFindings({ envelope: (e) => (e.releaseContextHash = "0".repeat(64)) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: ["proof", "releaseManifest", "releaseContextHash"],
+    });
+  });
+
+  it("A32 executable JS in the manifest is never run, only rejected as data", () => {
+    const g = globalThis as { __forgePwned?: boolean };
+    const js = "(() => { globalThis.__forgePwned = true; return 1 })()";
+    expect(codes(proofFindings({ manifest: () => js }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ envelope: (e) => (e.certificateData = js) }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ cert: (c) => (c.observations[0].alternatives[0].licenseRuleId = js) }))).toEqual(["REFERENCE"]);
+    expect(g.__forgePwned).toBeUndefined();
+  });
+
+  it("A34 pass-like extra flags are schema errors", () => {
+    expect(codes(proofFindings({}, (p) => (p.proof.passed = true)))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ profile: (p) => (p.solvable = true) }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ envelope: (e) => (e.certified = true) }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ cert: (c) => (c.verdict = "PASS") }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ cert: (c) => (c.observations[2].approved = true) }))).toEqual(["SHAPE"]);
+  });
+
+  it("manifest must be canonical C with the exact adapter version", () => {
+    expect(one(proofFindings({ manifest: (t) => JSON.stringify(JSON.parse(t), null, 1) }))).toEqual({ code: "SHAPE", path: ["proof", "releaseManifest"] });
+    expect(codes(proofFindings({ envelope: (e) => (e.adapterVersion = "forge-release-proof-v2") }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ envelope: (e) => (e.schemaVersion = 2) }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ manifest: () => "{\"a\":1e999}" }))).toEqual(["SHAPE"]);
+  });
+});
+
+describe("A43 certificateData selectors", () => {
+  const observedReport = (c: any) => c.observations[0].alternatives[0].report;
+  const npcSelector = (c: any) => c.observations[1].alternatives[0];
+  const testimony = (c: any) => c.observations[1].alternatives[1];
+  const at = (fs: PackageFinding[]) => one(fs);
+
+  it("OBSERVED: source, stance, evidence and license attacks", () => {
+    expect(at(proofFindings({ cert: (c, r) => (observedReport(c).source = { kind: "testimony", person: r("person", "person:dora") }) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(0, "alternatives", 0, "report", "source"),
+    });
+    expect(at(proofFindings({ cert: (c) => (observedReport(c).stance = "denies") }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(0, "alternatives", 0, "report", "stance"),
+    });
+    expect(at(proofFindings({ cert: (c) => (c.observations[0].source.evidenceId = "evidence:muddy-boots") }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(0, "alternatives", 0, "report"),
+    });
+    expect(at(proofFindings({ cert: (c) => (c.observations[0].alternatives[0].licenseRuleId = "rule:unknown") })).code).toBe("REFERENCE");
+    expect(codes(proofFindings({ cert: (c) => (c.observations[0].source = { kind: "initial" }) }))).toEqual(["SHAPE"]);
+    expect(at(proofFindings({ cert: (c) => c.observations[0].alternatives.push(structuredClone(c.observations[0].alternatives[0])) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(0, "alternatives", 1),
+    });
+  });
+
+  it("OBSERVED: literal binding, ambiguous alias and ref attacks", () => {
+    expect(at(proofFindings({ cert: (c) => (c.observations[0].literal.propositionId = "proposition:ben-in-killing") }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(0, "alternatives", 0),
+    });
+    const aliasCase: ProofEdit = {
+      pkg: (p) => {
+        const knife = p.presentation.entries[0];
+        knife.mentions.push({ kind: "location", id: "location:library" });
+        knife.reports.push({ claim: { kind: "personAt", personId: "person:ben", locationId: "location:library", at: 300 }, stance: "affirms", source: { kind: "observation" } });
+      },
+      cert: (c, r) => {
+        c.observations[0].literal.propositionId = "proposition:ben-at-library";
+        observedReport(c).claim = { kind: "personAt", person: r("person", "person:ben"), location: r("location", "location:library"), at: 300 };
+      },
+    };
+    expect(at(proofFindings(aliasCase))).toEqual({ code: "PROOF_BINDING", path: OBS(0, "alternatives", 0) });
+    expect(at(proofFindings({ cert: (c) => (observedReport(c).claim.itemId = "item:knife", delete observedReport(c).claim.item) }))).toEqual({
+      code: "SHAPE",
+      path: OBS(0, "alternatives", 0, "report", "claim", "itemId"),
+    });
+    expect(at(proofFindings({ cert: (c, r) => (observedReport(c).claim.item = r("person", "person:ben")) }))).toEqual({
+      code: "REFERENCE",
+      path: OBS(0, "alternatives", 0, "report", "claim", "item"),
+    });
+    expect(at(proofFindings({ cert: (c) => (observedReport(c).claim.item = FAKE_REF) })).code).toBe("REFERENCE");
+  });
+
+  it("REPORTED_BY_NPC npc selector: question, stance and claim attacks", () => {
+    expect(at(proofFindings({ cert: (c) => (npcSelector(c).questionId = "question:bloody-knife") }))).toEqual({
+      code: "REFERENCE",
+      path: OBS(1, "alternatives", 0, "questionId"),
+    });
+    expect(at(proofFindings({ cert: (c) => (c.observations[1].npcId = "person:anna") }))).toEqual({
+      code: "REFERENCE",
+      path: OBS(1, "alternatives", 0, "questionId"),
+    });
+    expect(codes(proofFindings({ cert: (c) => (npcSelector(c).stance = "leans_affirms") }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ cert: (c) => (npcSelector(c).stance = "uncertain") }))).toEqual(["SHAPE"]);
+    expect(at(proofFindings({ cert: (c) => (npcSelector(c).stance = "denies") }))).toEqual({ code: "PROOF_BINDING", path: OBS(1, "alternatives", 0, "stance") });
+    expect(at(proofFindings({ cert: (c, r) => (npcSelector(c).claim.person = r("person", "person:anna")) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(1, "alternatives", 0, "claim"),
+    });
+  });
+
+  it("REPORTED_BY_NPC testimony selector: person, source and evidence attacks", () => {
+    expect(at(proofFindings({ cert: (c, r) => (testimony(c).report.source.person = r("person", "person:anna")) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(1, "alternatives", 1, "report", "source"),
+    });
+    expect(at(proofFindings({ cert: (c) => (testimony(c).report.source = { kind: "observation" }) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(1, "alternatives", 1, "report", "source"),
+    });
+    expect(at(proofFindings({ cert: (c) => (testimony(c).evidenceId = "evidence:muddy-boots") }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(1, "alternatives", 1, "report"),
+    });
+    expect(at(proofFindings({ cert: (c) => (testimony(c).evidenceId = "evidence:nothing") })).code).toBe("REFERENCE");
+    expect(at(proofFindings({ cert: (c) => (testimony(c).report.stance = "denies") }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(1, "alternatives", 1, "report", "stance"),
+    });
+  });
+
+  it("ENTITY_AWARENESS: existing and reachable entity only", () => {
+    expect(at(proofFindings({ cert: (c) => (c.observations[2].entity = { kind: "person", id: "person:clara" }) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(2, "entity"),
+    });
+    // An unknown entity is already refused by the real SOL parser of the mirrored profile.
+    const unknown = at(proofFindings({ cert: (c) => (c.observations[2].entity = { kind: "person", id: "person:nobody" }) }));
+    expect(unknown.code).toBe("SHAPE");
+    expect(unknown.path.slice(0, 4)).toEqual(["proof", "profile", "observations", 2]);
+  });
+
+  it("PUBLIC_RULE: self-license, duplicates and unknown laws", () => {
+    expect(at(proofFindings({ cert: (c) => c.observations[3].afterObservations.push("obs:law") }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(3, "afterObservations", 2),
+    });
+    expect(at(proofFindings({ cert: (c) => c.observations[3].afterObservations.push("obs:knife") }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(3, "afterObservations", 2),
+    });
+    expect(at(proofFindings({ cert: (c) => c.observations[3].afterObservations.push("obs:ghost") })).code).toBe("PROOF_BINDING");
+    expect(at(proofFindings({ cert: (c) => (c.observations[3].ruleId = "rule:secret") }))).toEqual({ code: "REFERENCE", path: OBS(3, "ruleId") });
+    expect(bindWith({ cert: (c) => (c.observations[3].afterObservations = []) }).ok).toBe(true);
+  });
+
+  it("profile coverage and payload must match exactly", () => {
+    expect(at(proofFindings({ profile: (p) => p.observations.push({ id: "obs:extra", kind: "ENTITY_AWARENESS", entity: { kind: "person", id: "person:anna" } }) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: [...CERT, "observations"],
+    });
+    expect(at(proofFindings({ profile: (p) => (p.observations[2].entity = { kind: "person", id: "person:anna" }) }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(2),
+    });
+    expect(at(proofFindings({ cert: (c) => c.observations.push(structuredClone(c.observations[2])), profile: (p) => p.observations.pop() }))).toEqual({
+      code: "PROOF_BINDING",
+      path: OBS(4),
+    });
+  });
+
+  it("steps: exact Session B events with real refs", () => {
+    expect(at(proofFindings({ cert: (c) => c.steps.push(structuredClone(c.steps[0])) }, (p) => p.proof.profile.witnessStepIds.push("step:examine-knife")))).toEqual({
+      code: "PROOF_BINDING",
+      path: [...CERT, "steps", 2],
+    });
+    expect(codes(proofFindings({ cert: (c) => (c.steps[0].event.target = "item:knife") }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ cert: (c) => (c.steps[0].event.seq = 1) }))).toEqual(["SHAPE"]);
+    expect(codes(proofFindings({ cert: (c) => (c.steps[1].event.type = "ask") }))).toEqual(["SHAPE"]);
+    expect(at(proofFindings({ cert: (c, r) => (c.steps[0].event.target = r("person", "person:ben")) }))).toEqual({
+      code: "REFERENCE",
+      path: [...CERT, "steps", 0, "event", "target"],
+    });
+    expect(at(proofFindings({ cert: (c, r) => (c.steps[1].event.npc = r("item", "item:knife")) })).code).toBe("REFERENCE");
+    const accuse = (claim: object): ProofEdit => ({ cert: (c) => c.steps.push({ stepId: "step:accuse", event: { type: "accuse", literals: [{ claim, value: true }] } }) });
+    const withAccuse = (claim: (r: any) => object) => ({ cert: (c: any, r: any) => accuse(claim(r)).cert!(c, r) });
+    expect(bindWith(withAccuse((r) => ({ kind: "personResponsibleForEvent", person: r("person", "person:ben"), event: r("event", "event:ben-kills-clara") }))).ok).toBe(true);
+    expect(codes(proofFindings(withAccuse((r) => ({ kind: "personAt", person: r("person", "person:ben"), location: r("location", "location:library"), at: 300 }))))).toEqual(["SHAPE"]);
+  });
+
+  it("every attack fails atomically without a package", () => {
+    const result = bindWith({ cert: (c) => (npcSelector(c).stance = "denies") });
+    expect(result).toEqual({ ok: false, findings: [{ code: "PROOF_BINDING", path: OBS(1, "alternatives", 0, "stance") }] });
+    expect(Object.isFrozen(result)).toBe(true);
   });
 });

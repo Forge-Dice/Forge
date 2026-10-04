@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { parseCaseTruth, type CaseTruth, type DeepReadonly } from "./case-truth.ts";
+import { ClaimSchema, parseCaseTruth, type CaseTruth, type DeepReadonly } from "./case-truth.ts";
 import { hashCaseTruth } from "./case-truth.identity.ts";
 import { validateCaseSemantics } from "./case-semantics.ts";
-import { parseCaseSolution, type CaseSolution } from "./case-solution.ts";
+import { ConclusionClaimSchema, parseCaseSolution, type CaseSolution } from "./case-solution.ts";
 import { hashCaseSolution } from "./case-solution.identity.ts";
 import { parseEvidenceAccessMap, type EvidenceAccessMap } from "./evidence-access.ts";
 import { hashEvidenceAccessMap } from "./evidence-access.identity.ts";
@@ -10,6 +10,7 @@ import { PlayerTextSchema, parseEvidencePresentation, type EvidencePresentation 
 import { hashEvidencePresentation } from "./evidence-presentation.identity.ts";
 import {
   QuestionIdSchema,
+  StatementClaimSchema,
   parseInterrogationProfile,
   parseQuestionCatalogue,
   type InterrogationProfile,
@@ -18,6 +19,7 @@ import {
 import { hashInterrogationProfile, hashQuestionCatalogue } from "./interrogation-authoring.identity.ts";
 import { parseNpcKnowledge, type NpcKnowledgeSnapshot } from "./npc-knowledge.ts";
 import { parseAccusationChallenge, type AccusationChallenge } from "./accusation-challenge.ts";
+import { parseCaseProofProfile, type CaseProofProfile } from "./case-solvability.ts";
 import { PLAYER_REF_KINDS, PLAYER_REF_PROFILE, PlayerRefSchema, RefSaltSchema, buildPlayerRefIndex, type ResolvedEntity } from "./player-ref.ts";
 import {
   hashChallengeComponent,
@@ -25,9 +27,11 @@ import {
   hashNpcBundle,
   hashNpcSnapshot,
   hashPackage,
+  hashProofProfile,
   hashPublicContent,
   hashRefs,
   hashReleaseContext,
+  hashReleaseManifest,
   serializeSessionJson,
   utf8Length,
   validateSessionJson,
@@ -123,7 +127,7 @@ export type ResolvedCasePackage = {
   readonly initial: InitialSetup;
   readonly challenge: AccusationChallenge;
   readonly publicContent: PublicContent;
-  readonly proof: null | { readonly profile: unknown; readonly releaseManifest: string; readonly releaseHash: string };
+  readonly proof: null | { readonly profile: CaseProofProfile; readonly releaseManifest: string; readonly releaseHash: string };
   readonly refs: {
     readonly caseId: string;
     readonly truthHash: string;
@@ -328,14 +332,6 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
     publicContentHash: hashPublicContent(publicContent),
   });
 
-  const proof = bindProof(input.proof, releaseContextHash);
-  const packageHash = hashPackage({
-    rulesetVersion: RULESET_VERSION,
-    releaseContextHash,
-    releaseHash: proof?.releaseHash ?? null,
-    proofHash: proof?.proofHash ?? null,
-  });
-
   const forward = new Map(mapping.map((m) => [entityKey(m.kind, m.id), m.ref]));
   const backward = new Map(mapping.map((m) => [m.ref, Object.freeze({ kind: m.kind, id: m.id }) as ResolvedEntity]));
   const refs = {
@@ -344,6 +340,15 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
     refFor: (kind: EntityRef["kind"], id: string) => forward.get(entityKey(kind, id)) ?? null,
     resolve: (ref: string) => backward.get(ref) ?? null,
   };
+  const context = { truth, solution, presentation, catalogue, npcs, initial, publicContent, resolve: refs.resolve, releaseContextHash };
+  const proof = input.proof === null ? null : bindProof(input.proof, context);
+  const packageHash = hashPackage({
+    rulesetVersion: RULESET_VERSION,
+    releaseContextHash,
+    releaseHash: proof?.releaseHash ?? null,
+    proofHash: proof?.proofHash ?? null,
+  });
+
   return deepFreeze({
     identity: { schemaVersion: 1, packageHash, rulesetVersion: RULESET_VERSION },
     truth,
@@ -361,13 +366,289 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
   });
 }
 
-type BoundProof = { profile: unknown; releaseManifest: string; releaseHash: string; proofHash: string };
+// ---------- Proof binding (§2 "Proof-Bindung", annex forge-release-proof-v1) ----------
+// Binding only: the resolver parses the ProofProfile with the real SOL parser, validates the
+// release manifest and its certificateData as private authoring data and binds the hashes. It
+// never executes a witness or the checker and never claims "solvable".
 
-/** Proof binding is completed with MYST-SOLVABILITY-0001; until then a non-null proof is refused. */
-function bindProof(proof: { profile: unknown; releaseManifest: string } | null, releaseContextHash: string): BoundProof | null {
-  if (proof === null) return null;
-  void releaseContextHash;
-  return reject("PROOF_BINDING", ["proof"]);
+const ADAPTER_VERSION = "forge-release-proof-v1";
+const MAX_EVENT_BYTES = 16 * 1024;
+const LocalId = z.string().regex(/^[a-z][a-z0-9:_-]{0,63}$/);
+const Ref = PlayerRefSchema;
+const Affirmation = z.enum(["affirms", "denies"]);
+const PropositionLiteral = z.strictObject({ kind: z.literal("proposition"), propositionId: z.string(), value: z.boolean() });
+const ProofLiteral = z.discriminatedUnion("kind", [
+  PropositionLiteral,
+  z.strictObject({ kind: z.literal("conclusion"), conclusionId: z.string(), value: z.boolean() }),
+]);
+// Claims stay unknown here and are translated field by field in claimOf (exact inverse ref mapping).
+const PlayerReportSchema = z.strictObject({
+  claim: z.unknown(),
+  stance: Affirmation,
+  source: z.discriminatedUnion("kind", [
+    z.strictObject({ kind: z.literal("observation") }),
+    z.strictObject({ kind: z.literal("testimony"), person: Ref }),
+  ]),
+});
+const ReportSelectorSchema = z.discriminatedUnion("kind", [
+  z.strictObject({ kind: z.literal("npc"), questionId: QuestionIdSchema, claim: z.unknown(), stance: Affirmation }),
+  z.strictObject({ kind: z.literal("testimony"), evidenceId: z.string(), report: PlayerReportSchema }),
+]);
+const Alternatives = <T extends z.ZodType>(item: T) => z.array(item).min(1).max(16);
+const PremiseMapSchema = z.discriminatedUnion("kind", [
+  z.strictObject({
+    id: LocalId,
+    kind: z.literal("OBSERVED"),
+    literal: PropositionLiteral,
+    source: z.strictObject({ kind: z.literal("evidence"), evidenceId: z.string() }),
+    alternatives: Alternatives(z.strictObject({ report: PlayerReportSchema, licenseRuleId: z.string() })),
+  }),
+  z.strictObject({ id: LocalId, kind: z.literal("REPORTED_BY_NPC"), npcId: z.string(), literal: ProofLiteral, alternatives: Alternatives(ReportSelectorSchema) }),
+  z.strictObject({ id: LocalId, kind: z.literal("ENTITY_AWARENESS"), entity: EntityRefSchema }),
+  z.strictObject({
+    id: LocalId,
+    kind: z.literal("PUBLIC_RULE"),
+    ruleId: z.string(),
+    afterObservations: z.array(LocalId).max(64),
+    rules: z.array(z.strictObject({ edgeId: LocalId, allOf: z.array(LocalId).min(1), yields: ProofLiteral })).min(1).max(128),
+  }),
+]);
+// SessionEvent exactly as Session B §4: refs only, no seq, no receipts, no canonical aliases.
+const SessionEventSchema = z.discriminatedUnion("type", [
+  z.strictObject({ type: z.literal("investigate"), action: z.enum(["search_location", "examine_item", "examine_person"]), target: Ref }),
+  z.strictObject({ type: z.literal("interrogate"), npc: Ref, questionId: QuestionIdSchema }),
+  z.strictObject({ type: z.literal("accuse"), literals: z.array(z.strictObject({ claim: z.unknown(), value: z.boolean() })).max(32) }),
+]);
+const ManifestSchema = z.strictObject({
+  schemaVersion: z.literal(1),
+  releaseContextHash: z.string().regex(/^[0-9a-f]{64}$/),
+  adapterVersion: z.literal(ADAPTER_VERSION),
+  certificateData: z.strictObject({
+    schemaVersion: z.literal(1),
+    steps: z.array(z.strictObject({ stepId: z.string().regex(/^[\x21-\x7e]{1,128}$/), event: SessionEventSchema })).max(256),
+    observations: z.array(PremiseMapSchema).max(64),
+  }),
+});
+type Certificate = z.output<typeof ManifestSchema>["certificateData"];
+type PremiseMap = Certificate["observations"][number];
+type PlayerReportInput = z.output<typeof PlayerReportSchema>;
+type Literal = z.output<typeof ProofLiteral>;
+
+type ProofContext = {
+  readonly truth: CaseTruth;
+  readonly solution: CaseSolution;
+  readonly presentation: EvidencePresentation;
+  readonly catalogue: QuestionCatalogue;
+  readonly npcs: readonly { readonly profile: InterrogationProfile }[];
+  readonly initial: InitialSetup;
+  readonly publicContent: PublicContent;
+  readonly resolve: (ref: string) => ResolvedEntity | null;
+  readonly releaseContextHash: string;
+};
+type BoundProof = { profile: CaseProofProfile; releaseManifest: string; releaseHash: string; proofHash: string };
+type Path = (string | number)[];
+
+const C = serializeSessionJson;
+const PROFILE: Path = ["proof", "profile"];
+const MANIFEST: Path = ["proof", "releaseManifest"];
+const CERT: Path = [...MANIFEST, "certificateData"];
+
+function parseProfile(raw: unknown, truth: CaseTruth, solution: CaseSolution): CaseProofProfile {
+  try {
+    return parseCaseProofProfile(raw, truth, solution);
+  } catch (error) {
+    if (!(error instanceof z.ZodError)) throw error;
+    throw new Rejected(
+      error.issues.map((issue) => ({
+        code: issue.path[0] === "bindings" ? "PROOF_BINDING" : "SHAPE",
+        path: [...PROFILE, ...(issue.path as Path)],
+      })),
+    );
+  }
+}
+
+/** Exact canonical C text with the strict envelope; never evaluated, only JSON-parsed. */
+function parseManifest(text: string): z.output<typeof ManifestSchema> {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    return reject("SHAPE", MANIFEST);
+  }
+  const json = validateSessionJson(raw, PACKAGE_LIMITS);
+  if (!json.ok) reject(json.code, [...MANIFEST, ...json.path]);
+  if (C(raw) !== text) reject("SHAPE", MANIFEST); // registry: the manifest is canonical C bytes
+  const parsed = ManifestSchema.safeParse(raw);
+  if (!parsed.success) throw new Rejected(parsed.error.issues.map((i) => ({ code: "SHAPE", path: [...MANIFEST, ...(i.path as Path)] })));
+  return parsed.data;
+}
+
+// PlayerClaim field ↔ canonical field and entity kind (annex §2: person↔personId, ...).
+const PLAYER_FIELDS: Readonly<Record<string, readonly [string, EntityRef["kind"]]>> = Object.assign(Object.create(null), {
+  person: ["personId", "person"],
+  location: ["locationId", "location"],
+  item: ["itemId", "item"],
+  event: ["eventId", "event"],
+  causeEvent: ["causeEventId", "event"],
+});
+
+/** Translates a ref-based player claim into its canonical claim; wrong kinds or unknown refs fail. */
+function claimOf(raw: unknown, schema: z.ZodType, resolveRef: ProofContext["resolve"], path: Path): unknown {
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return reject("SHAPE", path);
+  const canonical: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    const target = PLAYER_FIELDS[key];
+    if (target === undefined) {
+      if (key.endsWith("Id")) reject("SHAPE", [...path, key]); // canonical-ID alias
+      canonical[key] = value;
+      continue;
+    }
+    const entity = typeof value === "string" ? resolveRef(value) : null;
+    if (entity === null || entity.kind !== target[1]) reject("REFERENCE", [...path, key]);
+    canonical[target[0]] = entity!.id;
+  }
+  const parsed = schema.safeParse(canonical);
+  return parsed.success ? parsed.data : reject("SHAPE", path);
+}
+
+/** The literal's own catalog claim must be exactly this claim, and no alias may share it. */
+function bindLiteral(literal: Literal, claim: unknown, { truth, solution }: ProofContext, path: Path): void {
+  const pool: readonly { readonly id: string; readonly claim: unknown }[] = literal.kind === "proposition" ? truth.propositions : solution.conclusions;
+  const id = literal.kind === "proposition" ? literal.propositionId : literal.conclusionId;
+  const own = pool.find((entry) => entry.id === id);
+  if (own === undefined) reject("REFERENCE", [...path, "literal"]);
+  const key = C(claim);
+  if (C(own!.claim) !== key || pool.filter((entry) => C(entry.claim) === key).length !== 1) reject("PROOF_BINDING", path);
+}
+
+/** A report selector must name one exact authored report of exactly that evidence. */
+function reportOf(report: PlayerReportInput, evidenceId: string, ctx: ProofContext, path: Path): unknown {
+  const claim = claimOf(report.claim, ClaimSchema, ctx.resolve, [...path, "claim"]);
+  let source: object = report.source;
+  if (report.source.kind === "testimony") {
+    const person = ctx.resolve(report.source.person);
+    if (person === null || person.kind !== "person") reject("REFERENCE", [...path, "source", "person"]);
+    source = { kind: "testimony", personId: person!.id };
+  }
+  const entry = ctx.presentation.entries.find((e) => e.evidenceId === evidenceId);
+  const wanted = C({ claim, stance: report.stance, source });
+  if (entry === undefined || !entry.reports.some((r) => C(r) === wanted)) reject("PROOF_BINDING", path);
+  return claim;
+}
+
+function checkUnique(values: readonly string[], path: Path): void {
+  const seen = new Set<string>();
+  values.forEach((value, i) => (seen.has(value) ? reject("PROOF_BINDING", [...path, i]) : seen.add(value)));
+}
+
+/** Entities that can ever enter Known: initial, released evidence, presentation and answer mentions. */
+function awarenessReach(ctx: ProofContext): Set<string> {
+  const reach = new Set(ctx.initial.known.map((e) => entityKey(e.kind, e.id)));
+  ctx.truth.evidence.forEach((e) => reach.add(entityKey("evidence", e.id)));
+  ctx.presentation.entries.forEach((entry) => entry.mentions.forEach((m) => reach.add(entityKey(m.kind, m.id))));
+  for (const { profile } of ctx.npcs) {
+    for (const rule of profile.rules) {
+      if (rule.act !== "answer") continue;
+      const question = ctx.catalogue.questions.find((q) => q.id === rule.questionId);
+      [...(question?.mentions ?? []), ...rule.reveal, { kind: "person" as const, id: profile.npcId }].forEach((e) => reach.add(entityKey(e.kind, e.id)));
+    }
+  }
+  return reach;
+}
+
+function checkPremise(o: PremiseMap, i: number, ctx: ProofContext, kinds: ReadonlyMap<string, string>, entities: ReadonlySet<string>): void {
+  const path = [...CERT, "observations", i];
+  const evidenceExists = (id: string) => ctx.truth.evidence.some((e) => e.id === id);
+  const ruleExists = (id: string) => ctx.publicContent.publicRules.some((r) => r.id === id);
+  if (o.kind === "OBSERVED") {
+    if (!evidenceExists(o.source.evidenceId)) reject("REFERENCE", [...path, "source", "evidenceId"]);
+    checkUnique(o.alternatives.map(C), [...path, "alternatives"]);
+    o.alternatives.forEach((alt, j) => {
+      const at = [...path, "alternatives", j];
+      if (alt.report.source.kind !== "observation") reject("PROOF_BINDING", [...at, "report", "source"]);
+      if ((alt.report.stance === "affirms") !== o.literal.value) reject("PROOF_BINDING", [...at, "report", "stance"]);
+      if (!ruleExists(alt.licenseRuleId)) reject("REFERENCE", [...at, "licenseRuleId"]);
+      bindLiteral(o.literal, reportOf(alt.report, o.source.evidenceId, ctx, [...at, "report"]), ctx, at);
+    });
+  } else if (o.kind === "REPORTED_BY_NPC") {
+    if (!ctx.truth.persons.some((p) => p.id === o.npcId)) reject("REFERENCE", [...path, "npcId"]);
+    checkUnique(o.alternatives.map(C), [...path, "alternatives"]);
+    o.alternatives.forEach((alt, j) => {
+      const at = [...path, "alternatives", j];
+      if (alt.kind === "npc") {
+        const rule = ctx.npcs.find((n) => n.profile.npcId === o.npcId)?.profile.rules.find((r) => r.questionId === alt.questionId);
+        if (rule === undefined || rule.act !== "answer") return reject("REFERENCE", [...at, "questionId"]);
+        const claim = claimOf(alt.claim, StatementClaimSchema, ctx.resolve, [...at, "claim"]);
+        if (C(claim) !== C(rule.claim)) reject("PROOF_BINDING", [...at, "claim"]);
+        if ((alt.stance === "affirms") !== o.literal.value) reject("PROOF_BINDING", [...at, "stance"]);
+        return bindLiteral(o.literal, claim, ctx, at);
+      }
+      if (!evidenceExists(alt.evidenceId)) reject("REFERENCE", [...at, "evidenceId"]);
+      const source = alt.report.source;
+      if (source.kind !== "testimony" || C(ctx.resolve(source.person)) !== C({ kind: "person", id: o.npcId })) {
+        reject("PROOF_BINDING", [...at, "report", "source"]);
+      }
+      if ((alt.report.stance === "affirms") !== o.literal.value) reject("PROOF_BINDING", [...at, "report", "stance"]);
+      bindLiteral(o.literal, reportOf(alt.report, alt.evidenceId, ctx, [...at, "report"]), ctx, at);
+    });
+  } else if (o.kind === "ENTITY_AWARENESS") {
+    const key = entityKey(o.entity.kind, o.entity.id);
+    if (!entityKeys(ctx.truth).has(key)) reject("REFERENCE", [...path, "entity"]);
+    if (!entities.has(key)) reject("PROOF_BINDING", [...path, "entity"]);
+  } else {
+    if (!ruleExists(o.ruleId)) reject("REFERENCE", [...path, "ruleId"]);
+    checkUnique(o.afterObservations, [...path, "afterObservations"]);
+    o.afterObservations.forEach((id, j) => {
+      const kind = kinds.get(id);
+      if (kind === undefined || kind === "PUBLIC_RULE") reject("PROOF_BINDING", [...path, "afterObservations", j]);
+    });
+  }
+}
+
+const ACTION_TARGET = { search_location: "location", examine_item: "item", examine_person: "person" } as const;
+
+function checkEvent(event: Certificate["steps"][number]["event"], ctx: ProofContext, path: Path): void {
+  if (utf8Length(C(event)) > MAX_EVENT_BYTES) reject("LIMIT", path);
+  const expect = (ref: string, kind: EntityRef["kind"], at: Path) => ctx.resolve(ref)?.kind === kind || reject("REFERENCE", at);
+  if (event.type === "investigate") expect(event.target, ACTION_TARGET[event.action], [...path, "target"]);
+  else if (event.type === "interrogate") {
+    expect(event.npc, "person", [...path, "npc"]);
+    if (!ctx.catalogue.questions.some((q) => q.id === event.questionId)) reject("REFERENCE", [...path, "questionId"]);
+  } else event.literals.forEach((l, k) => claimOf(l.claim, ConclusionClaimSchema, ctx.resolve, [...path, "literals", k, "claim"]));
+}
+
+/** Payload a premise map must share with its same-ID profile observation (no selector data). */
+function expected(o: PremiseMap): unknown {
+  if (o.kind === "OBSERVED") return { id: o.id, kind: o.kind, literal: o.literal, source: o.source };
+  if (o.kind === "REPORTED_BY_NPC") return { id: o.id, kind: o.kind, npcId: o.npcId, literal: o.literal };
+  if (o.kind === "ENTITY_AWARENESS") return { id: o.id, kind: o.kind, entity: o.entity };
+  return { id: o.id, kind: o.kind, rules: o.rules };
+}
+
+function checkCertificate(cert: Certificate, profile: CaseProofProfile, ctx: ProofContext): void {
+  checkUnique(cert.steps.map((s) => s.stepId), [...CERT, "steps"]);
+  if (C(cert.steps.map((s) => s.stepId)) !== C(profile.witnessStepIds)) reject("PROOF_BINDING", [...CERT, "steps"]);
+  cert.steps.forEach((step, i) => checkEvent(step.event, ctx, [...CERT, "steps", i, "event"]));
+
+  checkUnique(cert.observations.map((o) => o.id), [...CERT, "observations"]);
+  const authored = new Map(profile.observations.map((o) => [o.id, C(o)]));
+  if (authored.size !== cert.observations.length) reject("PROOF_BINDING", [...CERT, "observations"]);
+  cert.observations.forEach((o, i) => {
+    if (authored.get(o.id) !== C(expected(o))) reject("PROOF_BINDING", [...CERT, "observations", i]);
+  });
+  const kinds = new Map(cert.observations.map((o) => [o.id, o.kind]));
+  const entities = awarenessReach(ctx);
+  cert.observations.forEach((o, i) => checkPremise(o, i, ctx, kinds, entities));
+}
+
+function bindProof(proof: { profile: unknown; releaseManifest: string }, ctx: ProofContext): BoundProof {
+  const profile = parseProfile(proof.profile, ctx.truth, ctx.solution);
+  const manifest = parseManifest(proof.releaseManifest);
+  if (manifest.releaseContextHash !== ctx.releaseContextHash) reject("PROOF_BINDING", [...MANIFEST, "releaseContextHash"]);
+  const releaseHash = hashReleaseManifest(proof.releaseManifest);
+  if (profile.bindings.releaseHash !== releaseHash) reject("PROOF_BINDING", [...PROFILE, "bindings", "releaseHash"]);
+  checkCertificate(manifest.certificateData, profile, ctx);
+  return { profile, releaseManifest: proof.releaseManifest, releaseHash, proofHash: hashProofProfile(profile) };
 }
 
 /** Verifies and binds one exact package. Atomic: findings and no package, or the package. */

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
   SESSION_JSON_LIMITS,
+  hashProofProfile,
   hashChallengeComponent,
   hashInitialSetup,
   hashNpcBundle,
@@ -155,5 +156,38 @@ describe("validateSessionJson", () => {
     expect(validateSessionJson(veryDeep)).toMatchObject({ ok: false, code: "LIMIT" });
     expect(validateSessionJson(Array.from({ length: SESSION_JSON_LIMITS.maxNodes - 1 }, () => 0))).toEqual(ok);
     expect(validateSessionJson(Array.from({ length: SESSION_JSON_LIMITS.maxNodes }, () => 0))).toMatchObject({ ok: false, code: "LIMIT" });
+  });
+});
+
+describe("proof profile hash", () => {
+  const profile = {
+    answerScope: ["conclusion:b", "conclusion:a"],
+    observations: [
+      { id: "obs:r", kind: "PUBLIC_RULE", rules: [{ edgeId: "e2", allOf: ["n2", "n1"] }, { edgeId: "e1", allOf: ["n1"] }] },
+      { id: "obs:a", kind: "ENTITY_AWARENESS" },
+    ],
+    nodes: [{ id: "n2" }, { id: "n1" }],
+    edges: [{ id: "e2", allOf: ["n2", "n1"] }, { id: "e1", allOf: ["n1"] }],
+    witnessStepIds: ["s1", "s2"],
+  };
+  const h = hashProofProfile(profile);
+
+  it("SET paths are order-free, including nested allOf", () => {
+    const rule = profile.observations[0] as { rules: { edgeId: string; allOf: string[] }[] };
+    const permuted = {
+      ...profile,
+      answerScope: [...profile.answerScope].reverse(),
+      observations: [
+        profile.observations[1]!,
+        { ...profile.observations[0]!, rules: [...rule.rules].reverse().map((r) => ({ ...r, allOf: [...r.allOf].reverse() })) },
+      ],
+      nodes: [...profile.nodes].reverse(),
+      edges: [...profile.edges].reverse().map((e) => ({ ...e, allOf: [...e.allOf].reverse() })),
+    };
+    expect(hashProofProfile(permuted)).toBe(h);
+  });
+
+  it("M6 witnessStepIds stay ORDERED", () => {
+    expect(hashProofProfile({ ...profile, witnessStepIds: ["s2", "s1"] })).not.toBe(h);
   });
 });
