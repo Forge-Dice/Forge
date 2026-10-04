@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+  "solutionHash": "ca6d3511e60c24a2d52dac280e88f412d3d09f183f4b8817747e646db6f2b929",
+  "allowedClaims": [
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:alois",
+      "eventId": "event:raub",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:hilde",
+      "eventId": "event:raub",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:sepp",
+      "eventId": "event:raub",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:lotte",
+      "eventId": "event:raub",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:resi",
+      "eventId": "event:raub",
+      "role": "direct_actor"
+    },
+    {
+      "kind": "personRoleForEvent",
+      "personId": "person:ferdl",
+      "eventId": "event:raub",
+      "role": "direct_actor"
+    }
+  ]
+}
