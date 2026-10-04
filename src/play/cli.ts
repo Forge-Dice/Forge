@@ -18,8 +18,9 @@ async function main(): Promise<void> {
   for await (const line of rl) {
     const [word, file = DEFAULT_SAVE] = line.trim().split(/\s+/, 2);
     if (word === "speichern") {
-      writeFileSync(file, saveText(game));
-      console.log(`Gespeichert in ${file} (${game.state.events.length} Aktionen).`);
+      const saved = saveText(game);
+      if (saved.ok) writeFileSync(file, saved.text);
+      console.log(saved.ok ? `Gespeichert in ${file} (${game.state.events.length} Aktionen).` : saved.text);
     } else if (word === "laden") {
       const loaded = existsSync(file) ? loadText(pkg, readFileSync(file, "utf8")) : { ok: false as const, text: `Keine Datei ${file}.` };
       if (loaded.ok) game = loaded.game;

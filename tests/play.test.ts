@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { command, intro, loadText, newGame, saveText, type Game } from "../src/play/game.ts";
 import { loadVitrinePackage } from "../src/play/vitrine.ts";
+import { createHash } from "node:crypto";
+import { serializeSessionJson } from "../src/domain/case-package.identity.ts";
+import { decodeSessionSave } from "../src/domain/case-session-save.ts";
 
 const pkg = loadVitrinePackage();
 const INTERNAL_ID = /\b(person|location|item|event|evidence|proposition|conclusion):[a-z0-9]/;
@@ -85,21 +88,35 @@ describe("npm run play: Die leere Vitrine", () => {
     expect(command(base, "ende").quit).toBe(true);
   });
 
-  it("save and load replay the exact state", () => {
+  const saved = (game: Game) => {
+    const result = saveText(game);
+    if (!result.ok) throw new Error(result.text);
+    return result.text;
+  };
+
+  it("save and load replay the exact state in the Session C format", () => {
     const { game } = run(["u 1", "u 3", "f 1", "a 1"]);
-    const loaded = loadText(pkg, saveText(game));
+    const text = saved(game);
+    expect(decodeSessionSave(pkg, text)).toEqual({ ok: true, state: game.state });
+    const loaded = loadText(pkg, text);
     expect(loaded).toEqual({ ok: true, game: { pkg, state: game.state } });
     expect(run(["journal"], (loaded as { game: Game }).game).all).toBe(run(["journal"], game).all);
   });
 
-  it("broken, foreign or tampered saves are refused", () => {
+  it("broken, foreign, reformatted or tampered saves are refused with one message", () => {
     const { game } = run(["u 1", "f 1"]);
-    const save = JSON.parse(saveText(game));
-    expect(loadText(pkg, "{").ok).toBe(false);
-    expect(loadText(pkg, JSON.stringify({ ...save, format: "x" })).ok).toBe(false);
-    expect(loadText(pkg, JSON.stringify({ ...save, packageHash: "0".repeat(64) })).ok).toBe(false);
-    // An event the player never could have done at that point fails the replay.
-    const forged = { ...save, events: [{ ...save.events[0], target: pkg.refs.refFor("item", "item:terminal") }] };
-    expect(loadText(pkg, JSON.stringify(forged))).toEqual({ ok: false, text: "Der Spielstand ist ungültig." });
+    const text = saved(game);
+    const save = JSON.parse(text);
+    const refused = { ok: false, text: "Der Spielstand kann nicht geladen werden." };
+    expect(loadText(pkg, "{")).toEqual(refused);
+    expect(loadText(pkg, JSON.stringify(save, null, 2))).toEqual(refused);
+    expect(loadText(pkg, text.replace(save.packageIdentity.packageHash, "0".repeat(64)))).toEqual(refused);
+    expect(loadText(pkg, text.replace(save.checksum, "f".repeat(64)))).toEqual(refused);
+    // An event the player never could have done at that point fails the replay, even re-checksummed.
+    const events = [{ ...save.events[0], target: pkg.refs.refFor("item", "item:terminal") }];
+    const body = { schemaVersion: 1, packageIdentity: save.packageIdentity, events };
+    const checksum = createHash("sha256").update(`forge-session-save-v1\n${serializeSessionJson(body)}`).digest("hex");
+    expect(decodeSessionSave(pkg, serializeSessionJson({ ...body, checksum }))).toEqual({ ok: false, code: "INVALID_HISTORY" });
+    expect(loadText(pkg, serializeSessionJson({ ...body, checksum }))).toEqual(refused);
   });
 });

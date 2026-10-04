@@ -1,5 +1,6 @@
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
-import { initialSession, reduceSession, replaySession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
+import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
+import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
 import type { EvidenceObservation, PlayerClaim as EvidenceClaim } from "../domain/evidence-presentation.ts";
 import type { InterrogationObservation, PlayerClaim } from "../domain/interrogation.ts";
 
@@ -13,7 +14,6 @@ type Action = { readonly label: string; readonly event: unknown };
 
 /** Display convention of this case: timeline second 0 is 18:00:00 (PublicContent brief). */
 const CLOCK_ORIGIN_SECONDS = 18 * 3600;
-export const SAVE_FORMAT = "forge-play-save-v1";
 
 export const newGame = (pkg: ResolvedCasePackage): Game => ({ pkg, state: initialSession(pkg) });
 
@@ -233,25 +233,15 @@ function journalText(game: Game): string {
     .join("\n");
 }
 
-// ---------- Save / load: the accepted event log, re-validated by replay on load ----------
+// ---------- Save / load: the Session C save format (MYST-SESSION-0001C) ----------
 
-export function saveText(game: Game): string {
-  const { packageHash, rulesetVersion } = game.state.identity;
-  return `${JSON.stringify({ format: SAVE_FORMAT, packageHash, rulesetVersion, events: game.state.events }, null, 2)}\n`;
+export function saveText(game: Game): { ok: true; text: string } | { ok: false; text: string } {
+  const saved = encodeSessionSave(game.pkg, game.state);
+  return saved.ok ? saved : { ok: false, text: "Der Spielstand konnte nicht gespeichert werden." };
 }
 
+/** Player facade: every failure reads the same; the save must be the exact canonical text. */
 export function loadText(pkg: ResolvedCasePackage, text: string): { ok: true; game: Game } | { ok: false; text: string } {
-  let save: { format?: unknown; packageHash?: unknown; rulesetVersion?: unknown; events?: unknown };
-  try {
-    save = JSON.parse(text);
-  } catch {
-    return { ok: false, text: "Der Spielstand ist beschädigt." };
-  }
-  if (typeof save !== "object" || save === null || save.format !== SAVE_FORMAT) return { ok: false, text: "Das ist kein Spielstand." };
-  if (save.packageHash !== pkg.identity.packageHash || save.rulesetVersion !== pkg.identity.rulesetVersion) {
-    return { ok: false, text: "Der Spielstand gehört zu einem anderen Fall oder einer anderen Fallversion." };
-  }
-  const replayed = replaySession(pkg, save.events);
-  if (!replayed.ok) return { ok: false, text: "Der Spielstand ist ungültig." };
-  return { ok: true, game: { pkg, state: replayed.state } };
+  const loaded = loadSessionSaveForPlayer(pkg, text);
+  return loaded.ok ? { ok: true, game: { pkg, state: loaded.state } } : { ok: false, text: "Der Spielstand kann nicht geladen werden." };
 }
