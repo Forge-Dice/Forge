@@ -1,0 +1,147 @@
+{
+  "05-rename": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "06-rename-modified": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "07-delete-add": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "08-mode-only": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "MODE"
+  },
+  "09-executable-add": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "MODE"
+  },
+  "10-symlink": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "MODE"
+  },
+  "11-gitlink": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "MODE"
+  },
+  "12-case-rename": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "13-case-collision": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "CASE_COLLISION"
+  },
+  "14-unicode": {
+    "parsed": 1,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_BYTES"
+  },
+  "15-normalization": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_BYTES"
+  },
+  "16-windows-reserved": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "DEVICE_NAME"
+  },
+  "17-trailing": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_BYTES"
+  },
+  "18-parent": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_SEGMENT"
+  },
+  "18-dot": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_SEGMENT"
+  },
+  "18-backslash": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_BYTES"
+  },
+  "18-tab": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_BYTES"
+  },
+  "18-newline": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_BYTES"
+  },
+  "18-invalid-utf8": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "PATH_BYTES"
+  },
+  "19-empty": {
+    "parsed": 0,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "20-large": {
+    "parse_reject": "RECORD_LIMIT",
+    "tree_policy": "accept"
+  },
+  "04-merge": {
+    "parsed": 0,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "01-replace-enabled": {
+    "parsed": 2,
+    "matches_no_renames": false,
+    "tree_policy": "accept"
+  },
+  "01-replace-disabled": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "02-replace-graft": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "02-legacy-graft": {
+    "parsed": 2,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "03-shallow-target-diff": {
+    "parsed": 0,
+    "matches_no_renames": true,
+    "tree_policy": "accept"
+  },
+  "malformed-missing_last_nul": "TRUNCATED",
+  "malformed-truncated_header": "TRUNCATED",
+  "malformed-duplicate": "DUPLICATE_PATH",
+  "malformed-unknown_status": "HEADER",
+  "malformed-combined_diff": "HEADER",
+  "malformed-zero_mismatch": "ZERO_MISMATCH",
+  "malformed-extra_nul": "HEADER",
+  "malformed-missing_rename_target": "MISSING_PATH",
+  "malformed-bad_score": "SCORE",
+  "malformed-missing_path": "MISSING_PATH",
+  "prefix_collision": "CASE_COLLISION"
+}

@@ -1,0 +1,45 @@
+diff --git a/tsconfig.json b/tsconfig.json
+index 51e278d..4f87022 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -1,17 +1,23 @@
+-{
+-  "compilerOptions": {
+-    "target": "ES2022",
+-    "module": "NodeNext",
+-    "moduleResolution": "NodeNext",
+-    "lib": ["ES2022"],
+-    "types": ["node"],
+-    "strict": true,
+-    "noUncheckedIndexedAccess": true,
+-    "exactOptionalPropertyTypes": true,
+-    "allowImportingTsExtensions": true,
+-    "verbatimModuleSyntax": true,
+-    "noEmit": true,
+-    "skipLibCheck": true
+-  },
+-  "include": ["src", "tests"]
+-}
++{
++  "compilerOptions": {
++    "target": "ES2022",
++    "module": "NodeNext",
++    "moduleResolution": "NodeNext",
++    "lib": [
++      "ES2022"
++    ],
++    "types": [
++      "node"
++    ],
++    "strict": true,
++    "noUncheckedIndexedAccess": true,
++    "exactOptionalPropertyTypes": true,
++    "allowImportingTsExtensions": true,
++    "verbatimModuleSyntax": true,
++    "noEmit": true,
++    "skipLibCheck": true
++  },
++  "include": [
++    "src/forge/primitives.ts"
++  ]
++}

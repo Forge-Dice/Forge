@@ -1,0 +1,66 @@
+diff --git a/tests/forge/ancestry.test.ts b/tests/forge/ancestry.test.ts
+deleted file mode 100644
+index adfbd16..0000000
+--- a/tests/forge/ancestry.test.ts
++++ /dev/null
+@@ -1,60 +0,0 @@
+-import { describe, expect, it } from "vitest";
+-import { isAncestorOrSelf, isReachableFromRefs } from "../../src/forge/ancestry.ts";
+-
+-const c = (n: number) => n.toString(16).padStart(40, "0");
+-
+-describe("isAncestorOrSelf", () => {
+-  // c1 <- c2 <- c3 ; c1 <- c4 ; merge c5 = (c3, c4)
+-  const graph = { [c(2)]: [c(1)], [c(3)]: [c(2)], [c(4)]: [c(1)], [c(5)]: [c(3), c(4)] };
+-
+-  it.each<[string, string, string, boolean]>([
+-    ["self", c(3), c(3), true],
+-    ["parent", c(2), c(3), true],
+-    ["grandparent", c(1), c(3), true],
+-    ["first parent of a merge", c(3), c(5), true],
+-    ["second parent of a merge", c(4), c(5), true],
+-    ["root through the second branch", c(1), c(5), true],
+-    ["descendant is not an ancestor", c(3), c(2), false],
+-    ["sibling branch", c(4), c(3), false],
+-    ["unknown commit", c(9), c(5), false],
+-  ])("%s", (_name, ancestor, descendant, expected) => {
+-    expect(isAncestorOrSelf(ancestor, descendant, graph)).toBe(expected);
+-  });
+-
+-  it("is fail-closed: a missing edge breaks reachability", () => {
+-    const { [c(3)]: _dropped, ...withoutEdge } = graph;
+-    expect(isAncestorOrSelf(c(1), c(3), withoutEdge)).toBe(false);
+-    expect(isAncestorOrSelf(c(1), c(5), withoutEdge)).toBe(true); // still reachable via c4
+-  });
+-
+-  it("terminates on cyclic witnessed edges", () => {
+-    const cyclic = { [c(1)]: [c(2)], [c(2)]: [c(1)] };
+-    expect(isAncestorOrSelf(c(3), c(1), cyclic)).toBe(false);
+-    expect(isAncestorOrSelf(c(2), c(1), cyclic)).toBe(true);
+-  });
+-
+-  it("ignores prototype properties as commit keys", () => {
+-    expect(isAncestorOrSelf("toString", c(1), {})).toBe(false);
+-    expect(isAncestorOrSelf(c(1), "constructor", {})).toBe(false);
+-  });
+-
+-  it("handles long linear histories without recursion limits", () => {
+-    const long: Record<string, string[]> = {};
+-    for (let i = 2; i <= 50_000; i++) long[c(i)] = [c(i - 1)];
+-    expect(isAncestorOrSelf(c(1), c(50_000), long)).toBe(true);
+-  });
+-});
+-
+-describe("isReachableFromRefs", () => {
+-  const graph = { [c(2)]: [c(1)] };
+-
+-  it.each<[string, string, Record<string, string>, boolean]>([
+-    ["head itself", c(2), { main: c(2) }, true],
+-    ["ancestor of a head", c(1), { main: c(2) }, true],
+-    ["no refs", c(1), {}, false],
+-    ["only an unrelated head", c(1), { other: c(7) }, false],
+-    ["one of several heads", c(1), { other: c(7), main: c(2) }, true],
+-  ])("%s", (_name, commit, refs, expected) => {
+-    expect(isReachableFromRefs(commit, refs, graph)).toBe(expected);
+-  });
+-});

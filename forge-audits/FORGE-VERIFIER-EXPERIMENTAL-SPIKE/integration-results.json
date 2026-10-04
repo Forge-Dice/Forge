@@ -1,0 +1,84 @@
+{
+  "paths": [
+    {
+      "path": "a.ts\n",
+      "accepted": false
+    },
+    {
+      "path": "CON",
+      "accepted": true
+    },
+    {
+      "path": "NUL.txt",
+      "accepted": true
+    },
+    {
+      "path": ".git/config",
+      "accepted": true
+    },
+    {
+      "path": "dir/file.",
+      "accepted": true
+    },
+    {
+      "path": "café.txt",
+      "accepted": false
+    },
+    {
+      "path": "a\tb",
+      "accepted": false
+    },
+    {
+      "path": "a\nb",
+      "accepted": false
+    },
+    {
+      "path": "../x",
+      "accepted": false
+    }
+  ],
+  "scope": [
+    {
+      "file": {
+        "fromPath": "forge/coordination/a.md",
+        "toPath": "forge/coordination/b.md",
+        "change": "renamed"
+      },
+      "schema": true,
+      "evaluation": {
+        "passed": true,
+        "mutationSource": "none"
+      }
+    },
+    {
+      "file": {
+        "path": "forge/coordination/a.md",
+        "change": "deleted"
+      },
+      "schema": true,
+      "evaluation": {
+        "passed": false,
+        "failures": [
+          {
+            "code": "SCOPE_VIOLATION",
+            "subject": "forge/coordination/a.md"
+          }
+        ],
+        "mutationSource": "none"
+      }
+    },
+    {
+      "file": {
+        "path": "x",
+        "change": "modified"
+      },
+      "schema": true,
+      "evaluation": {
+        "passed": true,
+        "mutationSource": "none"
+      }
+    }
+  ],
+  "modeExtra": false,
+  "evidenceFake": true
+}
