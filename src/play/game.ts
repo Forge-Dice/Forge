@@ -1,5 +1,6 @@
 import { rulesetAllows, type PublicContent, type ResolvedCasePackage } from "../domain/case-package.ts";
 import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
+import { scoreOf, scoreText } from "./score.ts";
 import { hintCount, hintsExhausted, type Hint } from "../domain/case-hints.ts";
 import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
 import type { EvidenceObservation, PlayerClaim as EvidenceClaim } from "../domain/evidence-presentation.ts";
@@ -357,8 +358,10 @@ function outputText(game: Game, output: SessionOutput): string {
       if (output.verdict !== "solved") return "Die Antwort erfüllt den Fallauftrag noch nicht. Ermittle weiter.";
       const used = hintsUsed(game);
       const solved = `Die Anklage sitzt. Fall gelöst! ${used === 0 ? "Ganz ohne Hinweise." : `Hinweise genutzt: ${used}.`}`;
+      const score = scoreOf(game.pkg, game.state);
+      const scored = score === null ? solved : `${solved}\n${scoreText(score)}`;
       // The epilogue is shown only here, after a solving accusation.
-      return game.pkg.publicContent.epilogue === undefined ? solved : `${solved}\n\n=== Auflösung ===\n${game.pkg.publicContent.epilogue}`;
+      return game.pkg.publicContent.epilogue === undefined ? scored : `${scored}\n\n=== Auflösung ===\n${game.pkg.publicContent.epilogue}`;
     }
   }
 }
