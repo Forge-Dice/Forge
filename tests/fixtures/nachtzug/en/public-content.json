@@ -257,57 +257,69 @@
     {
       "npc": "person:janek",
       "questionId": "question:q01",
-      "text": "Did you lock the door to the sleeping car tonight?"
+      "text": "Did you lock the door to the sleeping car tonight?",
+      "answer": "Yes, I locked the door to the sleeping car tonight, as required."
     },
     {
       "npc": "person:janek",
       "questionId": "question:q02",
-      "text": "Was Clara Mai in the dining car at 01:20?"
+      "text": "Was Clara Mai in the dining car at 01:20?",
+      "answer": "Ms Mai in the dining car? I can't say that with certainty."
     },
     {
       "npc": "person:felix",
       "questionId": "question:q06",
-      "text": "Were you in the couchette car at 01:12?"
+      "text": "Were you in the couchette car at 01:12?",
+      "answer": "Yes, at 01:12 I was in the couchette car."
     },
     {
       "npc": "person:felix",
       "questionId": "question:q02",
-      "text": "Was Clara Mai in the dining car at 01:20?"
+      "text": "Was Clara Mai in the dining car at 01:20?",
+      "answer": "I think she was sitting in the dining car. But it was late."
     },
     {
       "npc": "person:bruno",
       "questionId": "question:q05",
-      "text": "Were you still in the dining car after 01:00?"
+      "text": "Were you still in the dining car after 01:00?",
+      "answer": "Oh yes, after one I was still sitting in the dining car, with a glass."
     },
     {
       "npc": "person:bruno",
       "questionId": "question:q03",
-      "text": "Were you in compartment 7 at 01:20?"
+      "text": "Were you in compartment 7 at 01:20?",
+      "answer": "In compartment 7? No, what would I be doing there."
     },
     {
       "npc": "person:bruno",
       "questionId": "question:q02",
-      "text": "Was Clara Mai in the dining car at 01:20?"
+      "text": "Was Clara Mai in the dining car at 01:20?",
+      "answer": "Young Ms Mai? Possibly. I'm not sure."
     },
     {
       "npc": "person:dora",
       "questionId": "question:q04",
-      "text": "Were you locked in your compartment at 01:20?"
+      "text": "Were you locked in your compartment at 01:20?",
+      "answer": "Yes, I had locked myself in. I write at night and want to be alone while I do."
     },
     {
       "npc": "person:dora",
       "questionId": "question:q03",
-      "text": "Was Bruno Kessler in compartment 7 at 01:20?"
+      "text": "Was Bruno Kessler in compartment 7 at 01:20?",
+      "answer": "Bruno in compartment 7? A tempting thought, but I'm not sure."
     },
     {
       "npc": "person:clara",
       "questionId": "question:q02",
-      "text": "Were you in the dining car at 01:20?"
+      "text": "Were you in the dining car at 01:20?",
+      "answer": "Yes, I was sitting in the dining car. Felix saw me, didn't he?",
+      "admission": "No. I was not in the dining car at 01:20."
     },
     {
       "npc": "person:clara",
       "questionId": "question:q03",
-      "text": "Was Bruno Kessler in compartment 7 at 01:20?"
+      "text": "Was Bruno Kessler in compartment 7 at 01:20?",
+      "answer": "I'm saying nothing about Bruno."
     }
   ],
   "publicRules": [

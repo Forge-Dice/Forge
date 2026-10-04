@@ -281,57 +281,70 @@
     {
       "npc": "person:hinrich",
       "questionId": "question:q04",
-      "text": "Does the camera at the harbour run at night as well?"
+      "text": "Does the camera at the harbour run at night as well?",
+      "answer": "Aye, the harbour camera runs day and night."
     },
     {
       "npc": "person:hinrich",
       "questionId": "question:q05",
-      "text": "Were you in the lantern room at 02:00?"
+      "text": "Were you in the lantern room at 02:00?",
+      "answer": "Nope. At two I wasn't in the lantern room."
     },
     {
       "npc": "person:frauke",
       "questionId": "question:q03",
-      "text": "Were you on the phone at 02:00?"
+      "text": "Were you on the phone at 02:00?",
+      "answer": "Yes, at two I was on the phone, in the middle of the night."
     },
     {
       "npc": "person:frauke",
       "questionId": "question:q05",
-      "text": "Was Hinrich Paulsen in the lantern room at 02:00?"
+      "text": "Was Hinrich Paulsen in the lantern room at 02:00?",
+      "answer": "Hinrich? No, he wasn't up in the lantern room."
     },
     {
       "npc": "person:ole",
       "questionId": "question:q01",
-      "text": "Was there a strange boat at the island tonight?"
+      "text": "Was there a strange boat at the island tonight?",
+      "answer": "Aye, there was a strange boat at the island. Not one from here."
     },
     {
       "npc": "person:ole",
       "questionId": "question:q02",
-      "text": "Were you at home at 02:00?"
+      "text": "Were you at home at 02:00?",
+      "answer": "Course I was at home. Where else would I be in this weather?",
+      "admission": "All right. Nope, at two I wasn't at home."
     },
     {
       "npc": "person:marlene",
       "questionId": "question:q08",
-      "text": "Were you at the bird observatory at 02:00?"
+      "text": "Were you at the bird observatory at 02:00?",
+      "answer": "Yes, at two I was in the bird observatory, as on every migration night."
     },
     {
       "npc": "person:marlene",
       "questionId": "question:q05",
-      "text": "Was Hinrich Paulsen in the lantern room at 02:00?"
+      "text": "Was Hinrich Paulsen in the lantern room at 02:00?",
+      "answer": "I think Hinrich was up in the lantern room."
     },
     {
       "npc": "person:jasper",
       "questionId": "question:q06",
-      "text": "Were you on the west beach at 01:00?"
+      "text": "Were you on the west beach at 01:00?",
+      "answer": "On the west beach? No. At one I was asleep.",
+      "admission": "Very well. Yes, at one I was on the west beach."
     },
     {
       "npc": "person:jasper",
       "questionId": "question:q09",
-      "text": "Did you call the coastguard from the ferry house at 02:03?"
+      "text": "Did you call the coastguard from the ferry house at 02:03?",
+      "answer": "Yes, at 02:03 I called the coast guard from the ferry house."
     },
     {
       "npc": "person:knut",
       "questionId": "question:q07",
-      "text": "Were you in the lantern room at 02:00?"
+      "text": "Were you in the lantern room at 02:00?",
+      "answer": "I'm saying nothing about that. Nothing at all."
     }
   ],
   "publicRules": [

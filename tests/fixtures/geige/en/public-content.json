@@ -193,67 +193,80 @@
     {
       "npc": "person:vera",
       "questionId": "question:q02",
-      "text": "Was Paul Adler in the foyer at 20:40?"
+      "text": "Was Paul Adler in the foyer at 20:40?",
+      "answer": "Yes, Adler was standing in the foyer holding court, as always."
     },
     {
       "npc": "person:vera",
       "questionId": "question:q03",
-      "text": "Was Henrik Sand in the VIP box at 20:40?"
+      "text": "Was Henrik Sand in the VIP box at 20:40?",
+      "answer": "Yes, Mr Sand was sitting in his box of honour at 20:40."
     },
     {
       "npc": "person:vera",
       "questionId": "question:q04",
-      "text": "Was Ida Reiner on stage at 20:40?"
+      "text": "Was Ida Reiner on stage at 20:40?",
+      "answer": "No. Ida was not on the stage at 20:40, I'm sure of it."
     },
     {
       "npc": "person:kurt",
       "questionId": "question:q01",
-      "text": "Were you in the boiler room at 20:40?"
+      "text": "Were you in the boiler room at 20:40?",
+      "answer": "Yep, at 20:40 I was down in the boiler room."
     },
     {
       "npc": "person:kurt",
       "questionId": "question:q07",
-      "text": "What were you doing in the boiler room?"
+      "text": "What were you doing in the boiler room?",
+      "answer": "Sure, I checked the switch cabinet, like every interval."
     },
     {
       "npc": "person:kurt",
       "questionId": "question:q05",
-      "text": "Was Paul Adler in the dressing room at 20:40?"
+      "text": "Was Paul Adler in the dressing room at 20:40?",
+      "answer": "I reckon the conductor was in the dressing room, yes."
     },
     {
       "npc": "person:kurt",
       "questionId": "question:q04",
-      "text": "Was Ida Reiner on stage at 20:40?"
+      "text": "Was Ida Reiner on stage at 20:40?",
+      "answer": "Ida on the stage? Could be, could not be."
     },
     {
       "npc": "person:paul",
       "questionId": "question:q02",
-      "text": "Were you in the foyer at 20:40?"
+      "text": "Were you in the foyer at 20:40?",
+      "answer": "Naturally. At 20:40 I was in the foyer."
     },
     {
       "npc": "person:paul",
       "questionId": "question:q04",
-      "text": "Was Ida Reiner on stage at 20:40?"
+      "text": "Was Ida Reiner on stage at 20:40?",
+      "answer": "Yes, Ms Reiner was on the stage at 20:40."
     },
     {
       "npc": "person:paul",
       "questionId": "question:q05",
-      "text": "Were you in the dressing room at 20:40?"
+      "text": "Were you in the dressing room at 20:40?",
+      "answer": "In the dressing room? No, certainly not."
     },
     {
       "npc": "person:ida",
       "questionId": "question:q04",
-      "text": "Were you on stage at 20:40?"
+      "text": "Were you on stage at 20:40?",
+      "answer": "Yes, at 20:40 I was on the stage."
     },
     {
       "npc": "person:ida",
       "questionId": "question:q06",
-      "text": "Were you in the dressing room at 20:40?"
+      "text": "Were you in the dressing room at 20:40?",
+      "answer": "In the dressing room? No, really not."
     },
     {
       "npc": "person:ida",
       "questionId": "question:q05",
-      "text": "Was Paul Adler in the dressing room at 20:40?"
+      "text": "Was Paul Adler in the dressing room at 20:40?",
+      "answer": "Paul? No, he wasn't in the dressing room."
     }
   ],
   "publicRules": [
