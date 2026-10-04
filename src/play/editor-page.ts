@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CaseCheck, Problem } from "../authoring/check-case.ts";
-import { fileDigest, type CaseSource } from "./editor.ts";
+import { fileDigest, getAt, type CaseSource } from "./editor.ts";
 import type { CaseReport } from "./playtest.ts";
 import { difficultyText } from "./difficulty.ts";
 import { escape, layout, type Feedback } from "./web-page.ts";
@@ -143,6 +143,44 @@ function evidenceSection(check: CaseCheck, dir: string, labels: Labels): string 
     })
     .join("")}</ol>`;
 }
+
+/**
+ * A locale variant (en/ …) beside the German case: per player text the German original and the
+ * translation's field. Only texts are offered here; check-case verifies the rest stays shared.
+ */
+function localeSection(check: CaseCheck, dir: string, lang: string, labels: Labels): string {
+  const rows: string[] = [];
+  const row = (file: string, field: string, label: string, de: unknown, multiline = false) => {
+    const value = getAt(read(dir, `${lang}/${file}`), field);
+    if (typeof value !== "string") return;
+    rows.push(`<div class="pair"><div class="field"><span class="field-hint">Deutsch · ${escape(label)}</span><p class="de-text">${escape(typeof de === "string" ? de : "–")}</p></div>${control(check, `${lang}/${file}`, field, `${label} (${lang})`, value, multiline)}</div>`);
+  };
+  const P = "public-content.json";
+  const pc = read(dir, P);
+  if (pc === null) return "";
+  for (const [field, label, multi] of [["title", "Titel", false], ["challengeQuestion", "Auftrag", false], ["brief", "Fallakte", true], ["epilogue", "Epilog", true]] as const) row(P, field, label, pc[field], multi);
+  (pc.labels ?? []).forEach((l: Json, i: number) => {
+    row(P, `labels[${i}].label`, `${l.entity?.kind ?? ""} ${l.entity?.id ?? ""}`, l.label);
+    if (typeof l.role === "string") row(P, `labels[${i}].role`, `Rolle ${l.label}`, l.role);
+  });
+  (pc.publicRules ?? []).forEach((r: Json, i: number) => row(P, `publicRules[${i}].text`, r.id ?? `Regel ${i + 1}`, r.text, true));
+  (pc.questionTexts ?? []).forEach((q: Json, i: number) => {
+    const who = labels.get(q.npc) ?? q.npc;
+    row(P, `questionTexts[${i}].text`, `${who}: Frage`, q.text);
+    if (typeof q.answer === "string") row(P, `questionTexts[${i}].answer`, `${who}: Antwort`, q.answer, true);
+    if (typeof q.admission === "string") row(P, `questionTexts[${i}].admission`, `${who}: Einknicken`, q.admission, true);
+  });
+  const E = "evidence-presentation.json";
+  (read(dir, E)?.entries ?? []).forEach((e: Json, i: number) => row(E, `entries[${i}].text`, labels.get(e.evidenceId) ?? e.evidenceId, e.text, true));
+  return rows.join("");
+}
+
+/** Locale variants of a working copy (subfolders with their own public-content.json). */
+const localesOf = (dir: string): string[] =>
+  readdirSync(dir, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && /^[a-z]{2}$/.test(d.name) && read(dir, `${d.name}/public-content.json`) !== null)
+    .map((d) => d.name)
+    .sort();
 
 function rawSection(dir: string, check: CaseCheck): string {
   return readdirSync(dir)
@@ -320,6 +358,9 @@ export function renderEditor(name: string, dir: string, check: CaseCheck, origin
 <section class="card" id="texte"><h2>Spielertexte</h2>${section(() => textsSection(check, pc))}</section>
 <section class="card" id="verhoere"><h2>Verhöre</h2>${section(() => interrogationSection(check, dir, pc, labels, origin))}</section>
 <section class="card" id="spuren"><h2>Spuren</h2>${section(() => evidenceSection(check, dir, labels))}</section>
+${localesOf(dir)
+  .map((lang) => `<section class="card" id="sprache-${lang}"><h2>Sprachfassung ${lang}</h2><p class="muted">Links der deutsche Text, rechts die Übersetzung. Ändert sich der deutsche Text, meldet check-case die Übersetzung als veraltet, bis du sie hier nachziehst.</p>${section(() => localeSection(check, dir, lang, labels))}</section>`)
+  .join("")}
 <section class="card" id="dateien"><h2>Dateien (JSON)</h2><p class="muted">Für alles, was die Formulare nicht abdecken. Hashes rechnet der Editor selbst nach.</p>${rawSection(dir, check)}</section>
 </form>
 <section class="card" id="aufbau"><h2>Aufbau</h2>${structureSection(name, dir, labels, origin)}</section>
@@ -398,6 +439,7 @@ select { width: auto; font: 15px var(--sans); padding: 6px 8px; }
 [aria-invalid="true"] { border-color: var(--warn) !important; box-shadow: 0 0 0 2px rgba(163,64,31,.25); }
 .field-error { margin: 4px 0 0; font: 13px/1.4 var(--sans); color: var(--warn); }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.de-text { margin: 4px 0 0; white-space: pre-wrap; color: var(--ink-soft); }
 .rules { list-style: none; margin: 0; padding: 0 0 8px; }
 .rule { padding: 12px 0; border-top: 1px dashed var(--line); }
 .rule .field { margin-bottom: 6px; }

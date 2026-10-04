@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, relative, resolve } from "node:path";
-import { checkCaseFolder, writeFilledHashes, type CaseCheck } from "../authoring/check-case.ts";
+import { join, resolve } from "node:path";
+import { caseLocales, checkCaseFolder, writeFilledHashes, type CaseCheck } from "../authoring/check-case.ts";
 import { generateCase, writeGeneratedCase } from "../authoring/case-generator.ts";
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import { PLAY_CASES, loadFolderPackage } from "./cases.ts";
@@ -24,7 +24,8 @@ export type Edit =
 export type ApplyResult = { readonly applied: number; readonly errors: readonly { file: string; field: string; message: string }[] };
 
 const NAME = /^[a-z0-9][a-z0-9-]{0,63}$/;
-const FILE = /^[a-z0-9-]{1,64}\.json$/;
+// A case file, or one of its locale variant (en/public-content.json …).
+const FILE = /^(?:[a-z]{2}\/)?[a-z0-9-]{1,64}\.json$/;
 const ACTS = new Set(["answer", "lie", "decline"]);
 const ROOT = new URL("../../", import.meta.url).pathname;
 
@@ -191,15 +192,68 @@ export function applyEdits(dir: string, edits: readonly Edit[]): ApplyResult {
 }
 
 /** check-case with automatic hash maintenance: placeholders and stale hashes are rewritten, then rechecked. */
-export function checkAndFix(dir: string): CaseCheck {
+export function checkAndFix(dir: string, translated = false): CaseCheck {
   // Hashes chain (truth -> solution and catalogue -> profiles -> release): one pass per link.
   let check = checkCaseFolder(dir);
   for (let pass = 0; pass < 6 && check.filled.length > 0; pass++) {
     writeFilledHashes(check);
     check = checkCaseFolder(dir);
   }
+  // Locale variants (en/): their problems join the base's. A German text edit leaves the
+  // translation marked stale until the translation itself is edited (`translated`).
+  for (const lang of caseLocales(dir)) {
+    let variant = checkCaseFolder(dir, lang);
+    const fills = () => ({ ...variant, filled: variant.filled.filter((f) => translated || f.stale !== true || !f.file.endsWith("/source.json")) });
+    for (let pass = 0; pass < 3 && fills().filled.length > 0; pass++) {
+      writeFilledHashes(fills());
+      variant = checkCaseFolder(dir, lang);
+    }
+    check = { ...check, problems: [...check.problems, ...variant.problems], ok: check.ok && variant.ok };
+  }
   return check;
 }
+
+/**
+ * After a structural edit: each locale variant takes the base's new structure and keeps its
+ * translations by id (labels by entity, questions by NPC and question, rules, voices, evidence).
+ * New entries start with the German text until they are translated.
+ */
+export function syncLocales(dir: string): void {
+  const readJson = (file: string): any => (existsSync(join(dir, file)) ? JSON.parse(readFileSync(join(dir, file), "utf8")) : null);
+  const keyed = (list: unknown, key: (x: any) => string): Map<string, any> => new Map(Array.isArray(list) ? list.map((x) => [key(x), x]) : []);
+  const carry = (base: any, old: any, fields: readonly string[]) => {
+    if (old === undefined) return base;
+    const out = { ...base };
+    for (const f of fields) if (typeof base[f] === "string" && typeof old[f] === "string") out[f] = old[f];
+    if (base.lines !== undefined && old.lines !== undefined) out.lines = Object.fromEntries(Object.keys(base.lines).map((k) => [k, old.lines[k] ?? base.lines[k]]));
+    return out;
+  };
+  for (const lang of caseLocales(dir)) {
+    const pc = readJson("public-content.json");
+    const oldPc = readJson(`${lang}/public-content.json`);
+    if (pc !== null && oldPc !== null) {
+      const labels = keyed(oldPc.labels, (l) => `${l.entity?.kind}|${l.entity?.id}`);
+      const questions = keyed(oldPc.questionTexts, (q) => `${q.npc}|${q.questionId}`);
+      const rules = keyed(oldPc.publicRules, (r) => r.id);
+      const voices = keyed(oldPc.voices, (v) => v.npc);
+      const next = carry(pc, oldPc, ["title", "brief", "challengeQuestion", "epilogue"]);
+      next.labels = (pc.labels ?? []).map((l: any) => carry(l, labels.get(`${l.entity?.kind}|${l.entity?.id}`), ["label", "role"]));
+      next.questionTexts = (pc.questionTexts ?? []).map((q: any) => carry(q, questions.get(`${q.npc}|${q.questionId}`), ["text", "answer", "admission"]));
+      next.publicRules = (pc.publicRules ?? []).map((r: any) => carry(r, rules.get(r.id), ["text"]));
+      if (pc.voices !== undefined) next.voices = pc.voices.map((v: any) => carry(v, voices.get(v.npc), []));
+      writeFileSync(join(dir, lang, "public-content.json"), `${JSON.stringify(next, null, 2)}\n`);
+    }
+    const ep = readJson("evidence-presentation.json");
+    const oldEp = readJson(`${lang}/evidence-presentation.json`);
+    if (ep !== null && oldEp !== null) {
+      const entries = keyed(oldEp.entries, (e) => e.evidenceId);
+      writeFileSync(join(dir, lang, "evidence-presentation.json"), `${JSON.stringify({ ...ep, entries: (ep.entries ?? []).map((e: any) => carry(e, entries.get(e.evidenceId), ["text"])) }, null, 2)}\n`);
+    }
+  }
+}
+
+/** Whether edits touch a locale variant (a translation was edited). */
+const translates = (edits: readonly Edit[]) => edits.some((e) => /^[a-z]{2}\//.test(e.file));
 
 // ---------- Working folder ----------
 
@@ -227,9 +281,7 @@ export class CaseWorkspace {
     if (!existsSync(target)) {
       mkdirSync(this.root, { recursive: true });
       // Dereferenced: a symlink in the source must not let a save write outside the working folder.
-      // The editor works on the German case; locale variants (en/ …) are translated separately and
-      // would go stale under structural edits, so the working copy leaves them out.
-      cpSync(source.dir, target, { recursive: true, dereference: true, filter: (from) => !/^[a-z]{2}$/.test(relative(source.dir, from)) });
+      cpSync(source.dir, target, { recursive: true, dereference: true });
     }
     return name;
   }
@@ -250,7 +302,7 @@ export class CaseWorkspace {
       const copy = join(scratch, name);
       cpSync(dir, copy, { recursive: true });
       const apply = applyEdits(copy, edits);
-      const check = checkAndFix(copy);
+      const check = checkAndFix(copy, translates(edits));
       return { check: { ...check, dir }, apply, ...(inspect === undefined ? {} : { inspected: inspect(copy, check) }) };
     } finally {
       rmSync(scratch, { recursive: true, force: true });
@@ -264,12 +316,17 @@ export class CaseWorkspace {
     const dir = this.dirOf(name);
     if (dir === null) return null;
     const result = applyStructure(dir, op, this.history(name));
-    if (result.ok) checkAndFix(dir);
+    if (result.ok) {
+      syncLocales(dir);
+      checkAndFix(dir);
+    }
     return result;
   }
   undo(name: string): boolean {
     const dir = this.dirOf(name);
-    return dir !== null && undoStructure(dir, this.history(name));
+    if (dir === null || !undoStructure(dir, this.history(name))) return false;
+    syncLocales(dir);
+    return true;
   }
   canUndo(name: string): boolean {
     return existsSync(join(this.history(name), "truth.json"));
@@ -290,7 +347,7 @@ export class CaseWorkspace {
     const dir = this.dirOf(name);
     if (dir === null) return null;
     const apply = applyEdits(dir, edits);
-    return { check: checkAndFix(dir), apply };
+    return { check: checkAndFix(dir, translates(edits)), apply };
   }
 }
 
