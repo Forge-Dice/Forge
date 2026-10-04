@@ -8,11 +8,27 @@
   "rules": [
     {
       "questionId": "question:q04",
-      "act": "decline"
+      "act": "lie",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ida",
+        "locationId": "location:buehne",
+        "at": 2400
+      },
+      "stance": "affirms",
+      "reveal": []
     },
     {
       "questionId": "question:q06",
-      "act": "decline"
+      "act": "lie",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ida",
+        "locationId": "location:garderobe",
+        "at": 2400
+      },
+      "stance": "denies",
+      "reveal": []
     },
     {
       "questionId": "question:q05",

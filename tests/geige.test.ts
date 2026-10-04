@@ -73,6 +73,20 @@ describe("Die verstummte Geige: authored against check-case", () => {
     );
   });
 
+  it("the witness asks Ida; her lie is released but never established, so the proof rests on the evidence", () => {
+    const check = checkCaseFolder(DIR);
+    expect(check.routes[0]!.routeId).toBe("witness");
+    expect(check.routes.every((r) => r.report.status === "pass")).toBe(true);
+    expect(check.problems.filter((p) => /LIE/.test(p.message))).toEqual([]);
+    // Turned into an honest answer the same rule fails: Ida knows she was in the dressing room.
+    const dir = withWitness(["search-foyer", "ask-kurt-keller", "read-schaltschrank", "search-loge"]);
+    const file = join(dir, "interrogation-ida.json");
+    const ida = JSON.parse(readFileSync(file, "utf8"));
+    ida.rules.find((r: any) => r.questionId === "question:q06").stance = "affirms";
+    writeFileSync(file, JSON.stringify(ida));
+    expect(checkCaseFolder(dir).problems).toContainEqual(expect.objectContaining({ file: "interrogation-ida.json", severity: "error" }));
+  });
+
   it("without the cabinet Kurt is not excluded: Ida and Kurt stay open (4 vectors over their two literals)", () => {
     const check = checkCaseFolder(withWitness(["search-foyer", "search-loge"]));
     expect(check.ok).toBe(false);
@@ -116,6 +130,19 @@ describe("npm run play -- geige", () => {
     const solved = say(`a ${numberOf(a, "Ida Reiner")}`);
     expect(solved).toContain("Fall gelöst");
     expect(solved).toContain("=== Auflösung ===\nIda Reiner gesteht.");
+  });
+
+  it("Ida lies (ruleset v2): she claims the stage and denies the dressing room, unmarked; she is still the answer", () => {
+    expect(pkg.identity.rulesetVersion).toBe("mystery-session-v2");
+    const say = player();
+    const f = say("f");
+    const garderobe = say(`f ${numberOf(f, "Waren Sie um 20:40 in der Garderobe?")}`);
+    const buehne = say(`f ${numberOf(say("f"), "Waren Sie um 20:40 auf der Bühne?")}`);
+    expect(garderobe).toContain("„Nein.“");
+    expect(buehne).toContain("„Ja.“");
+    expect(garderobe + buehne).not.toMatch(/Lüge|lügt|gelogen/);
+    const a = say("a");
+    expect(say(`a ${numberOf(a, "Ida Reiner")}`)).toContain("Fall gelöst");
   });
 
   it("route A: Kurt's answer makes the cabinet examinable", () => {
