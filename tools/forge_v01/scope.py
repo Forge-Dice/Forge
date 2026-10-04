@@ -66,6 +66,8 @@ def _protected(path: str, base: Leaf | None, ctx: Context) -> bool:
         return True
     if low in PROTECTED_ROOT or name in PROTECTED_NAMES or name.startswith(".env."):
         return True
+    if "node_modules" in low.split("/"):  # would shadow a dependency of TCB code during resolution
+        return True
     if low.startswith(TCB_PREFIXES):
         return ctx.profile != "OWNER_OPS" or path not in ctx.approved_tcb
     return TOOL_CONFIG.fullmatch(name) is not None
