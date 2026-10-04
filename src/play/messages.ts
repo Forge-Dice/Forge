@@ -219,6 +219,7 @@ const de = {
     levelHint: "Mit Wunsch-Schwierigkeit spielt der Spieltest erst Kandidaten durch, das kann einige Sekunden dauern.",
     levelWished: (wished: number, measured: string) => `Gewünscht: Stufe ${wished}. Gemessen vom Spieltest: ${measured}.`,
     levelTag: (level: string) => `, Stufe ${level}`,
+    levelProgress: (k: number, max: number, level: number) => `Der Spieltest prüft Kandidat ${k} (höchstens ${max}) für Stufe ${level} …`,
     // game page
     groups: { person: "Personen", location: "Orte", item: "Gegenstände", event: "Ereignisse", evidence: "Nachweise" } as Record<string, string>,
     nothingToInvestigate: "Gerade nichts zu untersuchen.",
@@ -547,6 +548,7 @@ const en: Messages = {
     levelHint: "With a wished difficulty the playtest first plays through candidates, which can take a few seconds.",
     levelWished: (wished, measured) => `Wished: level ${wished}. Measured by the playtest: ${measured}.`,
     levelTag: (level) => `, level ${level}`,
+    levelProgress: (k, max, level) => `The playtest checks candidate ${k} (at most ${max}) for level ${level} …`,
     groups: { person: "People", location: "Places", item: "Objects", event: "Events", evidence: "Evidence" },
     nothingToInvestigate: "Nothing to investigate right now.",
     investigate: "Investigate",

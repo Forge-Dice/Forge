@@ -269,7 +269,7 @@ export function createWebHandler(
     let g = generated.get(key);
     if (g === undefined) {
       const wished =
-        wishedLevel === null ? null : generateCaseOfDifficulty(seed, wishedLevel, (k, max) => options.progress?.(`Der Spieltest prüft Kandidat ${k + 1} (höchstens ${max}) für Stufe ${wishedLevel} …`));
+        wishedLevel === null ? null : generateCaseOfDifficulty(seed, wishedLevel, (k, max) => options.progress?.(MESSAGES[lang].web.levelProgress(k + 1, max, wishedLevel)));
       const generatedCase = wished?.generated ?? generateCase(seed);
       const clockOrigin = generatedClockOrigin(generatedCase);
       const game = withLang(newGame(generatedPackage(generatedCase), clockOrigin), lang);

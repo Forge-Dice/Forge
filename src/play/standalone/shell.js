@@ -56,7 +56,7 @@
     busy.hidden = false;
   }
   async function withIndicator(promise) {
-    busyTimer = setTimeout(() => showProgress("Der Fall wird vorbereitet …"), 300);
+    busyTimer = setTimeout(() => showProgress(store.get(LANG) === "en" ? "Preparing the case …" : "Der Fall wird vorbereitet …"), 300);
     try {
       return await promise;
     } finally {
