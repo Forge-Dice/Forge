@@ -9,7 +9,8 @@ import { createWebApp } from "./web.ts";
 // case folders on disk, so it lives only in this node server, not in the single-file browser build.
 
 export function createWebServerApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, editor: EditorOptions = { workspaceDir: defaultWorkspaceDir() }) {
-  return createWebApp(packages, { routes: createEditorRoutes(editor), editorLink: true });
+  const { routes, probeCase } = createEditorRoutes(editor);
+  return createWebApp(packages, { routes, editorLink: true, extraCase: probeCase });
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

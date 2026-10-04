@@ -106,7 +106,13 @@ export type WebHandler = (method: string, url: string, body: () => Promise<strin
  * The whole front end as a function of (method, url, body) over one in-memory game per case. The
  * node server below and the single-file browser build (web-standalone.ts) both run exactly this.
  */
-export function createWebHandler(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, options: { readonly editorLink?: boolean } = {}): WebHandler {
+/** A case served beside the fixed ones (the editor's "Probespielen"); `version` resets its game when it changes. */
+export type ExtraCase = { readonly pkg: ResolvedCasePackage; readonly clockOrigin: number; readonly version: string };
+
+export function createWebHandler(
+  packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {},
+  options: { readonly editorLink?: boolean; readonly extraCase?: (slug: string) => ExtraCase | null } = {},
+): WebHandler {
   const slots = new Map<PlayCaseName, Slot>();
   const slot = (name: PlayCaseName): Slot => {
     let s = slots.get(name);
@@ -121,10 +127,20 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
   // Generated cases ("Zufallsfall"): one slot per seed, created on first visit; the oldest is
   // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
   const generated = new Map<number, { slot: Slot; clockOrigin: number }>();
+  const extras = new Map<string, { version: string; slot: Slot }>();
   type Target = { readonly slot: Slot; readonly slug: string; readonly clockOrigin: number };
   const target = (slug: string | undefined): Target | null => {
     const name = playCaseName(slug);
     if (name !== null) return { slot: slot(name), slug: slugOf(name), clockOrigin: PLAY_CASES[name].clockOrigin };
+    const extra = slug === undefined || options.extraCase === undefined ? null : options.extraCase(slug);
+    if (extra !== null) {
+      let e = extras.get(slug!);
+      if (e === undefined || e.version !== extra.version) {
+        e = { version: extra.version, slot: { game: newGame(extra.pkg, extra.clockOrigin), feedback: { tone: "info", title: "Probespiel", lines: ["Der gespeicherte Stand deiner Arbeitskopie."] }, fresh: new Set() } };
+        extras.set(slug!, e);
+      }
+      return { slot: e.slot, slug: slug!, clockOrigin: extra.clockOrigin };
+    }
     const m = /^zufall-(0|[1-9][0-9]{0,8})$/.exec(slug ?? "");
     if (m === null) return null;
     const seed = Number(m[1]);
@@ -260,8 +276,11 @@ function trusted(req: IncomingMessage): boolean {
 export type NodeRoutes = (req: IncomingMessage, res: ServerResponse, url: URL) => Promise<boolean>;
 
 /** Node request handler around createWebHandler; exported for tests. */
-export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, extra: { readonly routes: NodeRoutes; readonly editorLink: boolean } | null = null) {
-  const handle = createWebHandler(packages, { editorLink: extra?.editorLink === true });
+export function createWebApp(
+  packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {},
+  extra: { readonly routes: NodeRoutes; readonly editorLink: boolean; readonly extraCase?: (slug: string) => ExtraCase | null } | null = null,
+) {
+  const handle = createWebHandler(packages, { editorLink: extra?.editorLink === true, ...(extra?.extraCase === undefined ? {} : { extraCase: extra.extraCase }) });
   const plain = { "content-type": "text/plain; charset=utf-8", connection: "close" };
   return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
     // Every failure ends in a response: a thrown error must never become an unhandled rejection.
