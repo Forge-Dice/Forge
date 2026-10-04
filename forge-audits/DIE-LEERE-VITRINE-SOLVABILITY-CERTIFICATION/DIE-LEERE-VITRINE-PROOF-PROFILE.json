@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "bindings": {
+    "caseId": "case:leere-vitrine-v1",
+    "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+    "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
+    "releaseHash": "2eaf25cc615449937eb6cc6ea6cc7b50f344bd1e7824a3b8165885efea2ed0a9"
+  },
+  "answerScope": [
+    "conclusion:actor-max",
+    "conclusion:actor-lina",
+    "conclusion:actor-nora",
+    "conclusion:actor-oskar"
+  ],
+  "ambiguityPolicy": "must_disambiguate",
+  "question": {
+    "kind": "required_literals"
+  },
+  "observations": [
+    {
+      "id": "observed:hof-contact",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:p18",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:d03"
+      }
+    },
+    {
+      "id": "observed:max",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:p03",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:d04"
+      }
+    },
+    {
+      "id": "public-rule:max",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:max",
+          "allOf": [
+            "observation:max"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-max",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:nora",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:p04",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:d04"
+      }
+    },
+    {
+      "id": "public-rule:nora",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:nora",
+          "allOf": [
+            "observation:nora"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-nora",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:oskar",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:p05",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:d05"
+      }
+    },
+    {
+      "id": "public-rule:oskar",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:oskar",
+          "allOf": [
+            "observation:oskar"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-oskar",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "public-rule:remaining",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "remaining:lina",
+          "allOf": [
+            "literal:max",
+            "literal:nora",
+            "literal:oskar"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-lina",
+            "value": true
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "observation:hof-contact",
+      "kind": "observation",
+      "observationId": "observed:hof-contact"
+    },
+    {
+      "id": "observation:max",
+      "kind": "observation",
+      "observationId": "observed:max"
+    },
+    {
+      "id": "literal:max",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-max",
+        "value": false
+      }
+    },
+    {
+      "id": "license:max",
+      "kind": "observation",
+      "observationId": "public-rule:max"
+    },
+    {
+      "id": "observation:nora",
+      "kind": "observation",
+      "observationId": "observed:nora"
+    },
+    {
+      "id": "literal:nora",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-nora",
+        "value": false
+      }
+    },
+    {
+      "id": "license:nora",
+      "kind": "observation",
+      "observationId": "public-rule:nora"
+    },
+    {
+      "id": "observation:oskar",
+      "kind": "observation",
+      "observationId": "observed:oskar"
+    },
+    {
+      "id": "literal:oskar",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-oskar",
+        "value": false
+      }
+    },
+    {
+      "id": "license:oskar",
+      "kind": "observation",
+      "observationId": "public-rule:oskar"
+    },
+    {
+      "id": "literal:lina",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-lina",
+        "value": true
+      }
+    },
+    {
+      "id": "license:remaining",
+      "kind": "observation",
+      "observationId": "public-rule:remaining"
+    }
+  ],
+  "edges": [
+    {
+      "id": "exclude:max",
+      "allOf": [
+        "observation:max",
+        "license:max"
+      ],
+      "to": "literal:max",
+      "license": "license:max"
+    },
+    {
+      "id": "exclude:nora",
+      "allOf": [
+        "observation:nora",
+        "license:nora"
+      ],
+      "to": "literal:nora",
+      "license": "license:nora"
+    },
+    {
+      "id": "exclude:oskar",
+      "allOf": [
+        "observation:oskar",
+        "license:oskar"
+      ],
+      "to": "literal:oskar",
+      "license": "license:oskar"
+    },
+    {
+      "id": "remaining:lina",
+      "allOf": [
+        "literal:max",
+        "literal:nora",
+        "literal:oskar",
+        "license:remaining"
+      ],
+      "to": "literal:lina",
+      "license": "license:remaining"
+    }
+  ],
+  "witnessStepIds": [
+    "search-hof",
+    "ask-nora-photo",
+    "read-camera",
+    "ask-oskar-record",
+    "read-terminal"
+  ]
+}
