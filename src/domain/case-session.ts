@@ -282,6 +282,11 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
           (r) => r.source.kind === "npc" && r.source.npc === event.npc && r.source.questionId === event.questionId && "statement" in r.observation,
         );
         if (!stated) throw unavailable();
+        // The same confrontation again would say nothing new (and admit a second time).
+        const repeated = knowledge.observations.some(
+          (r) => r.source.kind === "confrontation" && r.source.npc === event.npc && r.source.questionId === event.questionId && r.source.evidence === event.evidence,
+        );
+        if (repeated) throw unavailable();
         const result = confront({ ...port, evidenceId: own(event.evidence, "evidence") });
         if (!result.success) throw result.code === "QUESTION_NOT_AVAILABLE" ? unavailable() : hostFailure();
         const { observation } = result;

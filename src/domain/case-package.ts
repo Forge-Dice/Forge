@@ -319,6 +319,13 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
       const held = own !== undefined && own.stance.kind !== "uncertain" && own.stance.value === proposition.truth;
       if (!held) reject("INSINCERE_LIE", [...path, "claim"]);
     });
+    // An admission states the NPC's own view of the confronted claim; without one it could never fire.
+    (profile.confrontations ?? []).forEach((c, k) => {
+      const proposition = lieProposition(truth, c.claim);
+      const own = proposition && snapshot.attitudes.find((a) => a.subject.kind === "proposition" && a.subject.id === proposition.id);
+      const held = own !== undefined && own.stance.kind !== "uncertain" && own.stance.value === proposition!.truth;
+      if (!held) reject("INSINCERE_LIE", ["npcs", i, "profile", "confrontations", k, "claim"]);
+    });
     if (npcIds.has(snapshot.npcId)) reject("REFERENCE", ["npcs", i]);
     npcIds.add(snapshot.npcId);
     return { snapshot, profile };
