@@ -1,0 +1,599 @@
+{
+  "schemaVersion": 1,
+  "releaseContextHash": "df997dd21abea26bd6f2e373e5820a713669239f348ce8f622af14afe7bd44e5",
+  "adapterVersion": "forge-release-proof-v1",
+  "certificateData": {
+    "schemaVersion": 1,
+    "steps": [
+      {
+        "stepId": "search-wiegezelt",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:wiegezelt"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-parkwiese",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:parkwiese"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-buehne",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:buehne"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-kamera",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:kamera"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-kuchenstand",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:kuchenstand"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-tombola",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:tombola"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-bierzelt",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:bierzelt"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-resi-fremder",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:resi"
+            }
+          },
+          "questionId": "question:q01"
+        }
+      },
+      {
+        "stepId": "ask-alois-video",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:alois"
+            }
+          },
+          "questionId": "question:q05"
+        }
+      },
+      {
+        "stepId": "ask-ferdl-park",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ferdl"
+            }
+          },
+          "questionId": "question:q10"
+        }
+      },
+      {
+        "stepId": "confront-ferdl",
+        "event": {
+          "type": "confront",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ferdl"
+            }
+          },
+          "questionId": "question:q10",
+          "evidence": {
+            "$playerRefOf": {
+              "kind": "evidence",
+              "id": "evidence:parkschein"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-sepp-feuerwehr",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:sepp"
+            }
+          },
+          "questionId": "question:q03"
+        }
+      },
+      {
+        "stepId": "confront-sepp",
+        "event": {
+          "type": "confront",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:sepp"
+            }
+          },
+          "questionId": "question:q03",
+          "evidence": {
+            "$playerRefOf": {
+              "kind": "evidence",
+              "id": "evidence:tombolafoto"
+            }
+          }
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "observed:alois",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:alois-buehne",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:festvideo"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:alois"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:buehne"
+                  }
+                },
+                "at": 3600
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:alois",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:alois",
+            "allOf": [
+              "observation:alois"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-alois",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:alois"
+        ]
+      },
+      {
+        "id": "observed:hilde",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:hilde-kuchen",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:kuchenbon"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:hilde"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:kuchenstand"
+                  }
+                },
+                "at": 3600
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:hilde",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:hilde",
+            "allOf": [
+              "observation:hilde"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-hilde",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:hilde"
+        ]
+      },
+      {
+        "id": "observed:lotte",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:lotte-kuchen",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:kuchenbon"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:lotte"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:kuchenstand"
+                  }
+                },
+                "at": 3600
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:lotte",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:lotte",
+            "allOf": [
+              "observation:lotte"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-lotte",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:lotte"
+        ]
+      },
+      {
+        "id": "observed:sepp",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:sepp-tombola",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:tombolafoto"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:sepp"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:tombola"
+                  }
+                },
+                "at": 3600
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:sepp",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:sepp",
+            "allOf": [
+              "observation:sepp"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-sepp",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:sepp"
+        ]
+      },
+      {
+        "id": "observed:resi",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:resi-bierzelt",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:zapfanlage"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:resi"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:bierzelt"
+                  }
+                },
+                "at": 3600
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:resi",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:resi",
+            "allOf": [
+              "observation:resi"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-resi",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:resi"
+        ]
+      },
+      {
+        "id": "observed:ferdl",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:ferdl-park",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:parkschein"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:ferdl"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:parkwiese"
+                  }
+                },
+                "at": 2400
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:ferdl",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "remaining:ferdl",
+            "allOf": [
+              "literal:alois",
+              "literal:hilde",
+              "literal:lotte",
+              "literal:sepp",
+              "literal:resi",
+              "observation:ferdl"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-ferdl",
+              "value": true
+            }
+          }
+        ],
+        "ruleId": "rule:roster",
+        "afterObservations": [
+          "observed:alois",
+          "observed:hilde",
+          "observed:lotte",
+          "observed:sepp",
+          "observed:resi",
+          "observed:ferdl"
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "routeId": "befragen",
+        "stepIds": [
+          "ask-resi-fremder",
+          "search-parkwiese",
+          "ask-alois-video",
+          "read-kamera",
+          "search-kuchenstand",
+          "search-tombola",
+          "search-bierzelt"
+        ]
+      },
+      {
+        "routeId": "vorhalten",
+        "stepIds": [
+          "search-wiegezelt",
+          "search-parkwiese",
+          "ask-ferdl-park",
+          "confront-ferdl",
+          "search-buehne",
+          "read-kamera",
+          "search-kuchenstand",
+          "search-tombola",
+          "ask-sepp-feuerwehr",
+          "confront-sepp",
+          "search-bierzelt"
+        ]
+      }
+    ]
+  }
+}

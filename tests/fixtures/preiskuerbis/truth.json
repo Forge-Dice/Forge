@@ -1,0 +1,488 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "revision": 1,
+  "title": "Der verschwundene Preiskürbis",
+  "timeline": {
+    "unit": "second",
+    "originLabel": "14:00 Uhr, Dorffest in Unterbrunn"
+  },
+  "persons": [
+    {
+      "id": "person:alois",
+      "name": "Alois Hübner"
+    },
+    {
+      "id": "person:hilde",
+      "name": "Hilde Moosbrugger"
+    },
+    {
+      "id": "person:sepp",
+      "name": "Sepp Gruber"
+    },
+    {
+      "id": "person:lotte",
+      "name": "Lotte Brandl"
+    },
+    {
+      "id": "person:resi",
+      "name": "Resi Huber"
+    },
+    {
+      "id": "person:ferdl",
+      "name": "Ferdinand Kranz"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location:wiegezelt",
+      "name": "Wiegezelt"
+    },
+    {
+      "id": "location:buehne",
+      "name": "Festbühne"
+    },
+    {
+      "id": "location:kuchenstand",
+      "name": "Kuchenstand"
+    },
+    {
+      "id": "location:tombola",
+      "name": "Tombolastand"
+    },
+    {
+      "id": "location:bierzelt",
+      "name": "Bierzelt"
+    },
+    {
+      "id": "location:feuerwehr",
+      "name": "Feuerwehrstand"
+    },
+    {
+      "id": "location:parkwiese",
+      "name": "Parkwiese"
+    }
+  ],
+  "items": [
+    {
+      "id": "item:kuerbis",
+      "name": "Preiskürbis „Otto“"
+    },
+    {
+      "id": "item:kamera",
+      "name": "Kamera der Lokalzeitung"
+    }
+  ],
+  "relationships": [],
+  "events": [
+    {
+      "id": "event:wiegen",
+      "description": "Alois wiegt die Kürbisse für den Wettbewerb",
+      "time": {
+        "kind": "interval",
+        "start": 0,
+        "end": 600
+      },
+      "locationId": "location:wiegezelt",
+      "participantIds": [
+        "person:alois"
+      ],
+      "itemIds": [
+        "item:kuerbis"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:anlieferung",
+      "description": "Hilde bringt ihren eigenen Kürbis ins Wiegezelt",
+      "time": {
+        "kind": "instant",
+        "at": 900
+      },
+      "locationId": "location:wiegezelt",
+      "participantIds": [
+        "person:hilde"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:ankunft",
+      "description": "Ferdl stellt seinen Leiterwagen auf die Parkwiese",
+      "time": {
+        "kind": "instant",
+        "at": 2400
+      },
+      "locationId": "location:parkwiese",
+      "participantIds": [
+        "person:ferdl"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:kuchen",
+      "description": "Hilde und Lotte verkaufen Kuchen",
+      "time": {
+        "kind": "interval",
+        "start": 3000,
+        "end": 4200
+      },
+      "locationId": "location:kuchenstand",
+      "participantIds": [
+        "person:hilde",
+        "person:lotte"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:rede",
+      "description": "Alois hält die Festrede",
+      "time": {
+        "kind": "interval",
+        "start": 3300,
+        "end": 4200
+      },
+      "locationId": "location:buehne",
+      "participantIds": [
+        "person:alois"
+      ],
+      "itemIds": [
+        "item:kamera"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:tombola",
+      "description": "Sepp zieht ein Los an der Tombola",
+      "time": {
+        "kind": "instant",
+        "at": 3600
+      },
+      "locationId": "location:tombola",
+      "participantIds": [
+        "person:sepp"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:anstich",
+      "description": "Resi sticht das zweite Fass an",
+      "time": {
+        "kind": "instant",
+        "at": 3600
+      },
+      "locationId": "location:bierzelt",
+      "participantIds": [
+        "person:resi"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:raub",
+      "description": "Ferdl rollt den Preiskürbis aus dem Wiegezelt",
+      "time": {
+        "kind": "instant",
+        "at": 3600
+      },
+      "locationId": "location:wiegezelt",
+      "participantIds": [
+        "person:ferdl"
+      ],
+      "itemIds": [
+        "item:kuerbis"
+      ],
+      "causedByEventIds": []
+    }
+  ],
+  "motives": [
+    {
+      "id": "motive:neid",
+      "personId": "person:ferdl",
+      "eventIds": [
+        "event:raub"
+      ],
+      "description": "Ferdl will, dass seine Bertha gewinnt"
+    }
+  ],
+  "propositions": [
+    {
+      "id": "proposition:raub-kuerbis",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:raub",
+        "itemId": "item:kuerbis"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:rede-kamera",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:rede",
+        "itemId": "item:kamera"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:alois-buehne",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:alois",
+        "locationId": "location:buehne",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:hilde-kuchen",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:hilde",
+        "locationId": "location:kuchenstand",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:lotte-kuchen",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:lotte",
+        "locationId": "location:kuchenstand",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:sepp-tombola",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:sepp",
+        "locationId": "location:tombola",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:resi-bierzelt",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:resi",
+        "locationId": "location:bierzelt",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:ferdl-park",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ferdl",
+        "locationId": "location:parkwiese",
+        "at": 2400
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:ferdl-zelt",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ferdl",
+        "locationId": "location:wiegezelt",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:sepp-feuerwehr",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:sepp",
+        "locationId": "location:feuerwehr",
+        "at": 3600
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:hilde-zelt",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:hilde",
+        "locationId": "location:wiegezelt",
+        "at": 3600
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:alois-zelt",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:alois",
+        "locationId": "location:wiegezelt",
+        "at": 3600
+      },
+      "truth": false
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence:waage",
+      "description": "Protokoll der Festwaage",
+      "source": {
+        "kind": "location",
+        "id": "location:wiegezelt"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:raub-kuerbis",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:handschuhe",
+      "description": "Gartenhandschuhe neben der Waage",
+      "source": {
+        "kind": "location",
+        "id": "location:wiegezelt"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:hilde-zelt",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:schleifspur",
+      "description": "Schleifspur aus dem Zelt",
+      "source": {
+        "kind": "location",
+        "id": "location:wiegezelt"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:ferdl-zelt",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:parkschein",
+      "description": "Leiterwagen mit Parkschein",
+      "source": {
+        "kind": "location",
+        "id": "location:parkwiese"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:ferdl-park",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:stativ",
+      "description": "Stativ vor der Festbühne",
+      "source": {
+        "kind": "location",
+        "id": "location:buehne"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:rede-kamera",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:festvideo",
+      "description": "Video der Festrede",
+      "source": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:alois-buehne",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:alois-zelt",
+          "direction": "refutes"
+        }
+      ]
+    },
+    {
+      "id": "evidence:kuchenbon",
+      "description": "Kassenstreifen des Kuchenstands",
+      "source": {
+        "kind": "location",
+        "id": "location:kuchenstand"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:hilde-kuchen",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:lotte-kuchen",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:tombolafoto",
+      "description": "Erinnerungsfoto am Tombolastand",
+      "source": {
+        "kind": "location",
+        "id": "location:tombola"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:sepp-tombola",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:sepp-feuerwehr",
+          "direction": "refutes"
+        }
+      ]
+    },
+    {
+      "id": "evidence:zapfanlage",
+      "description": "Zählwerk der Zapfanlage",
+      "source": {
+        "kind": "location",
+        "id": "location:bierzelt"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:resi-bierzelt",
+          "direction": "supports"
+        }
+      ]
+    }
+  ],
+  "secrets": [
+    {
+      "id": "secret:otto",
+      "propositionIds": [
+        "proposition:ferdl-zelt"
+      ]
+    }
+  ],
+  "redHerrings": [
+    {
+      "id": "red-herring:handschuhe",
+      "evidenceIds": [
+        "evidence:handschuhe"
+      ],
+      "misleadingPropositionId": "proposition:hilde-zelt"
+    }
+  ]
+}

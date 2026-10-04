@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:preiskuerbis",
+  "truthHash": "6b3c840a67ca0d1481a0255f8379865fac147f9904821150304d89bdeaeadf63",
+  "revision": 1,
+  "questions": [
+    {
+      "id": "question:q01",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:resi"
+        },
+        {
+          "kind": "location",
+          "id": "location:bierzelt"
+        }
+      ]
+    },
+    {
+      "id": "question:q02",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:resi"
+        },
+        {
+          "kind": "location",
+          "id": "location:bierzelt"
+        }
+      ]
+    },
+    {
+      "id": "question:q03",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:sepp"
+        },
+        {
+          "kind": "location",
+          "id": "location:feuerwehr"
+        }
+      ]
+    },
+    {
+      "id": "question:q04",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:alois"
+        },
+        {
+          "kind": "location",
+          "id": "location:buehne"
+        }
+      ]
+    },
+    {
+      "id": "question:q05",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:alois"
+        },
+        {
+          "kind": "location",
+          "id": "location:buehne"
+        }
+      ]
+    },
+    {
+      "id": "question:q06",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:alois"
+        },
+        {
+          "kind": "location",
+          "id": "location:wiegezelt"
+        }
+      ]
+    },
+    {
+      "id": "question:q07",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lotte"
+        },
+        {
+          "kind": "location",
+          "id": "location:kuchenstand"
+        }
+      ]
+    },
+    {
+      "id": "question:q08",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:hilde"
+        },
+        {
+          "kind": "location",
+          "id": "location:wiegezelt"
+        }
+      ]
+    },
+    {
+      "id": "question:q09",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:sepp"
+        },
+        {
+          "kind": "location",
+          "id": "location:tombola"
+        }
+      ]
+    },
+    {
+      "id": "question:q10",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ferdl"
+        },
+        {
+          "kind": "location",
+          "id": "location:parkwiese"
+        }
+      ]
+    },
+    {
+      "id": "question:q11",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ferdl"
+        },
+        {
+          "kind": "location",
+          "id": "location:wiegezelt"
+        }
+      ]
+    }
+  ]
+}
