@@ -66,3 +66,25 @@ describe("github.py: malformed review/job records are EXECUTION_API, not a Pytho
     expect(read("read_jobs", { [jobsPath(1)]: { total_count: 1, jobs: [apiJob(5, { status: ["completed"] })] } }, RUN, 2)).toBe("EXECUTION_API");
   });
 });
+
+describe("github.py: jobs pagination completeness", () => {
+  const jobs = Array.from({ length: 150 }, (_, i) => apiJob(1000 + i));
+  test("control: a stable total_count over two pages passes", () => {
+    expect(read("read_jobs", {
+      [jobsPath(1)]: { total_count: 150, jobs: jobs.slice(0, 100) },
+      [jobsPath(2)]: { total_count: 150, jobs: jobs.slice(100) },
+    }, RUN, 2)).toBe("PASS");
+  });
+  test("total_count shrinking between pages (150 then 100, empty page 2) is EXECUTION_API", () => {
+    expect(read("read_jobs", {
+      [jobsPath(1)]: { total_count: 150, jobs: jobs.slice(0, 100) },
+      [jobsPath(2)]: { total_count: 100, jobs: [] },
+    }, RUN, 2)).toBe("EXECUTION_API");
+  });
+  test("total_count changing between pages (150 then 120) is EXECUTION_API", () => {
+    expect(read("read_jobs", {
+      [jobsPath(1)]: { total_count: 150, jobs: jobs.slice(0, 100) },
+      [jobsPath(2)]: { total_count: 120, jobs: jobs.slice(100, 120) },
+    }, RUN, 2)).toBe("EXECUTION_API");
+  });
+});

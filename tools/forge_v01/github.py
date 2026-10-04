@@ -143,10 +143,14 @@ def read_run(transport, run_id: int, attempt: int, *, phase: str = "final") -> d
 def _pages(transport, path: str, phase: str, unwrap):
     """Internal page counter 1..20; stops on a short page; a 21st page would be needed -> FAIL."""
     items: list = []
+    first_total = None
     for page in range(1, MAX_PAGES + 1):
         batch, total = unwrap(_get(transport, f"{path}?per_page={PER_PAGE}&page={page}", phase))
         _require(isinstance(batch, list) and len(batch) <= PER_PAGE, phase)
         items.extend(batch)
+        if page == 1:
+            first_total = total
+        _require(total == first_total, phase)  # a total_count changing between pages: listing not stable
         if total is not None:
             _require(len(items) <= total <= MAX_ITEMS, phase)
             if len(items) == total:
