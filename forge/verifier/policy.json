@@ -1,0 +1,17 @@
+{
+  "format": 1,
+  "repoId": 1401864629,
+  "ownerId": 315180734,
+  "developers": [
+    {
+      "id": 337272506,
+      "provider": "codex",
+      "namespacePrefix": "forge/run/codex/"
+    }
+  ],
+  "imageDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "bootstrapVersion": 1,
+  "deploymentPolicyDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "limitsProfile": "v01",
+  "taskIndex": []
+}

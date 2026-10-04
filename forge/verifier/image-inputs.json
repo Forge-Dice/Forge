@@ -1,0 +1,79 @@
+{
+  "format": 1,
+  "status": "unresolved",
+  "note": "Inputs of tools/forge_v01/Dockerfile, passed as build ARGs. null = not resolved yet; the build fails on every null. Real values come only from a real, separately authorized build; the resulting OCI digest goes into the trusted workflow and policy.imageDigest, never into this file.",
+  "platform": "linux/amd64",
+  "recipe": {
+    "path": "tools/forge_v01/Dockerfile",
+    "sha256": null
+  },
+  "baseImage": {
+    "repository": "docker.io/library/ubuntu",
+    "release": "24.04",
+    "arg": "UBUNTU_DIGEST",
+    "digest": null
+  },
+  "aptSnapshot": {
+    "source": "https://snapshot.ubuntu.com/",
+    "arg": "UBUNTU_SNAPSHOT",
+    "id": null
+  },
+  "kernel": {
+    "arg": "KERNEL_COMMIT",
+    "commit": null,
+    "files": [
+      "tools/forge_v01/stage0.py",
+      "tools/forge_v01/errors.py",
+      "tools/forge_v01/process.py",
+      "tools/forge_v01/paths.py",
+      "tools/forge_v01/objects.py",
+      "tools/forge_v01/materialize.py",
+      "tools/forge_v01/bootstrap.py"
+    ],
+    "target": "/opt/forge/bootstrap"
+  },
+  "tools": {
+    "python": {
+      "version": "3.12.14",
+      "url": "https://www.python.org/ftp/python/3.12.14/Python-3.12.14.tar.xz",
+      "sha256": null,
+      "arg": "PYTHON_SHA256"
+    },
+    "git": {
+      "version": "2.51.1",
+      "url": "https://www.kernel.org/pub/software/scm/git/git-2.51.1.tar.xz",
+      "sha256": null,
+      "arg": "GIT_SHA256"
+    },
+    "node": {
+      "version": "24.19.0",
+      "url": "https://nodejs.org/dist/v24.19.0/node-v24.19.0-linux-x64.tar.xz",
+      "sha256": null,
+      "arg": "NODE_SHA256"
+    },
+    "npm": {
+      "version": "11.9.0",
+      "url": "https://registry.npmjs.org/npm/-/npm-11.9.0.tgz",
+      "sha256": null,
+      "arg": "NPM_SHA256"
+    },
+    "zod": {
+      "version": "4.6.5",
+      "url": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
+      "sha256": null,
+      "arg": "ZOD_SHA256",
+      "lockIntegrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q=="
+    },
+    "dockerCli": {
+      "version": null,
+      "url": "https://download.docker.com/linux/static/stable/x86_64/docker-<version>.tgz",
+      "sha256": null,
+      "arg": "DOCKER_CLI_SHA256",
+      "versionArg": "DOCKER_CLI_VERSION"
+    }
+  },
+  "output": {
+    "ociDigest": null,
+    "buildManifestSha256": null
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "format": 1,
+  "taskId": "FORGE-DRILL-0001",
+  "contractHash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "profile": "DEV",
+  "approvedTcbPaths": [],
+  "addedTestFiles": [],
+  "checks": [
+    {
+      "name": "typecheck",
+      "command": "forge-v01:typecheck"
+    },
+    {
+      "name": "test",
+      "command": "forge-v01:test"
+    },
+    {
+      "name": "mutations",
+      "command": "forge-v01:mutations"
+    }
+  ],
+  "mutants": [
+    {
+      "id": "return-n",
+      "path": "src/forge-drill/clamp-at-zero.ts",
+      "anchorBase64": "cmV0dXJuIG4gPCAwID8gMCA6IG47",
+      "replacementBase64": "cmV0dXJuIG47",
+      "testFiles": [
+        "tests/forge-v01/clamp-at-zero.test.ts"
+      ],
+      "namedTests": [
+        [
+          "tests/forge-v01/clamp-at-zero.test.ts",
+          "forge-v01",
+          [
+            "clampAtZero"
+          ],
+          "negative input clamps to zero",
+          0
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+# Forge V0.1 (PKG §2 "Workflowkonfiguration fest", contract C §7). NOT ACTIVATABLE.
+#
+# The tool image has not been built: there is no real OCI digest, and the deployment gates of
+# contract C §8/§9 (EI-01..EI-20, Ruleset live drill, required-check source binding) are not
+# established. The first step of each job therefore fails closed, and FORGE_IMAGE is a reference
+# that no registry can serve. Activation needs a separately authorized revision with the real
+# digest; no mutable tag is ever used.
+#
+# The host steps never expand PR data: they read only the runner's own environment and the
+# event file path. Only the host writes the bounded receipt to GITHUB_OUTPUT.
+name: Forge V0.1
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  forge-gate:
+    name: forge-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      FORGE_IMAGE: forge-v01-image@sha256:UNRESOLVED-IMAGE-DIGEST-NOT-ESTABLISHED
+      FORGE_JOB: forge-gate
+    outputs:
+      receipt: ${{ steps.stage.outputs.receipt }}
+    steps:
+      - name: Deployment gates not established
+        run: |
+          echo "Forge V0.1 is not active: image digest and deployment gates are not established." >&2
+          exit 1
+      - name: Stage 0 and gate (trusted host)
+        id: stage
+        run: |
+          set -euo pipefail
+          umask 077
+          ws="$(mktemp -d "$RUNNER_TEMP/forge.XXXXXXXX")"
+          mkdir -m 0700 "$ws/work"
+          cp "$GITHUB_EVENT_PATH" "$ws/event.json"
+          python3 -I - "$ws/facts.json" <<'PY'
+          import json, os, sys
+          env = os.environ
+          facts = {"eventName": env["GITHUB_EVENT_NAME"], "githubSha": env["GITHUB_SHA"],
+                   "runId": int(env["GITHUB_RUN_ID"]), "runAttempt": int(env["GITHUB_RUN_ATTEMPT"]),
+                   "actorId": int(env["GITHUB_ACTOR_ID"]), "triggeringActorLogin": env["GITHUB_TRIGGERING_ACTOR"],
+                   "job": env["FORGE_JOB"], "image": env["FORGE_IMAGE"], "receipt": None}
+          with open(sys.argv[1], "x") as handle:
+              json.dump(facts, handle)
+          PY
+          rc=0
+          docker run --rm --user "$(id -u):$(id -g)" \
+            --mount "type=bind,src=$ws,dst=$ws" \
+            "$FORGE_IMAGE" --event "$ws/event.json" --facts "$ws/facts.json" --workspace "$ws/work" \
+            > "$ws/result.json" || rc=$?
+          python3 -I - "$ws/result.json" <<'PY'
+          import base64, json, os, sys
+          with open(sys.argv[1], "rb") as handle:
+              raw = handle.read(4097)
+          if len(raw) > 4096 or raw.count(b"\n") != 1 or not raw.endswith(b"\n"):
+              sys.exit(1)
+          record = json.loads(raw)
+          receipt = record.get("receipt") if record.get("outcome") == "GATE_PASS" else None
+          if not isinstance(receipt, str) or len(receipt) > 1024:
+              sys.exit(1)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write("receipt=" + base64.b64encode(receipt.encode("utf-8")).decode("ascii") + "\n")
+          PY
+          exit "$rc"
+
+  forge-verify:
+    name: forge-verify
+    needs: forge-gate
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      FORGE_IMAGE: forge-v01-image@sha256:UNRESOLVED-IMAGE-DIGEST-NOT-ESTABLISHED
+      FORGE_JOB: forge-verify
+    steps:
+      - name: Deployment gates not established
+        run: |
+          echo "Forge V0.1 is not active: image digest and deployment gates are not established." >&2
+          exit 1
+      - name: Gate did not succeed
+        if: needs.forge-gate.result != 'success'
+        run: |
+          echo "forge-gate did not succeed: forge-verify fails." >&2
+          exit 1
+      - name: Stage 0, gate and Stage 2 (trusted host)
+        env:
+          FORGE_RECEIPT: ${{ needs.forge-gate.outputs.receipt }}
+        run: |
+          set -euo pipefail
+          umask 077
+          ws="$(mktemp -d "$RUNNER_TEMP/forge.XXXXXXXX")"
+          mkdir -m 0700 "$ws/work"
+          cp "$GITHUB_EVENT_PATH" "$ws/event.json"
+          python3 -I - "$ws/facts.json" <<'PY'
+          import base64, binascii, json, os, sys
+          env = os.environ
+          try:
+              receipt = base64.b64decode(env.get("FORGE_RECEIPT", ""), validate=True).decode("utf-8")
+          except (binascii.Error, UnicodeDecodeError):
+              sys.exit(1)
+          if not receipt or len(receipt) > 1024:
+              sys.exit(1)
+          facts = {"eventName": env["GITHUB_EVENT_NAME"], "githubSha": env["GITHUB_SHA"],
+                   "runId": int(env["GITHUB_RUN_ID"]), "runAttempt": int(env["GITHUB_RUN_ATTEMPT"]),
+                   "actorId": int(env["GITHUB_ACTOR_ID"]), "triggeringActorLogin": env["GITHUB_TRIGGERING_ACTOR"],
+                   "job": env["FORGE_JOB"], "image": env["FORGE_IMAGE"], "receipt": receipt}
+          with open(sys.argv[1], "x") as handle:
+              json.dump(facts, handle)
+          PY
+          rc=0
+          docker run --rm --user "$(id -u):$(id -g)" --group-add "$(stat -c %g /var/run/docker.sock)" \
+            --mount "type=bind,src=$ws,dst=$ws" \
+            --mount "type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock" \
+            "$FORGE_IMAGE" --event "$ws/event.json" --facts "$ws/facts.json" --workspace "$ws/work" \
+            > "$ws/result.json" || rc=$?
+          python3 -I - "$ws/result.json" <<'PY'
+          import json, sys
+          with open(sys.argv[1], "rb") as handle:
+              raw = handle.read(4097)
+          if len(raw) > 4096 or raw.count(b"\n") != 1 or not raw.endswith(b"\n"):
+              sys.exit(1)
+          record = json.loads(raw)
+          print(record.get("outcome"), record.get("code"))
+          sys.exit(0 if record.get("outcome") == "PASS" and record.get("policyAssurance") == "owner_attested" else 1)
+          PY
+          exit "$rc"

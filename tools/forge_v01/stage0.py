@@ -15,12 +15,15 @@ import os
 import sys
 from dataclasses import dataclass
 
-import process
-from bootstrap import TrustedBase, bootstrap_base, strict_json
-from errors import ForgeFail, fail
-from materialize import materialize
-from objects import Leaf, Snapshot
-from paths import validate_path
+sys.dont_write_bytecode = True
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # `python -I` drops the script folder
+
+import process  # noqa: E402
+from bootstrap import TrustedBase, bootstrap_base, strict_json  # noqa: E402
+from errors import ForgeFail, fail  # noqa: E402
+from materialize import materialize  # noqa: E402
+from objects import Leaf, Snapshot  # noqa: E402
+from paths import validate_path  # noqa: E402
 
 MANIFEST_PATH = "forge/verifier/bootstrap-manifest.json"
 ENTRY_PATH = "tools/forge_v01/main.py"

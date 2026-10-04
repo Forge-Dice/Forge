@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "forge/verifier/task-plan.schema.json",
+  "title": "Forge Taskplan v1",
+  "description": "Taskplan v1 as tools/forge_v01/policy.py parse_plan and bind_plan enforce it. Bytes must be canonical JSON (two-space indent, LF, no BOM/CR, trailing LF) in exactly the property order below; planHash = SHA-256(\"forge-plan-v1\\n\" + bytes). Paths additionally pass the verifier byte-path grammar (paths.validate_path).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "taskId",
+    "contractHash",
+    "profile",
+    "approvedTcbPaths",
+    "addedTestFiles",
+    "checks",
+    "mutants"
+  ],
+  "properties": {
+    "format": {
+      "const": 1
+    },
+    "taskId": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$"
+    },
+    "contractHash": {
+      "$ref": "#/$defs/hex64"
+    },
+    "profile": {
+      "enum": [
+        "DEV",
+        "OWNER_OPS"
+      ]
+    },
+    "approvedTcbPaths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/path"
+      },
+      "description": "Empty for DEV; for OWNER_OPS only TCB-class paths from contract scope, never the active contract."
+    },
+    "addedTestFiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/path"
+      },
+      "description": "New tests/**/*.test.ts files from contract scope.create, absent in BASE."
+    },
+    "checks": {
+      "type": "array",
+      "description": "Exactly Contract.requiredChecks in order: typecheck, test and, with mutants, mutations.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "command"
+        ],
+        "properties": {
+          "name": {
+            "enum": [
+              "typecheck",
+              "test",
+              "mutations"
+            ]
+          },
+          "command": {
+            "enum": [
+              "forge-v01:typecheck",
+              "forge-v01:test",
+              "forge-v01:mutations"
+            ]
+          }
+        }
+      }
+    },
+    "mutants": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "path",
+          "anchorBase64",
+          "replacementBase64",
+          "testFiles",
+          "namedTests"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,31}$"
+          },
+          "path": {
+            "$ref": "#/$defs/path",
+            "description": "A contract-scoped src/**/*.ts source outside src/forge/, never a test."
+          },
+          "anchorBase64": {
+            "$ref": "#/$defs/base64",
+            "description": "Canonical base64 of 1..65536 anchor bytes."
+          },
+          "replacementBase64": {
+            "$ref": "#/$defs/base64",
+            "description": "Canonical base64 of 0..65536 replacement bytes."
+          },
+          "testFiles": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/path"
+            }
+          },
+          "namedTests": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 500,
+            "uniqueItems": true,
+            "items": {
+              "type": "array",
+              "description": "[file (one of testFiles), project, ancestor titles, title, occurrence]",
+              "prefixItems": [
+                {
+                  "$ref": "#/$defs/path"
+                },
+                {
+                  "const": "forge-v01"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 49999
+                }
+              ],
+              "items": false,
+              "minItems": 5
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hex64": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "base64": {
+      "type": "string",
+      "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+    }
+  }
+}
