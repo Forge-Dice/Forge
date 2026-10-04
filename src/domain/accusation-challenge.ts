@@ -4,6 +4,7 @@ import { hashCaseTruth } from "./case-truth.identity.ts";
 import { ConclusionClaimSchema, claimKey, evaluateConclusionClaim, type CaseSolution } from "./case-solution.ts";
 import { hashCaseSolution } from "./case-solution.identity.ts";
 import { evaluateAccusation, type Accusation } from "./case-accusation.ts";
+import { deepFreeze } from "./shared.ts";
 
 // Exactness wrapper around the neutral accusation core (MYST-CHALLENGE-0001).
 // A trusted host picks a parsed challenge: a scope of bare claims bound to one CaseTruth and
@@ -85,14 +86,6 @@ function checkChallenge(
     const key = claimKey(claims.get(required.conclusionId)!);
     if (!firstIndex.has(key)) issue(`Required ${required.conclusionId} is not in scope: ${key}`, ["allowedClaims"]);
   }
-}
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
 }
 
 function isSolutionBound(truth: CaseTruth, solution: CaseSolution, truthHash: string): boolean {

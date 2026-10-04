@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "releaseContextHash": "7bb1806c7493886c477636ac7bd732d4a73fd4a69a818ddba0dea6b730037a13",
+  "releaseContextHash": "207ac0927d0c3369a8c9531bb2cb1892c3f3efa08252d88aa161f730fcc6175b",
   "adapterVersion": "forge-release-proof-v1",
   "certificateData": {
     "schemaVersion": 1,
@@ -81,6 +81,45 @@
               "id": "item:kamera"
             }
           }
+        }
+      },
+      {
+        "stepId": "ask-rosa-buch",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:rosa"
+            }
+          },
+          "questionId": "question:q04"
+        }
+      },
+      {
+        "stepId": "search-funkraum",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:funkraum"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-gerd-terrasse",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:gerd"
+            }
+          },
+          "questionId": "question:q02"
         }
       }
     ],
@@ -396,6 +435,19 @@
           "observed:gerd",
           "observed:mira",
           "observed:tobias"
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "routeId": "befragen",
+        "stepIds": [
+          "ask-rosa-buch",
+          "read-buch",
+          "search-funkraum",
+          "read-funkgeraet",
+          "ask-gerd-terrasse",
+          "read-kamera"
         ]
       }
     ]

@@ -3,6 +3,7 @@ import { hashCaseTruth } from "./case-truth.identity.ts";
 import type { CaseSolution, Intent, Mechanism, ResponsibilityRole } from "./case-solution.ts";
 import { hashCaseSolution } from "./case-solution.identity.ts";
 import type { EpistemicStance, NpcKnowledgeSnapshot } from "./npc-knowledge.ts";
+import { deepFreeze } from "./shared.ts";
 
 // Information barrier between an NPC's authored epistemic snapshot and anything downstream
 // (TASK-0004 §10). Only explicitly released subjective content leaves: projection-local
@@ -69,14 +70,6 @@ const KIND_ORDER: readonly VisibleKind[] = ["person", "location", "item", "event
 
 function compareCodeUnits(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
-}
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
 }
 
 function mismatch(): ProjectionResult {

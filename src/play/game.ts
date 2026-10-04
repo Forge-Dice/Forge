@@ -31,7 +31,8 @@ const HELP = [
   "  hilfe | ende",
 ].join("\n");
 
-const ERRORS: Record<string, string> = {
+/** Player text for each session error code; shared by CLI and web. */
+export const SESSION_ERRORS: Record<string, string> = {
   ACTION_UNAVAILABLE: "Das geht gerade nicht.",
   SESSION_CLOSED: "Der Fall ist bereits gelöst.",
   LIMIT_REACHED: "Das Aktionslimit dieses Falls ist erreicht.",
@@ -78,7 +79,7 @@ export function command(game: Game, line: string): Step {
     case "hinweis":
     case "h": {
       const result = reduceSession(game.pkg, game.state, { type: "hint" });
-      if (!result.ok) return say(result.code === "ACTION_UNAVAILABLE" ? "Für diesen Fall gibt es keine Hinweise." : ERRORS[result.code]!);
+      if (!result.ok) return say(result.code === "ACTION_UNAVAILABLE" ? "Für diesen Fall gibt es keine Hinweise." : SESSION_ERRORS[result.code]!);
       const next = { ...game, state: result.state };
       return { game: next, text: outputText(next, result.output) };
     }
@@ -95,7 +96,7 @@ function choose(game: Game, actions: Action[], pick: number | null, title: strin
   const action = actions[pick - 1];
   if (action === undefined) return { game, text: `Keine Nummer ${pick}.` };
   const result = reduceSession(game.pkg, game.state, action.event);
-  if (!result.ok) return { game, text: ERRORS[result.code]! };
+  if (!result.ok) return { game, text: SESSION_ERRORS[result.code]! };
   const next = { ...game, state: result.state };
   return { game: next, text: `> ${action.label}\n${outputText(next, result.output)}` };
 }

@@ -11,12 +11,11 @@ import { createWebApp } from "../src/play/web.ts";
 // Optional PublicContent.epilogue: player text rules, bound into the package identity, shown in CLI
 // and web only after a solving accusation.
 
-// Die Hüttenkasse is left out: its culprit can only be accused after the hut book introduces him
-// (late suspect), so "accuse the solver on a fresh game" does not apply; tests/cases-4-5.test.ts
-// plays it to the epilogue.
-const CASES: PlayCaseName[] = ["vitrine", "brieföffner", "geige", "nachtzug"];
+const CASES: PlayCaseName[] = ["vitrine", "brieföffner", "geige", "hüttenkasse", "nachtzug"];
 const SOLVER: Record<PlayCaseName, string> = { vitrine: "Lina Kern", "brieföffner": "Ben", geige: "Ida Reiner", "hüttenkasse": "Tobias Wenger", nachtzug: "Clara Mai" };
 const WRONG: Record<PlayCaseName, string> = { vitrine: "Max Brandt", "brieföffner": "Anna", geige: "Paul Adler", "hüttenkasse": "Lukas Brandl", nachtzug: "Bruno Kessler" };
+/** Actions before the accusation: Tobias (late suspect) can only be accused once the hut book introduces him. */
+const PRELUDE: Partial<Record<PlayCaseName, string[]>> = { "hüttenkasse": ["Ort durchsuchen: Gaststube", "Gegenstand untersuchen: Hüttenbuch"] };
 
 function resolveWith(name: PlayCaseName, edit: (content: any) => void) {
   const c = PLAY_CASES[name];
@@ -26,7 +25,10 @@ function resolveWith(name: PlayCaseName, edit: (content: any) => void) {
 }
 
 const accuse = (name: PlayCaseName, who: string) => {
-  const game = newGame(loadPlayPackage(name), PLAY_CASES[name].clockOrigin);
+  const game = (PRELUDE[name] ?? []).reduce((g, label) => {
+    const line = command(g, "u").text.split("\n").find((l) => l.includes(label))!;
+    return command(g, `u ${line.trim().split(".")[0]}`).game;
+  }, newGame(loadPlayPackage(name), PLAY_CASES[name].clockOrigin));
   const line = command(game, "a").text.split("\n").find((l) => l.includes(who))!;
   return { before: game, step: command(game, `a ${line.trim().split(".")[0]}`) };
 };
@@ -90,12 +92,19 @@ describe("epilogue in the web front end", () => {
       const html = await page();
       expect(html).not.toContain(first);
       expect(await (await fetch(base.replace(/\/fall\/.*/, "/"))).text()).not.toContain(first);
-      const form = [...html.matchAll(/<form method="post" action="\/fall\/[a-z]+\/act"[^>]*>(.*?)<\/form>/g)]
-        .map(([, inner]) => inner!)
-        .find((inner) => new RegExp(`>${SOLVER[name]}</button>`).test(inner))!;
-      const fields = Object.fromEntries([...form.matchAll(/name="(\w+)" value="([^"]*)"/g)].map(([, k, v]) => [k!, v!]));
-      await fetch(`${base}/act`, { method: "POST", body: new URLSearchParams(fields), redirect: "manual" });
-      const solved = await page();
+      /** Submits the action form whose button reads exactly `text` (tags stripped). */
+      const press = async (current: string, text: string) => {
+        const form = [...current.matchAll(/<form method="post" action="\/fall\/[a-z]+\/act"[^>]*>(.*?)<\/form>/g)]
+          .map(([, inner]) => inner!)
+          .find((inner) => /<button[^>]*>(.*?)<\/button>/.exec(inner)?.[1]!.replace(/<[^>]+>/g, "") === text)!;
+        const fields = Object.fromEntries([...form.matchAll(/name="(\w+)" value="([^"]*)"/g)].map(([, k, v]) => [k!, v!]));
+        await fetch(`${base}/act`, { method: "POST", body: new URLSearchParams(fields), redirect: "manual" });
+        return page();
+      };
+      let current = html;
+      for (const label of PRELUDE[name] ?? []) current = await press(current, label);
+      expect(current).not.toContain(first);
+      const solved = await press(current, SOLVER[name]);
       expect(solved).toContain('<div class="epilogue"><p>');
       expect(solved).toContain(first);
     } finally {

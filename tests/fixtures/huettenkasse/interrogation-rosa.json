@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "caseId": "case:huettenkasse",
-  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
-  "catalogueHash": "61cfd7316bda9d0417ee42ba5b7c5853f4edf507b455027f084e256d964dd8b5",
+  "truthHash": "7eb089891564275ca1e43ee76a8404bc99768a906729973fd1df2c668701e070",
+  "catalogueHash": "824ec0d55a99af7117c73cd6cf5393304d6f4c86f8dbe18a4d50e0e839899f4b",
   "npcId": "person:rosa",
   "revision": 1,
   "rules": [

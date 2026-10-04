@@ -16,7 +16,7 @@ export type PlayCase = {
   readonly salt: string;
   /** Display convention: wall-clock seconds of timeline second 0. */
   readonly clockOrigin: number;
-  /** v3: the session accepts hint events (v2 lies included); the proof is bound on load. */
+  /** Play runs every case under v3 (hints); see RULESET_VERSIONS in case-package.ts. */
   readonly rulesetVersion: RulesetVersion;
 };
 

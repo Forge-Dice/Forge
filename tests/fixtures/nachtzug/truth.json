@@ -339,6 +339,10 @@
         {
           "propositionId": "proposition:bruno-wein",
           "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:clara-speisewagen",
+          "direction": "refutes"
         }
       ]
     },

@@ -84,8 +84,10 @@ describe("check-case: the witness must introduce the culprit", () => {
     writeFileSync(join(dir, "initial-setup.json"), JSON.stringify(setup));
     const check = checkCaseFolder(dir);
     expect(check.ok).toBe(false);
+    // The witness route asks Ida (her lie), so it is already an invalid witness; the kellerplan route
+    // replays and is the one that ends with Ida still unknown.
     expect(check.problems).toContainEqual(
-      expect.objectContaining({ severity: "error", file: "proof-profile.json", field: "witnessStepIds", message: expect.stringContaining("person:ida") }),
+      expect.objectContaining({ severity: "error", file: "release-manifest.json", field: "certificateData.routes[0] stepIds", message: expect.stringContaining("person:ida") }),
     );
   });
 

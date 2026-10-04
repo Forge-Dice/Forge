@@ -35,6 +35,7 @@ function withWitness(dir: string, steps: Step[]): string {
   edit("release-manifest.json", (m) => {
     m.releaseContextHash = PLACEHOLDER;
     m.certificateData.steps = steps;
+    delete m.certificateData.routes;
   });
   edit("proof-profile.json", (p) => {
     p.bindings.releaseHash = PLACEHOLDER;
@@ -79,6 +80,7 @@ describe("Die Hüttenkasse", () => {
     expect(check.problems).toEqual([]);
     expect(check.filled).toEqual([]);
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });
+    expect(check.routes.map((r) => [r.routeId, r.report.status])).toEqual([["witness", "pass"], ["befragen", "pass"]]);
   });
 
   it("route A (searching the rooms) and route B (asking the people) each solve it", () => {
@@ -108,10 +110,21 @@ describe("Die Hüttenkasse", () => {
     expect(pick("u", "Funkgerät")).toContain("Johanna Pichler war um 23:10:00 am Ort „Funkraum“");
     expect(pick("u", "Sonnenterrasse")).toContain("Intervallmodus");
     expect(pick("u", "Gerds Kamera")).toContain("Mira Hofer war um 23:10:00 am Ort „Sonnenterrasse“");
-    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("Dazu sage ich nichts");
+    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("„Nein.“");
     const solved = pick("a", "Tobias Wenger");
     expect(solved).toContain("Fall gelöst");
     expect(solved).toContain("=== Auflösung ===");
+  });
+
+  it("Tobias lies about the parlour until the money band from his sleeping bag is held up to him", () => {
+    const { pick } = player("hüttenkasse");
+    pick("u", "Gaststube");
+    pick("u", "Hüttenbuch");
+    expect(pick("u", "Winterraum")).toContain("Geldbanderole");
+    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("„Nein.“");
+    expect(pick("v", "vorhalten: Steigfelle")).not.toContain("gibt nach");
+    expect(pick("v", "vorhalten: Banderole")).toContain("gibt nach: „Ja.“");
+    expect(pick("f", "Tobias Wenger: Waren Sie um 23:10")).toContain("„Ja.“");
   });
 
   it("Tobias can only be questioned once the winter room is known", () => {
@@ -140,6 +153,7 @@ describe("Der Nachtzug nach Triest", () => {
     expect(check.problems).toEqual([]);
     expect(check.filled).toEqual([]);
     expect(check.solvability).toMatchObject({ status: "pass", survivingAnswerCount: 1 });
+    expect(check.routes.map((r) => [r.routeId, r.report.status])).toEqual([["witness", "pass"], ["tuerzettel", "pass"]]);
   });
 
   it("route A (Janek's service book) and route B (the door note and examining people) each solve it", () => {
@@ -172,6 +186,17 @@ describe("Der Nachtzug nach Triest", () => {
     expect(pick("u", "Türterminal")).toContain("Dora Lenz war um 01:20:00 am Ort „Abteil 6“");
     expect(pick("a", "Bruno Kessler")).toContain("noch nicht");
     expect(pick("a", "Clara Mai")).toContain("Fall gelöst");
+  });
+});
+
+describe("Der Nachtzug nach Triest: Clara's lie", () => {
+  it("Clara claims the dining car; the cash journal breaks her story", () => {
+    const { pick } = player("nachtzug");
+    expect(pick("f", "Clara Mai: Waren Sie um 01:20 im Speisewagen?")).toContain("„Ja.“");
+    pick("u", "Abteil 7");
+    expect(pick("v", "vorhalten: Weinkorken")).not.toContain("gibt nach");
+    pick("u", "Speisewagen");
+    expect(pick("v", "vorhalten: Kassenjournal")).toContain("gibt nach: „Nein.“");
   });
 });
 
