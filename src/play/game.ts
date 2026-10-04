@@ -130,16 +130,23 @@ export function investigations(game: Game): Action[] {
   ];
 }
 
-/** Questions of known NPCs that the session would accept now (a dry run changes nothing). */
-export function questions(game: Game): Action[] {
-  const { pkg, state } = game;
+/** Whether the session would accept the action now (a dry run changes nothing). */
+export const acceptedNow = (game: Game, action: Action): boolean => game.state.phase === "active" && reduceSession(game.pkg, game.state, action.event).ok;
+
+/** Every question of a known NPC, before the dry run (questions() keeps the accepted ones). */
+export function questionCandidates(game: Game): Action[] {
+  const { pkg } = game;
   return known(game, "person").flatMap(({ ref, label }) => {
     const npcId = pkg.refs.resolve(ref)?.id;
     return pkg.publicContent.questionTexts
       .filter((q) => q.npc === npcId)
-      .map((q) => ({ label: `${label}: ${q.text}`, event: { type: "interrogate", npc: ref, questionId: q.questionId } }))
-      .filter((action) => state.phase === "active" && reduceSession(pkg, state, action.event).ok);
+      .map((q) => ({ label: `${label}: ${q.text}`, event: { type: "interrogate", npc: ref, questionId: q.questionId } }));
   });
+}
+
+/** Questions of known NPCs that the session would accept now (a dry run changes nothing). */
+export function questions(game: Game): Action[] {
+  return questionCandidates(game).filter((action) => acceptedNow(game, action));
 }
 
 /**
@@ -147,6 +154,11 @@ export function questions(game: Game): Action[] {
  * question) against every found evidence. Offered alike for true statements and lies.
  */
 export function confrontations(game: Game): Action[] {
+  return confrontationCandidates(game).filter((action) => acceptedNow(game, action));
+}
+
+/** Every earlier statement against every found evidence, before the dry run. */
+export function confrontationCandidates(game: Game): Action[] {
   const { pkg, state } = game;
   if (state.phase !== "active") return [];
   const statements = new Map<string, { npc: string; questionId: string }>();
@@ -160,8 +172,7 @@ export function confrontations(game: Game): Action[] {
       .map((d) => ({
         label: `${labelOf(game, npc)} zu „${text}“ vorhalten: ${labelOf(game, d.evidence)}`,
         event: { type: "confront", npc, questionId, evidence: d.evidence },
-      }))
-      .filter((action) => reduceSession(pkg, state, action.event).ok);
+      }));
   });
 }
 

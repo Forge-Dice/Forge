@@ -85,6 +85,36 @@ describe("standalone browser build", () => {
     expect((await reloaded("GET", "/fall/zufall-42", body(undefined))).body).toContain("Spielstand geladen");
   }, 60_000);
 
+  it("in worker mode the bundle answers requests as messages and reports the search's progress", async () => {
+    const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]!);
+    const g = globalThis as unknown as { __kfWorker?: boolean; postMessage?: ((m: unknown) => void) | undefined; onmessage?: ((e: { data: unknown }) => void) | null | undefined };
+    const messages: any[] = [];
+    const saved = { postMessage: g.postMessage, onmessage: g.onmessage };
+    g.__kfWorker = true;
+    g.postMessage = (m) => messages.push(m);
+    try {
+      (0, eval)(scripts[1]!);
+      const reply = (id: number) =>
+        new Promise<any>((resolve) => {
+          const poll = () => {
+            const m = messages.find((x) => x.id === id);
+            if (m === undefined) setTimeout(poll, 5);
+            else resolve(m);
+          };
+          poll();
+        });
+      g.onmessage!({ data: { id: 1, method: "POST", url: "/zufall", body: "seed=4&stufe=4" } });
+      expect((await reply(1)).res.headers.location).toBe("/fall/zufall-4-stufe-4");
+      g.onmessage!({ data: { id: 2, method: "GET", url: "/fall/zufall-4-stufe-4", body: null } });
+      expect((await reply(2)).res.body).toContain("Gemessen vom Spieltest");
+      expect(messages.some((m) => typeof m.progress === "string" && m.progress.includes("Kandidat 1"))).toBe(true);
+    } finally {
+      delete g.__kfWorker;
+      g.postMessage = saved.postMessage;
+      g.onmessage = saved.onmessage;
+    }
+  }, 60_000);
+
   it("solves Die leere Vitrine in the bundle", async () => {
     const V = "/fall/vitrine";
     await bundled("POST", `${V}/new`, body(undefined));
@@ -144,7 +174,7 @@ async function bootShell(storage: Map<string, string>, hash = ""): Promise<Shell
   (0, eval)(scripts[1]!);
   const app = g.kriminalfaelle!;
   delete g.kriminalfaelle;
-  const element = () => ({ hidden: true, textContent: "", srcdoc: "", addEventListener() {}, click() {}, remove() {} });
+  const element = () => ({ hidden: true, textContent: "", srcdoc: "", style: {}, setAttribute() {}, addEventListener() {}, click() {}, remove() {} });
   const frame = element();
   const boot = element();
   const window: Record<string, unknown> = {};

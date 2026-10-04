@@ -3,7 +3,7 @@ import { checkCaseSolvability } from "../domain/case-solvability.ts";
 import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
 import { profileLies } from "../domain/interrogation-authoring.ts";
 import { eventWitness, type Manifest } from "../authoring/check-case.ts";
-import { accusations, confrontations, investigations, newGame, questions, type Action, type Game } from "./game.ts";
+import { acceptedNow, accusations, confrontationCandidates, confrontations, investigations, newGame, questionCandidates, questions, type Action, type Game } from "./game.ts";
 import { difficultyText } from "./difficulty.ts";
 
 // Playtest bot: simulated players run a case over the real session reducer (the same action menus
@@ -178,8 +178,6 @@ export function playRun(pkg: ResolvedCasePackage, style: Style, seed: number, pr
     apply(action.event);
   };
   const fresh = (actions: Action[]) => stable(pkg, actions.filter((a) => !done.has(JSON.stringify(a.event))));
-  // Menus in the order the CLI shows them; a random player first picks a menu, then an entry.
-  const menus = (): Action[][] => [fresh(investigations(game)), fresh(questions(game)), pointed(fresh(confrontations(game)))].filter((m) => m.length > 0);
   // Like a person would: first hold against someone the finds whose text names them.
   const pointed = (actions: Action[]): Action[] => {
     const names = (a: Action) => {
@@ -253,10 +251,30 @@ export function playRun(pkg: ResolvedCasePackage, style: Style, seed: number, pr
         }
       }
     }
-    const open = menus();
+    // Menus in the order the CLI shows them; a random player first picks a menu, then an entry.
+    // The session's dry run only runs where a choice needs it (filtering keeps the order).
+    const sources = (): { actions: Action[]; dry: boolean }[] => [
+      { actions: fresh(investigations(game)), dry: false },
+      { actions: fresh(questionCandidates(game)), dry: true },
+      { actions: pointed(fresh(confrontationCandidates(game))), dry: true },
+    ];
+    const ok = (a: Action) => acceptedNow(game, a);
+    if (style === "systematisch" || style === "hinweise") {
+      // Always the first entry of the first open menu.
+      let first: Action | undefined;
+      for (const m of sources()) {
+        first = m.dry ? m.actions.find(ok) : m.actions[0];
+        if (first !== undefined) break;
+      }
+      if (first === undefined) break;
+      explore(first);
+      continue;
+    }
+    const open = sources().filter((m) => (m.dry ? m.actions.some(ok) : m.actions.length > 0));
     if (open.length === 0) break;
-    const menu = style === "systematisch" || style === "hinweise" ? open[0]! : open[Math.floor(rand() * open.length)]!;
-    explore(style === "systematisch" || style === "hinweise" ? menu[0]! : menu[Math.floor(rand() * menu.length)]!);
+    const chosen = open[Math.floor(rand() * open.length)]!;
+    const menu = chosen.dry ? chosen.actions.filter(ok) : chosen.actions;
+    explore(menu[Math.floor(rand() * menu.length)]!);
   }
   if (game.state.phase === "active" && ready()) readyAfter ??= actions;
   return Object.freeze({
@@ -351,9 +369,38 @@ function labelOf(pkg: ResolvedCasePackage, kind: "person" | "evidence", id: stri
   return pkg.publicContent.labels.find((l) => l.entity.kind === kind && l.entity.id === id)?.label ?? id;
 }
 
-export function playtestCase(pkg: ResolvedCasePackage, seeds = DEFAULT_SEEDS): CaseReport {
+/** Styles that never draw from their seed: one run stands for every seed. */
+const SEEDLESS: ReadonlySet<Style> = new Set(["systematisch", "hinweise"]);
+
+function allRuns(pkg: ResolvedCasePackage, seeds: number): Run[] {
   const proves = deductionOracle(pkg);
-  const runs = STYLES.flatMap((style) => Array.from({ length: seeds }, (_, i) => playRun(pkg, style, i + 1, proves)));
+  return STYLES.flatMap((style) => {
+    if (!SEEDLESS.has(style)) return Array.from({ length: seeds }, (_, i) => playRun(pkg, style, i + 1, proves));
+    const once = playRun(pkg, style, 1, proves);
+    return Array.from({ length: seeds }, (_, i) => (i === 0 ? once : Object.freeze({ ...once, seed: i + 1 })));
+  });
+}
+
+/** The rating metrics of a set of runs (what difficulty() reads). */
+function ratingMetrics(runs: readonly Run[]) {
+  const of = (style: Style) => runs.filter((r) => r.style === style);
+  const exploring = [...of("systematisch"), ...of("neugierig")];
+  const hasty = of("voreilig");
+  return {
+    actionsToSolve: actionsToSolve(runs),
+    wrongAccusations: round2(hasty.reduce((s, r) => s + r.wrongAccusations, 0) / Math.max(1, hasty.length)),
+    deadEndRate: round2(exploring.reduce((s, r) => s + r.deadEnds, 0) / Math.max(1, exploring.reduce((s, r) => s + r.actions, 0))),
+    hints: median(of("hinweise").map((r) => r.hints)),
+  };
+}
+
+/** Only the rating, without coverage and warnings (the generator's difficulty search). Same value as playtestCase(pkg, seeds).rating. */
+export function playtestRating(pkg: ResolvedCasePackage, seeds = DEFAULT_SEEDS): 1 | 2 | 3 | 4 | 5 {
+  return difficulty(ratingMetrics(allRuns(pkg, seeds)));
+}
+
+export function playtestCase(pkg: ResolvedCasePackage, seeds = DEFAULT_SEEDS): CaseReport {
+  const runs = allRuns(pkg, seeds);
   const of = (style: Style) => runs.filter((r) => r.style === style);
   const exploring = [...of("systematisch"), ...of("neugierig")];
   const coverage = exhaust(pkg);
@@ -367,10 +414,7 @@ export function playtestCase(pkg: ResolvedCasePackage, seeds = DEFAULT_SEEDS): C
   const hasty = of("voreilig");
 
   const metrics = {
-    actionsToSolve: actionsToSolve(runs),
-    wrongAccusations: round2(hasty.reduce((s, r) => s + r.wrongAccusations, 0) / Math.max(1, hasty.length)),
-    deadEndRate: round2(exploring.reduce((s, r) => s + r.deadEnds, 0) / Math.max(1, exploring.reduce((s, r) => s + r.actions, 0))),
-    hints: median(of("hinweise").map((r) => r.hints)),
+    ...ratingMetrics(runs),
     findsNeeded: [...coverage.finds].filter((id) => proofFinds.has(id)).length,
     findsAvailable: coverage.finds.size,
     firstGuessHits: round2(hasty.filter((r) => r.solved && r.wrongAccusations === 0 && r.readyAfter === null).length / Math.max(1, hasty.length)),
