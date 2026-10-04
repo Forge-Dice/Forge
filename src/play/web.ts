@@ -20,10 +20,12 @@ import {
 } from "./game.ts";
 import { renderCaseList, renderGame, renderHelp, type Feedback } from "./web-page.ts";
 import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./cases.ts";
+import { generateCase, generatedClockOrigin, generatedPackage } from "../authoring/case-generator.ts";
 
 // `npm run play:web`: the playable cases in the browser, one local player, same session logic as
 // the CLI. The server holds one game per case in memory; saves are the Session C text.
 
+const MAX_GENERATED = 20;
 const MAX_BODY = 1024 * 1024 + 4096; // one Session C save plus slack for a form body
 
 function readBody(req: IncomingMessage): Promise<string | null> {
@@ -112,6 +114,27 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
     return s;
   };
   const slugOf = (name: PlayCaseName) => PLAY_CASES[name].dir;
+  // Generated cases ("Zufallsfall"): one slot per seed, created on first visit; the oldest is
+  // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
+  const generated = new Map<number, { slot: Slot; clockOrigin: number }>();
+  type Target = { readonly slot: Slot; readonly slug: string; readonly clockOrigin: number };
+  const target = (slug: string | undefined): Target | null => {
+    const name = playCaseName(slug);
+    if (name !== null) return { slot: slot(name), slug: slugOf(name), clockOrigin: PLAY_CASES[name].clockOrigin };
+    const m = /^zufall-(0|[1-9][0-9]{0,8})$/.exec(slug ?? "");
+    if (m === null) return null;
+    const seed = Number(m[1]);
+    let g = generated.get(seed);
+    if (g === undefined) {
+      const generatedCase = generateCase(seed);
+      const clockOrigin = generatedClockOrigin(generatedCase);
+      const game = newGame(generatedPackage(generatedCase), clockOrigin);
+      g = { slot: { game, feedback: { tone: "info", title: `Zufallsfall ${seed}`, lines: ["Ein erzeugter Fall. Lies die Fallakte und beginne zu ermitteln."] }, fresh: new Set() }, clockOrigin };
+      generated.set(seed, g);
+      if (generated.size > MAX_GENERATED) generated.delete(generated.keys().next().value!);
+    }
+    return { slot: g.slot, slug: `zufall-${seed}`, clockOrigin: g.clockOrigin };
+  };
   const redirect = (to: string): WebResponse => ({ status: 303, headers: { location: to }, body: "" });
   const html = (body: string): WebResponse => ({ status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }, body });
   const text = (status: number, body: string): WebResponse => ({ status, headers: { "content-type": "text/plain; charset=utf-8" }, body });
@@ -150,15 +173,21 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
       return html(renderCaseList(cards));
     }
     if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp());
+    if (method === "POST" && url.pathname === "/zufall") {
+      // An empty seed picks one; anything else must be a whole number up to nine digits.
+      const raw = (new URLSearchParams((await readBody()) ?? "").get("seed") ?? "").trim();
+      const seed = raw === "" ? Math.floor(Math.random() * 1_000_000) : /^[0-9]{1,9}$/.test(raw) ? Number(raw) : null;
+      return seed === null ? text(400, "Der Seed muss eine ganze Zahl sein.") : redirect(`/fall/zufall-${seed}`);
+    }
     const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
-    const name = match === null ? null : playCaseName(match[1]);
-    if (match === null || name === null) return text(404, "Nicht gefunden.");
-    const s = slot(name);
-    const home = `/fall/${slugOf(name)}`;
+    const t = match === null ? null : target(match[1]);
+    if (match === null || t === null) return text(404, "Nicht gefunden.");
+    const s = t.slot;
+    const home = `/fall/${t.slug}`;
     const route = `${method} ${match[3] ?? ""}`;
     switch (route) {
       case "GET ": {
-        const page = renderGame(s.game, slugOf(name), s.feedback, s.fresh);
+        const page = renderGame(s.game, t.slug, s.feedback, s.fresh);
         s.feedback = null;
         return html(page);
       }
@@ -170,7 +199,7 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
         }
         return {
           status: 200,
-          headers: { "content-type": "application/json; charset=utf-8", "content-disposition": `attachment; filename="${slugOf(name)}.save.json"` },
+          headers: { "content-type": "application/json; charset=utf-8", "content-disposition": `attachment; filename="${t.slug}.save.json"` },
           body: saved.text,
         };
       }
@@ -180,7 +209,7 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
         return redirect(home);
       }
       case "POST load": {
-        const loaded = loadText(s.game.pkg, (await readBody()) ?? "", PLAY_CASES[name].clockOrigin);
+        const loaded = loadText(s.game.pkg, (await readBody()) ?? "", t.clockOrigin);
         if (loaded.ok) [s.game, s.fresh] = [loaded.game, new Set()];
         s.feedback = loaded.ok
           ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
@@ -188,7 +217,7 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
         return redirect(home);
       }
       case "POST new":
-        [s.game, s.fresh] = [newGame(s.game.pkg, PLAY_CASES[name].clockOrigin), new Set()];
+        [s.game, s.fresh] = [newGame(s.game.pkg, t.clockOrigin), new Set()];
         s.feedback = { tone: "info", title: "Neues Spiel", lines: ["Der Fall beginnt von vorn."] };
         return redirect(home);
       default:
