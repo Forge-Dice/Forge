@@ -14,6 +14,7 @@ import {
 import { hashCaseTruth } from "./case-truth.identity.ts";
 import { ConclusionIdSchema, type CaseSolution } from "./case-solution.ts";
 import { hashCaseSolution } from "./case-solution.identity.ts";
+import { deepFreeze } from "./shared.ts";
 
 // Epistemic snapshot of one NPC at one point in time (TASK-0004).
 // Subjective awareness, knowledge, belief and uncertainty, bound to exact CaseTruth and
@@ -275,14 +276,6 @@ function checkNpcKnowledge(
 }
 
 // ---------- Immutability ----------
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
-}
 
 /** Zod schema bound to one CaseTruth and an explicit CaseSolution or null. */
 export function createNpcKnowledgeSchema(truth: CaseTruth, solution: CaseSolution | null) {

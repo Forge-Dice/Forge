@@ -4,6 +4,7 @@ import { hashCaseTruth } from "./case-truth.identity.ts";
 import { ConclusionClaimSchema } from "./case-solution.ts";
 import { AwarenessSubjectSchema } from "./npc-knowledge.ts";
 import { hashQuestionCatalogue } from "./interrogation-authoring.identity.ts";
+import { deepFreeze } from "./shared.ts";
 
 // Author-side half of NPC interrogation V1 (MYST-0005A): a QuestionCatalogue (questions = mentioned
 // entities) and per-NPC profiles with one answer/decline rule per question, both bound to one CaseTruth.
@@ -66,11 +67,6 @@ function knownEntities(truth: CaseTruth): Record<EntityRef["kind"], ReadonlySet<
     event: new Set(truth.events.map((e) => e.id)),
     evidence: new Set(truth.evidence.map((e) => e.id)),
   };
-}
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) for (const child of Object.values(value)) deepFreeze(child);
-  return Object.freeze(value);
 }
 
 const sameJson = (a: unknown, b: unknown): boolean =>

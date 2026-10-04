@@ -10,6 +10,7 @@ import type {
   PersonId,
 } from "./case-truth.ts";
 import { hashCaseTruth } from "./case-truth.identity.ts";
+import { byCodeUnits } from "./shared.ts";
 
 // PlayerRef V1 (MYST-0001): opaque, salt- and truth-bound references to case entities.
 // Player-facing code never sees canonical domain IDs (slugs may spoil, guessable IDs are an
@@ -87,7 +88,6 @@ export type PlayerRefResolution =
   | ({ readonly success: true } & ResolvedEntity)
   | { readonly success: false; readonly code: "REF_UNRESOLVED" };
 
-const byCodeUnits = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 const byEntity = (a: ResolvedEntity, b: ResolvedEntity): number =>
   PLAYER_REF_KINDS.indexOf(a.kind) - PLAYER_REF_KINDS.indexOf(b.kind) || byCodeUnits(a.id, b.id);
 const byRef = (a: PlayerRefEntry, b: PlayerRefEntry): number => byCodeUnits(a.ref, b.ref) || byEntity(a, b);
