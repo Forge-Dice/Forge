@@ -1,0 +1,188 @@
+{
+  "seed": 4072026,
+  "propertyCount": 30,
+  "totalChecks": 24000,
+  "failures": 0,
+  "properties": [
+    {
+      "propertyId": "P01",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P02",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P03",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P04",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P05",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P06",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P07",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P08",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P09",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P10",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P11",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P12",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P13",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P14",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P15",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P16",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P17",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P18",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P19",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P20",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P21",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P22",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P23",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P24",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P25",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P26",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P27",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P28",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P29",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    },
+    {
+      "propertyId": "P30",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800,
+      "passed": true
+    }
+  ]
+}

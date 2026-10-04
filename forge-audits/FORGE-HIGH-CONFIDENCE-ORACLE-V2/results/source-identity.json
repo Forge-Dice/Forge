@@ -1,0 +1,38 @@
+{
+  "sourceReads": [
+    {
+      "name": "Independent Verifier Reference",
+      "branch": "forge/owner/audits/FORGE-VERIFIER-REFERENCE",
+      "commit": "2062fca5162b12b99b77e814255d59c399c53c7d"
+    },
+    {
+      "name": "Reference Oracle Quality",
+      "branch": "forge/owner/audits/reference-oracle-quality",
+      "commit": "83214206fced70a97babca9dff7bb137b60ea64a"
+    },
+    {
+      "name": "A/B/C contracts",
+      "branch": "forge/owner/audits/FORGE-MINIMUM-VERIFIER-IMPLEMENTATION",
+      "commit": "bb525bfd230128d3d98f3db744ba23217196c53c"
+    },
+    {
+      "name": "A/B/C certification",
+      "branch": "forge/owner/audits/VERIFIER-ABC-INDEPENDENT-CERTIFICATION",
+      "commit": "b854b11379b5cb43c3d6bc77fedacde7e96511fd"
+    },
+    {
+      "name": "Bootstrap Experimental Report",
+      "branch": "forge/owner/audits/FORGE-V0.1-BOOTSTRAP",
+      "commit": "da9b3d51398819db3d03af59582e1b1da3750728"
+    },
+    {
+      "name": "main",
+      "branch": "main",
+      "commit": "3d7545d843883418348004e68717399a64da7a7d"
+    }
+  ],
+  "repairArtifactsSearch": {
+    "available": false,
+    "contractSensitive": true
+  }
+}

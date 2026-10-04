@@ -1,0 +1,27 @@
+{
+  "verdict": "GO AS DIFFERENTIAL ORACLE",
+  "highConfidenceCases": 76,
+  "highConfidenceValidation": {
+    "passed": 76,
+    "failed": 0
+  },
+  "divergences": {
+    "resolved": 16,
+    "unresolved": 0,
+    "allContractSensitive": true
+  },
+  "metamorphic": {
+    "families": 30,
+    "checks": 24000,
+    "failures": 0,
+    "seed": 4072026
+  },
+  "selfMutation": {
+    "nonEquivalent": 13,
+    "killed": 13,
+    "survived": []
+  },
+  "executionIsolation": "SEPARATE_NOT_TESTED_BY_ORACLE_V2",
+  "abcRepairArtifactsAvailable": false,
+  "mainAtStart": "3d7545d843883418348004e68717399a64da7a7d"
+}

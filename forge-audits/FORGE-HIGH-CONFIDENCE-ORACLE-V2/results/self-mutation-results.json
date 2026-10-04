@@ -1,0 +1,85 @@
+{
+  "nonEquivalent": 13,
+  "killed": 13,
+  "survived": [],
+  "mutants": [
+    {
+      "mutant": "allow second parent",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "allow symlink",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "trust rename",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "ignore deleted test",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "ignore config drift",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "timeout = killed",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "wrong path normalization",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "ignore mode",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "permit out-of-scope add",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "ignore survived mutant",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "allow hidden replace behavior",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "exit2 = killed",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    },
+    {
+      "mutant": "nonassertion = killed",
+      "baselinePass": true,
+      "mutantEquivalent": false,
+      "mutantKilled": true
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "authority": "EXPLORATORY_ONLY",
+  "automaticRejectionAuthority": false,
+  "referenceDerivedAllowedOnlyForDebug": true,
+  "notes": [
+    "Original Reference profile is retained for profile comparison only.",
+    "REFERENCE_DERIVED observations cannot become high-confidence expectations without re-derivation.",
+    "Execution isolation and review/workflow are separate certification tracks."
+  ],
+  "knownReferenceDivergences": [
+    {
+      "id": "D01",
+      "input": "src/a b.ts",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/PATH_UNSAFE"
+    },
+    {
+      "id": "D02",
+      "input": "src/café.ts",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/PATH_UNSAFE"
+    },
+    {
+      "id": "D03",
+      "input": "src/a@b.ts",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/PATH_UNSAFE"
+    },
+    {
+      "id": "D04",
+      "input": "src/-a.ts",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/PATH_UNSAFE"
+    },
+    {
+      "id": "D05",
+      "input": "ADD forge/coordination/x.md absent scope",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/SCOPE_VIOLATION"
+    },
+    {
+      "id": "D06",
+      "input": "exit=2 + named AssertionError",
+      "oldReferenceActual": "KILLED",
+      "currentDraftExpected": "REJECT/INFRA_FAILURE"
+    },
+    {
+      "id": "D07",
+      "input": "signal exit + assertion witness",
+      "oldReferenceActual": "KILLED",
+      "currentDraftExpected": "REJECT/INFRA_FAILURE"
+    },
+    {
+      "id": "D08",
+      "input": "target assertion + extra unnamed failure",
+      "oldReferenceActual": "KILLED",
+      "currentDraftExpected": "REJECT/INFRA_FAILURE"
+    },
+    {
+      "id": "D09",
+      "input": "AssertionError + TypeError",
+      "oldReferenceActual": "KILLED",
+      "currentDraftExpected": "REJECT/INFRA_FAILURE"
+    },
+    {
+      "id": "D10",
+      "input": "same title, wrong ancestor identity",
+      "oldReferenceActual": "KILLED",
+      "currentDraftExpected": "REJECT/INFRA_FAILURE"
+    },
+    {
+      "id": "D11",
+      "input": "ababa / anchor aba overlap",
+      "oldReferenceActual": "KILLED",
+      "currentDraftExpected": "REJECT/NOT_APPLIED"
+    },
+    {
+      "id": "D12",
+      "input": "new HEAD above BASE has 2 parents",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/HISTORY_PARENT_COUNT"
+    },
+    {
+      "id": "D13",
+      "input": "protected intermediate change later reverted",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/INTERMEDIATE_SCOPE"
+    },
+    {
+      "id": "D14",
+      "input": "BASE==HEAD",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/EMPTY_HISTORY"
+    },
+    {
+      "id": "D15",
+      "input": "new commits, empty final canonical diff",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/EMPTY_END_DIFF"
+    },
+    {
+      "id": "D16",
+      "input": "129 commits above BASE",
+      "oldReferenceActual": "PASS",
+      "currentDraftExpected": "REJECT/HISTORY_LIMIT"
+    }
+  ]
+}

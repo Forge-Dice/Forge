@@ -1,0 +1,1159 @@
+{
+  "oracle": "FORGE-HIGH-CONFIDENCE-ORACLE-V2",
+  "scope": [
+    "git/history admissibility",
+    "canonical diff",
+    "path/mode safety",
+    "scope",
+    "test inventory",
+    "mutation outcome classification"
+  ],
+  "executionIsolation": "SEPARATE_NOT_TESTED",
+  "contractBinding": {
+    "repairArtifactsAvailable": false,
+    "contractSensitive": true
+  },
+  "caseCount": 76,
+  "cases": [
+    {
+      "caseId": "HC-PATH-01",
+      "category": "path",
+      "inputDescription": "src/a.ts mode 100644",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "A §Acceptance path/mode baseline",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-02",
+      "category": "path",
+      "inputDescription": "src/a-b_1.test.ts mode 100644",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "A path grammar",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-03",
+      "category": "path",
+      "inputDescription": "src/a b.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_UNSAFE"
+      },
+      "normativeSource": "A path grammar; Quality §10",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-04",
+      "category": "path",
+      "inputDescription": "src/café.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_UNSAFE"
+      },
+      "normativeSource": "A path grammar; Quality §10",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-05",
+      "category": "path",
+      "inputDescription": "src/a@b.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_UNSAFE"
+      },
+      "normativeSource": "A path grammar; Quality §10",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-06",
+      "category": "path",
+      "inputDescription": "src/-a.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_UNSAFE"
+      },
+      "normativeSource": "A path grammar; Quality §10",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-07",
+      "category": "path",
+      "inputDescription": "src/CON.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_NOT_PORTABLE"
+      },
+      "normativeSource": "A portable path rules",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-08",
+      "category": "path",
+      "inputDescription": "src/notes.",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_NOT_PORTABLE"
+      },
+      "normativeSource": "A portable path rules",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-09",
+      "category": "path",
+      "inputDescription": ".git/config",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_GIT_RESERVED"
+      },
+      "normativeSource": "A path safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-10",
+      "category": "path",
+      "inputDescription": "src\\\\x.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_UNSAFE"
+      },
+      "normativeSource": "A path safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-11",
+      "category": "path",
+      "inputDescription": "/src/x.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_UNSAFE"
+      },
+      "normativeSource": "A path safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-12",
+      "category": "path",
+      "inputDescription": "src/x raw-LF .ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_UNSAFE"
+      },
+      "normativeSource": "A path safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-13",
+      "category": "path",
+      "inputDescription": "src/x.ts symlink mode 120000",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "MODE_UNSAFE"
+      },
+      "normativeSource": "A Acceptance: symlink forbidden",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-14",
+      "category": "path",
+      "inputDescription": "vendor/sub gitlink mode 160000",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "MODE_UNSAFE"
+      },
+      "normativeSource": "A Acceptance: gitlink forbidden",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-15",
+      "category": "path",
+      "inputDescription": "unchanged regular executable snapshot entry 100755",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "Quality §9 wire boundary",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-16",
+      "category": "path",
+      "inputDescription": "case collision src/A.ts + src/a.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "CASE_COLLISION"
+      },
+      "normativeSource": "A path collision rules",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-17",
+      "category": "path",
+      "inputDescription": "file/directory case-prefix collision src/A + src/a/x.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "CASE_COLLISION"
+      },
+      "normativeSource": "A path collision rules",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-18",
+      "category": "path",
+      "inputDescription": "duplicate raw path src/a.ts twice",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "DUPLICATE_PATH"
+      },
+      "normativeSource": "A Required Mutation A4",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-19",
+      "category": "path",
+      "inputDescription": "255-byte safe path boundary",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "A path length boundary",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-PATH-20",
+      "category": "path",
+      "inputDescription": "256-byte path boundary",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PATH_UNSAFE"
+      },
+      "normativeSource": "A path length boundary",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-DIFF-01",
+      "category": "diff",
+      "inputDescription": "identical base/head trees",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "EMPTY_DIFF"
+      },
+      "normativeSource": "A canonical diff semantics",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-DIFF-02",
+      "category": "diff",
+      "inputDescription": "one new blob path",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "ADD"
+      },
+      "normativeSource": "A canonical diff semantics",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-DIFF-03",
+      "category": "diff",
+      "inputDescription": "one deleted blob path",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "DELETE"
+      },
+      "normativeSource": "A canonical diff semantics",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-DIFF-04",
+      "category": "diff",
+      "inputDescription": "same path, changed oid",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "MODIFY"
+      },
+      "normativeSource": "A canonical diff semantics",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-DIFF-05",
+      "category": "diff",
+      "inputDescription": "same oid, mode 100644→100755",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "MODE"
+      },
+      "normativeSource": "A Acceptance A3",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-DIFF-06",
+      "category": "diff",
+      "inputDescription": "same path, oid and mode both change",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "MODIFY+MODE"
+      },
+      "normativeSource": "A Acceptance mode+content both visible",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-DIFF-07",
+      "category": "diff",
+      "inputDescription": "same oid moved src/a.ts→src/b.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "DELETE+ADD"
+      },
+      "normativeSource": "A no rename heuristic",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-DIFF-08",
+      "category": "diff",
+      "inputDescription": "same unchanged leaf inserted into both trees",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "DIFF_INVARIANT"
+      },
+      "normativeSource": "A canonical diff property",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-01",
+      "category": "scope",
+      "inputDescription": "ADD exact member of scope.create",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "B exact scope",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-02",
+      "category": "scope",
+      "inputDescription": "MODIFY exact member of scope.modify",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "B exact scope",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-03",
+      "category": "scope",
+      "inputDescription": "DELETE even when path named in scope",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "SCOPE_VIOLATION"
+      },
+      "normativeSource": "B exact scope",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-04",
+      "category": "scope",
+      "inputDescription": "mode-only change on scope.modify path",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "MODE_CHANGE"
+      },
+      "normativeSource": "A/B path-mode boundary",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-05",
+      "category": "scope",
+      "inputDescription": "ADD path absent from create",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "SCOPE_VIOLATION"
+      },
+      "normativeSource": "B Required Mutation B1",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-06",
+      "category": "scope",
+      "inputDescription": "MODIFY package.json even if allowlisted",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "PROTECTED_PATH"
+      },
+      "normativeSource": "B config protection",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-07",
+      "category": "scope",
+      "inputDescription": "MODIFY existing tests/a.test.ts",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "TEST_FROZEN"
+      },
+      "normativeSource": "B frozen baseline tests",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-08",
+      "category": "scope",
+      "inputDescription": "ADD forge/coordination/x.md absent from create",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "SCOPE_VIOLATION"
+      },
+      "normativeSource": "B exact scope; Quality divergence",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-SCOPE-09",
+      "category": "scope",
+      "inputDescription": "MODIFY src/Case.ts with only src/case.ts in modify",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "SCOPE_VIOLATION"
+      },
+      "normativeSource": "B byte/case-sensitive scope",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-01",
+      "category": "inventory",
+      "inputDescription": "baseline identity present and passed",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-02",
+      "category": "inventory",
+      "inputDescription": "baseline identity deleted",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "BASELINE_TEST_LOST"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-03",
+      "category": "inventory",
+      "inputDescription": "baseline passed→skipped",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "TEST_NOT_PASSED"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-04",
+      "category": "inventory",
+      "inputDescription": "baseline passed→todo",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "TEST_NOT_PASSED"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-05",
+      "category": "inventory",
+      "inputDescription": "baseline passed→failed",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "TEST_NOT_PASSED"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-06",
+      "category": "inventory",
+      "inputDescription": "deleted baseline plus new replacement title",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "BASELINE_TEST_LOST"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-07",
+      "category": "inventory",
+      "inputDescription": "duplicate structured head identity",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "INVENTORY_INVALID"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-08",
+      "category": "inventory",
+      "inputDescription": "same title but different ancestors",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "BASELINE_TEST_LOST"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-INV-09",
+      "category": "inventory",
+      "inputDescription": "extra unrelated passed test while baseline intact",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "B full structured inventory",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-01",
+      "category": "mutation",
+      "inputDescription": "unique anchor, exit 0, no failures",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "SURVIVED"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-02",
+      "category": "mutation",
+      "inputDescription": "unique anchor, exit 1, exact named AssertionError",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "KILLED"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-03",
+      "category": "mutation",
+      "inputDescription": "missing anchor",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "NOT_APPLIED"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-04",
+      "category": "mutation",
+      "inputDescription": "duplicate anchor",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "NOT_APPLIED"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-05",
+      "category": "mutation",
+      "inputDescription": "timeout with assertion-looking witness",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "INFRA_FAILURE"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-06",
+      "category": "mutation",
+      "inputDescription": "signal exit with assertion-looking witness",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "INFRA_FAILURE"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-07",
+      "category": "mutation",
+      "inputDescription": "exit 2 with AssertionError",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "INFRA_FAILURE"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-08",
+      "category": "mutation",
+      "inputDescription": "AssertionError + TypeError target witness",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "INFRA_FAILURE"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-09",
+      "category": "mutation",
+      "inputDescription": "additional unnamed failed test",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "INFRA_FAILURE"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-10",
+      "category": "mutation",
+      "inputDescription": "same title wrong ancestor identity",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "INFRA_FAILURE"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-11",
+      "category": "mutation",
+      "inputDescription": "overlapping anchor occurrences ababa/aba",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "NOT_APPLIED"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-MUT-12",
+      "category": "mutation",
+      "inputDescription": "suite classes [KILLED,SURVIVED]",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "MUTANT_SURVIVED"
+      },
+      "normativeSource": "B mutation semantics; Quality §5",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-01",
+      "category": "history",
+      "inputDescription": "linear HEAD has exactly one parent to BASE",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-02",
+      "category": "history",
+      "inputDescription": "unexpected second parent on HEAD",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "HISTORY_PARENT_COUNT"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-03",
+      "category": "history",
+      "inputDescription": "nested merge ancestry above BASE",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "HISTORY_PARENT_COUNT"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-04",
+      "category": "history",
+      "inputDescription": "unrelated second parent on merge HEAD",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "HISTORY_PARENT_COUNT"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-05",
+      "category": "history",
+      "inputDescription": "octopus merge HEAD with three parents",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "HISTORY_PARENT_COUNT"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-06",
+      "category": "history",
+      "inputDescription": "forged-looking HEAD never reaches BASE",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "HISTORY_UNREACHABLE"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-07",
+      "category": "history",
+      "inputDescription": "BASE itself historical merge; one new linear commit",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-08",
+      "category": "history",
+      "inputDescription": "128 new linear commits and nonempty end diff",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-09",
+      "category": "history",
+      "inputDescription": "129 new linear commits",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "HISTORY_LIMIT"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-10",
+      "category": "history",
+      "inputDescription": "intermediate protected change later reverted",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "INTERMEDIATE_SCOPE"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-11",
+      "category": "history",
+      "inputDescription": "nonempty linear history with empty end diff",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "EMPTY_END_DIFF"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-HIST-12",
+      "category": "history",
+      "inputDescription": "BASE equals HEAD",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "EMPTY_HISTORY"
+      },
+      "normativeSource": "A Acceptance/history rules; Quality §6",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-REPO-01",
+      "category": "repo-layout",
+      "inputDescription": "no replace/alternate/graft/shallow metadata",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "A acquisition/layout safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-REPO-02",
+      "category": "repo-layout",
+      "inputDescription": "refs/replace present",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "REPO_UNSAFE"
+      },
+      "normativeSource": "A acquisition/layout safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-REPO-03",
+      "category": "repo-layout",
+      "inputDescription": "alternates present",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "REPO_UNSAFE"
+      },
+      "normativeSource": "A acquisition/layout safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-REPO-04",
+      "category": "repo-layout",
+      "inputDescription": "grafts present",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "REPO_UNSAFE"
+      },
+      "normativeSource": "A acquisition/layout safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-REPO-05",
+      "category": "repo-layout",
+      "inputDescription": "shallow metadata present",
+      "expectedNormativeOutcome": {
+        "verdict": "REJECT",
+        "failureClass": "REPO_UNSAFE"
+      },
+      "normativeSource": "A acquisition/layout safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    },
+    {
+      "caseId": "HC-REPO-06",
+      "category": "repo-layout",
+      "inputDescription": "unreachable well-formed garbage blob only",
+      "expectedNormativeOutcome": {
+        "verdict": "ACCEPT",
+        "failureClass": "NONE"
+      },
+      "normativeSource": "A acquisition/layout safety",
+      "expectationProvenance": "CONTRACT_DERIVED",
+      "optionalDiagnostic": null,
+      "contractSensitive": true
+    }
+  ],
+  "propertyRegistry": [
+    {
+      "propertyId": "P01",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P02",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P03",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P04",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P05",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P06",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P07",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P08",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P09",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P10",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P11",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P12",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P13",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P14",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P15",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P16",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P17",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P18",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P19",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P20",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P21",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P22",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P23",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P24",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P25",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P26",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P27",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P28",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P29",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    },
+    {
+      "propertyId": "P30",
+      "expectationProvenance": "PROPERTY_DERIVED",
+      "checks": 800
+    }
+  ]
+}

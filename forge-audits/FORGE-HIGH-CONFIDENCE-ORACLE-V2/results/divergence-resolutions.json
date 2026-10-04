@@ -1,0 +1,184 @@
+{
+  "resolved": 16,
+  "unresolved": 0,
+  "method": "No majority decision; direct normative derivation",
+  "repairArtifactsAvailable": false,
+  "items": [
+    {
+      "id": "D01",
+      "goldenInput": "src/a b.ts",
+      "goldenExpected": "REJECT/PATH_UNSAFE",
+      "referenceActual": "PASS",
+      "normativeSource": "A path grammar + Quality §10",
+      "rootCause": "legacy permissive path grammar",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D02",
+      "goldenInput": "src/café.ts",
+      "goldenExpected": "REJECT/PATH_UNSAFE",
+      "referenceActual": "PASS",
+      "normativeSource": "A path grammar + Quality §10",
+      "rootCause": "legacy permissive Unicode",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D03",
+      "goldenInput": "src/a@b.ts",
+      "goldenExpected": "REJECT/PATH_UNSAFE",
+      "referenceActual": "PASS",
+      "normativeSource": "A path grammar + Quality §10",
+      "rootCause": "legacy permissive @",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D04",
+      "goldenInput": "src/-a.ts",
+      "goldenExpected": "REJECT/PATH_UNSAFE",
+      "referenceActual": "PASS",
+      "normativeSource": "A path grammar + Quality §10",
+      "rootCause": "legacy permissive leading hyphen",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D05",
+      "goldenInput": "ADD forge/coordination/x.md absent scope",
+      "goldenExpected": "REJECT/SCOPE_VIOLATION",
+      "referenceActual": "PASS",
+      "normativeSource": "B exact scope + Quality §4/10",
+      "rootCause": "legacy coordination exception",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D06",
+      "goldenInput": "exit=2 + named AssertionError",
+      "goldenExpected": "REJECT/INFRA_FAILURE",
+      "referenceActual": "KILLED",
+      "normativeSource": "B B3 + Quality §5",
+      "rootCause": "generic nonzero accepted as kill",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D07",
+      "goldenInput": "signal exit + assertion witness",
+      "goldenExpected": "REJECT/INFRA_FAILURE",
+      "referenceActual": "KILLED",
+      "normativeSource": "B mutation semantics + Quality §5",
+      "rootCause": "signal accepted as kill",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D08",
+      "goldenInput": "target assertion + extra unnamed failure",
+      "goldenExpected": "REJECT/INFRA_FAILURE",
+      "referenceActual": "KILLED",
+      "normativeSource": "B inventory/mutation witness + Quality §5",
+      "rootCause": "extra failing identity ignored",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D09",
+      "goldenInput": "AssertionError + TypeError",
+      "goldenExpected": "REJECT/INFRA_FAILURE",
+      "referenceActual": "KILLED",
+      "normativeSource": "B B3 + Quality §5",
+      "rootCause": "infra error not excluded",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D10",
+      "goldenInput": "same title, wrong ancestor identity",
+      "goldenExpected": "REJECT/INFRA_FAILURE",
+      "referenceActual": "KILLED",
+      "normativeSource": "B structured identity + Quality §5",
+      "rootCause": "title match too weak",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D11",
+      "goldenInput": "ababa / anchor aba overlap",
+      "goldenExpected": "REJECT/NOT_APPLIED",
+      "referenceActual": "KILLED",
+      "normativeSource": "B exact-once mutation + Quality §5",
+      "rootCause": "non-overlap count misses second anchor",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D12",
+      "goldenInput": "new HEAD above BASE has 2 parents",
+      "goldenExpected": "REJECT/HISTORY_PARENT_COUNT",
+      "referenceActual": "PASS",
+      "normativeSource": "A Acceptance: second parent forbidden above BASE",
+      "rootCause": "missing one-parent guard",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D13",
+      "goldenInput": "protected intermediate change later reverted",
+      "goldenExpected": "REJECT/INTERMEDIATE_SCOPE",
+      "referenceActual": "PASS",
+      "normativeSource": "A/B history + exact scope; Quality §6",
+      "rootCause": "net end diff hides intermediate violation",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D14",
+      "goldenInput": "BASE==HEAD",
+      "goldenExpected": "REJECT/EMPTY_HISTORY",
+      "referenceActual": "PASS",
+      "normativeSource": "A history; Quality §6",
+      "rootCause": "zero-new-commit history accepted",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D15",
+      "goldenInput": "new commits, empty final canonical diff",
+      "goldenExpected": "REJECT/EMPTY_END_DIFF",
+      "referenceActual": "PASS",
+      "normativeSource": "A history; Quality §6",
+      "rootCause": "reachability mistaken for admissible change",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    },
+    {
+      "id": "D16",
+      "goldenInput": "129 commits above BASE",
+      "goldenExpected": "REJECT/HISTORY_LIMIT",
+      "referenceActual": "PASS",
+      "normativeSource": "A history bound; Certification F03",
+      "rootCause": "history bound absent/wrong",
+      "classification": "REFERENCE BUG",
+      "status": "RESOLVED_AGAINST_CURRENT_DRAFT",
+      "contractSensitive": true
+    }
+  ]
+}
