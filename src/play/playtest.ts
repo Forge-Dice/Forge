@@ -4,6 +4,7 @@ import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
 import { profileLies } from "../domain/interrogation-authoring.ts";
 import { eventWitness, type Manifest } from "../authoring/check-case.ts";
 import { accusations, confrontations, investigations, newGame, questions, type Action, type Game } from "./game.ts";
+import { difficultyText } from "./difficulty.ts";
 
 // Playtest bot: simulated players run a case over the real session reducer (the same action menus
 // as the CLI) and the runs are condensed into a difficulty rating and balance warnings for authors.
@@ -301,7 +302,7 @@ export function playtestCase(pkg: ResolvedCasePackage, seeds = DEFAULT_SEEDS): C
   const herrings = suspects.filter((id) => !answerIds.has(id));
   const wrongTotal = of("voreilig").reduce((sum, r) => sum + r.wrongAccusations, 0);
   const pull = Object.fromEntries(herrings.map((id) => [id, wrongTotal === 0 ? 0 : round2(of("voreilig").reduce((s, r) => s + (r.accused[id] ?? 0), 0) / wrongTotal)]));
-  const proofFinds = new Set(
+  const proofFinds = new Set<string>(
     (pkg.proof?.profile.observations ?? []).flatMap((o) => ("source" in o && o.source.kind === "evidence" ? [o.source.evidenceId] : [])),
   );
   const hasty = of("voreilig");
@@ -335,6 +336,29 @@ export function playtestCase(pkg: ResolvedCasePackage, seeds = DEFAULT_SEEDS): C
   return Object.freeze({ rating, runs, metrics: Object.freeze(metrics), warnings: Object.freeze(warnings) });
 }
 
-/** "●●●○○" for a rating; used by the CLI and the web case list. */
-export const ratingDots = (rating: number): string => "●".repeat(rating) + "○".repeat(5 - rating);
-export const RATING_NAMES = ["", "sehr leicht", "leicht", "mittel", "schwer", "sehr schwer"] as const;
+// ---------- Text report (playtest CLI and check-case) ----------
+
+const percent = (x: number) => `${Math.round(x * 100)} %`;
+
+export function formatPlaytest(pkg: ResolvedCasePackage, report: CaseReport): string {
+  const m = report.metrics;
+  const of = (style: Style) => report.runs.filter((r) => r.style === style);
+  const span = (xs: number[]) => (Math.min(...xs) === Math.max(...xs) ? `${xs[0]}` : `${median(xs)} (${Math.min(...xs)}–${Math.max(...xs)})`);
+  const solvedShare = (style: Style) => {
+    const runs = of(style);
+    const solved = runs.filter((r) => r.solved).length;
+    return solved === runs.length ? "" : `, ${solved}/${runs.length} gelöst`;
+  };
+  const pull = Object.entries(m.redHerringPull)
+    .sort((a, b) => b[1] - a[1])
+    .map(([id, share]) => `${labelOf(pkg, "person", id)} ${percent(share)}`)
+    .join(", ");
+  return [
+    `  Schwierigkeit: ${difficultyText(report.rating)} (${report.rating}/5)`,
+    `  Aktionen bis zur Lösung (Median): ${m.actionsToSolve} · Sackgassen: ${percent(m.deadEndRate)} · Hinweise nötig: ${m.hints}`,
+    `  Funde: ${m.findsNeeded} für die Beweiskette von ${m.findsAvailable} · Fehlanklagen (voreilig): ${m.wrongAccusations} · erster Verdacht trifft: ${percent(m.firstGuessHits)}`,
+    ...(pull === "" ? [] : [`  Falsche Fährten (Anteil der Fehlanklagen): ${pull}`]),
+    `  Spielstile: systematisch ${span(of("systematisch").map((r) => r.actions))}${solvedShare("systematisch")} · neugierig ${span(of("neugierig").map((r) => r.actions))}${solvedShare("neugierig")} · voreilig ${span(of("voreilig").map((r) => r.actions))} · hinweise ${span(of("hinweise").map((r) => r.actions))}${solvedShare("hinweise")} Aktionen`,
+    ...report.warnings.map((w) => `  Hinweis Spieltest: ${w}`),
+  ].join("\n");
+}

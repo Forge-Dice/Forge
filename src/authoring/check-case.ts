@@ -55,6 +55,8 @@ export type CaseCheck = {
   /** Every certified route, the witness first; each replayed and checked on its own. */
   readonly routes: readonly RouteReport[];
   readonly ok: boolean;
+  /** NPC file names and ref salt of the folder, for loading it as a playable package (playtest). */
+  readonly play?: { readonly npcs: readonly string[]; readonly salt: string };
 };
 
 /** Placeholder authors leave for hashes the tool computes ("TO_BE_COMPUTED_FROM_FINAL_ARTIFACT"). */
@@ -156,7 +158,9 @@ function npcNames(dir: string, c: Collector): string[] {
 
 export function checkCaseFolder(dir: string): CaseCheck {
   const c = new Collector();
+  let play: CaseCheck["play"];
   const finish = (routes: readonly RouteReport[] = []): CaseCheck => ({
+    ...(play === undefined ? {} : { play }),
     dir,
     problems: c.problems,
     filled: c.filled,
@@ -173,6 +177,7 @@ export function checkCaseFolder(dir: string): CaseCheck {
   const npcs = npcNames(dir, c).map((name) => ({ name, snapshot: readJson(dir, `npc-${name}.json`, c), profile: readJson(dir, `interrogation-${name}.json`, c) }));
   const caseConfig = existsSync(join(dir, "case.json")) ? readJson(dir, "case.json", c) : {};
   const salt = (caseConfig as { refSalt?: unknown }).refSalt ?? DEFAULT_CHECK_SALT;
+  if (typeof salt === "string") play = { npcs: npcs.map((n) => n.name), salt };
 
   // ---- 1. Components, each with its real parser, in dependency order.
   const truth = raw.truth === undefined ? null : c.parse(FILES.truth, () => parseCaseTruth(raw.truth));
