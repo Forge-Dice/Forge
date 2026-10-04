@@ -8,7 +8,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "play": "node --experimental-transform-types --no-warnings src/play/cli.ts"
   },
   "dependencies": {
     "zod": "4.6.5"
