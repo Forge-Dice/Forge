@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdirSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
+import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -121,7 +121,6 @@ function runVitest(name: string, files: Record<string, string>): Promise<Run> {
   symlinkSync(join(REPO, "node_modules"), join(dir, "node_modules"));
   writeFileSync(join(root, `${name}.plan.json`), JSON.stringify({ root: dir, include: Object.keys(files) }));
   mkdirSync(join(root, `${name}.home`));
-  const report = join(root, `${name}.report`);
   const env: NodeJS.ProcessEnv = {
     PATH: process.env["PATH"] ?? "/usr/bin:/bin",
     HOME: join(root, `${name}.home`),
@@ -130,21 +129,18 @@ function runVitest(name: string, files: Record<string, string>): Promise<Run> {
     TZ: "UTC",
     LANG: "C.UTF-8",
     FORGE_VITEST_PLAN: join(root, `${name}.plan.json`),
-    FORGE_REPORT_PATH: report,
+    FORGE_REPORT_FD: "3",
     ...(name === "baseReverse" ? { FIXTURE_ORDER: "reverse" } : {}),
   };
   return new Promise((resolve) => {
-    const child = spawn(process.execPath, [VITEST, "run", "--config", CONFIG], { cwd: dir, env, stdio: "ignore" });
+    // The reporter's channel is fd 3 (worker-entry.mjs gives Vitest a socket there), never a file.
+    const child = spawn(process.execPath, [VITEST, "run", "--config", CONFIG], { cwd: dir, env, stdio: ["ignore", "ignore", "ignore", "pipe"] });
     const timer = setTimeout(() => child.kill("SIGKILL"), 20_000);
+    const chunks: Buffer[] = [];
+    child.stdio[3]!.on("data", (chunk: Buffer) => chunks.push(chunk));
     child.on("close", (status) => {
       clearTimeout(timer);
-      let raw: Buffer | null = null;
-      try {
-        raw = readFileSync(report);
-      } catch {
-        raw = null;
-      }
-      resolve({ status, raw });
+      resolve({ status, raw: chunks.length ? Buffer.concat(chunks) : null });
     });
   });
 }
@@ -346,6 +342,38 @@ describe("compare_inventory", { timeout: 10_000 }, () => {
       { ...inv(BASE_SPECS), tests: [...inv(BASE_SPECS).tests, inv(BASE_SPECS).tests[3]!] },
     ];
     expect(py(bases.map((base) => compare(base, head, [], [F, G]))).map(outcome)).toEqual(bases.map(() => "TEST_BASELINE"));
+  });
+});
+
+// ---------------------------------------------------------------- collect-only cross-check (worker.list_tests)
+
+/** The collect-only inventory of a HEAD tree: same identities, every test "skipped" (no body ran). */
+const listingOf = (i: Inv, extra: Partial<Inv> = {}): Inv => ({ ...i, tests: i.tests.map((t) => ({ ...t, status: "skipped" })), reason: "passed", ...extra });
+
+describe("collect-only listing cross-check", { timeout: 10_000 }, () => {
+  it("report identities must equal the listing: added, dropped, renamed or collection-broken → TEST_INVENTORY, before TEST_STATUS", () => {
+    const base = inv(BASE_SPECS);
+    const all = [F, G, NEW];
+    const withNew = inv([...BASE_SPECS, { file: NEW, anc: [], title: "n" }]);
+    const twoNew = inv([...BASE_SPECS, { file: NEW, anc: [], title: "n" }, { file: NEW, anc: [], title: "m" }]);
+    const skippedNew = inv([...BASE_SPECS, { file: NEW, anc: [], title: "n", status: "skipped" }]);
+    const failedNew = inv([...BASE_SPECS, { file: NEW, anc: [], title: "n", status: "failed" }]);
+    const cases: [string, Inv, unknown, string][] = [
+      ["equal", withNew, listingOf(withNew), "PASS"],
+      ["equal, skipped stays TEST_STATUS", skippedNew, listingOf(skippedNew), "TEST_STATUS"],
+      ["equal, failed stays TEST_STATUS", failedNew, listingOf(failedNew), "TEST_STATUS"],
+      ["report adds a test", twoNew, listingOf(withNew), "TEST_INVENTORY"],
+      ["report drops a test", withNew, listingOf(twoNew), "TEST_INVENTORY"],
+      ["report renames a test", inv([...BASE_SPECS, { file: NEW, anc: [], title: "n2" }]), listingOf(withNew), "TEST_INVENTORY"],
+      ["report moves a test to other ancestors", inv([...BASE_SPECS, { file: NEW, anc: ["X"], title: "n" }]), listingOf(withNew), "TEST_INVENTORY"],
+      ["listing has a collection error", withNew, listingOf(withNew, { errors: [{ kind: "collection", testIdentity: null }] }), "TEST_INVENTORY"],
+      ["listing file flagged", withNew, listingOf(withNew, { files: withNew.files.map((f) => ({ ...f, collection: "error" })) }), "TEST_INVENTORY"],
+      ["listing interrupted", withNew, listingOf(withNew, { reason: "interrupted" }), "TEST_INVENTORY"],
+      ["listing schema-invalid", withNew, { ...listingOf(withNew), format: true }, "TEST_INVENTORY"],
+      ["mismatch beats a failed test", failedNew, listingOf(inv(BASE_SPECS)), "TEST_INVENTORY"],
+    ];
+    const r = py(cases.map(([, head, listed]) => ({ fn: "inventory.compare_inventory", args: [base, head, [NEW], all, listed] })));
+    expect(cases.map(([name], i) => `${name}:${outcome(r[i]!)}`)).toEqual(cases.map(([name, , , want]) => `${name}:${want}`));
   });
 });
 

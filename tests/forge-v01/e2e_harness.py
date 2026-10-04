@@ -13,6 +13,10 @@ everything else is the image's own code path, entered through stage0.main itself
       main.main(argv, _seams=<the same test seams>) (one record on stdout). Two optional files next to
       <answers.json>: budgets.json ({"suiteDeadline": s} -> main.main(_suite_deadline=s), lower-only) is
       read; requests.json (the API paths the verifier requested, in order) is written afterwards.
+  python -I -B e2e_harness.py vectors <dir> <image>
+      Report-channel probe: <dir>/tools/forge_v01 (working-tree verifier), <dir>/package.json and
+      package-lock.json, <dir>/case (a HEAD tree with tests/*.test.ts). Installs the toolchain and runs
+      worker.run_tests(role="head") on the real DockerRunner; prints {exitCode, reason, errorNames} as JSON.
   python -I -B e2e_harness.py adapter <answers.json> <remote> <contract> --event E --facts F --workspace W
       stage0.main as above, but the _exec hook execs `parse <BASE root> <contract> <private>`, which runs
       the BASE policy.parse_contract with the fixed image node over the materialized BASE root.
@@ -48,6 +52,24 @@ def _stage0(answers: str, remote: str, argv: list, then: list) -> int:
     return stage0.main(argv, _seams=_seams(answers, remote), _exec=exec_hook)
 
 
+def _vectors(where: str, image: str) -> int:
+    sys.path[:0] = [os.path.join(where, "tools", "forge_v01")]
+    import worker  # noqa: E402  (working-tree verifier copy)
+    from materialize import destroy  # noqa: E402
+
+    case, ws = os.path.join(where, "case"), os.path.join(where, "ws")
+    os.mkdir(ws, 0o700)
+    tests = sorted(os.path.join("tests", n) for n in os.listdir(os.path.join(case, "tests")))
+    with open(os.path.join(where, "package.json"), "rb") as pj, open(os.path.join(where, "package-lock.json"), "rb") as lock:
+        modules = worker.install_base_toolchain(pj.read(), lock.read(), ws, image=image)
+    worker.prepare_case(case)
+    run = worker.run_tests(case, modules, ws, tests, image=image)
+    names = [n for f in run["report"].failures for n in f.errorNames]
+    sys.stdout.write(json.dumps({"exitCode": run["exitCode"], "reason": run["report"].inventory.reason, "errorNames": names}) + "\n")
+    destroy(os.path.dirname(modules))
+    return 0
+
+
 def main() -> int:
     mode, rest = sys.argv[1], sys.argv[2:]
     if mode == "stage0":
@@ -72,6 +94,8 @@ def main() -> int:
         finally:
             with open(os.path.join(here, "requests.json"), "w") as handle:
                 handle.write(json.dumps(seams.transport.requests))
+    if mode == "vectors":
+        return _vectors(rest[0], rest[1])
     if mode == "parse":
         contract, entry, argv = rest[0], rest[1], rest[2:]
         root = os.path.dirname(os.path.dirname(os.path.dirname(entry)))

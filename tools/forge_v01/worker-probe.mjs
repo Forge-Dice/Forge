@@ -1,6 +1,6 @@
 // Trusted isolation probe (copied by worker.py into /trusted). Attempts each forbidden access once and
 // records the observed denial; it never decides anything itself.
-import { closeSync, openSync, readdirSync, writeFileSync } from "node:fs";
+import { closeSync, openSync, readdirSync, writeSync } from "node:fs";
 import net from "node:net";
 const probes = [];
 const token = (e) => (e && typeof e.code === "string" && /^[A-Z][A-Z0-9_]{0,31}$/.test(e.code) ? e.code : "UNKNOWN");
@@ -26,5 +26,8 @@ else tryOpen("readonly-test-file", `/case/tests/${testFile}`, "r+");
 tryOpen("readonly-node-modules", "/case/node_modules/.forge-probe", "wx");
 tryOpen("readonly-trusted", "/trusted/probe.mjs", "r+");
 tryOpen("readonly-rootfs", "/forge-probe", "wx");
+// The entry (parent) holds the report channel: its memory and descriptors must be closed to this uid.
+tryOpen("proc-parent-mem", `/proc/${process.ppid}/mem`, "r+");
+try { readdirSync(`/proc/${process.ppid}/fd`); record("proc-parent-fd", "errno", null); } catch (e) { record("proc-parent-fd", "errno", e); }
 const body = Buffer.from(JSON.stringify({ format: 1, probes }), "utf8");
-writeFileSync(process.env.FORGE_REPORT_PATH, Buffer.concat([Buffer.from(`FORGE-REPORT-V1 ${body.length}\n`), body]), { flag: "wx" });
+writeSync(3, Buffer.concat([Buffer.from(`FORGE-REPORT-V1 ${body.length}\n`), body]));

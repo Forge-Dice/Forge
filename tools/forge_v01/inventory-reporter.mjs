@@ -2,7 +2,8 @@
 //
 // Runs inside the worker under the trusted vitest.config.mjs. It observes only the public
 // Vitest 5.0.3 reporter API (onInit, onTestRunEnd) and writes exactly one length-framed report
-// to the file named by FORGE_REPORT_PATH:
+// to the inherited descriptor named by FORGE_REPORT_FD (always 3: a socket to the trusted entry that no
+// Vitest fork holds; worker-entry.mjs):
 //
 //   "FORGE-REPORT-V1 <decimal payload length>\n" + <UTF-8 JSON payload>
 //
@@ -12,7 +13,7 @@
 // and the test titles that form the identity. The report is an observation, not a proof
 // (PKG §6 transport paragraph); the supervisor parses it strictly (inventory.py).
 
-import { writeFileSync } from "node:fs";
+import { closeSync, writeSync } from "node:fs";
 import { relative, sep } from "node:path";
 
 export const REPORT_MAGIC = "FORGE-REPORT-V1";
@@ -106,17 +107,33 @@ export function frame(payload) {
   return Buffer.concat([Buffer.from(`${REPORT_MAGIC} ${body.length}\n`, "ascii"), body]);
 }
 
+/** Writes all of `bytes` to a possibly non-blocking descriptor, then closes it: nothing can follow the frame. */
+export function writeFrame(fd, bytes) {
+  const pause = new Int32Array(new SharedArrayBuffer(4));
+  for (let done = 0; done < bytes.length; ) {
+    try {
+      done += writeSync(fd, bytes, done, bytes.length - done);
+    } catch (error) {
+      if (error?.code !== "EAGAIN") throw error;
+      Atomics.wait(pause, 0, 0, 2);
+    }
+  }
+  closeSync(fd);
+}
+
 export default class InventoryReporter {
   root = undefined;
+  written = false;
 
   onInit(vitest) {
     this.root = vitest.config.root;
   }
 
   onTestRunEnd(testModules, unhandledErrors, reason) {
-    const target = process.env["FORGE_REPORT_PATH"];
-    if (!target || !this.root) throw new Error("forge inventory reporter: no report path or root");
-    // "wx": exactly one report; never append to or overwrite a file somebody else created.
-    writeFileSync(target, frame(buildPayload(this.root, testModules, unhandledErrors, reason)), { flag: "wx", mode: 0o600 });
+    if (process.env["FORGE_REPORT_FD"] !== "3" || !this.root || this.written) {
+      throw new Error("forge inventory reporter: no report channel, no root, or a second report");
+    }
+    this.written = true;
+    writeFrame(3, frame(buildPayload(this.root, testModules, unhandledErrors, reason)));
   }
 }

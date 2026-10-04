@@ -146,13 +146,15 @@ def _worker_steps(g: dict, ws: str) -> None:
         worker.prepare_case(base_root)
         base_run = worker.run_tests(base_root, modules, _subdir(ws, "base-run"), base_tests, role="base", image=image,
                                     deadline=suite)
+        inventory.check_baseline(base_run["report"].inventory)  # PKG §11: a red BASE before any HEAD phase
         head_root = materialize(store, head, _subdir(ws, "head"), executable=executable)
         worker.prepare_case(head_root)
         worker.run_typecheck(head_root, modules, _subdir(ws, "head-tsc"), image=image)
         head_run = worker.run_tests(head_root, modules, _subdir(ws, "head-run"), head_tests, role="head", image=image,
                                     deadline=suite)
+        listed = worker.list_tests(head_root, modules, _subdir(ws, "head-list"), head_tests, image=image, deadline=suite)
         inventory.compare_inventory(base_run["report"].inventory, head_run["report"].inventory,
-                                    plan["addedTestFiles"], head_tests)
+                                    plan["addedTestFiles"], head_tests, listed)
         if plan["mutants"]:
             records = mutations.run_mutants(store, head, plan["mutants"], _subdir(ws, "mutants"), modules,
                                             executable=executable, image=image)

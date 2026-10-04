@@ -1,10 +1,13 @@
-"""Worker sandbox protocol: install, typecheck, test transport and isolation probes (PKG §6, contract B §4/§5).
+"""Worker sandbox protocol: install, typecheck, test and list transport (PKG §6, contract B §4/§5).
 
 Every worker is a fresh Docker container with exactly the PKG §6 flags; there is no unsandboxed
 fallback. Worker roles run the trusted entry (/trusted/entry.mjs, written from this module, never
-from HEAD): it discards the child's stdout/stderr under a budget and afterwards writes exactly the
-bytes of the one report file (/out/report, bounded) to its own stdout. The supervisor trusts only
-the container exit it observed itself plus the strictly parsed report; nothing is echoed.
+from HEAD): it discards the child's stdout/stderr under a budget and forwards exactly the bytes its
+child wrote to fd 3 (bounded) to its own stdout. The report position is that descriptor, not a file:
+no path in the container leads to it, no Vitest fork inherits it, and the entry refuses to run (exit
+5, EXECUTION_SANDBOX) unless it and its child are non-dumpable, so same-uid test code can reach
+neither their memory nor their descriptors (/proc, ptrace). The supervisor trusts only the container
+exit it observed itself plus the strictly parsed report; nothing is echoed.
 LocalRunner is a TEST-ONLY seam (keyword `_runner=`): same entry argv as a plain bounded
 subprocess, no isolation at all, used so tests can drive real Vitest without a Docker daemon.
 """
@@ -28,12 +31,12 @@ TOOLS = os.path.dirname(os.path.abspath(__file__))
 DOCKER = "/usr/bin/docker"
 NODE = "/opt/node/bin/node"
 NPM = "/opt/node/bin/npm"
-CASE, MODULES, TRUSTED, OUT, TMP = "/case", "/case/node_modules", "/trusted", "/out", "/tmp"
-REPORT_PATH, PLAN_PATH = "/out/report", "/trusted/plan.json"
+CASE, MODULES, TRUSTED, TMP = "/case", "/case/node_modules", "/trusted", "/tmp"
+REPORT_FD, PLAN_PATH = "3", "/trusted/plan.json"
 WORKER_FLAGS = ("--network=none", "--read-only", "--cap-drop=ALL", "--security-opt=no-new-privileges", "--pids-limit=128",
                 "--cpus=2", "--memory=2g", "--memory-swap=2g", "--user=10001:10001")
 WORKER_ENV = {"PATH": "/opt/node/bin:/usr/bin:/bin", "HOME": "/tmp/home", "TMPDIR": "/tmp", "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8",
-              "TZ": "UTC", "CI": "true", "NO_COLOR": "1", "FORGE_REPORT_PATH": REPORT_PATH, "FORGE_VITEST_PLAN": PLAN_PATH}
+              "TZ": "UTC", "CI": "true", "NO_COLOR": "1", "FORGE_REPORT_FD": REPORT_FD, "FORGE_VITEST_PLAN": PLAN_PATH}
 # PKG §6 names npm_config_globalconfig=/dev/null too, but npm 10 then aborts ("double-loading config /dev/null").
 # /dev/null/npmrc can never exist (ENOTDIR), so no global config is loaded either.
 INSTALL_ENV = {"PATH": "/opt/node/bin:/usr/bin:/bin", "HOME": "/tmp/install-home", "TMPDIR": "/tmp", "LANG": "C.UTF-8",
@@ -45,6 +48,11 @@ TYPECHECK_ARGV = (NODE, MODULES + "/typescript/bin/tsc", "--project", CASE + "/t
 # --configLoader native: Vite would otherwise bundle the config into a temp file next to it (EROFS on /trusted).
 VITEST_ARGV = (NODE, MODULES + "/vitest/vitest.mjs", "run", "--config", TRUSTED + "/vitest.config.mjs", "--configLoader", "native")
 ENTRY_ARGV = (NODE, TRUSTED + "/entry.mjs")
+# Collect-only: the same run, but a test-name pattern no title can match ("(?!)" never matches) marks every test
+# "skip" in the fork before anything runs: modules and describe bodies are collected, no test body and no hook
+# of a skipped suite executes, and the trusted reporter walks the same tree over the same channel.
+LIST_ARGV = VITEST_ARGV + ("--testNamePattern", "(?!)")
+UNSEALED = 5  # worker-entry.mjs: the entry or its child is dumpable (readable node binary)
 INSTALL_DEADLINE, TYPECHECK_DEADLINE, SUITE_DEADLINE, MUTANT_DEADLINE = 180.0, 60.0, 120.0, 30.0
 TRANSPORT_LIMIT = HEADER_LIMIT + PAYLOAD_LIMIT + 64 * 1024  # report bytes plus docker-client stderr
 _SAFE_SOURCE = re.compile(r"/[A-Za-z0-9._/-]{1,4000}")
@@ -53,7 +61,7 @@ _IMAGE = re.compile(r"[a-z0-9][a-z0-9._/-]{0,200}(:[A-Za-z0-9._-]{1,128})?(@sha2
 
 @dataclass(frozen=True)
 class Spec:
-    role: str  # base | head | mutant | probe | install
+    role: str  # base | head | list | mutant | probe | install
     argv: tuple  # container view; argv[0] becomes --entrypoint
     env: tuple  # sorted (key, value) pairs, all fixed by this module
     mounts: tuple  # (target, host source, readonly)
@@ -78,15 +86,13 @@ def _script(name: str) -> bytes:
 def docker_argv(role: str, mounts, image: str, name: str, argv, env, docker: str = DOCKER) -> list[str]:
     """The complete `docker run` argv: exactly the PKG §6 worker flags, fixed tmpfs, allowlisted binds and env."""
     install = role == "install"
-    if role not in ("base", "head", "mutant", "probe", "install") or not _IMAGE.fullmatch(image) or not argv \
+    if role not in ("base", "head", "list", "mutant", "probe", "install") or not _IMAGE.fullmatch(image) or not argv \
             or {k for k, _ in env} - set(INSTALL_ENV if install else WORKER_ENV):
         raise fail("EXECUTION_INTERNAL", "worker")
     owner = "uid=10001,gid=10001,mode=0700"
     out = [docker, "run", "--rm", "--pull=never", "--log-driver=none", f"--name={name}"]
     out += ["--network=bridge" if install else "--network=none", *WORKER_FLAGS[1:]]
     out += [f"--tmpfs={TMP}:rw,noexec,nosuid,nodev,size={'512m' if install else '64m'},{owner}"]
-    if not install:
-        out += [f"--tmpfs={OUT}:rw,noexec,nosuid,nodev,size=16m,{owner}"]
     for target, source, readonly in mounts:
         if target not in (CASE, MODULES, TRUSTED) or not _SAFE_SOURCE.fullmatch(source) or "/../" in source + "/":
             raise fail("EXECUTION_INTERNAL", "worker")
@@ -172,8 +178,8 @@ class LocalRunner:
     def __init__(self, node: str, scratch: str):
         self.node, self.scratch = node, scratch
 
-    def _mapping(self, spec: Spec, tmp: str, out: str) -> list:
-        pairs = [("/opt/node/bin", os.path.dirname(self.node)), (TMP, tmp), (OUT, out)]
+    def _mapping(self, spec: Spec, tmp: str) -> list:
+        pairs = [("/opt/node/bin", os.path.dirname(self.node)), (TMP, tmp)]
         pairs += [(target, source) for target, source, _ in spec.mounts]
         return sorted(pairs, key=lambda pair: -len(pair[0]))
 
@@ -184,8 +190,8 @@ class LocalRunner:
         return target
 
     def run(self, spec: Spec) -> Observed:
-        tmp, out = (os.path.realpath(tempfile.mkdtemp(dir=self.scratch)) for _ in range(2))
-        mapping = self._mapping(spec, tmp, out)
+        tmp = os.path.realpath(tempfile.mkdtemp(dir=self.scratch))
+        mapping = self._mapping(spec, tmp)
 
         def host(value: str) -> str:
             for prefix, source in mapping:
@@ -201,6 +207,7 @@ class LocalRunner:
             os.chmod(mounts[CASE], 0o555)
         argv = [host(a) for a in spec.argv]
         env = {k: ":".join(host(p) for p in v.split(":")) for k, v in spec.env}
+        env["FORGE_LOCAL_RUNNER"] = "1"  # the host node binary is readable: skip the entry's non-dumpable check
         try:
             done = process.run_bounded(argv, env, deadline_seconds=spec.deadline, cwd=mounts.get(CASE),
                                        output_limit=TRANSPORT_LIMIT)
@@ -210,7 +217,6 @@ class LocalRunner:
             return Observed(None, failure.code == "EXECUTION_TIMEOUT", b"", failure.code == "EXECUTION_IO")
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
-            shutil.rmtree(out, ignore_errors=True)
         return Observed(done.returncode, False, done.stdout)
 
 
@@ -298,6 +304,8 @@ def run_typecheck(case_root: str, node_modules: str, workspace: str, *, image: s
         return seen.exit_code == 0
     if seen.timed_out:
         raise fail("EXECUTION_TIMEOUT", "worker")
+    if seen.exit_code == UNSEALED:
+        raise fail("EXECUTION_SANDBOX", "worker")
     if seen.exit_code != 0:
         raise fail("TEST_COMPILE", "worker")  # AV-120
     return True
@@ -315,9 +323,10 @@ def run_tests(case_root: str, node_modules: str, workspace: str, include: list, 
               image: str | None = None, docker_host=None, deadline: float = SUITE_DEADLINE, _runner=None) -> dict:
     """Fixed Vitest argv over the exact include list. Returns {timedOut, exitCode, report} as observed.
 
-    For base/head a timeout is EXECUTION_TIMEOUT (AV-119) and a bad report, or one that disagrees with the
-    observed exit (exit 0 iff reason "passed", nothing but 0/1), TEST_INVENTORY; for a mutant
-    both stay observations (report None) for the classifier.
+    For base/head a timeout is EXECUTION_TIMEOUT (AV-119), a dumpable entry EXECUTION_SANDBOX, and a bad
+    report, or one that disagrees with the observed exit (exit 0 iff reason "passed", nothing but 0/1),
+    TEST_INVENTORY (HEAD) or TEST_BASELINE (BASE: PKG §11, before a green BASE every test cause is
+    TEST_BASELINE); for a mutant all of it stays an observation (report None) for the classifier.
     """
     limit = MUTANT_DEADLINE if role == "mutant" else SUITE_DEADLINE
     if role not in ("base", "head", "mutant") or not 0 < deadline <= limit:
@@ -330,12 +339,17 @@ def run_tests(case_root: str, node_modules: str, workspace: str, include: list, 
     if role != "mutant":
         if seen.timed_out:
             raise fail("EXECUTION_TIMEOUT", "worker")
-        report = read_report(seen.stdout)
-        # PKG §6 transport: only the self-observed exit plus the checked report count, so they must agree. A frame
-        # HEAD code wrote to the report file itself makes the reporter's exclusive ("wx") write fail: Vitest exits
-        # 1 while the forged frame claims "passed". Signals and other exits are FAIL (PKG §2).
+        if code == UNSEALED:
+            raise fail("EXECUTION_SANDBOX", "worker")
+        bad = "TEST_BASELINE" if role == "base" else "TEST_INVENTORY"
+        try:
+            report = parse_report(seen.stdout)
+        except ForgeFail:
+            raise fail(bad, "worker") from None
+        # PKG §6 transport: only the self-observed exit plus the checked report count, so they must agree.
+        # Signals and other exits are FAIL (PKG §2).
         if code not in (0, 1) or (code == 0) != (report.inventory.reason == "passed"):
-            raise fail("TEST_INVENTORY", "worker")
+            raise fail(bad, "worker")
         return {"timedOut": False, "exitCode": code, "report": report}
     try:
         report = None if seen.timed_out or seen.overflow else read_report(seen.stdout, mutant=True)
@@ -344,61 +358,28 @@ def run_tests(case_root: str, node_modules: str, workspace: str, include: list, 
     return {"timedOut": seen.timed_out, "exitCode": code, "report": report}
 
 
-# ---------------------------------------------------------------- isolation probes (AV-123..125, AV-184)
+def list_tests(case_root: str, node_modules: str, workspace: str, include: list, *, image: str | None = None,
+               docker_host=None, deadline: float = SUITE_DEADLINE, _runner=None):
+    """Collect-only HEAD run in its own container (LIST_ARGV: no test body and no hook executes).
 
-PROBE_RULES = {
-    "network": ("network", frozenset({"ENETUNREACH", "EHOSTUNREACH"})),
-    "docker-socket": ("errno", frozenset({"ENOENT", "EACCES", "EPERM"})),
-    "actions-command-file": ("errno", frozenset({"ENOENT", "EACCES", "EPERM", "EROFS"})),
-    "readonly-case": ("errno", frozenset({"EROFS", "EACCES", "EPERM"})),
-    "readonly-test-file": ("errno", frozenset({"EROFS", "EACCES", "EPERM"})),
-    "readonly-node-modules": ("errno", frozenset({"EROFS", "EACCES", "EPERM"})),
-    "readonly-trusted": ("errno", frozenset({"EROFS", "EACCES", "EPERM"})),
-    "readonly-rootfs": ("errno", frozenset({"EROFS", "EACCES", "EPERM"})),
-}
-PROBE_KINDS = frozenset({"errno", "exit", "signal", "network"})
-PROBE_KEYS = frozenset({"probeId", "attempted", "denied", "observationKind", "observationCode"})
-
-
-def validate_probes(records) -> None:
-    """Every required probe exactly once, attempted=true, denied=true, allowed kind/code; else EXECUTION_SANDBOX."""
-    seen = set()
-    for record in records if type(records) is list else [None]:
-        if type(record) is not dict or set(record) != PROBE_KEYS or record["probeId"] not in PROBE_RULES \
-                or record["probeId"] in seen or record["attempted"] is not True or record["denied"] is not True:
-            raise fail("EXECUTION_SANDBOX", "worker")
-        kind, codes = PROBE_RULES[record["probeId"]]
-        if record["observationKind"] not in PROBE_KINDS or record["observationKind"] != kind \
-                or type(record["observationCode"]) is not str or record["observationCode"] not in codes:
-            raise fail("EXECUTION_SANDBOX", "worker")
-        seen.add(record["probeId"])
-    if seen != set(PROBE_RULES):
-        raise fail("EXECUTION_SANDBOX", "worker")
-
-
-def parse_probe_report(raw: bytes) -> list:
-    """The probe report uses the same frame grammar; payload {"format":1,"probes":[...]}."""
-    magic = b"FORGE-REPORT-V1 "
-    end = raw.find(b"\n", 0, HEADER_LIMIT)
-    digits = raw[len(magic):end] if end > 0 and raw.startswith(magic) else b""
-    if not re.fullmatch(rb"[1-9][0-9]{0,6}", digits) or len(raw) != end + 1 + int(digits) or int(digits) > PAYLOAD_LIMIT:
+    Its inventory (identities only; every status skipped/todo) must equal the run report's identities
+    (inventory.compare_inventory), so a run cannot add, drop or rename a test that collection does not show.
+    Timeout EXECUTION_TIMEOUT; anything but exit 0 with a strictly parsed, error-free report in which no test
+    ran TEST_INVENTORY.
+    """
+    if not 0 < deadline <= SUITE_DEADLINE:
+        raise fail("EXECUTION_INTERNAL", "worker")
+    spec = _spec("list", LIST_ARGV, case_root, node_modules, deadline, {"include": list(include)})
+    seen = _execute(_pick_runner(image, workspace, docker_host, _runner), spec, workspace)
+    if seen.timed_out:
+        raise fail("EXECUTION_TIMEOUT", "worker")
+    if seen.exit_code == UNSEALED:
         raise fail("EXECUTION_SANDBOX", "worker")
     try:
-        payload = json.loads(raw[end + 1:].decode("utf-8"), parse_constant=lambda _: 1 / 0)
-    except (ValueError, ZeroDivisionError, UnicodeError):
-        raise fail("EXECUTION_SANDBOX", "worker") from None
-    if type(payload) is not dict or set(payload) != {"format", "probes"} or payload["format"] != 1:
-        raise fail("EXECUTION_SANDBOX", "worker")
-    return payload["probes"]
-
-
-def run_probes(case_root: str, node_modules: str, workspace: str, *, image: str | None = None, docker_host=None,
-               _runner=None) -> list:
-    """Run the trusted probe entry with exactly the worker flags; return the measured, validated records."""
-    spec = _spec("probe", (NODE, TRUSTED + "/probe.mjs"), case_root, node_modules, 30.0)
-    seen = _execute(_pick_runner(image, workspace, docker_host, _runner), spec, workspace)
-    if seen.timed_out or seen.exit_code != 0:
-        raise fail("EXECUTION_SANDBOX", "worker")
-    records = parse_probe_report(seen.stdout)
-    validate_probes(records)
-    return records
+        listing = parse_report(seen.stdout).inventory
+    except ForgeFail:
+        raise fail("TEST_INVENTORY", "worker") from None
+    if seen.exit_code != 0 or listing.reason != "passed" or listing.errors \
+            or any(f.collection != "ok" for f in listing.files) or any(t.status not in ("skipped", "todo") for t in listing.tests):
+        raise fail("TEST_INVENTORY", "worker")
+    return listing

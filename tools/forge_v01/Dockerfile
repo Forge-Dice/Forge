@@ -64,6 +64,10 @@ COPY --from=build /opt/forge/bootstrap /opt/forge/bootstrap
 # root lives under the workspace, so the only ancestor the image controls for every workspace is "/". The
 # root folder is therefore a link to /trusted/node_modules, which holds exactly the image Zod (PKG §6).
 RUN ln -s /trusted/node_modules /node_modules
+# Worker report channel (worker-entry.mjs): node is execute-only for everybody but root. Exec of an unreadable
+# binary leaves the process non-dumpable, so a same-uid Vitest fork running HEAD code can neither ptrace nor
+# open /proc/<pid>/mem or /proc/<pid>/fd of the entry or the Vitest main process that hold the report socket.
+RUN chown root:root /opt/node/bin/node && chmod 0711 /opt/node/bin/node
 # FORGE-LAYOUT-END
 # npm-cli.js starts with `#!/usr/bin/env node`: the check gets the worker's INSTALL_ENV PATH, as npm ci does.
 RUN chmod -R a-w /opt/forge/bootstrap /trusted \

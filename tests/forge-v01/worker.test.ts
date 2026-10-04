@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { b, outcome, py, py1, removeTree, tempRoot } from "./helpers.ts";
@@ -14,8 +14,9 @@ import { b, outcome, py, py1, removeTree, tempRoot } from "./helpers.ts";
 const NODE_MODULES = resolve("node_modules");
 const DOCKER_HOST = process.env["FORGE_DOCKER_HOST"] ?? "unix:///var/run/docker.sock";
 const IMAGE = process.env["FORGE_WORKER_IMAGE"] ?? "forge-v01-probe:test";
+const DUMPABLE = "forge-v01-probe:dumpable"; // the same image with a readable node binary
 const FLAGS = ["--network=none", "--read-only", "--cap-drop=ALL", "--security-opt=no-new-privileges", "--pids-limit=128", "--cpus=2", "--memory=2g", "--memory-swap=2g", "--user=10001:10001"];
-const WORKER_ENV = ["CI=true", "FORGE_REPORT_PATH=/out/report", "FORGE_VITEST_PLAN=/trusted/plan.json", "HOME=/tmp/home", "LANG=C.UTF-8", "LC_ALL=C.UTF-8", "NO_COLOR=1", "PATH=/opt/node/bin:/usr/bin:/bin", "TMPDIR=/tmp", "TZ=UTC"];
+const WORKER_ENV = ["CI=true", "FORGE_REPORT_FD=3", "FORGE_VITEST_PLAN=/trusted/plan.json", "HOME=/tmp/home", "LANG=C.UTF-8", "LC_ALL=C.UTF-8", "NO_COLOR=1", "PATH=/opt/node/bin:/usr/bin:/bin", "TMPDIR=/tmp", "TZ=UTC"];
 const VITEST = ["/opt/node/bin/node", "/case/node_modules/vitest/vitest.mjs", "run", "--config", "/trusted/vitest.config.mjs", "--configLoader", "native"];
 
 type SpecJson = { role: string; argv: string[]; env: [string, string][]; mounts: [string, string, boolean][]; deadline: number };
@@ -24,11 +25,16 @@ let base: string;
 let counter = 0;
 let dockerUp = false;
 let builtImage = false;
+let builtDumpable = false;
 const dockerEnv = (): NodeJS.ProcessEnv => ({ PATH: "/usr/bin:/bin", HOME: base, DOCKER_HOST, DOCKER_CONFIG: join(base, "docker-config") });
 const docker = (...args: string[]) => spawnSync("/usr/bin/docker", args, { env: dockerEnv(), encoding: "utf8", timeout: 60_000 });
 
-/** A small harmless acceptance image: the host node binary plus its shared libraries (no shell, no npm). */
-function buildImage(): void {
+/**
+ * A small harmless acceptance image: the host node binary plus its shared libraries (no shell, no npm). As in
+ * the release image, node is root:root 0711 (execute-only, so every node process is non-dumpable); with
+ * `readable` it is 0755, the layout worker-entry.mjs must refuse (exit 5 → EXECUTION_SANDBOX).
+ */
+function buildImage(tag: string, readable: boolean): void {
   const root = join(base, "image-root");
   const libs = new Set<string>();
   const binding = join(NODE_MODULES, "@rolldown/binding-linux-x64-gnu");
@@ -37,17 +43,17 @@ function buildImage(): void {
     for (const m of execFileSync("/usr/bin/ldd", [target], { encoding: "utf8" }).matchAll(/(\/[^\s]+\.so[^\s]*)/g)) libs.add(m[1]!);
   }
   mkdirSync(join(root, "opt/node/bin"), { recursive: true });
-  for (const d of ["tmp", "out", "case", "trusted", "etc"]) mkdirSync(join(root, d), { recursive: true });
+  for (const d of ["tmp", "case", "trusted", "etc"]) mkdirSync(join(root, d), { recursive: true });
   copyFileSync(process.execPath, join(root, "opt/node/bin/node"));
+  chmodSync(join(root, "opt/node/bin/node"), readable ? 0o755 : 0o711);
   for (const lib of libs) {
     mkdirSync(join(root, dirname(lib)), { recursive: true });
     copyFileSync(lib, join(root, lib));
   }
   writeFileSync(join(root, "etc/passwd"), "root:x:0:0::/:/bin/false\n");
-  execFileSync("/bin/tar", ["-C", root, "-cf", join(base, "image.tar"), "."]);
-  const r = docker("import", join(base, "image.tar"), IMAGE);
+  execFileSync("/bin/tar", ["-C", root, "--owner=0", "--group=0", "--numeric-owner", "-cf", join(base, "image.tar"), "."]);
+  const r = docker("import", join(base, "image.tar"), tag);
   if (r.status !== 0) throw new Error("docker import failed");
-  builtImage = true;
   removeTree(root);
   removeTree(join(base, "image.tar"));
 }
@@ -76,11 +82,19 @@ function caseTree(files: Record<string, string>): string {
 beforeAll(() => {
   base = tempRoot("worker");
   dockerUp = docker("version", "--format", "{{.Server.Version}}").status === 0;
-  if (dockerUp && docker("image", "inspect", IMAGE).status !== 0) buildImage();
-}, 40_000);
+  if (dockerUp && docker("image", "inspect", IMAGE).status !== 0) {
+    buildImage(IMAGE, false);
+    builtImage = true;
+  }
+  if (dockerUp) {
+    buildImage(DUMPABLE, true);
+    builtDumpable = true;
+  }
+}, 80_000);
 
 afterAll(() => {
   if (builtImage) docker("image", "rm", "-f", IMAGE);
+  if (builtDumpable) docker("image", "rm", "-f", DUMPABLE);
   if (base) removeTree(base);
 });
 
@@ -91,7 +105,6 @@ describe("docker argv (PKG §6)", () => {
     expect(r.ok).toEqual([
       "/usr/bin/docker", "run", "--rm", "--pull=never", "--log-driver=none", "--name=forge-v01-x", ...FLAGS,
       "--tmpfs=/tmp:rw,noexec,nosuid,nodev,size=64m,uid=10001,gid=10001,mode=0700",
-      "--tmpfs=/out:rw,noexec,nosuid,nodev,size=16m,uid=10001,gid=10001,mode=0700",
       "--mount=type=bind,source=/w/case,target=/case,readonly",
       "--mount=type=bind,source=/w/nm,target=/case/node_modules,readonly",
       "--mount=type=bind,source=/w/trusted,target=/trusted,readonly",
@@ -160,7 +173,7 @@ describe("missing sandbox prerequisites fail closed (no unsandboxed fallback)", 
     const root = caseTree({ "tests/a.test.ts": TEST("() => expect(one()).toBe(1)") });
     const host = "unix:///nonexistent/forge-v01.sock";
     const rs = py([
-      { fn: "worker.run_probes", args: [root, NODE_MODULES, ws], kwargs: { image: IMAGE, docker_host: host } },
+      { fn: "probes.run_probes", args: [root, NODE_MODULES, ws], kwargs: { image: IMAGE, docker_host: host } },
       { fn: "worker.run_tests", args: [root, NODE_MODULES, ws, ["tests/a.test.ts"]], kwargs: { image: IMAGE, docker_host: host } },
       { fn: "worker.run_typecheck", args: [root, NODE_MODULES, ws], kwargs: { image: IMAGE, docker_host: host, mutant: true } },
       { fn: "worker.install_base_toolchain", args: [b("{}"), b("{}"), ws], kwargs: { image: IMAGE, docker_host: host } },
@@ -207,6 +220,7 @@ describe("isolation probe validation (AV-184)", () => {
     network: ["network", "ENETUNREACH"], "docker-socket": ["errno", "ENOENT"], "actions-command-file": ["errno", "ENOENT"],
     "readonly-case": ["errno", "EROFS"], "readonly-test-file": ["errno", "EACCES"], "readonly-node-modules": ["errno", "EROFS"],
     "readonly-trusted": ["errno", "EACCES"], "readonly-rootfs": ["errno", "EROFS"],
+    "proc-parent-mem": ["errno", "EACCES"], "proc-parent-fd": ["errno", "EPERM"],
   };
   const good = () => Object.entries(RULES).map(([probeId, [kind, code]]) => ({ probeId, attempted: true, denied: true, observationKind: kind, observationCode: code }));
   const mutate = (i: number, patch: Record<string, unknown>) => good().map((r, j) => (j === i ? { ...r, ...patch } : r));
@@ -228,7 +242,7 @@ describe("isolation probe validation (AV-184)", () => {
       [],
       { probes: good() },
     ];
-    const rs = py(variants.map((v) => ({ fn: "worker.validate_probes", args: [v] })));
+    const rs = py(variants.map((v) => ({ fn: "probes.validate_probes", args: [v] })));
     expect(rs.map(outcome)).toEqual(["PASS", ...Array(variants.length - 1).fill("EXECUTION_SANDBOX")]);
   });
 });
@@ -262,23 +276,78 @@ describe("real worker runs through the TEST-ONLY LocalRunner (no sandbox)", () =
     expect(readdirSync(ws)).toEqual([]);
   }, 15_000);
 
-  it("forged report channel: a test pre-creating FORGE_REPORT_PATH never outvotes the observed exit", () => {
+  it("no report file: forged frames on the old report path or on every socket a test holds (but its IPC) change nothing", () => {
     const ws = freshDir("forged");
     const id = (title: string) => ["tests/a.test.ts", "forge-v01", ["S"], title, 0];
     const body = JSON.stringify({ format: 1, failures: [], inventory: { format: 1, files: [{ file: "tests/a.test.ts", project: "forge-v01", collection: "ok" }],
       tests: [{ id: id("one"), status: "passed" }, { id: id("two"), status: "passed" }], errors: [], reason: "passed" } });
     const frame = `FORGE-REPORT-V1 ${body.length}\n${body}`;
-    const forge = (assertion: string) => `async () => {\n    const fs = await import('node:fs');\n` +
-      `    fs.writeFileSync(process.env['FORGE_REPORT_PATH'] ?? '', ${JSON.stringify(frame)}, { flag: 'wx' });\n    ${assertion};\n  }`;
+    // Old file channel plus a spray of every socket descriptor of the Vitest fork except its own IPC channel.
+    const forge = (assertion: string) => `async () => {\n    const fs = await import('node:fs');\n    const f = ${JSON.stringify(frame)};\n` +
+      `    try { fs.writeFileSync('/out/report', f, { flag: 'wx' }); } catch {}\n` +
+      `    const ipc = (process as unknown as { channel?: { fd?: number } }).channel?.fd;\n` +
+      `    for (const n of fs.readdirSync('/proc/self/fd')) {\n` +
+      `      const fd = Number(n);\n      let target = '';\n      try { target = fs.readlinkSync('/proc/self/fd/' + n); } catch {}\n` +
+      `      if (fd > 2 && fd !== ipc && target.startsWith('socket:')) { try { fs.writeSync(fd, f); } catch {} }\n    }\n    ${assertion};\n  }`;
     const failing = caseTree({ "tests/a.test.ts": TEST(forge("expect(one()).toBe(2)")) });
     const passing = caseTree({ "tests/a.test.ts": TEST(forge("expect(one()).toBe(1)")) });
-    // Both runs: the reporter's exclusive write fails, Vitest exits 1, the file holds the forged all-passed frame.
     for (const role of ["head", "base"]) {
       const rs = py([failing, passing].map((root) => ({ fn: "worker.run_tests", args: [root, NODE_MODULES, ws, ["tests/a.test.ts"]], kwargs: { role, _runner: process.execPath } })));
-      expect(rs.map(outcome), role).toEqual(["TEST_INVENTORY", "TEST_INVENTORY"]);
+      const [f, p] = rs.map((r) => r.ok as { exitCode: number; report: { inventory: { reason: string; tests: { id: unknown[]; status: string }[] } } });
+      expect([f!.exitCode, f!.report.inventory.reason, p!.exitCode, p!.report.inventory.reason], role).toEqual([1, "failed", 0, "passed"]);
+      expect(f!.report.inventory.tests.map((t) => [t.id[3], t.status])).toEqual([["one", "failed"], ["two", "passed"]]);
     }
     expect(readdirSync(ws)).toEqual([]);
   }, 20_000);
+
+  it("PKG §11: an unreadable or exit-contradicting BASE report is TEST_BASELINE (TEST_INVENTORY for HEAD)", () => {
+    const ws = freshDir("baseline");
+    // The test SIGKILLs the Vitest main process: no report at all, exit 137.
+    const killed = caseTree({ "tests/a.test.ts": TEST("() => { process.kill(process.ppid, 'SIGKILL'); }") });
+    const rs = py(["base", "head"].map((role) => ({ fn: "worker.run_tests", args: [killed, NODE_MODULES, ws, ["tests/a.test.ts"]], kwargs: { role, _runner: process.execPath } })));
+    expect(rs.map(outcome)).toEqual(["TEST_BASELINE", "TEST_INVENTORY"]);
+    expect(readdirSync(ws)).toEqual([]);
+  }, 20_000);
+
+  it("collect-only listing: runtime identities, no test body and no hook runs; equal to the run's; collection error → TEST_INVENTORY", () => {
+    const ws = freshDir("list");
+    const marker = join(base, "list-ran");
+    const dynamic = `import { beforeAll, describe, it } from 'vitest';\nimport { writeFileSync } from 'node:fs';\n` +
+      `beforeAll(() => { writeFileSync(${JSON.stringify(marker)}, 'hook'); });\n` +
+      `describe('D', () => {\n  for (const n of [1, 2]) it(\`n\${n}\`, () => {});\n  it.each([1, 1])('e %i', () => {});\n` +
+      `  it.skip('s', () => {});\n  it.todo('t');\n  it('w', () => { writeFileSync(${JSON.stringify(marker)}, 'body'); });\n});\n`;
+    const root = caseTree({ "tests/a.test.ts": TEST("() => expect(one()).toBe(1)"), "tests/d.test.ts": dynamic });
+    const broken = caseTree({ "tests/a.test.ts": "import { it } from 'vitest';\nthrow new Error('collect');\nit('x', () => {});\n" });
+    const files = ["tests/a.test.ts", "tests/d.test.ts"];
+    const [listed, bad] = py([
+      { fn: "worker.list_tests", args: [root, NODE_MODULES, ws, files], kwargs: { _runner: process.execPath } },
+      { fn: "worker.list_tests", args: [broken, NODE_MODULES, ws, ["tests/a.test.ts"]], kwargs: { _runner: process.execPath } },
+    ]);
+    expect(existsSync(marker)).toBe(false); // neither the hook nor a body ran
+    expect(outcome(bad!)).toBe("TEST_INVENTORY");
+    const tests = (listed!.ok as { tests: { id: unknown[]; status: string }[] }).tests;
+    expect(tests.map((t) => `${String(t.id[0])}:${String(t.id[3])}:${String(t.id[4])}:${t.status}`)).toEqual([
+      "tests/a.test.ts:one:0:skipped", "tests/a.test.ts:two:0:skipped", "tests/d.test.ts:e 1:0:skipped", "tests/d.test.ts:e 1:1:skipped",
+      "tests/d.test.ts:n1:0:skipped", "tests/d.test.ts:n2:0:skipped", "tests/d.test.ts:s:0:skipped", "tests/d.test.ts:t:0:skipped", "tests/d.test.ts:w:0:skipped",
+    ]);
+    const run = py1("worker.run_tests", [root, NODE_MODULES, ws, files], { _runner: process.execPath }).ok as { report: { inventory: { tests: { id: unknown[]; status: string }[] } } };
+    const head = run.report.inventory;
+    expect(head.tests.map((t) => t.id)).toEqual(tests.map((t) => t.id));
+    const green = { ...head, tests: head.tests.filter((t) => t.status === "passed") };
+    expect(outcome(py1("inventory.compare_inventory", [green, head, ["tests/d.test.ts"], files, listed!.ok]))).toBe("TEST_STATUS"); // skip and todo
+    expect(readdirSync(ws)).toEqual([]);
+    removeTree(marker);
+  }, 30_000);
+
+  it("residual (PKG §6): code in a test body can flip its own status in-process; no channel is involved", () => {
+    // The report is faithful to Vitest's main-process state, and that state comes from the fork that runs the
+    // body: a body that throws but marks its own task as an expected failure is reported "passed".
+    const ws = freshDir("residual");
+    const root = caseTree({ "tests/a.test.ts": TEST("(ctx) => { (ctx.task as { fails?: boolean }).fails = true; throw new Error('real failure'); }") });
+    const r = py1("worker.run_tests", [root, NODE_MODULES, ws, ["tests/a.test.ts"]], { _runner: process.execPath }).ok as { exitCode: number; report: { inventory: { tests: { id: unknown[]; status: string }[] } } };
+    expect([r.exitCode, ...r.report.inventory.tests.map((t) => `${String(t.id[3])}:${t.status}`)]).toEqual([0, "one:passed", "two:passed"]);
+    expect(readdirSync(ws)).toEqual([]);
+  }, 15_000);
 
   it("AV-122 injection fixture: real offline npm ci never runs root or dependency lifecycle scripts; HEAD .npmrc never used", () => {
     const ws = freshDir("install");
@@ -309,19 +378,35 @@ describe("measured isolation in real Docker (AV-123..125)", () => {
   it("probe worker with exactly the PKG §6 flags reports measured denials (or EXECUTION_SANDBOX without a daemon)", () => {
     const ws = freshDir("probe");
     const root = caseTree({ "tests/a.test.ts": TEST("() => expect(one()).toBe(1)") });
-    const r = py1("worker.run_probes", [root, NODE_MODULES, ws], { image: IMAGE, docker_host: DOCKER_HOST });
+    const r = py1("probes.run_probes", [root, NODE_MODULES, ws], { image: IMAGE, docker_host: DOCKER_HOST });
     if (!dockerUp) {
       expect(outcome(r)).toBe("EXECUTION_SANDBOX");
       return;
     }
     expect(outcome(r)).toBe("PASS");
     const records = r.ok as { probeId: string; attempted: boolean; denied: boolean; observationCode: string }[];
-    expect(records.map((x) => x.probeId).sort()).toEqual(["actions-command-file", "docker-socket", "network", "readonly-case", "readonly-node-modules", "readonly-rootfs", "readonly-test-file", "readonly-trusted"]);
+    expect(records.map((x) => x.probeId).sort()).toEqual(["actions-command-file", "docker-socket", "network", "proc-parent-fd", "proc-parent-mem", "readonly-case", "readonly-node-modules", "readonly-rootfs", "readonly-test-file", "readonly-trusted"]);
+    expect(records.find((x) => x.probeId === "proc-parent-mem")!.observationCode).toBe("EACCES");
     expect(records.every((x) => x.attempted && x.denied)).toBe(true);
     expect(records.find((x) => x.probeId === "network")!.observationCode).toBe("ENETUNREACH");
     expect(records.find((x) => x.probeId === "docker-socket")!.observationCode).toBe("ENOENT");
     expect(readdirSync(ws)).toEqual([]);
   }, 15_000);
+
+  it("a readable (dumpable) node binary: the entry refuses before any test code runs → EXECUTION_SANDBOX", () => {
+    const ws = freshDir("dumpable");
+    const root = caseTree({ "tests/a.test.ts": TEST("() => expect(one()).toBe(1)") });
+    const kw = { image: DUMPABLE, docker_host: DOCKER_HOST };
+    const rs = py([
+      { fn: "worker.run_tests", args: [root, NODE_MODULES, ws, ["tests/a.test.ts"]], kwargs: kw },
+      { fn: "worker.run_tests", args: [root, NODE_MODULES, ws, ["tests/a.test.ts"]], kwargs: { ...kw, role: "base" } },
+      { fn: "worker.list_tests", args: [root, NODE_MODULES, ws, ["tests/a.test.ts"]], kwargs: kw },
+      { fn: "worker.run_typecheck", args: [root, NODE_MODULES, ws], kwargs: kw },
+      { fn: "probes.run_probes", args: [root, NODE_MODULES, ws], kwargs: kw },
+    ]);
+    expect(rs.map(outcome)).toEqual(Array(5).fill("EXECUTION_SANDBOX"));
+    expect(readdirSync(ws)).toEqual([]);
+  }, 30_000);
 
   it("a test that attempts socket, network, Actions file and read-only writes: denial observed, decision unchanged", () => {
     const ws = freshDir("decision");

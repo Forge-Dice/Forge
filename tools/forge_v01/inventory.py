@@ -276,14 +276,22 @@ def missing_base_identities(base: Inventory, head: Inventory) -> Counter:
     return Counter(t.id for t in base.tests) - Counter(t.id for t in head.tests)
 
 
-def compare_inventory(base, head, added_test_files: list, expected_head_files: list) -> None:
-    """PKG §7 HEAD rule. Inventory form problems before status problems."""
+def compare_inventory(base, head, added_test_files: list, expected_head_files: list, listed=None) -> None:
+    """PKG §7 HEAD rule. Inventory form problems before status problems.
+
+    `listed`: the collect-only inventory (worker.list_tests) of the same HEAD tree; when given, its files and
+    identities must equal the report's exactly and it must be complete (no collection error).
+    """
     base = check_baseline(base)
     head = as_inventory(head)
     if not _complete(head):
         raise _bad()
     if [f.file for f in head.files] != sorted(set(expected_head_files), key=lambda p: p.encode("utf-8")):
         raise _bad()
+    if listed is not None:
+        listed = as_inventory(listed)
+        if not _complete(listed) or listed.files != head.files or [t.id for t in listed.tests] != [t.id for t in head.tests]:
+            raise _bad()
     if missing_base_identities(base, head):
         raise _bad()
     base_ids = {t.id for t in base.tests}

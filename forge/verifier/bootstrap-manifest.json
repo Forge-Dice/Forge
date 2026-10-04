@@ -3,7 +3,7 @@
   "files": [
     {
       "path": "tools/forge_v01/main.py",
-      "sha256": "e5808d598f79e6bc998e71df09b2515b01c1159aca8609f9928d21aaf3a77a7d"
+      "sha256": "3cbc68bd32a45aa47fca59be8f3b9ce982a792963651e590b4386f8f5a571a44"
     },
     {
       "path": "tools/forge_v01/bootstrap.py",
@@ -31,11 +31,11 @@
     },
     {
       "path": "tools/forge_v01/inventory-reporter.mjs",
-      "sha256": "580d758d04b22ec3a4bccbe8797297b832edc795a1ef41a4593c55b0b12de253"
+      "sha256": "e68aad4eb9dbd632547c729ccf5d738eae15cf42bf98580d7069fe3afdde73e8"
     },
     {
       "path": "tools/forge_v01/inventory.py",
-      "sha256": "d3ae3c1f11a47336e9268a663bfdb6199f497337126d5fe43cf05effb2138c79"
+      "sha256": "834cc397e4620575dc02329075ef9c9c14ef2cb22a583f09830aed8f0f2af618"
     },
     {
       "path": "tools/forge_v01/materialize.py",
@@ -62,6 +62,10 @@
       "sha256": "d16b73197d3f2bee1ade3d9498ef3246945dd42947a8faf5f5dbfdafe7d6980a"
     },
     {
+      "path": "tools/forge_v01/probes.py",
+      "sha256": "1da90e175ae35b33d1ef3e39629a551396a1387f99c0850cc6bd0d434c74862b"
+    },
+    {
       "path": "tools/forge_v01/process.py",
       "sha256": "93e6b774dc7c57cd7e5644672c9ace14074b3fa506bb7a2280a4d252cc40d28b"
     },
@@ -83,15 +87,15 @@
     },
     {
       "path": "tools/forge_v01/worker-entry.mjs",
-      "sha256": "f65fb692579271b76a323ced6b9b1412a723c67df5d1ca320a35c92aafeba00c"
+      "sha256": "29dc045dc8c70b337499f054bfd4dae78fd2a2f7d6448eebaa95a84ca9f6f307"
     },
     {
       "path": "tools/forge_v01/worker-probe.mjs",
-      "sha256": "5ad4f725937d2150b2d702eb70e8992303054756051b6e2d5e2b9076ab28f773"
+      "sha256": "56ab08d661680428e192a55f5bbb7d7f3ee47d5888873f6c1fdd7dc1c61d2d2b"
     },
     {
       "path": "tools/forge_v01/worker.py",
-      "sha256": "60dd2999795ea0d224b923fbceb0d34f5c040efa8524dfbe6cdd5c276eca9130"
+      "sha256": "b75547ee559eab3107d0cf286b117753f4d7de7b7b3504a82c135b8050c6f2ba"
     },
     {
       "path": "src/forge/contract-document.ts",

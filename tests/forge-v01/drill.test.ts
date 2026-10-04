@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { FixtureRepo, removeTree, tempRoot, type TreeSpec } from "./helpers.ts";
@@ -130,8 +130,8 @@ const FORGED_MUTANT = forgedFrame([ADDED_TEST], [
   { id: NAMED, status: "failed" }, { id: id(ADDED_TEST, "non-negative input is unchanged"), status: "passed" },
 ]);
 // The test really fails (7 -> 8), so the honest verdict is a failure. Before any test runs, the file writes
-// a success frame and a fake PASS record to stdout and pre-creates the report file the trusted reporter
-// writes later ("wx"), choosing the HEAD or the mutant forgery from the source under test.
+// a success frame and a fake PASS record to stdout and tries to pre-create the report file of the former
+// file channel (/out/report), choosing the HEAD or the mutant forgery from the source under test.
 const FORGED_TEST = `import { readFileSync, writeFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { clampAtZero } from "../../src/forge-drill/clamp-at-zero.ts";
@@ -141,9 +141,9 @@ const forged = source.includes("? 0 : n") ? ${JSON.stringify(FORGED_HEAD)} : ${J
 process.stdout.write(forged + "\\n");
 console.log(JSON.stringify({ format: 1, outcome: "PASS", policyAssurance: "owner_attested" }));
 try {
-  writeFileSync(process.env["FORGE_REPORT_PATH"] ?? "/out/report", forged, { flag: "wx" });
+  writeFileSync("/out/report", forged, { flag: "wx" });
 } catch {
-  // the report file exists already: keep running the tests
+  // no report file exists any more (the report is the entry's fd 3): keep running the tests
 }
 
 describe("clampAtZero", () => {
@@ -154,6 +154,127 @@ describe("clampAtZero", () => {
   test("non-negative input is unchanged", () => {
     expect(clampAtZero(7)).toBe(8);
   });
+});
+`;
+
+// Beautify an exit-0 run: the honest run has one skipped test (exit 0, reason "passed", TEST_STATUS). The file
+// tries to turn it into "passed" through every report-channel vector a same-uid test can reach: a detached
+// process that keeps overwriting the former report file and every listable /proc/<pid>/fd entry for 20 s (so it
+// outlives the reporter's write), and, in the test body, every socket descriptor of the fork except its IPC.
+const SKIP_TITLE = "pinned later";
+const FORGED_SKIP = forgedFrame([ADDED_TEST, BASE_TEST], [
+  ...["negative input clamps to zero", "non-negative input is unchanged", SKIP_TITLE].map((t) => ({ id: id(ADDED_TEST, t), status: "passed" })),
+  ...["negative input clamps to zero", "zero stays zero", "positive input is unchanged"].map((t) => ({ id: id(BASE_TEST, t), status: "passed" })),
+]);
+const OVERWRITER = `const fs = require("node:fs");
+const forged = ${JSON.stringify(FORGED_SKIP)};
+const end = Date.now() + 20000;
+const tick = () => {
+  try { fs.writeFileSync("/out/report", forged); } catch {}
+  for (const pid of fs.readdirSync("/proc").filter((p) => /^[0-9]+$/.test(p) && Number(p) !== process.pid)) {
+    let fds = [];
+    try { fds = fs.readdirSync("/proc/" + pid + "/fd"); } catch { continue; }
+    for (const n of fds) { try { const fd = fs.openSync("/proc/" + pid + "/fd/" + n, "w"); fs.writeSync(fd, forged); fs.closeSync(fd); } catch {} }
+  }
+  if (Date.now() < end) setTimeout(tick, 25);
+};
+tick();`;
+const BEAUTIFY_TEST = `import { spawn } from "node:child_process";
+import { readdirSync, readlinkSync, writeSync } from "node:fs";
+import { describe, expect, test } from "vitest";
+import { clampAtZero } from "../../src/forge-drill/clamp-at-zero.ts";
+
+const forged = ${JSON.stringify(FORGED_SKIP)};
+spawn(process.execPath, ["-e", ${JSON.stringify(OVERWRITER)}], { detached: true, stdio: "ignore" }).unref();
+
+describe("clampAtZero", () => {
+  test("negative input clamps to zero", () => {
+    const ipc = (process as unknown as { channel?: { fd?: number } }).channel?.fd;
+    for (const n of readdirSync("/proc/self/fd")) {
+      let target = "";
+      try { target = readlinkSync("/proc/self/fd/" + n); } catch {}
+      if (Number(n) > 2 && Number(n) !== ipc && target.startsWith("socket:")) { try { writeSync(Number(n), forged); } catch {} }
+    }
+    expect(clampAtZero(-5)).toBe(0);
+    expect(clampAtZero(-1)).toBe(0);
+  });
+
+  test("non-negative input is unchanged", () => {
+    expect(clampAtZero(7)).toBe(7);
+  });
+
+  test.skip("${SKIP_TITLE}", () => {});
+});
+`;
+// BASE whose suite is broken: the BASE test SIGKILLs the Vitest main process, so the BASE run has no report
+// and a signal exit (worker.run_tests, PKG §11: TEST_BASELINE, not TEST_INVENTORY).
+const BASE_KILLER = `import { test } from "vitest";
+
+test("kills the Vitest main process", () => {
+  process.kill(process.ppid, "SIGKILL");
+});
+`;
+// Report-channel vectors, measured from a HEAD test inside a Vitest fork of the real worker: each observation is
+// an errno (or ALLOWED); ptrace / pidfd_getfd / process_vm_readv go through Python ctypes in the image. The test
+// fails on purpose with the observations as its error name, the one field the report carries back.
+const VECTOR_PY = `import ctypes, errno, sys
+libc = ctypes.CDLL(None, use_errno=True)
+libc.syscall.restype = ctypes.c_long
+def res(r):
+    return "ALLOWED" if r >= 0 else errno.errorcode.get(ctypes.get_errno(), "E?")
+class Iov(ctypes.Structure):
+    _fields_ = [("base", ctypes.c_void_p), ("len", ctypes.c_size_t)]
+L = ctypes.c_long  # every syscall argument as a full register: variadic calls do not widen ints
+out = {}
+for arg in sys.argv[1:]:
+    label, pid = arg.split(":")
+    pid = int(pid)
+    r = libc.syscall(L(101), L(16), L(pid), L(0), L(0))  # ptrace(PTRACE_ATTACH)
+    out[label + "Ptrace"] = res(r)
+    if r >= 0:  # attached (tracee stopped): wait for the stop, then detach so the run can go on
+        libc.waitpid(ctypes.c_int(pid), None, ctypes.c_int(0x40000000))
+        libc.syscall(L(101), L(17), L(pid), L(0), L(0))
+    pfd = libc.syscall(L(434), L(pid), L(0))  # pidfd_open
+    out[label + "PidfdGetfd"] = res(libc.syscall(L(438), L(pfd), L(3), L(0))) if pfd >= 0 else "open-" + res(pfd)
+    buf = ctypes.create_string_buffer(8)
+    local, remote = Iov(ctypes.cast(buf, ctypes.c_void_p), 8), Iov(4096, 8)
+    # process_vm_readv of an unmapped address: EPERM when access is denied, EFAULT when it would be allowed
+    out[label + "VmRead"] = res(libc.syscall(L(310), L(pid), ctypes.byref(local), L(1), ctypes.byref(remote), L(1), L(0)))
+print(" ".join(k + "=" + v for k, v in out.items()))
+`;
+const VECTORS_TEST = `import { execFileSync } from "node:child_process";
+import fs from "node:fs";
+import { test } from "vitest";
+
+const errno = (f: () => unknown): string => {
+  try { f(); return "ALLOWED"; } catch (e) { return (e as { code?: string }).code ?? "ERR"; }
+};
+
+test("vectors", () => {
+  const main = process.ppid;
+  const o: Record<string, string> = {};
+  o["reportEnv"] = Object.keys(process.env).filter((k) => k.startsWith("FORGE_REPORT")).map((k) => k + "=" + process.env[k]).join(",");
+  o["outFile"] = errno(() => fs.writeFileSync("/out/report", "x", { flag: "wx" }));
+  for (const [name, pid] of [["main", main], ["entry", 1]] as const) {
+    o[name + "Mem"] = errno(() => fs.closeSync(fs.openSync("/proc/" + pid + "/mem", "r+")));
+    o[name + "FdDir"] = errno(() => fs.readdirSync("/proc/" + pid + "/fd"));
+    o[name + "Fd3"] = errno(() => fs.closeSync(fs.openSync("/proc/" + pid + "/fd/3", "w")));
+    o[name + "Stdout"] = errno(() => fs.closeSync(fs.openSync("/proc/" + pid + "/fd/1", "w")));
+    o[name + "Signal"] = errno(() => process.kill(pid, 0));
+  }
+  const others = fs.readdirSync("/proc").filter((p) => /^[0-9]+$/.test(p) && Number(p) !== process.pid);
+  o["listableFdDirs"] = others.filter((p) => errno(() => fs.readdirSync("/proc/" + p + "/fd")) === "ALLOWED").join("+") || "none";
+  const ipc = (process as unknown as { channel?: { fd?: number } }).channel?.fd;
+  o["ipcFd"] = String(ipc);
+  o["otherSockets"] = String(fs.readdirSync("/proc/self/fd").filter((n) => {
+    let target = "";
+    try { target = fs.readlinkSync("/proc/self/fd/" + n); } catch {}
+    return Number(n) > 2 && Number(n) !== ipc && target.startsWith("socket:");
+  }).length);
+  o["syscalls"] = execFileSync("/opt/python/bin/python3.12", ["-I", "-c", ${JSON.stringify(VECTOR_PY)}, "main:" + main, "entry:1"], { encoding: "utf8" }).trim();
+  const e = new Error("observed");
+  e.name = "V " + JSON.stringify(o);
+  throw e;
 });
 `;
 
@@ -168,7 +289,8 @@ type Fixture = {
  * DEV (default): scope create ADDED_TEST, modify CLAMP, mutant `return n`. OWNER_OPS: the Owner's own PR on
  * forge/owner/; scope additionally creates APPROVAL (the plan's only approvedTcbPaths entry), no mutants.
  */
-function fixture(root: string, name: string, headFiles: Record<string, string>, profile: Profile = "DEV"): Fixture {
+function fixture(root: string, name: string, headFiles: Record<string, string>, profile: Profile = "DEV",
+  baseOverrides: Record<string, string> = {}): Fixture {
   const ops = profile === "OWNER_OPS";
   const repo = new FixtureRepo(join(root, name));
   const seed = repo.commit(repo.tree({ "README.md": "seed\n" }), [], "seed");
@@ -214,6 +336,7 @@ function fixture(root: string, name: string, headFiles: Record<string, string>, 
     "tsconfig.json": read("tsconfig.json"),
     [CLAMP]: read(CLAMP),
     [BASE_TEST]: read(BASE_TEST),
+    ...baseOverrides,
   };
   const base = repo.commit(repo.tree(nest(baseFiles)), [seed], "base");
   const head = repo.commit(repo.tree(nest({ ...baseFiles, ...headFiles })), [base], "head");
@@ -334,6 +457,28 @@ function inImage(mode: "stage0" | "adapter", f: Fixture, api: Obj, job: string, 
   return { status: r.status, record, stdout: r.stdout ?? "", stderr: r.stderr ?? "", seconds: (Date.now() - started) / 1000, requests };
 }
 
+/** e2e_harness.py vectors: the working-tree verifier's worker.run_tests on one HEAD test file, real DockerRunner. */
+function vectorsInImage(testText: string): Run {
+  const dir = join(root, `run-${++runs}`);
+  mkdirSync(join(dir, "case", "tests"), { recursive: true, mode: 0o700 });
+  cpSync(join(REPO_ROOT, "tools", "forge_v01"), join(dir, "tools", "forge_v01"), { recursive: true });
+  for (const f of ["package.json", "package-lock.json", "tsconfig.json"]) writeFileSync(join(dir, f === "tsconfig.json" ? "case/tsconfig.json" : f), read(f));
+  writeFileSync(join(dir, "case", "package.json"), read("package.json"));
+  writeFileSync(join(dir, "case", "tests", "vectors.test.ts"), testText);
+  const sock = DOCKER_HOST!.replace(/^unix:\/\//, "");
+  const argv = ["run", "--rm", "--network=none", `--volume=${sock}:/var/run/docker.sock`, `--volume=${HERE}:${HERE}:ro`, `--volume=${root}:${root}`,
+    "--entrypoint", PY, IMAGE!, "-I", "-B", join(HERE, "e2e_harness.py"), "vectors", dir, IMAGE!];
+  const started = Date.now();
+  const r = docker(argv, 10 * 60_000);
+  let record: Obj | null = null;
+  try {
+    record = JSON.parse((r.stdout ?? "").trim()) as Obj;
+  } catch {
+    record = null;
+  }
+  return { status: r.status, record, stdout: r.stdout ?? "", stderr: r.stderr ?? "", seconds: (Date.now() - started) / 1000, requests: [] };
+}
+
 // ------------------------------------------------------------------ drill table
 
 type Row = { case: string; step: string; expected: string; actual: string; seconds: string };
@@ -380,6 +525,7 @@ const enabled = Boolean(DOCKER_HOST) && IMAGE !== null;
 
 describe.skipIf(!enabled)("forge drill: stage0.main in the real image, real DockerRunner, fake GitHub", () => {
   let good: Fixture, weak: Fixture, outOfScope: Fixture, crash: Fixture, hang: Fixture, forged: Fixture, ops: Fixture, opsSrc: Fixture;
+  let beautify: Fixture, brokenBase: Fixture;
   const gate = (f: Fixture, api: Obj) => () => inImage("stage0", f, api, "forge-gate");
   const verify = (f: Fixture, api: Obj, g: Run, opts: RunOpts = {}) => () =>
     inImage("stage0", f, api, "forge-verify", { ...opts, facts: { receipt: g.record?.["receipt"] ?? null } });
@@ -400,6 +546,8 @@ describe.skipIf(!enabled)("forge drill: stage0.main in the real image, real Dock
     crash = fixture(root, "crash", { [CLAMP]: TERNARY, [ADDED_TEST]: CRASH_TEST });
     hang = fixture(root, "hang", { [CLAMP]: TERNARY, [ADDED_TEST]: HANG_TEST });
     forged = fixture(root, "forged", { [CLAMP]: TERNARY, [ADDED_TEST]: FORGED_TEST });
+    beautify = fixture(root, "beautify", { [CLAMP]: TERNARY, [ADDED_TEST]: BEAUTIFY_TEST });
+    brokenBase = fixture(root, "broken-base", { [CLAMP]: TERNARY, [ADDED_TEST]: GOOD_TEST }, "DEV", { [BASE_TEST]: BASE_KILLER });
     const record = `# ${TASK} Owner record\n\nDrill approval note (OWNER_OPS).\n`;
     ops = fixture(root, "ops", { [APPROVAL]: record, [ADDED_TEST]: GOOD_TEST }, "OWNER_OPS");
     opsSrc = fixture(root, "ops-src", { [APPROVAL]: record, [ADDED_TEST]: GOOD_TEST, [CLAMP]: TERNARY }, "OWNER_OPS");
@@ -511,13 +659,52 @@ describe.skipIf(!enabled)("forge drill: stage0.main in the real image, real Dock
   drill("9c HEAD test forges the report channel and stdout", (rows) => {
     const api = approved(forged);
     const g = gatePasses("9c forged report", forged, api, rows);
-    // stdout never reaches the supervisor (worker-entry.mjs discards it). The pre-created report file makes the
-    // reporter's "wx" write fail, so Vitest exits 1 while the forged frame says "passed": worker.run_tests
-    // rejects a frame that disagrees with the observed exit (before that check this case was a full PASS).
-    const v = step("9c forged report", "verify", "FAIL TEST_INVENTORY (worker)", verify(forged, api, g), rows);
+    // stdout never reaches the supervisor (worker-entry.mjs discards it) and no report file exists any more (the
+    // report is the entry's fd 3): the forgery has no effect at all and the honest verdict stands, the failed
+    // test. (With the former /out/report file this case was a full PASS, then TEST_INVENTORY.)
+    const v = step("9c forged report", "verify", "FAIL TEST_STATUS (inventory)", verify(forged, api, g), rows);
     expect(v.record?.["outcome"]).not.toBe("PASS");
-    expect(shown(v)).toBe("FAIL TEST_INVENTORY (worker)");
+    expect(shown(v)).toBe("FAIL TEST_STATUS (inventory)");
     expect(v.stdout.trim().split("\n")).toHaveLength(1); // the verifier's one record; nothing from the test
+  }, 900_000);
+
+  drill("9e HEAD test beautifies an exit-0 run (skipped → passed) after the reporter", (rows) => {
+    const api = approved(beautify);
+    const g = gatePasses("9e beautify", beautify, api, rows);
+    // Exit 0, reason "passed", one skipped test. Neither the overwriter (former report file, every listable
+    // /proc/<pid>/fd) nor the socket spray reaches the entry's fd-3 channel: the honest skipped status decides.
+    const v = step("9e beautify", "verify", "FAIL TEST_STATUS (inventory)", verify(beautify, api, g), rows);
+    expect(v.record?.["outcome"]).not.toBe("PASS");
+    expect(shown(v)).toBe("FAIL TEST_STATUS (inventory)");
+  }, 900_000);
+
+  drill("9f report-channel vectors measured from a HEAD test in the real worker", (rows) => {
+    const r = step("9f vectors", "run_tests (head)", "exit 1, observations", () => vectorsInImage(VECTORS_TEST), rows);
+    const names = (r.record?.["errorNames"] as string[] | undefined) ?? [];
+    const observed = names.length === 1 && names[0]!.startsWith("V ") ? (JSON.parse(names[0]!.slice(2)) as Record<string, string>) : null;
+    rows.at(-1)!.actual = observed ? `exit ${String(r.record?.["exitCode"])}, observations` : `no observations: ${(r.stderr || r.stdout).trim().slice(-300)}`;
+    console.log(`\n9f observations\n${JSON.stringify(observed, null, 2)}\n`);
+    expect(observed, r.stderr).not.toBeNull();
+    const syscalls = Object.fromEntries(observed!["syscalls"]!.split(" ").map((kv) => kv.split("=") as [string, string]));
+    expect({ ...observed, syscalls }).toEqual({
+      reportEnv: "FORGE_REPORT_FD=3", outFile: "ENOENT",
+      mainMem: "EACCES", mainFdDir: "EACCES", mainFd3: "EACCES", mainStdout: "EACCES", mainSignal: "ALLOWED",
+      entryMem: "EACCES", entryFdDir: "EACCES", entryFd3: "EACCES", entryStdout: "EACCES", entrySignal: "ALLOWED",
+      listableFdDirs: "none", ipcFd: "3", otherSockets: "0",
+      syscalls: {
+        mainPtrace: "EPERM", mainPidfdGetfd: "EPERM", mainVmRead: "EPERM",
+        entryPtrace: "EPERM", entryPidfdGetfd: "EPERM", entryVmRead: "EPERM",
+      },
+    });
+  }, 900_000);
+
+  drill("9g BASE suite broken: a BASE test kills the Vitest main process", (rows) => {
+    const api = approved(brokenBase);
+    const g = gatePasses("9g broken BASE", brokenBase, api, rows);
+    // No report and a signal exit in the BASE run: PKG §11 (before a green BASE every test cause is
+    // TEST_BASELINE); this was TEST_INVENTORY before.
+    const v = step("9g broken BASE", "verify", "FAIL TEST_BASELINE (worker)", verify(brokenBase, api, g), rows);
+    expect(shown(v)).toBe("FAIL TEST_BASELINE (worker)");
   }, 900_000);
 
   drill("9d Owner review edited while the worker runs", (rows) => {
