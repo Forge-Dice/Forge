@@ -167,7 +167,8 @@ def read_reviews(transport, pr: int, *, phase: str = "final") -> list[dict]:
             isinstance(item, dict),
             positive_id(_field(item, "id")),
             user is None or isinstance(user, dict),
-            _field(item, "state") in REVIEW_STATES,
+            isinstance(_field(item, "state"), str) and item["state"] in REVIEW_STATES,
+            isinstance(item, dict) and "commit_id" in item and "submitted_at" in item,  # nullable, never absent
             _field(item, "commit_id") is None or is_sha(_field(item, "commit_id")),
             _field(item, "submitted_at") is None or isinstance(_field(item, "submitted_at"), str),
             body is None or isinstance(body, str),
@@ -207,7 +208,7 @@ def read_jobs(transport, run_id: int, attempt: int, *, phase: str = "final") -> 
             _same_id(_field(item, "run_id"), run_id),
             positive_id(_field(item, "run_attempt")),
             isinstance(_field(item, "name"), str),
-            _field(item, "status") in JOB_STATUSES,
+            isinstance(_field(item, "status"), str) and item["status"] in JOB_STATUSES,
             conclusion is None or isinstance(conclusion, str),
         )
         _require(all(shape) and item["id"] not in seen, phase)

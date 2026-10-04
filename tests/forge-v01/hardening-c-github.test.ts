@@ -49,3 +49,20 @@ describe("github.py: bool is never an id (Python True == 1)", () => {
     expect(read("read_jobs", { [path]: { total_count: 1, jobs: [apiJob(5, { run_id: true })] } }, 1, 2)).toBe("EXECUTION_API");
   });
 });
+
+describe("github.py: malformed review/job records are EXECUTION_API, not a Python exception", () => {
+  test("control review record passes", () => {
+    expect(read("read_reviews", { [reviewsPath(7)]: [[apiReview()]] }, 7)).toBe("PASS");
+  });
+  test("review without commit_id or submitted_at key", () => {
+    const { commit_id: _c, ...noCommit } = apiReview();
+    const { submitted_at: _s, ...noSubmitted } = apiReview();
+    expect(read("read_reviews", { [reviewsPath(7)]: [[noCommit]] }, 7)).toBe("EXECUTION_API");
+    expect(read("read_reviews", { [reviewsPath(7)]: [[noSubmitted]] }, 7)).toBe("EXECUTION_API");
+  });
+  test("review state / job status of an unhashable JSON type", () => {
+    expect(read("read_reviews", { [reviewsPath(7)]: [[apiReview({ state: ["APPROVED"] })]] }, 7)).toBe("EXECUTION_API");
+    expect(read("read_reviews", { [reviewsPath(7)]: [[apiReview({ state: {} })]] }, 7)).toBe("EXECUTION_API");
+    expect(read("read_jobs", { [jobsPath(1)]: { total_count: 1, jobs: [apiJob(5, { status: ["completed"] })] } }, RUN, 2)).toBe("EXECUTION_API");
+  });
+});

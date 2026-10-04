@@ -23,7 +23,7 @@
     },
     {
       "path": "tools/forge_v01/github.py",
-      "sha256": "147d73f165f9647b58f562699308980bb8c55f51444dda6e0c25122f46f1ab95"
+      "sha256": "b857dcfdb413828f1eab6c0abe4845cf36012de11828e2f813ac195c34991d8c"
     },
     {
       "path": "tools/forge_v01/history.py",
