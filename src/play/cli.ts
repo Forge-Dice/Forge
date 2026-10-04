@@ -1,15 +1,22 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { command, intro, loadText, newGame, saveText, type Game } from "./game.ts";
-import { loadVitrinePackage } from "./vitrine.ts";
+import { PLAY_CASES, loadPlayPackage, playCaseName } from "./cases.ts";
 
-// `npm run play`: "Die leere Vitrine" in the terminal over the real session reducer.
-
-const DEFAULT_SAVE = "vitrine.save.json";
+// `npm run play [-- <fall>]`: a case in the terminal over the real session reducer.
+// Cases: vitrine (default), brieföffner.
 
 async function main(): Promise<void> {
-  const pkg = loadVitrinePackage();
-  let game: Game = newGame(pkg);
+  const name = playCaseName(process.argv[2]);
+  if (name === null) {
+    console.log(`Unbekannter Fall „${process.argv[2]}“. Verfügbar: ${Object.keys(PLAY_CASES).join(", ")}.`);
+    process.exitCode = 1;
+    return;
+  }
+  const { clockOrigin } = PLAY_CASES[name];
+  const DEFAULT_SAVE = `${PLAY_CASES[name].dir}.save.json`;
+  const pkg = loadPlayPackage(name);
+  let game: Game = newGame(pkg, clockOrigin);
   const rl = createInterface({ input: process.stdin, output: process.stdout, terminal: process.stdin.isTTY });
   const prompt = () => process.stdout.write(game.state.phase === "solved" ? "\n(gelöst) > " : "\n> ");
   console.log(intro(game));
@@ -21,7 +28,7 @@ async function main(): Promise<void> {
       writeFileSync(file, saveText(game));
       console.log(`Gespeichert in ${file} (${game.state.events.length} Aktionen).`);
     } else if (word === "laden") {
-      const loaded = existsSync(file) ? loadText(pkg, readFileSync(file, "utf8")) : { ok: false as const, text: `Keine Datei ${file}.` };
+      const loaded = existsSync(file) ? loadText(pkg, readFileSync(file, "utf8"), clockOrigin) : { ok: false as const, text: `Keine Datei ${file}.` };
       if (loaded.ok) game = loaded.game;
       console.log(loaded.ok ? `Geladen: ${game.state.events.length} Aktionen.` : loaded.text);
     } else {

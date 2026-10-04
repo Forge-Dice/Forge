@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "bindings": {
+    "caseId": "case:letter-opener",
+    "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+    "solutionHash": "043fe945472d7cec41b7faeea39c07fea6d0f572f25e29f8002fc69f85089010",
+    "releaseHash": "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT"
+  },
+  "answerScope": [
+    "conclusion:ben-responsible",
+    "conclusion:anna-responsible"
+  ],
+  "ambiguityPolicy": "must_disambiguate",
+  "question": {
+    "kind": "required_literals"
+  },
+  "observations": [
+    {
+      "id": "observed:cuff",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:ben-at-murder",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:cuff-button"
+      }
+    },
+    {
+      "id": "public-rule:participation",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "responsible:ben",
+          "allOf": [
+            "observation:cuff"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:ben-responsible",
+            "value": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:garden",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:anna-in-garden",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:muddy-path"
+      }
+    },
+    {
+      "id": "public-rule:alibi",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "alibi:anna",
+          "allOf": [
+            "observation:garden"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:anna-responsible",
+            "value": false
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "observation:cuff",
+      "kind": "observation",
+      "observationId": "observed:cuff"
+    },
+    {
+      "id": "license:participation",
+      "kind": "observation",
+      "observationId": "public-rule:participation"
+    },
+    {
+      "id": "literal:ben",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:ben-responsible",
+        "value": true
+      }
+    },
+    {
+      "id": "observation:garden",
+      "kind": "observation",
+      "observationId": "observed:garden"
+    },
+    {
+      "id": "license:alibi",
+      "kind": "observation",
+      "observationId": "public-rule:alibi"
+    },
+    {
+      "id": "literal:anna",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:anna-responsible",
+        "value": false
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "responsible:ben",
+      "allOf": [
+        "observation:cuff",
+        "license:participation"
+      ],
+      "to": "literal:ben",
+      "license": "license:participation"
+    },
+    {
+      "id": "alibi:anna",
+      "allOf": [
+        "observation:garden",
+        "license:alibi"
+      ],
+      "to": "literal:anna",
+      "license": "license:alibi"
+    }
+  ],
+  "witnessStepIds": [
+    "search-library",
+    "search-garden"
+  ]
+}
