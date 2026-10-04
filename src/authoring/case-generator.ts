@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseCaseTruth } from "../domain/case-truth.ts";
 import { hashCaseTruth } from "../domain/case-truth.identity.ts";
@@ -205,9 +205,11 @@ const clockOf = (originHour: number, at: number) => `${originHour + Math.floor(a
 // ---------- Generator ----------
 
 const PLACEHOLDER = "TO_BE_COMPUTED_FROM_FINAL_ARTIFACT";
+export const MAX_SEED = 0xffffffff;
 
 export function generateCase(seed: number): GeneratedCase {
-  if (!Number.isSafeInteger(seed) || seed < 0) throw new RangeError("seed must be a non-negative safe integer");
+  // The PRNG state is 32 bits: larger seeds would silently repeat another seed's case.
+  if (!Number.isSafeInteger(seed) || seed < 0 || seed > MAX_SEED) throw new RangeError(`seed must be an integer from 0 to ${MAX_SEED}`);
   const random = prng(seed);
   const pick = <T>(list: readonly T[]): T => list[Math.floor(random() * list.length)]!;
   const draw = <T>(list: readonly T[], n: number): T[] => {
@@ -421,6 +423,8 @@ export function generateCase(seed: number): GeneratedCase {
       proposition(PR.cAtArgument, knows(true), at - 600, witnessed(E.argument)),
       proposition(PR.iAtAlibi, knows(true), at, witnessed(E.alibi)),
       proposition(PR.iAtScene, knows(false), at, witnessed(E.alibi)),
+      // Without this the innocent answers q02 ("Waren Sie bei X dabei?") with "Das weiß ich nicht."
+      proposition(PR.iAtMurder, knows(false), at, witnessed(E.alibi)),
       proposition(PR.cAtMurder, { kind: "uncertain", leaning: true }, at + 100, { kind: "author_modeled_inference" }),
     ],
   );
@@ -576,9 +580,17 @@ export function generateCase(seed: number): GeneratedCase {
   return { seed, title: truth.title, withLie, files };
 }
 
-/** Writes the generated case into dir (created if missing); returns the written file names. */
-export function writeGeneratedCase(generated: GeneratedCase, dir: string): string[] {
+/**
+ * Writes the generated case into dir (created if missing); returns the written file names. A folder
+ * that already holds files is refused unless forced: check-case reads every npc-* and interrogation-*
+ * file, so leftovers of another case would break it, and hand-written files would be overwritten.
+ * Forcing removes the old NPC files first.
+ */
+export function writeGeneratedCase(generated: GeneratedCase, dir: string, options: { force?: boolean } = {}): string[] {
   mkdirSync(dir, { recursive: true });
+  const existing = readdirSync(dir);
+  if (existing.length > 0 && options.force !== true) throw new Error(`Ordner ${dir} ist nicht leer (--force überschreibt)`);
+  for (const name of existing) if (/^(npc|interrogation)-.*\.json$/.test(name)) rmSync(join(dir, name));
   const names = Object.keys(generated.files).sort();
   for (const name of names) writeFileSync(join(dir, name), `${JSON.stringify(generated.files[name], null, 2)}\n`);
   return names;
