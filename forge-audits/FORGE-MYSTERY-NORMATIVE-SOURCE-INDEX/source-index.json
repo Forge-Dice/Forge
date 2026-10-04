@@ -1,0 +1,1859 @@
+{
+  "schema": "forge-mystery-normative-source-index/1",
+  "generatedAtUTC": "2026-10-04T17:55Z",
+  "repository": "Forge-Dice/Forge",
+  "mainObserved": "3d7545d843883418348004e68717399a64da7a7d",
+  "auditBranchesRead": 66,
+  "classes": [
+    "OWNER_DECISION",
+    "NORMATIVE_CONTRACT_CANDIDATE",
+    "NORMATIVE_OPERATIONAL_CANDIDATE",
+    "EXPERIMENTAL_EVIDENCE",
+    "INDEPENDENT_REVIEW",
+    "HISTORICAL_DESIGN",
+    "SUPERSEDED",
+    "PRIVATE/BLOCKED",
+    "REFERENCE_ONLY"
+  ],
+  "pendingStatus": "PENDING = erwartetes Artefakt eines laufenden Threads; ohne Inhalt keine Autorität. Bis zum Vorliegen gilt der jeweils genannte Interim-Eintrag.",
+  "conflictRules": {
+    "R-FRZ": {
+      "source": "FORGE-V0.1-ARCHITECTURE-FREEZE, Kopf 'Status' + 'Vorrangregeln (vom Owner vorgegeben)'",
+      "text": [
+        "FRZ ist leitende Architekturreferenz; wo ein früherer Bericht abweicht, gilt FRZ; wo FRZ schweigt, gilt der jeweils jüngste Bericht, dann der Code auf main.",
+        "1. Spätere empirische Befunde schlagen frühere Annahmen.",
+        "2. Tatsächlicher Code auf main schlägt jedes Design-Dokument.",
+        "3. Aktuelle Organization-Topologie (Forge-Dice) schlägt Annahmen aus der Personal-Repo-Zeit.",
+        "Owner-Entscheidungen werden nicht neu verhandelt, sondern konsistent zu Ende gedacht."
+      ]
+    },
+    "R-OWNRECON": {
+      "source": "FORGE-MYSTERY-FINAL-OWNER-RECONCILIATION, Kopf",
+      "text": [
+        "Wo neuere Originalartefakte FRZ widersprechen, wird das als Owner-Entscheidung oder Wortlautreparatur ausgewiesen, nicht still übernommen."
+      ]
+    },
+    "R-SEB-1731": {
+      "source": "Seb, Projekt-Chat 2026-10-04 17:31:04Z (Mystery Contract Integration §4), nicht in Git",
+      "text": [
+        "Bei widersprechenden Patchvorschlägen: 1. bindende Ownerentscheidung, 2. späteres experimentelles Closure-Ergebnis, 3. Originalcontract, 4. ältere Design-/Research-Artefakte. Abweichung ausdrücklich dokumentieren."
+      ]
+    },
+    "R-FV": {
+      "source": "MYSTERY-INDEPENDENT-FREEZE-VERIFICATION, Kriterien",
+      "text": [
+        "Fehlendes Original = NOT VERIFIED; ein Report ersetzt niemals einen Contract."
+      ]
+    },
+    "R-FR19": {
+      "source": "MYSTERY-FINAL-RECONCILIATION-SPEC-FREEZE §19 FR-1…FR-5",
+      "text": [
+        "Nach Freeze ändert sich ein Contract nur durch Review-Finding, Implementation-Finding, Cross-Contract-Fehler oder neue Owner-Entscheidung; jede normative Änderung = neue contractVersion + supersedes; keine stillen Draft-Edits (neue Datei)."
+      ]
+    },
+    "R-PROCESS": {
+      "source": "Seb, Prozessregel 2026-10-03 07:02Z; FRZ T-06; Owner Reconciliation §C",
+      "text": [
+        "Contracts liest der Developer nur aus Git (registrierter Contract am contractCommit), nie aus Chat."
+      ]
+    },
+    "R-SEB-INDEX": {
+      "source": "Seb, Auftrag dieses Index 2026-10-04 17:32:46Z §10",
+      "text": [
+        "Ein Lab-Report wird nicht normativ, weil er neuer ist.",
+        "Ein Scratch-Modell wird nie Produktionsautorität.",
+        "Ein historischer Draft überschreibt keinen finalen Candidate."
+      ]
+    }
+  },
+  "ownerDecisions": [
+    {
+      "id": "D1",
+      "topic": "Bootstrap-Format und -Policy",
+      "decision": "FORGE-BOOTSTRAP-0001A/B/C und Drill-Contract sind Format-1-Bootstrap mit eigenen requiredChecks forge-v01:* und contract-spezifischen LOC-Grenzen. 'New tasks use Format 2' und 400/20-Defaults gelten ab BASE = BOOTSTRAPPED.",
+      "affected": [
+        "SRC-F-ABC-REPAIR",
+        "SRC-F-R2",
+        "SRC-F-CORE0002",
+        "SRC-F-V2PF",
+        "SRC-F-V01-RECON",
+        "SRC-F-FRZ §16",
+        "SRC-M-FR §17"
+      ],
+      "resolves": "A wäre nach V01R/V2PF-Regeln 'Freeze-policy-invalid'; verhindert stilles Vorziehen von CORE-0002.",
+      "supersedes": [
+        "FRZ §16 Sequenz und Format-1-Menge",
+        "V2PF 'new tasks use Format 2' (zeitlich)",
+        "V01R requiredChecks typecheck/test, 400/20 (zeitlich)",
+        "Bootstrap Plan Q10–Q12",
+        "FR §17 Format-1-Menge {VERIFIER-0001, CORE-0002}"
+      ]
+    },
+    {
+      "id": "D2",
+      "topic": "Review-Beobachtungsgrenze (CERT F02)",
+      "decision": "reviewSnapshotDigest wird im Gate-Receipt gebunden; Mutant C5.",
+      "affected": [
+        "SRC-F-R2 (C)",
+        "SRC-F-ABC-REPAIR (Patch C-1 deckt sich)",
+        "SRC-F-CERT F02"
+      ],
+      "resolves": "Review-Änderung zwischen Gate und Stage 2 bleibt nicht unbemerkt.",
+      "supersedes": [
+        "Alternative 'nur Stage-2-Frische, AV-154 abgeschwächt'"
+      ]
+    },
+    {
+      "id": "D3",
+      "topic": "Review-Schema und Fremdcheck-Grenze (CERT F04, F09)",
+      "decision": "(a) severity {info, minor, major, critical}, blocking = major/critical; (b) supersedes fail-closed inkl. DISMISSED und fehlerhafter FORGE-Bodies, keine Transitivität; (c) OWNER_OPS allein Owner-attestiert; (d) fremde gleichnamige Checks als Deployment-Abnahme (POLICY_DEPLOYMENT), kein zusätzliches GET.",
+      "affected": [
+        "SRC-F-R2 (C)",
+        "SRC-F-ABC-REPAIR (Patch C-2 weicht ab: Enum critical|high|medium|low|info, transitive Closure)",
+        "SRC-F-CERT F03/F04/F09"
+      ],
+      "resolves": "Offene Review-Schemas und Sollcodes; deterministisches PASS ohne neue API-Fläche.",
+      "supersedes": [
+        "abweichende Schema-Varianten in SRC-F-ABC-REPAIR Patch C-2 (nach Regel R-SEB-1731 Rang 1 > Rang 2)"
+      ]
+    },
+    {
+      "id": "D4",
+      "topic": "R2/R3-Plattformmodell",
+      "decision": "R2 nur Merge Commit; R3-PR-only-Owner-Bypass ist beabsichtigte, protokollierte Owner-Autorisierung; FRZ Z. 162 und PM-PASS-Wortlaut werden angepasst (Repairs 8a–8c).",
+      "affected": [
+        "SRC-F-DRILL (R2-Template)",
+        "SRC-F-PM (PASS-Wortlaut)",
+        "SRC-F-FRZ Z. 162",
+        "SRC-F-RUNBOOK",
+        "SRC-F-R2 (C: Drill-PASS-Liste 8d)"
+      ],
+      "resolves": "Drill-Exit unter sieben Rulesets erreichbar; kein falsches 'zero bypass'-PASS-Kriterium.",
+      "supersedes": [
+        "literal 'kein Bypass' (FRZ Z. 162, PM)",
+        "R2-Template mit squash/rebase"
+      ]
+    },
+    {
+      "id": "D5",
+      "topic": "Reviewer-Besetzung",
+      "decision": "A/B/C (Developer Codex/OpenAI): Claude (Anthropic) als externer Reviewer; Mystery-Repairs von Claude: Codex-Lab als unabhängiger Prüfer; Attestation immer durch Seb.",
+      "affected": [
+        "SRC-F-R2",
+        "SRC-M-INT",
+        "Queue P1.2, P4.2"
+      ],
+      "resolves": "OE-1 / OD-B8; Providerunabhängigkeit.",
+      "supersedes": [
+        "offene Reviewerfrage OE-1, OD-B8"
+      ]
+    },
+    {
+      "id": "D6",
+      "topic": "Rolle der Reference / des Oracles",
+      "decision": "Golden-Paket (61 Fälle + 24 Property-Familien) = normatives Regressionsorakel, gegen r2 neu bestätigt; 150-Repo-Korpus nur explorativ; Reference wird nicht als Autorität repariert, Korpusfall '0-legitimate' umgelabelt.",
+      "affected": [
+        "SRC-F-ROQ",
+        "SRC-F-REF",
+        "SRC-F-ORACLE-V2",
+        "SRC-F-R2"
+      ],
+      "resolves": "Korrektes A/B/C scheitert nicht an 16 Reference-Fehlern.",
+      "supersedes": [
+        "Reference als Gleichheitsorakel"
+      ]
+    },
+    {
+      "id": "D7",
+      "topic": "CORE-0002 nach BOOTSTRAPPED",
+      "decision": "Einmaliges, im Policy-File benanntes CORE-Profil (Owner-PR) für genau CORE-0002; CORE-0002 ist der einzige Format-2-Strang; V2PF dient als Anforderungsquelle seiner Revision.",
+      "affected": [
+        "SRC-F-CORE0002",
+        "SRC-F-V2PF",
+        "Mystery-Registrierung (Format 2)"
+      ],
+      "resolves": "Bootstrap-Verifier würde CORE-0002 sonst korrekt ablehnen; Mystery-Registrierung bliebe blockiert.",
+      "supersedes": [
+        "V2PF CS2-01..03 als eigener Strang"
+      ]
+    },
+    {
+      "id": "D8",
+      "topic": "Vitrine-Siegbedingung (Mystery F04)",
+      "decision": "Session-V1-Siegbedingung: richtige vollständige Antwort = solved; keine technische Belegpflicht; Evidence/Proof = Deduktion und Zertifizierung; Belegpflicht später nur über eigenen Challenge-Policy-Contract.",
+      "affected": [
+        "SRC-V-CASE",
+        "SRC-V-CERT",
+        "SRC-M-SESS (SA-Statuszeile)",
+        "SRC-M-FBR F04",
+        "PENDING-V-PACK",
+        "SRC-M-INT"
+      ],
+      "resolves": "F04 Vitrine-Belegpflicht vs Session V1.",
+      "supersedes": [
+        "Vitrine-Belegpflicht als Siegbedingung (Spec/Brief)"
+      ]
+    },
+    {
+      "id": "D9",
+      "topic": "Owner neuer Mystery-Normtexte und Altlasten",
+      "decision": "(a) Release→Proof-Adapter und PublicContent gehören in Session A §2 (Runner in Fallabnahme); (b) VS-5 durch Session A/B/C ersetzt; (c) TASK-0005 v2 durch MYST-0005A/B ersetzt.",
+      "affected": [
+        "SRC-M-SESS",
+        "SRC-M-RPC",
+        "SRC-M-PKG",
+        "SRC-M-VS5",
+        "SRC-M-T5",
+        "SRC-M-0005A",
+        "SRC-M-0005B",
+        "SRC-M-INT"
+      ],
+      "resolves": "F02 Producer-Ownership; OD-1; CROSS R1 / CERT-V R7.",
+      "supersedes": [
+        "VS-5-Vertrag",
+        "TASK-0005 v2 (und FRZ-Plan 'TASK-0005 v3 bei VS-3')"
+      ]
+    },
+    {
+      "id": "D10",
+      "topic": "Bestätigung überholter Mystery-Entscheidungen",
+      "decision": "OD-4 = Nein (Saves binden Text); OD-6 = Nein (allowedClaims dürfen false/undetermined enthalten); OD-7 = Nein (öffentliche Texte identitätsgebunden); M2-Owner-Review N-1…N-4 angenommen; OE-M3-1..5, OE-M4-1..8, OE-M5-2..7 wie im Contracttext umgesetzt.",
+      "affected": [
+        "SRC-M-0002",
+        "SRC-M-0003",
+        "SRC-M-0004",
+        "SRC-M-0005A",
+        "SRC-M-0005B",
+        "SRC-M-CH",
+        "SRC-M-SESS (SC)",
+        "SRC-M-FR (OD-4/6/7)"
+      ],
+      "resolves": "Formale Lücke zwischen Contracttext und Owner-Protokoll.",
+      "supersedes": [
+        "offene OD-4, OD-6, OD-7 und OE-M3/M4/M5-Punkte"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "SRC-OWN-RECON",
+      "title": "FORGE + MYSTERY Final Owner Reconciliation (D1–D10, Repair-Texte A.1–A.6/B.2–B.15, Queue P0–P5)",
+      "class": "OWNER_DECISION",
+      "domain": "FORGE+MYSTERY",
+      "status": "ACCEPTED (D1–D10 angenommen durch Seb, 2026-10-04 17:31Z)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-MYSTERY-FINAL-OWNER-RECONCILIATION",
+        "commit": "52dab20bb7825a9ced0da2c572cc9be9033754bd",
+        "committedAtUTC": "2026-10-04T15:26Z",
+        "path": "forge-audits/FORGE-MYSTERY-FINAL-OWNER-RECONCILIATION/",
+        "files": [
+          "FORGE-MYSTERY-FINAL-OWNER-RECONCILIATION.md"
+        ]
+      },
+      "authorityScope": "Bindend: Entscheidungen D1–D10 (§D). Repair-Anweisungen §A/§B und Queue §C sind die vom Owner angenommene Arbeitsgrundlage für r2 und Mystery-Integration; sie sind selbst kein Contract-Text.",
+      "supersedes": [
+        "SRC-F-BOOTPLAN (Queue Q01–Q29)",
+        "SRC-F-FRZ §16 DAG + Format-1-Menge (via A.0/D1)",
+        "SRC-F-V01-RECON (via D1)",
+        "FBR-Knotennamen VERIFIER-0001/2/3 (A.0)"
+      ],
+      "ownerDecisions": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8",
+        "D9",
+        "D10"
+      ],
+      "notes": [
+        "Commit 52dab20 (15:26Z) wurde vor FORGE-VERIFIER-ABC-REPAIR, FORGE-EXECUTION-ISOLATION, FORGE-HIGH-CONFIDENCE-ORACLE-V2, MYSTERY-FREEZE-BLOCKER-REPAIR, MYSTERY-PACKAGE-REPLAY-BINDING-CLOSURE und MYSTERY-RELEASE-PROOF-CERTIFICATION-CLOSURE erstellt (alle 16:09–16:25Z); diese kennt der Bericht nicht.",
+        "Annahme-Beleg: Seb-Nachrichten 2026-10-04 17:31:04Z (Mystery Contract Integration), 17:31:31Z (Activation Runbook, nennt D1–D7), 17:31:35Z (A/B/C r2) im Projekt-Chat; nicht in Git."
+      ]
+    },
+    {
+      "id": "SRC-F-FRZ",
+      "title": "FORGE V0.1 Architecture Freeze (Leitreferenz)",
+      "class": "NORMATIVE_OPERATIONAL_CANDIDATE",
+      "domain": "FORGE",
+      "status": "IN FORCE als Leitreferenz, in Einzelpunkten durch D1–D10 überholt",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-V0.1-ARCHITECTURE-FREEZE",
+        "commit": "a5302309ce321fcfccdd26aee1cf566f7a137096",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-V0.1-ARCHITECTURE-FREEZE/",
+        "files": [
+          "FORGE-V0.1-ARCHITECTURE-FREEZE.md"
+        ]
+      },
+      "authorityScope": "Architektur, Rollen, Identitäten, Prozess, Contract-Format 2, Rulesets, Merge Commit. Eigene Vorrangregeln (Kopf) und Ersetzungsliste ('Zusammenfassung der ersetzten Aussagen').",
+      "supersedes": [
+        "Deep Audit, Hardening Plan, Independent Verifier Design, Identity/GitHub Protection, Org Migration, Run Recovery, Contract System V2, Minimum Product, Handoff Audit, Pipeline Challenge, Verifier Implementation Package (jeweils nur dort, wo FRZ abweicht; siehe FRZ-Ersetzungstabelle)"
+      ],
+      "notes": [
+        "Überholt durch Owner Reconciliation A.0 / D1: §16-Sequenz (VERIFIER-0001 ∥ CORE-0002 → VERIFIER-0002 → … → VERIFIER-0003) und Format-1-Menge {FORGE-VERIFIER-0001, FORGE-CORE-0002, ggf. VERIFIER-0002}. Aktuell: Format-1-Bootstrap = FORGE-BOOTSTRAP-0001A/B/C + Drill-Contract; Format 2 ab BOOTSTRAPPED.",
+        "FRZ Z. 162 (R3 'kein Bypass') wird per D4 als Wortlaut repariert (PR-only-Owner-Bypass ist beabsichtigt).",
+        "FRZ-Aussage TASK-0005 'v3 bei VS-3' ist durch D9(c) überholt (TASK-0005 v2 → MYST-0005A/B)."
+      ]
+    },
+    {
+      "id": "SRC-F-ABC-R1",
+      "title": "FORGE-BOOTSTRAP-0001A/B/C Contract Drafts r1 + Minimum Verifier Implementation Package (PKG r1)",
+      "class": "SUPERSEDED",
+      "domain": "FORGE",
+      "status": "SUPERSEDED (contractVersion 1); historisch unverändert lassen",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-MINIMUM-VERIFIER-IMPLEMENTATION",
+        "commit": "bb525bfd230128d3d98f3db744ba23217196c53c",
+        "committedAtUTC": "2026-10-04T08:37Z",
+        "path": "forge-audits/FORGE-MINIMUM-VERIFIER-IMPLEMENTATION/",
+        "files": [
+          "FORGE-BOOTSTRAP-0001A.contract.DRAFT.md",
+          "FORGE-BOOTSTRAP-0001B.contract.DRAFT.md",
+          "FORGE-BOOTSTRAP-0001C.contract.DRAFT.md",
+          "FORGE-MINIMUM-VERIFIER-IMPLEMENTATION-PACKAGE.html",
+          "FORGE-MINIMUM-VERIFIER-IMPLEMENTATION-PACKAGE.zip",
+          "FORGE-MINIMUM-VERIFIER-CODEX-HANDOFF.txt",
+          "SHA256SUMS"
+        ]
+      },
+      "supersedes": [
+        "SRC-F-V0001-DRAFT (VERIFIER-0001 341ec983)",
+        "FRZ-Knoten VERIFIER-0002/0003"
+      ],
+      "supersededBy": [
+        "SRC-F-ABC-REPAIR (contractVersion 2 Candidates)",
+        "SRC-F-R2 (r2, contractVersion 2)"
+      ],
+      "notes": [
+        "Contract-Hashes r1: A db206a98…, B b6aa76ff…, C cdddfc96…; Paket-Sectionhash §§1–15 0e6d8917… (Owner Reconciliation §1.2).",
+        "PKG r1 HTML bleibt die normative Detailquelle: r2 bindet sie über den Datei-Hash 27bb408d… (§§1–18) statt über eine separate Paket-r2-Datei (selbstdokumentierte Abweichung von Owner Reconciliation A.1).",
+        "FORGE-MINIMUM-VERIFIER-CODEX-HANDOFF.txt ist kein gültiger Handoff: Codex liest nur registrierte Contracts aus Git (Prozessregel)."
+      ]
+    },
+    {
+      "id": "SRC-F-ABC-REPAIR",
+      "title": "FORGE-BOOTSTRAP-0001A/B/C contract.CANDIDATE (contractVersion 2) + Targeted Repair Report",
+      "class": "SUPERSEDED",
+      "domain": "FORGE",
+      "status": "SUPERSEDED als Candidate durch r2 (Reparaturbasis laut Seb 17:31:35Z und R2-Manifest 'repairBasis'); bleibt Evidenz der Repair-Herleitung",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-VERIFIER-ABC-REPAIR",
+        "commit": "5fdc41696c003765c217e7ad9b365bd9ee843200",
+        "committedAtUTC": "2026-10-04T16:10Z",
+        "path": "forge-audits/FORGE-VERIFIER-ABC-REPAIR/",
+        "files": [
+          "FORGE-BOOTSTRAP-0001A.contract.CANDIDATE.md",
+          "FORGE-BOOTSTRAP-0001B.contract.CANDIDATE.md",
+          "FORGE-BOOTSTRAP-0001C.contract.CANDIDATE.md",
+          "FORGE-VERIFIER-ABC-REPAIR-REPORT.md"
+        ]
+      },
+      "supersedes": [
+        "SRC-F-ABC-R1 (expliziter OLD→NEW, 'contractVersion 1→2')"
+      ],
+      "supersededBy": [
+        "SRC-F-R2"
+      ],
+      "notes": [
+        "KONFLIKT mit D3: Patch C-2 setzt severity-Enum critical|high|medium|low|info + disposition block|note; angenommene D3-Empfehlung lautet {info, minor, major, critical}, blocking = major/critical. Nach Prioritätsregel gilt D3; r2 hat das umgesetzt (C-2-Schema nicht übernommen).",
+        "Die Candidates binden noch kein Paket r2 (A.1-Anforderung der Owner Reconciliation offen).",
+        "Erstellt 16:10Z, also nach der Owner Reconciliation (15:26Z); dort nicht berücksichtigt."
+      ]
+    },
+    {
+      "id": "SRC-F-CORE0002",
+      "title": "FORGE-CORE-0002 Contract Draft (führt Format 2 ein)",
+      "class": "NORMATIVE_CONTRACT_CANDIDATE",
+      "domain": "FORGE",
+      "status": "DEFERRED: frühestens nach BOOTSTRAPPED (D1); Revision v2 gegen CORE-Policy-Profil nötig (D7)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-CORE-0002",
+        "commit": "b8fb63bf5d4ec17f7c91a5f0b619eddf6234f1ae",
+        "committedAtUTC": "2026-10-04T11:14Z",
+        "path": "forge-audits/FORGE-CORE-0002/",
+        "files": [
+          "FORGE-CORE-0002.contract.DRAFT.md"
+        ]
+      },
+      "authorityScope": "Einziger Format-2-Strang (D7). Heute keine Implementierungsautorität.",
+      "notes": [
+        "Draft-Hash 5259bb48… (Owner Reconciliation §1.2). Ändert 7 Dateien unter src/forge/** und 13 bestehende Tests; ohne D7-Profil lehnt der Bootstrap-Verifier ihn korrekt ab.",
+        "Codex-Inventar meldet 1 weiteres CORE-0002-Artefakt als 'sensitive blocked' (nicht auf dem Branch)."
+      ]
+    },
+    {
+      "id": "SRC-F-V0001-DRAFT",
+      "title": "FORGE-VERIFIER-0001 Contract Draft (341ec983) + V0.1 Verifier Implementation Package",
+      "class": "SUPERSEDED",
+      "domain": "FORGE",
+      "status": "SUPERSEDED (CERT: NOT COMPARABLE; Owner Reconciliation A.0, D.1 OE-11)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-V0.1-VERIFIER-IMPLEMENTATION-PACKAGE",
+        "commit": "5a847a788fda3566019f63bf7bbad6cfc8f3b037",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-V0.1-VERIFIER-IMPLEMENTATION-PACKAGE/",
+        "files": [
+          "FORGE-V0.1-VERIFIER-IMPLEMENTATION-PACKAGE.md",
+          "FORGE-VERIFIER-0001.contract.DRAFT.md"
+        ]
+      },
+      "supersededBy": [
+        "SRC-F-ABC-R1 → SRC-F-ABC-REPAIR → SRC-F-R2"
+      ]
+    },
+    {
+      "id": "SRC-F-V01-RECON",
+      "title": "FORGE-VERIFIER-0001 Final Contract Reconciliation (V01R) + prior-v01-draft",
+      "class": "SUPERSEDED",
+      "domain": "FORGE",
+      "status": "SUPERSEDED: gab keinen Contract aus ('Not issued'); Anforderungen requiredChecks typecheck/test und 400/20 gelten erst ab BOOTSTRAPPED (D1)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-VERIFIER-0001",
+        "commit": "b22fd25bfe119a8caec255df4069d139ff74a79b",
+        "committedAtUTC": "2026-10-04T11:37Z",
+        "path": "forge-audits/FORGE-VERIFIER-0001/",
+        "files": [
+          "FORGE-VERIFIER-0001-FINAL-CONTRACT-RECONCILIATION.md",
+          "prior-v01-draft.md"
+        ]
+      },
+      "supersededBy": [
+        "D1",
+        "SRC-F-ABC-R1"
+      ]
+    },
+    {
+      "id": "SRC-F-V2PF",
+      "title": "Contract V2 Implementation Preflight (V2PF) + Lab-Modelle",
+      "class": "REFERENCE_ONLY",
+      "domain": "FORGE",
+      "status": "REFERENCE: Anforderungsquelle für die CORE-0002-Revision (D7); 'new tasks use Format 2' gilt erst ab BOOTSTRAPPED (D1)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-CONTRACT-V2-IMPLEMENTATION-PREFLIGHT",
+        "commit": "421c4ede250fbfba0f1eb742c423e6bd75561ac2",
+        "committedAtUTC": "2026-10-04T11:29Z",
+        "path": "forge-audits/FORGE-CONTRACT-V2-IMPLEMENTATION-PREFLIGHT/",
+        "files": [
+          "FORGE-CONTRACT-V2-IMPLEMENTATION-PREFLIGHT.md",
+          "preflight-lab.mjs",
+          "start-gate-model.mjs",
+          "rerun-finding-model.mjs",
+          "graph-history.txt",
+          "REPRODUCE.txt",
+          "*.json"
+        ]
+      },
+      "notes": [
+        "Lab-Encodings sind laut Bericht ausdrücklich 'not proposed contracts'."
+      ]
+    },
+    {
+      "id": "SRC-F-DRILL",
+      "title": "Ruleset Live Drill (R1–R7 + Actions Execution Policy, 91 Fälle, Owner-Runbook)",
+      "class": "REFERENCE_ONLY",
+      "domain": "FORGE",
+      "status": "Quelle und Drill-Material des Runbooks (Templates, Skripte, 91 Fälle); Ablauf/Sollwerte jetzt SRC-F-RUNBOOK; LIVE NOT EXECUTED; R2-Template-Fehler per D4 (Drill-Paket r2, Queue P0.2)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-RULESET-LIVE-DRILL",
+        "commit": "005bcd092008fc4cf5453e208f455814aa7ebb25",
+        "committedAtUTC": "2026-10-04T08:36Z",
+        "path": "forge-audits/FORGE-RULESET-LIVE-DRILL/",
+        "files": [
+          "FORGE-RULESET-LIVE-DRILL.html",
+          "OWNER-RUNBOOK.txt",
+          "CASE-COMMANDS.txt",
+          "drill.py",
+          "fixtures/**",
+          "tests/selftest_drill.py",
+          "FORGE-RULESET-LIVE-DRILL-PACKAGE.zip",
+          "SHA256SUMS.txt"
+        ]
+      },
+      "supersededBy": [
+        "SRC-F-RUNBOOK (Ablauf und R1–R7-Sollwerte)"
+      ],
+      "notes": [
+        "D4: R2 nur Merge Commit; R3-PR-only-Owner-Bypass beabsichtigt."
+      ]
+    },
+    {
+      "id": "SRC-F-PM",
+      "title": "First Drill Pre-Mortem (clampAtZero, PASS-Kriterien, Blocker B0–B7)",
+      "class": "REFERENCE_ONLY",
+      "domain": "FORGE",
+      "status": "Quelle des Runbook-Drillteils; PASS-Wortlaut per D4/8c korrigiert im Runbook; LIVE-START NO-GO, DRILL NOT EXECUTED",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-FIRST-DRILL-PRE-MORTEM",
+        "commit": "9e5789e054c88eb8c0c43d80e9a361a4bc3d3051",
+        "committedAtUTC": "2026-10-04T08:37Z",
+        "path": "forge-audits/FORGE-FIRST-DRILL-PRE-MORTEM/",
+        "files": [
+          "FORGE-FIRST-DRILL-PRE-MORTEM.html",
+          "README.md",
+          "race_model.py",
+          "build_report.py",
+          "FORGE-FIRST-DRILL-PRE-MORTEM-EVIDENCE.zip"
+        ]
+      },
+      "supersededBy": [
+        "SRC-F-RUNBOOK (Evidence Sheet D1–D9)"
+      ]
+    },
+    {
+      "id": "SRC-F-EI",
+      "title": "Execution Isolation Security Lab + EI Acceptance Contract (EI-01…EI-20)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "FORGE",
+      "status": "NO-GO (17/44 contained, 27/44 exposed; kein Container-Runtime im Lab)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-EXECUTION-ISOLATION",
+        "commit": "372b196e0c3c7da73b230de03c43d7ba9252c1f9",
+        "committedAtUTC": "2026-10-04T16:12Z",
+        "path": "forge-audits/FORGE-EXECUTION-ISOLATION/",
+        "files": [
+          "FORGE-EXECUTION-ISOLATION-REPORT.md",
+          "EI-ACCEPTANCE-CONTRACT.md",
+          "fixture/run_lab.py",
+          "fixture/README.md"
+        ]
+      },
+      "authorityScope": "EI-01…EI-20 sind Anforderungsquelle für C r2 und Runbook P4. Normativ werden sie erst durch SRC-F-R2 (C) bzw. SRC-F-RUNBOOK. Deployment-Gate laut Owner Reconciliation Blocker 7; kein A/B-Blocker.",
+      "notes": [
+        "Trotz Dateiname 'ACCEPTANCE-CONTRACT' kein registrierter oder reviewter Contract."
+      ]
+    },
+    {
+      "id": "SRC-F-EXP",
+      "title": "Bootstrap Experimental Report + Lab",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "FORGE",
+      "status": "GO für lokale Verifier-Implementierung + isolierten Live-Drill; NO-GO für 'Bootstrap sicher aktiviert'",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-V0.1-BOOTSTRAP",
+        "commit": "da9b3d51398819db3d03af59582e1b1da3750728",
+        "committedAtUTC": "2026-10-04T09:15Z",
+        "path": "forge-audits/FORGE-V0.1-BOOTSTRAP/",
+        "files": [
+          "FORGE-V0.1-BOOTSTRAP-EXPERIMENTAL-REPORT.html",
+          "FORGE-V0.1-BOOTSTRAP-LAB.zip"
+        ]
+      },
+      "notes": [
+        "Enthält vom Owner übernommene Richtungen (z. B. Last-push approval REMOVE = OE-9, Owner Reconciliation D.1). Diese gelten über die Owner Reconciliation, nicht über den Lab-Bericht.",
+        "Queue P0.5: Kopie nach forge/ops/ vorgesehen."
+      ]
+    },
+    {
+      "id": "SRC-F-ORACLE-V2",
+      "title": "High-Confidence Oracle V2 (Differential-Orakel)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "FORGE",
+      "status": "GO AS DIFFERENTIAL ORACLE; contractSensitive gegen r1-Drafts gebunden",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-HIGH-CONFIDENCE-ORACLE-V2",
+        "commit": "ea46c266717ca59f2767c069b5d88a57d2046d69",
+        "committedAtUTC": "2026-10-04T16:17Z",
+        "path": "forge-audits/FORGE-HIGH-CONFIDENCE-ORACLE-V2/",
+        "files": [
+          "FORGE-HIGH-CONFIDENCE-ORACLE-V2-REPORT.md",
+          "DIFFERENTIAL-PROTOCOL.md",
+          "src/*.py",
+          "results/*",
+          "golden/*.json"
+        ]
+      },
+      "authorityScope": "Differentialprüfung (Git/History, Diff, Pfad/Mode, Scope, Testinventar, Mutationsklassifikation). Entscheidet nie gegen Contract-Text; Erwartungen müssen gegen r2 neu gepinnt werden (eigene Aussage §1).",
+      "notes": [
+        "Ausdrücklich nicht abgedeckt: Review/Workflow-Korrektheit, Execution Isolation.",
+        "Keine Ersetzung der Reference ausgesprochen; siehe SUPERSESSION-MAP S-F6."
+      ]
+    },
+    {
+      "id": "SRC-F-ROQ",
+      "title": "Reference Oracle Quality Report (61 Goldens, 16 Reference-Abweichungen)",
+      "class": "INDEPENDENT_REVIEW",
+      "domain": "FORGE",
+      "status": "NO-GO für unveränderte Reference als Codex-Oracle",
+      "location": {
+        "branch": "forge/owner/audits/reference-oracle-quality",
+        "commit": "83214206fced70a97babca9dff7bb137b60ea64a",
+        "committedAtUTC": "2026-10-04T08:36Z",
+        "path": "forge-audits/reference-oracle-quality/",
+        "files": [
+          "FORGE-REFERENCE-ORACLE-QUALITY-REPORT.html",
+          "FORGE-REFERENCE-ORACLE-QUALITY-EVIDENCE.zip"
+        ]
+      },
+      "authorityScope": "Per D6: das Golden-Paket (61 Fälle + 24 Property-Familien) ist das normative Regressionsorakel, nach Neubestätigung gegen r2. Der Bericht selbst ist Review.",
+      "notes": [
+        "16/61 Abweichungen = Reference-Defekte, keine A/B/C-Defekte (Owner Reconciliation Blocker 5)."
+      ]
+    },
+    {
+      "id": "SRC-F-REF",
+      "title": "Independent Verifier Reference + Evidence",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "FORGE",
+      "status": "GO als Differential-Referenz, NO-GO als produktiver Verifier; per D6 nicht als Autorität repariert",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-VERIFIER-REFERENCE",
+        "commit": "2062fca5162b12b99b77e814255d59c399c53c7d",
+        "committedAtUTC": "2026-10-04T08:37Z",
+        "path": "forge-audits/FORGE-VERIFIER-REFERENCE/",
+        "files": [
+          "FORGE-VERIFIER-REFERENCE-REPORT.html",
+          "FORGE-VERIFIER-REFERENCE-EVIDENCE.zip"
+        ]
+      },
+      "notes": [
+        "EXECUTION_ISOLATION_NOT_TESTED. 150-Repo-Korpus nur explorativ (D6)."
+      ]
+    },
+    {
+      "id": "SRC-F-CERT",
+      "title": "A/B/C Independent Certification (F01–F10)",
+      "class": "INDEPENDENT_REVIEW",
+      "domain": "FORGE",
+      "status": "REQUEST CONTRACT CHANGES (A/B/C r1); Defektregister für r2",
+      "location": {
+        "branch": "forge/owner/audits/VERIFIER-ABC-INDEPENDENT-CERTIFICATION",
+        "commit": "b854b11379b5cb43c3d6bc77fedacde7e96511fd",
+        "committedAtUTC": "2026-10-04T08:38Z",
+        "path": "forge-audits/VERIFIER-ABC-INDEPENDENT-CERTIFICATION/",
+        "files": [
+          "FORGE-VERIFIER-ABC-INDEPENDENT-CERTIFICATION.html",
+          "*.json",
+          "*.csv",
+          "*.py",
+          "FORGE-VERIFIER-ABC-CERTIFICATION-EVIDENCE.zip"
+        ]
+      },
+      "notes": [
+        "Gilt für r1. Für r2 ist ein neues Architektur-Review nötig (Queue P1.2, Reviewer per D5)."
+      ]
+    },
+    {
+      "id": "SRC-F-APP",
+      "title": "Actions Policy Preflight (Lab-Repo, API-Evidenz)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "FORGE",
+      "status": "Evidenz 2026-10-03; Lab-Repo archiviert",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-ACTIONS-POLICY-PREFLIGHT",
+        "commit": "01dfb21c3d67b4bd3b03eb0029a2d463b815825b",
+        "committedAtUTC": "2026-10-04T11:39Z",
+        "path": "forge-audits/FORGE-ACTIONS-POLICY-PREFLIGHT/",
+        "files": [
+          "EVIDENCE-README.txt",
+          "*.json",
+          "lab-write-variable.png"
+        ]
+      }
+    },
+    {
+      "id": "SRC-F-SPIKE",
+      "title": "Verifier Experimental Spike (Git/Diff/Hook/Textconv-Proben, 214 Dateien)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "FORGE",
+      "status": "Lokale Evidenz 2026-10-03; Parser-Probe ausdrücklich 'NOT production or approved contract'",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-VERIFIER-EXPERIMENTAL-SPIKE",
+        "commit": "1a55add65e7a6448bdf9174cc3b5952437b70b3d",
+        "committedAtUTC": "2026-10-04T11:46Z",
+        "path": "forge-audits/FORGE-VERIFIER-EXPERIMENTAL-SPIKE/",
+        "files": [
+          "EVIDENCE.txt",
+          "integration_probe.mjs",
+          "package_evidence.py",
+          "*.log",
+          "*.bin",
+          "*.json"
+        ]
+      }
+    },
+    {
+      "id": "SRC-F-RA",
+      "title": "V0.1 Independent Readiness Audit",
+      "class": "INDEPENDENT_REVIEW",
+      "domain": "FORGE",
+      "status": "GO WITH BLOCKERS (Stand 2026-10-03)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-V0.1-INDEPENDENT-READINESS-AUDIT",
+        "commit": "32b1cfe8777cf1f28d8210a4da5f5d6eb86dba7d",
+        "committedAtUTC": "2026-10-04T09:16Z",
+        "path": "forge-audits/FORGE-V0.1-INDEPENDENT-READINESS-AUDIT/",
+        "files": [
+          "FORGE-V0.1-INDEPENDENT-READINESS-AUDIT.html",
+          "evidence/*.log",
+          "experiments/*.py",
+          "build_audit.py"
+        ]
+      }
+    },
+    {
+      "id": "SRC-F-BOOTPLAN",
+      "title": "V0.1 Bootstrap Contract Plan (Q01–Q29, OD-B1..B8)",
+      "class": "SUPERSEDED",
+      "domain": "FORGE",
+      "status": "SUPERSEDED: Queue durch A/B/C-DAG + Queue P0–P5 ersetzt (Owner Reconciliation A.0); OD-B1/B3–B7 beantwortet (D.1)",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-V0.1-BOOTSTRAP-CONTRACT-PLAN",
+        "commit": "67baaad7ca4d67b7bd7226fdd57de2d40303ef76",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-V0.1-BOOTSTRAP-CONTRACT-PLAN/",
+        "files": [
+          "FORGE-V0.1-BOOTSTRAP-CONTRACT-PLAN.md"
+        ]
+      },
+      "supersededBy": [
+        "PRIVATE-FBR (teilweise)",
+        "SRC-OWN-RECON"
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-DEEP-AUDIT",
+      "title": "Forge Deep Audit (03.10.)",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-DEEP-AUDIT",
+        "commit": "d5f4b0faa48cebcdb3658e7d5c206d992a67562d",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-DEEP-AUDIT/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "In FRZ aufgegangen."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-DEEP-RED-TEAM",
+      "title": "Forge Deep Red Team (+ x.test.ts)",
+      "class": "INDEPENDENT_REVIEW",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-DEEP-RED-TEAM",
+        "commit": "e42e4ae31cb344877cb97d53cf56d502c63acbbd",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-DEEP-RED-TEAM/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "Historisches Review von FORGE-CORE-0001A/B; Befunde in FRZ übernommen."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-PIPELINE-ADVERSARIAL-CHALLENGE",
+      "title": "Pipeline Adversarial Challenge",
+      "class": "INDEPENDENT_REVIEW",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-PIPELINE-ADVERSARIAL-CHALLENGE",
+        "commit": "ae84c3fdfbae2e6643797b2c41168293a5cff168",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-PIPELINE-ADVERSARIAL-CHALLENGE/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "Historisch; in FRZ aufgegangen (PAC)."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-V0.1-HARDENING-PLAN",
+      "title": "V0.1 Hardening Plan",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-V0.1-HARDENING-PLAN",
+        "commit": "5d1e3fe9dcffa0cfaa98048ecb348201d02e43e9",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-V0.1-HARDENING-PLAN/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "FRZ ersetzt u. a. HP D-2, D-14, §8.1, P-04, K-01."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-V0.1-MINIMUM-PRODUCT",
+      "title": "V0.1 Minimum Product",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-V0.1-MINIMUM-PRODUCT",
+        "commit": "3fc167bad3c8b3ecaf138fea423bd261733f3650",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-V0.1-MINIMUM-PRODUCT/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "In FRZ aufgegangen."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-IDENTITY-GITHUB-PROTECTION",
+      "title": "Identity & GitHub Protection",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-IDENTITY-GITHUB-PROTECTION",
+        "commit": "5333a3cebec7d4a87052da18538a914a7f275140",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-IDENTITY-GITHUB-PROTECTION/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "FRZ ersetzt IGP §8–§10."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-ORGANIZATION-MIGRATION-DELTA",
+      "title": "Organization Migration Delta",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-ORGANIZATION-MIGRATION-DELTA",
+        "commit": "dc97e40b1fc8e6568ad4edb14ecd1ae1d6490435",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-ORGANIZATION-MIGRATION-DELTA/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "FRZ-Vorrangregel 3 (Org-Topologie) gilt."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-RUN-RECOVERY",
+      "title": "Run Recovery",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-RUN-RECOVERY",
+        "commit": "046ca5f09c8453bd5deb163c66a1e2abc8fd0825",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-RUN-RECOVERY/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "FRZ ersetzt RR F-01…F-03, F-20, SD-10."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-INDEPENDENT-VERIFIER-DESIGN",
+      "title": "Independent Verifier Design",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-INDEPENDENT-VERIFIER-DESIGN",
+        "commit": "36a77a3fbfdc3fe647ce8f456762fefbac15057f",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-INDEPENDENT-VERIFIER-DESIGN/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "FRZ ersetzt VD C8, AC-22, S10, §4.5."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-CONTRACT-SYSTEM-V2",
+      "title": "Contract System V2",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-CONTRACT-SYSTEM-V2",
+        "commit": "e9ce18ac3e82dee142dd56254eb1d3e53d1183a8",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-CONTRACT-SYSTEM-V2/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "Format-2-Design in FRZ (MD-07, Format-2-Abschnitt) übernommen; CORE-0002 setzt es um."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-CONTRACT-HANDOFF-AUDIT",
+      "title": "Contract Handoff Audit",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-CONTRACT-HANDOFF-AUDIT",
+        "commit": "62fb31ce35aca31022e57c466470f2337b712589",
+        "committedAtUTC": "2026-10-04T09:06Z",
+        "path": "forge-audits/FORGE-CONTRACT-HANDOFF-AUDIT/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "Prozessregel 'Contract aus Git' gilt als Owner-Vorgabe (siehe Index §4.2)."
+      ]
+    },
+    {
+      "id": "SRC-H-FORGE-FIRST-MANAGED-RUN-DRILL",
+      "title": "First Managed Run Drill (03.10.)",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/FORGE-FIRST-MANAGED-RUN-DRILL",
+        "commit": "242c8262b0db228d160489647b4afcf29f674897",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/FORGE-FIRST-MANAGED-RUN-DRILL/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "Durch Ruleset Live Drill + Pre-Mortem + Queue P3 überholt (Owner Reconciliation D.1: OE-7)."
+      ]
+    },
+    {
+      "id": "SRC-H-OVERNIGHT-EXECUTION-PLAN",
+      "title": "Overnight Execution Plan",
+      "class": "SUPERSEDED",
+      "domain": "FORGE+MYSTERY",
+      "status": "SUPERSEDED",
+      "location": {
+        "branch": "forge/owner/audits/OVERNIGHT-EXECUTION-PLAN",
+        "commit": "47b40d4553de218159e46e98e309a36becfc430c",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/OVERNIGHT-EXECUTION-PLAN/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "MYST-0006/0007/0008-Bedeutungen verworfen (FR §3 P-4); Queue durch P0–P5 ersetzt."
+      ]
+    },
+    {
+      "id": "SRC-F-T4",
+      "title": "TASK-0004 Dependency Handoff + M1-Verifikation",
+      "class": "REFERENCE_ONLY",
+      "domain": "MYSTERY(legacy)",
+      "status": "TASK-0004 ist durch Baseline-Merge 3d7545d historisch akzeptiert (FRZ Entscheidung (c)); nie neu registriert",
+      "location": {
+        "branch": "forge/owner/audits/TASK-0004-DEPENDENCY-HANDOFF",
+        "commit": "edbd3b5223da9d9229b6bd05590ef5b53f7b2b03",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/TASK-0004-DEPENDENCY-HANDOFF/",
+        "files": [
+          "TASK-0004-dependency-handoff.yaml"
+        ]
+      },
+      "groupedEvidence": [
+        {
+          "branch": "forge/owner/audits/TASK-0004-M1",
+          "commit": "549ee57742d1e08ce2c38fdd89cf088cf9a4433c",
+          "files": [
+            "TASK-0004-M1-verification.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SRC-M-T5",
+      "title": "TASK-0005 v2 Contract (Deterministic NPC Dialogue Policy) + Self-Audit, Mutation Plan, Test Vectors",
+      "class": "SUPERSEDED",
+      "domain": "MYSTERY(legacy)",
+      "status": "SUPERSEDED durch MYST-0005A/B (D9c)",
+      "location": {
+        "branch": "forge/owner/audits/TASK-0005",
+        "commit": "b6d0a1884981c68651430762845a6a88a728a8af",
+        "committedAtUTC": "2026-10-04T11:48Z",
+        "path": "forge-audits/TASK-0005/",
+        "files": [
+          "TASK-0005.md",
+          "TASK-0005-self-audit.md",
+          "TASK-0005-mutation-plan.md",
+          "TASK-0005-test-vectors.json"
+        ]
+      },
+      "supersededBy": [
+        "SRC-M-0005A",
+        "SRC-M-0005B → SRC-M-INT"
+      ],
+      "notes": [
+        "Ursprung: codex/mystery-task-0005 (fab792a); Review be40a68 auf claude/forge-architecture-review-hjdq89; forge/reviews/TASK-0005.architecture-review.md auf main (REQUEST_CHANGES) bleibt Legacy-Dokument."
+      ]
+    },
+    {
+      "id": "SRC-P-CODEXINV",
+      "title": "Codex Artifact Persistence Inventory",
+      "class": "REFERENCE_ONLY",
+      "domain": "PROCESS",
+      "status": "Sammelprotokoll; 69 Artefakte als 'sensitive blocked' nicht veröffentlicht",
+      "location": {
+        "branch": "forge/owner/audits/CODEX-ARTIFACT-INVENTORY",
+        "commit": "26b8804b8b705e9239fe5870d008f031d644fd13",
+        "committedAtUTC": "2026-10-04T11:55Z",
+        "path": "forge-audits/CODEX-ARTIFACT-INVENTORY/",
+        "files": [
+          "CODEX-ARTIFACT-PERSISTENCE-INVENTORY.md"
+        ]
+      }
+    },
+    {
+      "id": "SRC-M-0001",
+      "title": "MYST-0001 PlayerRef V1 (Format 2)",
+      "class": "NORMATIVE_CONTRACT_CANDIDATE",
+      "domain": "MYSTERY",
+      "status": "CANDIDATE, UNCHANGED laut SRC-M-INT-Manifest (aktuelle Identität = Original, contractVersion 1)",
+      "location": {
+        "branch": "forge/owner/audits/MYST-0001-PLAYERREF",
+        "commit": "a256e5170697a76a302b765cd44a3140c5ce5da1",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYST-0001-PLAYERREF/",
+        "files": [
+          "MYST-0001-PLAYERREF-V1.contract.DRAFT.md"
+        ]
+      },
+      "supersededBy": [],
+      "notes": [
+        "fcv2 f4d31858…; Registrierung erst nach CORE-0002 (Format 2), Queue P4.0/P4.3."
+      ]
+    },
+    {
+      "id": "SRC-M-0002",
+      "title": "MYST-0002 Accusation & Verdict FINAL-CANDIDATE + Repair Report/Evidence",
+      "class": "SUPERSEDED",
+      "domain": "MYSTERY",
+      "status": "SUPERSEDED als Candidate durch MYST-0002 v2 in SRC-M-INT (F05, F08); Manifest supersededArtifacts",
+      "location": {
+        "branch": "forge/owner/audits/MYST-0002-REPAIR",
+        "commit": "ea22147f4ac1778afc8191a03f30784864d7591a",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYST-0002-REPAIR/",
+        "files": [
+          "MYST-0002.contract.FINAL-CANDIDATE.md",
+          "MYST-0002-REPAIR-REPORT.md",
+          "MYST-0002-REPAIR-EVIDENCE.zip"
+        ]
+      },
+      "supersedes": [
+        "SRC-M-0002-V1"
+      ],
+      "supersededBy": [
+        "SRC-M-INT"
+      ],
+      "notes": [
+        "raw f8f72fa5…, fcv1 e1eba9e1…. Alleinige Autorität für Canonical Consistency (Seb 17:31:04Z §6)."
+      ]
+    },
+    {
+      "id": "SRC-M-0002-V1",
+      "title": "MYST-0002 Accusation-Verdict V1 Draft + Package",
+      "class": "SUPERSEDED",
+      "domain": "MYSTERY",
+      "status": "SUPERSEDED durch FINAL-CANDIDATE (FR §17 'MYST-0002 Draft v1 SUPERSEDED')",
+      "location": {
+        "branch": "forge/owner/audits/MYST-0002-ACCUSATION-VERDICT",
+        "commit": "cda9171e517ff19c282b19d7321ee0b66165dc92",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYST-0002-ACCUSATION-VERDICT/",
+        "files": [
+          "MYST-0002-ACCUSATION-VERDICT-V1.contract.DRAFT.md",
+          "MYST-0002-ACCUSATION-VERDICT-PACKAGE.md"
+        ]
+      },
+      "supersededBy": [
+        "SRC-M-0002"
+      ]
+    },
+    {
+      "id": "SRC-M-0003",
+      "title": "MYST-0003 Evidence Access V1 (+ Package)",
+      "class": "NORMATIVE_CONTRACT_CANDIDATE",
+      "domain": "MYSTERY",
+      "status": "CANDIDATE, UNCHANGED laut SRC-M-INT-Manifest (contractVersion 1; F1→F2-Transkodierung vor Registrierung)",
+      "location": {
+        "branch": "forge/owner/audits/MYST-0003-EVIDENCE-ACCESS",
+        "commit": "8ae160f60bb9e5aeb6be20c5006aa2673408946a",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYST-0003-EVIDENCE-ACCESS/",
+        "files": [
+          "MYST-0003-EVIDENCE-ACCESS-V1.contract.DRAFT.md",
+          "MYST-0003-EVIDENCE-ACCESS-PACKAGE.md"
+        ]
+      },
+      "supersededBy": [],
+      "notes": [
+        "Package-Dokument = Begründung/OE-M3-Liste, keine eigene Normquelle; OE-M3-1..5 durch D10 bestätigt."
+      ]
+    },
+    {
+      "id": "SRC-M-0004",
+      "title": "MYST-0004 Evidence Presentation V1 (+ Package)",
+      "class": "SUPERSEDED",
+      "domain": "MYSTERY",
+      "status": "SUPERSEDED als Candidate durch MYST-0004 v2 in SRC-M-INT (F01-Pin)",
+      "location": {
+        "branch": "forge/owner/audits/MYST-0004-EVIDENCE-PRESENTATION",
+        "commit": "51c2ddc4b6d312729d9e0a12d8e7f544e9e6e23e",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYST-0004-EVIDENCE-PRESENTATION/",
+        "files": [
+          "MYST-0004-EVIDENCE-PRESENTATION-V1.contract.DRAFT.md",
+          "MYST-0004-EVIDENCE-PRESENTATION-PACKAGE.md"
+        ]
+      },
+      "supersededBy": [
+        "SRC-M-INT"
+      ],
+      "notes": [
+        "OE-M4-1..8 durch D10 bestätigt."
+      ]
+    },
+    {
+      "id": "SRC-M-0005A",
+      "title": "MYST-0005A Interrogation Authoring V1 (+ gemeinsames MYST-0005 Package)",
+      "class": "NORMATIVE_CONTRACT_CANDIDATE",
+      "domain": "MYSTERY",
+      "status": "CANDIDATE, UNCHANGED laut SRC-M-INT-Manifest (contractVersion 1)",
+      "location": {
+        "branch": "forge/owner/audits/MYST-0005-INTERROGATION",
+        "commit": "76405cd386894b0bf657d1222ce287b0031fb284",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYST-0005-INTERROGATION/",
+        "files": [
+          "MYST-0005A-INTERROGATION-AUTHORING-V1.contract.DRAFT.md",
+          "MYST-0005-INTERROGATION-PACKAGE.md"
+        ]
+      },
+      "supersedes": [
+        "SRC-M-T5 (D9c, gemeinsam mit 0005B)"
+      ],
+      "notes": [
+        "OE-M5-2..7 durch D10 bestätigt. Package = Begründung, keine eigene Normquelle.",
+        "FR R-5A (wörtliche Mutanten) ist laut Manifest nicht als Revision ausgeführt; Bewertung in der Re-Verifikation P4.2."
+      ]
+    },
+    {
+      "id": "SRC-M-0005B",
+      "title": "MYST-0005B Interrogation Release V1",
+      "class": "SUPERSEDED",
+      "domain": "MYSTERY",
+      "status": "SUPERSEDED als Candidate durch MYST-0005B v2 in SRC-M-INT (F01-Pin, F06)",
+      "location": {
+        "branch": "forge/owner/audits/MYST-0005-INTERROGATION",
+        "commit": "76405cd386894b0bf657d1222ce287b0031fb284",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYST-0005-INTERROGATION/",
+        "files": [
+          "MYST-0005B-INTERROGATION-RELEASE-V1.contract.DRAFT.md"
+        ]
+      },
+      "supersedes": [
+        "SRC-M-T5 (D9c, gemeinsam mit 0005A)"
+      ],
+      "supersededBy": [
+        "SRC-M-INT"
+      ]
+    },
+    {
+      "id": "SRC-M-CH",
+      "title": "MYST-CHALLENGE-0001 Draft + Accusation Challenge Exactness Report + Evidence",
+      "class": "SUPERSEDED",
+      "domain": "MYSTERY",
+      "status": "SUPERSEDED als Candidate durch MYST-CHALLENGE-0001 v2 in SRC-M-INT (F05, F12-Pin); Exactness-Report bleibt Evidenz",
+      "location": {
+        "branch": "forge/owner/audits/MYST-ACCUSATION-CHALLENGE-EXACTNESS",
+        "commit": "7514e7e6a31e8c6c2aa03796dc0cd4c9a00ebcc8",
+        "committedAtUTC": "2026-10-04T09:17Z",
+        "path": "forge-audits/MYST-ACCUSATION-CHALLENGE-EXACTNESS/",
+        "files": [
+          "MYST-CHALLENGE-0001.contract.DRAFT.md",
+          "MYST-ACCUSATION-CHALLENGE-EXACTNESS-REPORT.html",
+          "MYST-ACCUSATION-CHALLENGE-EVIDENCE.zip"
+        ]
+      },
+      "supersededBy": [
+        "SRC-M-INT"
+      ],
+      "notes": [
+        "Report-Urteil: GO WITH CHANGES für den Vertrag; NO-GO für Umsetzung auf heutiger Basis. allowedClaims dürfen false/undetermined enthalten (D10/OD-6)."
+      ]
+    },
+    {
+      "id": "SRC-M-SOL",
+      "title": "MYST-SOLVABILITY-0001 Draft + Solvability/Accusation Repair Report + Evidence",
+      "class": "NORMATIVE_CONTRACT_CANDIDATE",
+      "domain": "MYSTERY",
+      "status": "CANDIDATE, UNCHANGED laut SRC-M-INT-Manifest (contractVersion 1; Proof-Semantik über Session A v2)",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-SOLVABILITY-ACCUSATION-REPAIR",
+        "commit": "f02b7a5625497ada4651181e285053f46e0a2bb8",
+        "committedAtUTC": "2026-10-04T14:14Z",
+        "path": "forge-audits/MYSTERY-SOLVABILITY-ACCUSATION-REPAIR/",
+        "files": [
+          "MYST-SOLVABILITY-0001.contract.DRAFT.md",
+          "MYSTERY-SOLVABILITY-ACCUSATION-REPAIR-REPORT.html",
+          "MYSTERY-SOLVABILITY-REPAIR-EVIDENCE.zip"
+        ]
+      },
+      "supersededBy": [],
+      "notes": [
+        "Inhaltsdatum 03.10. (Owner Reconciliation B.0.2)."
+      ]
+    },
+    {
+      "id": "SRC-M-SESS",
+      "title": "MYST-SESSION-0001A/B/C Drafts + Session Production Package + Acceptance-120",
+      "class": "SUPERSEDED",
+      "domain": "MYSTERY",
+      "status": "SUPERSEDED als Candidate durch MYST-SESSION-0001A/B/C v2 in SRC-M-INT; Production Package bleibt Evidenz",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-SESSION-PRODUCTION-PACKAGE",
+        "commit": "b94db40e34a832d0b14450d6a4922bdf5fd54f71",
+        "committedAtUTC": "2026-10-04T08:38Z",
+        "path": "forge-audits/MYSTERY-SESSION-PRODUCTION-PACKAGE/",
+        "files": [
+          "MYST-SESSION-0001A.contract.DRAFT.md",
+          "MYST-SESSION-0001B.contract.DRAFT.md",
+          "MYST-SESSION-0001C.contract.DRAFT.md",
+          "SESSION-ACCEPTANCE-120.md",
+          "MYSTERY-SESSION-PRODUCTION-PACKAGE.html",
+          "MYSTERY-SESSION-PRODUCTION-EVIDENCE.zip",
+          "SHA256SUMS.txt"
+        ]
+      },
+      "supersedes": [
+        "VS-5-Vertrag (D9b; kein VS-5-Contract auf einem Branch, nur Ergebnisse)"
+      ],
+      "supersededBy": [
+        "SRC-M-INT"
+      ],
+      "notes": [
+        "Hashes SA 060f3fc6…, SB 3550a9df…, SC 6263e005…. Gemeinsame Abschnitte A/B/C bytegleich."
+      ]
+    },
+    {
+      "id": "SRC-M-FBR",
+      "title": "Mystery Freeze Blocker Repair (Patches, Closure Matrix, Regression Evidence)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "FREEZE READY AFTER OWNER DECISION (9 closed, F02/F04 offen bis D8/D9 – inzwischen angenommen)",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-FREEZE-BLOCKER-REPAIR",
+        "commit": "0681d453bf481e7cc06ce8258bb323969659db5a",
+        "committedAtUTC": "2026-10-04T16:09Z",
+        "path": "forge-audits/MYSTERY-FREEZE-BLOCKER-REPAIR/",
+        "files": [
+          "MYSTERY-FREEZE-BLOCKER-REPAIR-REPORT.md",
+          "EXACT-REPAIR-PATCHES.md",
+          "FINDING-CLOSURE-MATRIX.md",
+          "REGRESSION-EVIDENCE.md"
+        ]
+      },
+      "authorityScope": "Patchquelle Rang 2 (späteres Closure-Ergebnis) für SRC-M-INT. Normativ erst durch integrierte Contract-Revisionen."
+    },
+    {
+      "id": "SRC-M-PKG",
+      "title": "Package Identity & Replay Binding Closure (Hash-Profile-Registry, Package-Identity-DAG)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "PACKAGE BINDING CLOSED / REPLAY BINDING CLOSED (Spezifikationsebene)",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-PACKAGE-REPLAY-BINDING-CLOSURE",
+        "commit": "7ffa39c86755259b3055603be6894b2deac01a8c",
+        "committedAtUTC": "2026-10-04T16:18Z",
+        "path": "forge-audits/MYSTERY-PACKAGE-REPLAY-BINDING-CLOSURE/",
+        "files": [
+          "MYSTERY-PACKAGE-REPLAY-BINDING-CLOSURE-REPORT.md",
+          "CONTRACT-REPAIRS.md",
+          "hash-profile-registry.md",
+          "package-identity-dag.mmd",
+          "lab.mjs",
+          "verify-vectors.py",
+          "SHA256SUMS",
+          "README.md"
+        ]
+      },
+      "authorityScope": "Laut Seb 17:31:04Z §5 die Quelle des finalen Hash-Registry/Package-Identity-DAG für Session A. Normativ erst nach Integration."
+    },
+    {
+      "id": "SRC-M-RPC",
+      "title": "Release → Proof → Vitrine Certification Closure (Session-A-Annex, Patch Table, Recert-Checklist)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "Release→Proof CLOSED im Repair-Paket; Vitrine Spec CERTIFICATION MODEL READY; Runtime IMPLEMENTATION REQUIRED",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-RELEASE-PROOF-CERTIFICATION-CLOSURE",
+        "commit": "d17f5211c30ef6af0bcf03209fabc46f89666bfd",
+        "committedAtUTC": "2026-10-04T16:25Z",
+        "path": "forge-audits/MYSTERY-RELEASE-PROOF-CERTIFICATION-CLOSURE/",
+        "files": [
+          "MYSTERY-RELEASE-PROOF-CERTIFICATION-CLOSURE-REPORT.md",
+          "SESSION-A-RELEASE-PROOF-ANNEX.md",
+          "CONTRACT-PATCH-TABLE.md",
+          "RELEASE-PROOF-MAPPING.tsv",
+          "VITRINE-RECERTIFICATION-CHECKLIST.md",
+          "model.py",
+          "run_lab.py",
+          "EVIDENCE.zip",
+          "SHA256SUMS",
+          "README.md"
+        ]
+      },
+      "authorityScope": "Patchquelle Rang 2 für Session-A-Adapter (D9a) und CERT-1…CERT-10. Annex ist Candidate-Text, nicht reviewt.",
+      "supersedes": [
+        "FR §5 Premise-Keys seen/reported/answered (laut eigenem §1, gestützt auf Owner Reconciliation B.4/B.7)"
+      ]
+    },
+    {
+      "id": "SRC-M-FV",
+      "title": "Mystery Independent Freeze Verification (11 Blocking Findings)",
+      "class": "INDEPENDENT_REVIEW",
+      "domain": "MYSTERY",
+      "status": "NO-GO (Stand 09:19Z); Kriterien C1–C11 bleiben Prüfmaßstab für Re-Verifikation (Queue P4.2)",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION",
+        "commit": "25a8a17b277eb0b94e5d2892739a82437b300f75",
+        "committedAtUTC": "2026-10-04T09:19Z",
+        "path": "forge-audits/MYSTERY-INDEPENDENT-FREEZE-VERIFICATION/",
+        "files": [
+          "MYSTERY-INDEPENDENT-FREEZE-VERIFICATION.html",
+          "FREEZE-CRITERIA-PRECOMMITTED.md",
+          "REPRODUCTION.md",
+          "probe.py",
+          "reproduce.py",
+          "build_report.py",
+          "probe-run.log",
+          "EVIDENCE.zip",
+          "SHA256SUMS"
+        ]
+      },
+      "notes": [
+        "F01 'MYST-0001 NOT AVAILABLE' ist ein belegter Fehler (Owner Reconciliation B.0.1)."
+      ]
+    },
+    {
+      "id": "SRC-M-FR",
+      "title": "Mystery Final Reconciliation & Spec Freeze (ID-Policy, DAG, Registrierungsfolge, Freeze-Regel)",
+      "class": "NORMATIVE_OPERATIONAL_CANDIDATE",
+      "domain": "MYSTERY",
+      "status": "IN FORCE für ID-Policy §3 (OD-C1 beantwortet, Owner Reconciliation D.1), Freeze-Regel §19, Repair-Tabelle §17; teilweise überholt",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-FINAL-RECONCILIATION-SPEC-FREEZE",
+        "commit": "5e77872d59e00cfaf3396a6936df3a4ab29b26b5",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYSTERY-FINAL-RECONCILIATION-SPEC-FREEZE/",
+        "files": [
+          "MYSTERY-FINAL-RECONCILIATION-SPEC-FREEZE.md"
+        ]
+      },
+      "supersedes": [
+        "SRC-M-CONSOL (wo abweichend; FR §3 'Ersetzt §2.3/§2.4')"
+      ],
+      "notes": [
+        "Überholt: §17-Satz 'Format-1-Menge {FORGE-VERIFIER-0001, FORGE-CORE-0002}' (D1/A.0); §5 Premise-Keys (SRC-M-RPC); 'NOT AVAILABLE'-Befunde (alle Artefakte liegen inzwischen auf Branches); OD-1 durch D9c; OD-4/6/7 durch D10."
+      ]
+    },
+    {
+      "id": "SRC-M-CONSOL",
+      "title": "Mystery Contract Consolidation Plan (OD-C1..C11)",
+      "class": "SUPERSEDED",
+      "domain": "MYSTERY",
+      "status": "SUPERSEDED durch FR, wo abweichend (insb. MYST-0006/0007/0008-Nummerierung)",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-CONTRACT-CONSOLIDATION",
+        "commit": "6982a0aa0be5788e79ec8192bfd58e1d5a820353",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYSTERY-CONTRACT-CONSOLIDATION/",
+        "files": [
+          "MYSTERY-CONTRACT-CONSOLIDATION-PLAN.md"
+        ]
+      },
+      "supersededBy": [
+        "SRC-M-FR"
+      ]
+    },
+    {
+      "id": "SRC-M-XC",
+      "title": "Mystery Cross-Contract Consistency Report + Evidence",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "NO-GO für Gesamtintegration (Stand 04.10. vormittags)",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-CROSS-CONTRACT-CONSISTENCY",
+        "commit": "3254b9c2d4c8fbac58d51be9981d84631dda60d2",
+        "committedAtUTC": "2026-10-04T08:37Z",
+        "path": "forge-audits/MYSTERY-CROSS-CONTRACT-CONSISTENCY/",
+        "files": [
+          "MYSTERY-CROSS-CONTRACT-CONSISTENCY-REPORT.html",
+          "MYSTERY-CROSS-CONTRACT-EVIDENCE.zip"
+        ]
+      }
+    },
+    {
+      "id": "SRC-M-IF",
+      "title": "Mystery Information Flow Report + Spoilerfree Summary + Evidence",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "NO-GO für vollständiges Produktionszertifikat",
+      "location": {
+        "branch": "forge/owner/audits/mystery-infoflow",
+        "commit": "006ecf363e1f5850c7731948464ee10cef4dff59",
+        "committedAtUTC": "2026-10-04T08:37Z",
+        "path": "forge-audits/mystery-infoflow/",
+        "files": [
+          "MYSTERY-INFORMATION-FLOW-REPORT.html",
+          "MYSTERY-INFOFLOW-SPOILERFREE-SUMMARY.html",
+          "MYSTERY-INFOFLOW-EVIDENCE.zip"
+        ]
+      }
+    },
+    {
+      "id": "SRC-M-SCALE",
+      "title": "Mystery Scale & Complexity Report + Evidence",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "GO WITH CHANGES für TINY/MEDIUM; Node-Lab, keine Smartphone-Messung",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-SCALE-COMPLEXITY",
+        "commit": "27dd70f0ea9b0830358fdbaf2af78ec390914390",
+        "committedAtUTC": "2026-10-04T10:54Z",
+        "path": "forge-audits/MYSTERY-SCALE-COMPLEXITY/",
+        "files": [
+          "MYSTERY-SCALE-COMPLEXITY-REPORT.html",
+          "MYSTERY-SCALE-EVIDENCE.zip",
+          "README.txt"
+        ]
+      }
+    },
+    {
+      "id": "SRC-M-AUTH",
+      "title": "Mystery Case Authoring Stress Report (PDF) + Experimental Appendix",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "Evidenz",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-CASE-AUTHORING-STRESS",
+        "commit": "8b68e511b12ef705dfc92818b4b9a5ba569b349e",
+        "committedAtUTC": "2026-10-04T14:40Z",
+        "path": "forge-audits/MYSTERY-CASE-AUTHORING-STRESS/",
+        "files": [
+          "MYSTERY_CASE_AUTHORING_STRESS_REPORT.pdf",
+          "MYSTERY_CASE_AUTHORING_EXPERIMENTAL_APPENDIX.zip"
+        ]
+      },
+      "groupedEvidence": [
+        {
+          "branch": "forge/owner/audits/MYSTERY_CASE_AUTHORING_STRESS_REPORT",
+          "commit": "8df14a326c96645ad075f7716f1ebe120f98cff1",
+          "note": "byte-identisches Duplikat (PDF-Blob 6eb6840a…, ZIP-Blob 10339496…); kein eigenständiges Artefakt"
+        }
+      ]
+    },
+    {
+      "id": "SRC-M-VS5",
+      "title": "VS-5 Preflight (nur Ergebnis-JSON, prototypeOnly)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "Scratch-Ergebnis; 123 Prototyp-Checks sind keine aktuelle Session-Evidenz (SRC-M-RPC §1)",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-VS5-PREFLIGHT",
+        "commit": "284ea9de130693235070419b79500551fd9ea59b",
+        "committedAtUTC": "2026-10-04T11:42Z",
+        "path": "forge-audits/MYSTERY-VS5-PREFLIGHT/",
+        "files": [
+          "vs5-preflight-results.json"
+        ]
+      },
+      "notes": [
+        "VS-5 als Vertrag ist durch Session A/B/C ersetzt (D9b). Kein VS-5-Contract auf einem Branch."
+      ]
+    },
+    {
+      "id": "SRC-M-VSP",
+      "title": "Vertical Slice Preflight (Scratch-Probes)",
+      "class": "EXPERIMENTAL_EVIDENCE",
+      "domain": "MYSTERY",
+      "status": "Scratch ohne Vertragsdokument (Owner Reconciliation B.0.2)",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-VERTICAL-SLICE-PREFLIGHT",
+        "commit": "79e1f81d0e16e0722ae7c556823cfe45cfdb79d0",
+        "committedAtUTC": "2026-10-04T11:47Z",
+        "path": "forge-audits/MYSTERY-VERTICAL-SLICE-PREFLIGHT/",
+        "files": [
+          "probe.mjs",
+          "additional.mjs",
+          "scenario.json",
+          "*.json",
+          "remote-heads.txt"
+        ]
+      }
+    },
+    {
+      "id": "SRC-V-CASE",
+      "title": "Die leere Vitrine: Headless Spec, Player Brief, Scratch Case Pack",
+      "class": "REFERENCE_ONLY",
+      "domain": "MYSTERY",
+      "status": "Fallinhalt-Quelle für Re-Authoring (P5.2); Belegpflicht durch D8 überholt; Scratch-PlayerRef-Protokoll ohne MYST-0001-Kompatibilität",
+      "location": {
+        "branch": "forge/owner/audits/DIE-LEERE-VITRINE",
+        "commit": "fa3a1cbf4fba5a233a24c66b39b8dbb0f64d0eb2",
+        "committedAtUTC": "2026-10-04T09:14Z",
+        "path": "forge-audits/DIE-LEERE-VITRINE/",
+        "files": [
+          "DIE-LEERE-VITRINE-HEADLESS-SPEC.html",
+          "DIE-LEERE-VITRINE-PLAYER-BRIEF.html",
+          "DIE-LEERE-VITRINE-CASE-PACK.zip",
+          "README.txt"
+        ]
+      },
+      "supersededBy": [
+        "PENDING-V-PACK"
+      ],
+      "notes": [
+        "Spec- und PRIVATE-Dateien enthalten die Lösung; Blindtester erhalten nur den Player Brief (README)."
+      ]
+    },
+    {
+      "id": "SRC-V-CERT",
+      "title": "Die leere Vitrine: Formal Solvability Certification + Proof Profile + Evidence",
+      "class": "INDEPENDENT_REVIEW",
+      "domain": "MYSTERY",
+      "status": "NOT CERTIFIED für die aktuelle Vertragskette; Proof Profile + factivity bridge = Repair-Kandidaten",
+      "location": {
+        "branch": "forge/owner/audits/DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION",
+        "commit": "e66e7e19f07aaf3fb527a154e5c5a6ea3794c94d",
+        "committedAtUTC": "2026-10-04T09:03Z",
+        "path": "forge-audits/DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION/",
+        "files": [
+          "DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION.html",
+          "DIE-LEERE-VITRINE-PROOF-PROFILE.json",
+          "DIE-LEERE-VITRINE-CERT-EVIDENCE.zip"
+        ]
+      },
+      "supersededBy": [
+        "SRC-M-RPC (Recertification-Checklist)",
+        "PENDING-V-PACK"
+      ]
+    },
+    {
+      "id": "SRC-H-MYSTERY-ACCUSATION-VERDICT-DESIGN",
+      "title": "Accusation & Verdict Design",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "MYSTERY",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-ACCUSATION-VERDICT-DESIGN",
+        "commit": "de8fcce27261b37bd0393842c6d72fbdfdb72a80",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYSTERY-ACCUSATION-VERDICT-DESIGN/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "Designinput für MYST-0002."
+      ]
+    },
+    {
+      "id": "SRC-H-MYSTERY-SOLVABILITY-V1-RESEARCH",
+      "title": "Solvability V1 Research",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "MYSTERY",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-SOLVABILITY-V1-RESEARCH",
+        "commit": "04e71f068978185c9bd79285f12fe53d26f6e430",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYSTERY-SOLVABILITY-V1-RESEARCH/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "Research-Input für MYST-SOLVABILITY-0001."
+      ]
+    },
+    {
+      "id": "SRC-H-MYSTERY-VERTICAL-SLICE-ROADMAP",
+      "title": "Vertical Slice Roadmap (VS-1…VS-5)",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "MYSTERY",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-VERTICAL-SLICE-ROADMAP",
+        "commit": "5e8bcc694e09cd444bf956018a8c3ad3a85b0f46",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYSTERY-VERTICAL-SLICE-ROADMAP/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "VS-5 durch Session A/B/C ersetzt (D9b); Reihenfolge durch Queue P4/P5."
+      ]
+    },
+    {
+      "id": "SRC-H-MYSTERY-VS2-IMPLEMENTATION-DESIGN",
+      "title": "VS-2 Implementation Design",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "MYSTERY",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-VS2-IMPLEMENTATION-DESIGN",
+        "commit": "25e18a77b57ca5cab9ce41bbda46f44bc2aa78c1",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYSTERY-VS2-IMPLEMENTATION-DESIGN/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "Durch MYST-0003/0004 Contracts überholt (Design-Input)."
+      ]
+    },
+    {
+      "id": "SRC-H-MYSTERY-TASK-0006-CANDIDATES",
+      "title": "TASK-0006 Candidates",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "MYSTERY",
+      "status": "HISTORICAL",
+      "location": {
+        "branch": "forge/owner/audits/MYSTERY-TASK-0006-CANDIDATES",
+        "commit": "586243c901fad6e317df5f706e9fa4e8bc4e0369",
+        "committedAtUTC": "2026-10-04T09:07Z",
+        "path": "forge-audits/MYSTERY-TASK-0006-CANDIDATES/",
+        "files": [
+          "*.md"
+        ]
+      },
+      "notes": [
+        "TASK-0006…0010 werden nie vergeben (FR §3 P-1)."
+      ]
+    },
+    {
+      "id": "PRIVATE-FBR",
+      "title": "FORGE-V0.1-FINAL-BOOTSTRAP-RECONCILIATION.md (FBR)",
+      "class": "PRIVATE/BLOCKED",
+      "domain": "FORGE",
+      "status": "BLOCKED_SENSITIVE_ARTIFACT (enthält private E-Mail-Adresse); nur über Zitate in der Owner Reconciliation verwendbar",
+      "location": {
+        "projectFile": "/mnt/project-files/forge-audits/FORGE-V0.1-FINAL-BOOTSTRAP-RECONCILIATION.md",
+        "git": "nicht persistiert"
+      },
+      "supersededBy": [
+        "SRC-OWN-RECON (A.0: Knoten heißen 0001A/B/C)"
+      ]
+    },
+    {
+      "id": "REF-PERSIST",
+      "title": "PERSISTENCE-REPORT-2026-10-04.md",
+      "class": "REFERENCE_ONLY",
+      "domain": "PROCESS",
+      "status": "Persistenzprotokoll 2026-10-04 ~10:55Z",
+      "location": {
+        "projectFile": "/mnt/project-files/forge-audits/PERSISTENCE-REPORT-2026-10-04.md",
+        "git": "nicht persistiert"
+      }
+    },
+    {
+      "id": "REF-MAIN-LEGACY",
+      "title": "Legacy auf main 3d7545d: forge/contracts (FORGE-CORE-0001A/B, PATCH-0001, B.v2, TASK-0004), forge/approvals, forge/reviews, forge/coordination, BASELINE-STATUS",
+      "class": "REFERENCE_ONLY",
+      "domain": "FORGE+MYSTERY",
+      "status": "Legacy eingefroren, nie umschreiben (FRZ Punkt 11); TASK-0001…0004 historisch akzeptiert",
+      "location": {
+        "branch": "main",
+        "commit": "3d7545d843883418348004e68717399a64da7a7d",
+        "path": "forge/"
+      },
+      "notes": [
+        "Code auf main ist Ist-Stand (FRZ-Vorrangregel 2), aber keine Contract-Autorität für neue Tasks. forge/approvals/*.json sind laut FRZ kein gültiges Attestations-Format mehr (Attestation = GitHub-Review auf Contract-PR)."
+      ]
+    },
+    {
+      "id": "REF-OLD-BRANCHES",
+      "title": "Ältere Nicht-Audit-Branches: codex/mystery-task-0005, codex/task-0004-contract, codex/forge-core-v2-repair, claude/forge-architecture-review-hjdq89, forge/run/codex/IDENTITY-SPIKE-1",
+      "class": "HISTORICAL_DESIGN",
+      "domain": "FORGE+MYSTERY",
+      "status": "HISTORICAL; nicht Teil von forge/owner/audits/**, nur zur Herkunft",
+      "location": {
+        "branches": [
+          "codex/mystery-task-0005",
+          "codex/task-0004-contract",
+          "codex/forge-core-v2-repair",
+          "claude/forge-architecture-review-hjdq89",
+          "forge/run/codex/IDENTITY-SPIKE-1"
+        ]
+      }
+    },
+    {
+      "id": "SRC-F-R2",
+      "title": "FORGE-BOOTSTRAP-0001A/B/C v2 (r2) + R2-Manifest + Authoring Report",
+      "class": "NORMATIVE_CONTRACT_CANDIDATE",
+      "domain": "FORGE",
+      "status": "AVAILABLE nur im Projektordner (2026-10-04 17:46Z); nicht in Git (Persistenz BLOCKED: Identität Wuerfelduell). Selbstangabe: A/B/C READY FOR INDEPENDENT ARCHITECTURE REVIEW; B/C-Ausführung BLOCKED bis echtes acceptedCommit (v3); C-Aktivierung BLOCKED durch Execution-Isolation-Gate",
+      "location": {
+        "projectFolder": "/mnt/project-files/forge-audits/FORGE-BOOTSTRAP-R2-FINAL-CONTRACTS/",
+        "expectedBranch": "forge/owner/audits/FORGE-BOOTSTRAP-R2-FINAL-CONTRACTS",
+        "git": "nicht persistiert",
+        "files": {
+          "FORGE-BOOTSTRAP-0001A-v2.contract.md": "c84c507ca11087ca7bfe18ffb478a7136ad1f5ea701cbb7c225165ddde4c0362",
+          "FORGE-BOOTSTRAP-0001B-v2.contract.md": "2a9d736ebc9a4a4985be9009b1ad01736de6ecd911aacf3cd934f5ad358a2d08",
+          "FORGE-BOOTSTRAP-0001C-v2.contract.md": "1a67681cb3385e4eeacde38d86331f6690d4f5e024cbb634350e58299015f07c",
+          "FORGE-BOOTSTRAP-R2-AUTHORING-REPORT.md": "1c3bae3a190ccb35e6337521100cd9aa0f416ed7c607928222dbb8273465c6b6",
+          "FORGE-BOOTSTRAP-R2-MANIFEST.json": "74b4249f9639dec0f4211c4a06184af8b0f1c73a37de97c47d423935ca2a268e"
+        },
+        "hashNote": "SHA-256 der Rohbytes zum Zeitpunkt 17:47Z"
+      },
+      "authorityScope": "Aktuelle Contract-Candidate-Quelle für A/B/C. Implementierungsautorität erst nach unabhängigem Review (D5), Persistenz in Git und Registrierung auf main (Queue P1.2/P1.3).",
+      "supersedes": [
+        "SRC-F-ABC-R1 (Manifest 'supersedes' contractVersion 1, Rohhashes db206a98/b6aa76ff/cdddfc96)",
+        "SRC-F-ABC-REPAIR (Manifest 'repairBasis'; Seb 17:31:35Z: Work-r2-Candidates = Reparaturbasis)"
+      ],
+      "notes": [
+        "D3 umgesetzt: severity {info, minor, major, critical}; ABC-REPAIR-Schema C-2 ausdrücklich nicht übernommen (Report Z. 120).",
+        "Selbstdokumentierte Abweichung von Owner Reconciliation A.1 Punkt 1: keine separate Paket-r2-Datei; Bindung an PKG r1 über Datei-Hash 27bb408d… (deckt §§1–18), Repairs als OLD→NEW-Overrides im Contract. Ob das A.1 genügt (auch A.1 Punkt 3 'nicht doppelt führen'), entscheidet das Architektur-Review, nicht dieser Index.",
+        "Laut Report parsen die ABC-REPAIR-Candidates auf main nicht (FRONTMATTER_NOT_CANONICAL); r2 parst.",
+        "C §9 fordert EI-01…EI-20."
+      ]
+    },
+    {
+      "id": "SRC-F-RUNBOOK",
+      "title": "FORGE V0.1 Final Activation Runbook + Checklist + Evidence Sheet + STOP/Recovery Matrix",
+      "class": "NORMATIVE_OPERATIONAL_CANDIDATE",
+      "domain": "FORGE",
+      "status": "AVAILABLE nur im Projektordner (2026-10-04 ~17:50Z, SHA256SUMS geprüft); nicht in Git. Selbstangabe: AUTHORED — NOT EXECUTED; kein Prüfpunkt bestanden",
+      "location": {
+        "projectFolder": "/mnt/project-files/forge-audits/FORGE-V0.1-FINAL-ACTIVATION-RUNBOOK/",
+        "expectedBranch": "forge/owner/audits/FORGE-V0.1-FINAL-ACTIVATION-RUNBOOK",
+        "git": "nicht persistiert",
+        "files": {
+          "FORGE-V0.1-ACTIVATION-CHECKLIST.md": "093b03dfe44a4234b60d72b8c3052a1b129fc7a6898e52be697575cff1e27423",
+          "FORGE-V0.1-EVIDENCE-SHEET.md": "88de9a8ed45f8b069d021486bb2dd42c00c1c69fe7298d88607f8f6ee29e62b5",
+          "FORGE-V0.1-FINAL-ACTIVATION-RUNBOOK.md": "af7f63bf640640f297a5337188570f5606ab8841449f0fca9ea46232c52efa13",
+          "FORGE-V0.1-STOP-RECOVERY-MATRIX.md": "53d2b4cc4e4a21bda21cebe6d7b32faf814f1f44d9e4a3dc982edd8eb65a6aec"
+        }
+      },
+      "authorityScope": "Operative Quelle für Phasen P0–P7, R1–R7-Sollwerte (D4), Execution-Isolation-Live-Checks, Drill D1–D9, BOOTSTRAPPED-Belege E1–E9. Ausführung nur durch den Owner; kein Schritt gilt als bestanden.",
+      "supersedes": [
+        "SRC-F-DRILL und SRC-F-PM als Ablauf-/Sollwertquelle (Seb 17:31:31Z: 'EIN endgültiges Owner-Runbook')"
+      ],
+      "notes": [
+        "Runbook §0 Punkt 10 nennt A/B/C-r2-Finalcontracts als NOT AVAILABLE: parallel entstanden; SRC-F-R2 liegt inzwischen im Projektordner vor.",
+        "Runbook-Phasennummern P0–P7 sind eigene Nummern und nicht identisch mit Queue P0–P5 der Owner Reconciliation.",
+        "Auftrag: Seb 2026-10-04 17:31:31Z."
+      ]
+    },
+    {
+      "id": "SRC-M-INT",
+      "title": "Mystery Final Contract Integration (Report, Manifest, Final DAG, Finding Closure Matrix, Static Cross-Contract Check, Patch Log, 7 Candidates v2)",
+      "class": "NORMATIVE_CONTRACT_CANDIDATE",
+      "domain": "MYSTERY",
+      "status": "AVAILABLE nur im Projektordner (2026-10-04 17:48Z, SHA256SUMS geprüft); nicht in Git (Persistenz STOPPED: Identität Wuerfelduell). Selbstangabe: MYSTERY FREEZE CANDIDATE READY FOR INDEPENDENT REVIEW; 11/11 Freeze-Findings geschlossen",
+      "location": {
+        "projectFolder": "/mnt/project-files/forge-audits/MYSTERY-FINAL-CONTRACT-INTEGRATION/",
+        "expectedBranch": "forge/owner/audits/MYSTERY-FINAL-CONTRACT-INTEGRATION",
+        "git": "nicht persistiert",
+        "files": {
+          "FINAL-DEPENDENCY-DAG.md": "3c02018946d98c636977c4c0d0bc5ddd0d27735cb7605414e0d1c688a59b08fd",
+          "FINDING-CLOSURE-MATRIX.md": "0005c013758fffa0a2caad929990f289a3acf34d686b447e9f81c2eddad88a50",
+          "MYSTERY-FINAL-CONTRACT-INTEGRATION-REPORT.md": "1b2c17ed8f28024e0def14e1e65016a247ca73de5fdd45b7b8df270f537890fe",
+          "MYSTERY-FINAL-CONTRACT-MANIFEST.json": "b8f0a90e815a5805918f86020f456f6e0ac418d6d5cf14c43da8d6c21380e1a9",
+          "PATCH-LOG.json": "bcf73fb0df61f1b79a910615335407d46a92f536e90c1817d886f50b458e5ebc",
+          "STATIC-CROSS-CONTRACT-CHECK.json": "932bae08c86632d67485d9b9a4bd6be7d6677b4e9d4741b6153db5bbcc963d6d",
+          "candidates/MYST-0002.contract.CANDIDATE-v2.md": "8e66e86117aa50fc601faecb271f5616befef012185f0646424a946456d8ac51",
+          "candidates/MYST-0004.contract.CANDIDATE-v2.md": "fd3f8dedf1143a9dae2e9bd01a4674f7ef4ea1361bb07882c7c6724a7990b01f",
+          "candidates/MYST-0005B.contract.CANDIDATE-v2.md": "feed5af388bf177352d1253abebacc87135a0ecadfb8593175c08f5d707d35b2",
+          "candidates/MYST-CHALLENGE-0001.contract.CANDIDATE-v2.md": "03d034d5849674b4c422764779807b3a513750bf7a5da88e069a9eee6063a7e0",
+          "candidates/MYST-SESSION-0001A.contract.CANDIDATE-v2.md": "38e5cb8a3ae9088d84ba27f16ad23631e3076913943060c2dce19d67d2596d37",
+          "candidates/MYST-SESSION-0001B.contract.CANDIDATE-v2.md": "3e2a5ff6ca2a70c02562772698c99c561fb1ebc46b95258cf837d7b2b58809c3",
+          "candidates/MYST-SESSION-0001C.contract.CANDIDATE-v2.md": "76bc24d58ec2a511792c2a2bb29d1528d34b8eafa2e4aebdfe92b1df9f37d3f0",
+          "reproduce/README.md": "017cd1382aed74cbc8cf7e62da58fa01eae1d6ecb6bb924486849beccc932741",
+          "reproduce/build.py": "afbbd2e6b02d955bff6ffe6ee3f28983dc4c99e7f23b84bc8c7138a260f58801",
+          "reproduce/check.py": "dd1fd2c5ada072e5b880cdb98213b6afc2ede49fca721b66b73ed7ffe5fa8455",
+          "reproduce/gen.py": "183432022b2da654b843a0c76ad3f523ee7a6d2eb444a4fa10cabc0a4052e642",
+          "reproduce/parse.mts": "e244d83be2bbb574ec572fd8a96a4aa06865cd084c4e02fb0c0ea489c97cb002"
+        }
+      },
+      "authorityScope": "MYSTERY-FINAL-CONTRACT-MANIFEST.json bestimmt je taskId die aktuelle Candidate-Identität: v2-Candidates für MYST-0002, MYST-0004, MYST-0005B, MYST-CHALLENGE-0001, MYST-SESSION-0001A/B/C; UNCHANGED (Originalidentität) für MYST-0001, MYST-0003, MYST-0005A, MYST-SOLVABILITY-0001. Implementierungsautorität erst nach unabhängiger Freeze-Re-Verifikation (P4.2, Prüfer per D5), CORE-0002 und Registrierung (P4.3).",
+      "supersedes": [
+        "SRC-M-0002 (FINAL-CANDIDATE v1 e1eba9e1… → MYST-0002 v2)",
+        "SRC-M-0004 (→ v2)",
+        "SRC-M-0005B (→ v2)",
+        "SRC-M-CH (→ v2)",
+        "SRC-M-SESS (SA/SB/SC → v2)",
+        "VS-5-Strang (D9b)",
+        "TASK-0005 v2 (D9c)"
+      ],
+      "notes": [
+        "Patch-Autorität im Manifest = R-SEB-1731 (Owner > Closure > Original > ältere Designs); dokumentierte Abweichungen DV-01…DV-09 im Report §3.",
+        "Vitrine-Fall-Deltas P11–P20 ausdrücklich NICHT angewandt (gehören zu P5.2 Re-Authoring).",
+        "Auftrag: Seb 2026-10-04 17:31:04Z."
+      ]
+    },
+    {
+      "id": "PENDING-V-PACK",
+      "title": "Die leere Vitrine Final Authoring & Certification Pack",
+      "class": "NORMATIVE_CONTRACT_CANDIDATE",
+      "domain": "MYSTERY",
+      "status": "PENDING (in Arbeit; Teildateien im Projektordner, keine Autorität)",
+      "location": {
+        "expectedBranch": "forge/owner/audits/DIE-LEERE-VITRINE-FINAL-PACK",
+        "expectedPath": "forge-audits/DIE-LEERE-VITRINE-FINAL-PACK/",
+        "expectedFiles": [
+          "DIE-LEERE-VITRINE-FINAL-AUTHORING-SPEC.md",
+          "DIE-LEERE-VITRINE-FINAL-PLAYER-BRIEF.md",
+          "DIE-LEERE-VITRINE-FINAL-PROOF-PROFILE.json",
+          "DIE-LEERE-VITRINE-FINAL-PUBLIC-CONTENT.json",
+          "DIE-LEERE-VITRINE-FINAL-PLAYER-SETUP.json",
+          "DIE-LEERE-VITRINE-FINAL-CHALLENGE.json",
+          "DIE-LEERE-VITRINE-PACKAGE-MANIFEST.json",
+          "DIE-LEERE-VITRINE-CERTIFICATION-CHECKLIST.md",
+          "DIE-LEERE-VITRINE-BLINDTEST-PROTOCOL.md",
+          "DIE-LEERE-VITRINE-FINAL-INTEGRATION-REPORT.md"
+        ],
+        "projectFolderMirror": "/mnt/project-files/forge-audits/DIE-LEERE-VITRINE-FINAL-PACK/"
+      },
+      "authorityScope": "Nach Vorliegen: aktuelle Fall-Authoring-Quelle (Fallinhalt, kein Code-Contract). Zertifizierung bleibt Gate P5.3 mit echtem Reducer-Witness.",
+      "supersedes": [
+        "SRC-V-CASE (als Authoring-Quelle)",
+        "SRC-V-CERT Proof Profile"
+      ],
+      "notes": [
+        "Auftrag: Seb 2026-10-04 17:32:29Z; liest SRC-M-INT, falls verfügbar.",
+        "Stand 17:52Z im Projektordner: 9 der 10 Pflichtdateien; DIE-LEERE-VITRINE-FINAL-INTEGRATION-REPORT.md fehlt; kein Remote-Branch."
+      ]
+    }
+  ]
+}
