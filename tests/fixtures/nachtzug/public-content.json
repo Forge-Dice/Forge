@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "Der Nachtzug nach Triest",
-  "brief": "Nachtzug Wien–Triest, Schlafwagen. Um 01:40 Uhr bemerkt Henriette von Arx in Abteil 7, dass ihr Collier aus dem Etui verschwunden ist. Henriette schlief mit Ohrstöpseln. Das Etui hat einen Kontakt: Es wurde genau einmal geöffnet, um 01:20 Uhr.\n\nIn Frage kommen Bruno Kessler und Felix Roth aus dem Liegewagen, Clara Mai aus Abteil 5, Dora Lenz aus Abteil 6 und der Zugbegleiter Janek Novak. Clara sagt, sie habe zur Tatzeit im Speisewagen gesessen, und mehr als einer glaubt ihr. Ein Alibi muss nicht genau um 01:20 liegen, um zu zählen, und nicht jedes Alibi um 01:20 hält. Achte darauf, wer wann wohin gelangen konnte.",
+  "brief": "Nachtzug Wien–Triest, Schlafwagen, irgendwo in den Kärntner Bergen. Um 01:40 Uhr bemerkt Henriette von Arx in Abteil 7, dass ihr Collier aus dem Etui verschwunden ist. Sie hatte mit Ohrstöpseln geschlafen. Das Etui hat einen Kontakt: Es wurde genau einmal geöffnet, um 01:20 Uhr.\n\nIn Frage kommen Bruno Kessler und Felix Roth aus dem Liegewagen, Henriettes Nichte Clara Mai aus Abteil 5, Dora Lenz aus Abteil 6 und der Zugbegleiter Janek Novak. Clara sagt, sie habe zur Tatzeit im Speisewagen gesessen, und Felix Roth will sie dort gesehen haben. Ein Alibi muss nicht genau um 01:20 liegen, um zu zählen, und nicht jedes Alibi um 01:20 hält. Achte darauf, wer wann wohin gelangen konnte.",
   "challengeQuestion": "Wer hat das Collier um 01:20 aus Abteil 7 genommen?",
   "labels": [
     {
@@ -10,7 +10,7 @@
         "id": "person:henriette"
       },
       "label": "Henriette von Arx",
-      "role": "Reisende in Abteil 7"
+      "role": "Reisende in Abteil 7, Clara Mais Tante"
     },
     {
       "entity": {
@@ -328,5 +328,5 @@
       "text": "Nur Bruno Kessler, Clara Mai, Felix Roth, Janek Novak und Dora Lenz kommen in Frage. Sind vier ausgeschlossen, bleibt die fünfte Person."
     }
   ],
-  "epilogue": "Clara Mai gesteht im Morgengrauen vor Ljubljana. Um 00:50 hatte sie im Speisewagen einen Tee bezahlt, gut sichtbar, und war vor 01:00 zurück in ihr Abteil gegangen, bevor Janek die Verbindungstür verriegelte. Um 01:20, während der Zug in Villach hielt, öffnete sie Abteil 7. Sie fürchtete, dass ihre Tante das Collier verkaufen und das Erbe verspielen würde.\n\nBruno Kessler saß um 01:05 im Speisewagen und kam bei verriegelter Tür nicht mehr in den Schlafwagen. Den Korken hatte Henriette selbst am Abend von ihm geschenkt bekommen. Felix glaubte ehrlich, Clara im Speisewagen gesehen zu haben, doch das war eine halbe Stunde früher. Das Collier steckt im Futter von Claras Reisetasche."
+  "epilogue": "Clara Mai gesteht im Morgengrauen vor Ljubljana. „Sie hätte es verkauft, wie alles andere auch“, sagt sie. Um 00:50 hatte sie im Speisewagen einen Tee bezahlt, gut sichtbar, und war vor 01:00 in ihr Abteil zurückgekehrt, bevor Janek die Verbindungstür verriegelte. Um 01:20, während der Zug in Villach hielt, öffnete sie Abteil 7. Ihr Alibi im Speisewagen war gelogen.\n\nBruno Kessler saß um 01:05 im Speisewagen und kam bei verriegelter Tür nicht mehr in den Schlafwagen. Den Korken hatte er Henriette am Abend mit einer Flasche Zweigelt geschenkt. Felix glaubte ehrlich, Clara im Speisewagen gesehen zu haben, doch das war eine halbe Stunde früher. Das Collier steckt im Futter von Claras Reisetasche."
 }

@@ -5,7 +5,7 @@
   "entries": [
     {
       "evidenceId": "evidence:cuff-button",
-      "text": "Neben dem Schreibtisch liegt ein abgerissener Manschettenknopf von Bens Hemd. Wann er abriss, zeigt er nicht: Ben war am Abend schon einmal in der Bibliothek.",
+      "text": "Neben dem Schreibtisch liegt ein abgerissener Manschettenknopf aus Perlmutt, eindeutig von Bens Hemd. Wann er abriss, zeigt er nicht: Ben war am Abend schon einmal in der Bibliothek.",
       "mentions": [
         {
           "kind": "person",
@@ -35,7 +35,7 @@
     },
     {
       "evidenceId": "evidence:muddy-path",
-      "text": "Frische Fußspuren im Gartenbeet, Annas Stiefelprofil. Der Gärtnerzähler zeigt: Sie entstanden um 20:25 Uhr, zur Tatzeit.",
+      "text": "Frische Fußspuren im Gemüsebeet, Annas Stiefelprofil. Die Wildkamera am Gartenzaun hat sie aufgenommen: 20:25 Uhr, genau zur Tatzeit.",
       "mentions": [
         {
           "kind": "person",

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "Der Brieföffner",
-  "brief": "Ein Abendessen im Landhaus. Gegen 20:25 Uhr wird Clara in der Bibliothek tot aufgefunden, getötet mit dem Brieföffner vom Schreibtisch. Im Haus waren außer ihr nur Anna, Ben und der Butler Dorian.\n\nDein Auftrag: Finde heraus, wer für Claras Tod verantwortlich ist. Durchsuche Bibliothek, Garten und Küche, untersuche, was du findest, und befrage Anna und Ben. Halte einer Aussage einen Fund vor, wenn du glaubst, dass jemand lügt. Nicht jede Spur führt zum Täter, und eine Gesprächsverweigerung ist kein Geständnis.",
+  "brief": "Ein Abendessen im Landhaus der Familie, Regen an den Scheiben. Kurz nach 20:25 Uhr wird Clara in der Bibliothek tot aufgefunden, getötet mit dem Brieföffner von ihrem eigenen Schreibtisch. Außer ihr waren an diesem Abend nur drei Menschen im Haus: ihre Nichte Anna, ihr Geschäftspartner Ben und der Butler Dorian.\n\nFinde heraus, wer für Claras Tod verantwortlich ist. Durchsuche Bibliothek, Garten und Küche, untersuche, was du findest, und befrage Anna und Ben. Wenn du glaubst, dass jemand lügt, halte ihm einen Fund vor. Nicht jede Spur führt zum Täter, und wer schweigt, hat damit noch nichts gestanden.",
   "challengeQuestion": "Wer ist für Claras Tod verantwortlich?",
   "labels": [
     {
@@ -213,5 +213,5 @@
       "text": "Wer, mit einem Fundstück konfrontiert, zugibt, bei Claras Tod dabei gewesen zu sein, ist verantwortlich."
     }
   ],
-  "epilogue": "Ben bricht sein Schweigen, als du ihm den Manschettenknopf vorhältst. Er schuldete Clara Geld, das er nicht zurückzahlen konnte, und am Abend stritten die beiden in der Bibliothek über das Testament. Um 20:25 griff er nach dem Brieföffner vom Schreibtisch.\n\nAnna hatte mit Claras Tod nichts zu tun. Sie arbeitete zu dieser Zeit im Garten, wie ihre frischen Fußspuren im Beet zeigen. Ihr Fingerabdruck auf dem Brieföffner war eine falsche Spur. Auch Dorian war unschuldig: Er hatte den beiden um 20:20 Tee gebracht und zählte zur Tatzeit in der Küche das Silber."
+  "epilogue": "Ben bricht zusammen, als du ihm den Manschettenknopf vorhältst. „Sie wollte mich ruinieren“, sagt er, und seine Stimme versagt. Er schuldete Clara Geld, das er nicht zurückzahlen konnte, und am Abend stritten die beiden in der Bibliothek über das Testament. Um 20:25 griff er nach dem Brieföffner auf dem Schreibtisch. Im Verhör log er: Er sei nicht dabei gewesen, Anna sei es gewesen.\n\nAnna hatte mit Claras Tod nichts zu tun. Sie arbeitete zu dieser Zeit im Garten, die Wildkamera hat sie aufgenommen. Ihr Fingerabdruck auf dem Griff des Brieföffners war eine falsche Spur: Sie hatte am Nachmittag damit Briefe geöffnet. Auch Dorian war unschuldig. Er hatte den beiden um 20:20 Tee gebracht und zählte zur Tatzeit in der Küche das Silber."
 }

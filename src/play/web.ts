@@ -1,4 +1,4 @@
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
 import {
@@ -35,8 +35,10 @@ function readBody(req: IncomingMessage): Promise<string | null> {
     req.on("data", (chunk: Buffer) => {
       size += chunk.length;
       if (size > MAX_BODY) {
+        // Stop collecting but drain the rest, so the handler can still answer 413.
+        req.removeAllListeners("data");
+        req.resume();
         resolve(null);
-        req.destroy();
       } else chunks.push(chunk);
     });
     req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
@@ -102,7 +104,7 @@ export type WebHandler = (method: string, url: string, body: () => Promise<strin
  * The whole front end as a function of (method, url, body) over one in-memory game per case. The
  * node server below and the single-file browser build (web-standalone.ts) both run exactly this.
  */
-export function createWebHandler(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}): WebHandler {
+export function createWebHandler(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, options: { readonly editorLink?: boolean } = {}): WebHandler {
   const slots = new Map<PlayCaseName, Slot>();
   const slot = (name: PlayCaseName): Slot => {
     let s = slots.get(name);
@@ -161,7 +163,12 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
   }
 
   return async (method, rawUrl, readBody) => {
-    const url = new URL(rawUrl, "http://localhost");
+    let url: URL;
+    try {
+      url = new URL(rawUrl, "http://localhost");
+    } catch {
+      return text(400, "Ungültige Anfrage.");
+    }
     if (method === "GET" && url.pathname === "/") {
       const cards = (Object.keys(PLAY_CASES) as PlayCaseName[]).map((name) => {
         const s = slot(name);
@@ -170,7 +177,7 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
         const progress = s.game.state.phase === "solved" ? "Gelöst" : steps === 0 ? null : `${steps} Aktionen`;
         return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress, difficulty: PLAY_CASES[name].difficulty };
       });
-      return html(renderCaseList(cards));
+      return html(renderCaseList(cards, options.editorLink === true));
     }
     if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp());
     if (method === "POST" && url.pathname === "/zufall") {
@@ -204,12 +211,16 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
         };
       }
       case "POST act": {
-        const form = new URLSearchParams((await readBody()) ?? "");
+        const body = await readBody();
+        if (body === null) return text(413, "Zu groß.");
+        const form = new URLSearchParams(body);
         act(s, form.get("group"), form.get("n"), form.get("at"));
         return redirect(home);
       }
       case "POST load": {
-        const loaded = loadText(s.game.pkg, (await readBody()) ?? "", t.clockOrigin);
+        const body = await readBody();
+        if (body === null) return text(413, "Zu groß.");
+        const loaded = loadText(s.game.pkg, body, t.clockOrigin);
         if (loaded.ok) [s.game, s.fresh] = [loaded.game, new Set()];
         s.feedback = loaded.ok
           ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
@@ -226,20 +237,40 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
   };
 }
 
-/** Node request handler around createWebHandler; exported for tests. */
-export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}) {
-  const handle = createWebHandler(packages);
-  return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
-    const out = await handle(req.method ?? "GET", req.url ?? "/", () => readBody(req));
-    res.writeHead(out.status, out.headers).end(out.body);
-  };
+/**
+ * Local-only server: requests must name a loopback host (no DNS rebinding), and a post that
+ * carries an Origin must come from this server's own pages (no cross-site form posts).
+ */
+function trusted(req: IncomingMessage): boolean {
+  const host = req.headers.host ?? "";
+  if (!/^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(host)) return false;
+  const origin = req.headers.origin;
+  if (req.method !== "POST" || origin === undefined) return true;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const port = Number(process.env.PORT ?? 4173);
-  const app = createWebApp();
-  // Local only: bound to the loopback interface.
-  createServer((req, res) => void app(req, res)).listen(port, "127.0.0.1", () => {
-    console.log(`Kriminalfälle laufen auf http://localhost:${port}  (Strg+C beendet)`);
-  });
+/** Extra node routes in front of the game (the case editor); true when the request was handled. */
+export type NodeRoutes = (req: IncomingMessage, res: ServerResponse, url: URL) => Promise<boolean>;
+
+/** Node request handler around createWebHandler; exported for tests. */
+export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}, extra: { readonly routes: NodeRoutes; readonly editorLink: boolean } | null = null) {
+  const handle = createWebHandler(packages, { editorLink: extra?.editorLink === true });
+  const plain = { "content-type": "text/plain; charset=utf-8", connection: "close" };
+  return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
+    // Every failure ends in a response: a thrown error must never become an unhandled rejection.
+    try {
+      // Checked before the editor routes too: they write case files.
+      if (!trusted(req)) return void res.writeHead(403, plain).end("Nicht erlaubt.");
+      if (extra !== null && (await extra.routes(req, res, new URL(req.url ?? "/", "http://localhost")))) return;
+      const out = await handle(req.method ?? "GET", req.url ?? "/", () => readBody(req));
+      res.writeHead(out.status, out.headers).end(out.body);
+    } catch {
+      if (!res.headersSent) res.writeHead(500, plain).end("Interner Fehler.");
+      else res.destroy();
+    }
+  };
 }

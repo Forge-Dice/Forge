@@ -13,7 +13,7 @@ export type Feedback = {
 };
 export type CaseCard = { readonly slug: string; readonly title: string; readonly teaser: string; readonly progress: string | null; readonly difficulty?: Difficulty };
 
-const escape = (text: string): string =>
+export const escape = (text: string): string =>
   text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 const GROUPS: [string, string][] = [
@@ -39,7 +39,8 @@ const paragraphs = (text: string) =>
     .map((p) => `<p>${escape(p.trim())}</p>`)
     .join("");
 
-function layout(title: string, body: string, bodyClass = ""): string {
+/** Page frame shared by game, help and the case editor; extraStyle is appended to the base sheet. */
+export function layout(title: string, body: string, bodyClass = "", extraStyle = ""): string {
   return `<!doctype html>
 <html lang="de">
 <head>
@@ -48,7 +49,7 @@ function layout(title: string, body: string, bodyClass = ""): string {
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#1c1814">
 <title>${escape(title)}</title>
-<style>${STYLE}</style>
+<style>${STYLE}${extraStyle}</style>
 </head>
 <body${bodyClass === "" ? "" : ` class="${bodyClass}"`}>
 ${body}
@@ -63,7 +64,7 @@ ${body}
 const difficultyTag = (d: Difficulty | undefined): string =>
   d === undefined ? "" : `<span class="difficulty" title="Schwierigkeit ${d} von 5"><span class="visually-hidden">Schwierigkeit: </span><span class="dots" aria-hidden="true">${difficultyDots(d)}</span> ${DIFFICULTY_NAMES[d]}</span>`;
 
-export function renderCaseList(cases: readonly CaseCard[]): string {
+export function renderCaseList(cases: readonly CaseCard[], editorLink = false): string {
   const cards = cases
     .map((c, i) => {
       const solved = c.progress === "Gelöst";
@@ -76,7 +77,7 @@ export function renderCaseList(cases: readonly CaseCard[]): string {
   return layout(
     "Fälle",
     `<a class="skip" href="#faelle">Zu den Fällen springen</a>
-<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a></p></header>
+<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a>${editorLink ? ` <a class="button ghost" href="/editor">Fall-Editor</a>` : ""}</p></header>
 <main id="faelle" class="shelf"><h2 class="visually-hidden">Offene Akten</h2><ul class="cases">${cards}</ul>
 <section class="random-case" aria-labelledby="zufall"><h2 id="zufall">Zufallsfall</h2><p>Ein erzeugter Fall, jedes Mal ein anderes Schema. Gleicher Seed, gleicher Fall; leer lassen für einen zufälligen.</p><form method="post" action="/zufall"><label for="seed">Seed</label> <input id="seed" name="seed" inputmode="numeric" pattern="[0-9]{0,9}" maxlength="9" placeholder="z. B. 42"> <button type="submit">Zufallsfall öffnen</button></form></section>
 <p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>`,
@@ -391,7 +392,8 @@ const load = document.getElementById("load"), loadLabel = document.getElementByI
 load.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  await fetch(path + "/load", { method: "POST", headers: { "content-type": "text/plain;charset=utf-8" }, body: await file.text() });
+  // Not following the redirect: its GET would consume the load result before the page reloads.
+  try { await fetch(path + "/load", { method: "POST", redirect: "manual", headers: { "content-type": "text/plain;charset=utf-8" }, body: await file.text() }); } catch {}
   visit(path);
 });
 loadLabel.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); load.click(); } });

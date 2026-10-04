@@ -1,25 +1,34 @@
 import { createInterface } from "node:readline/promises";
 import { checkCaseFolder, formatCaseCheck } from "./check-case.ts";
-import { CASE_SCHEMAS, generateCase, generatedClockOrigin, generatedPackage, writeGeneratedCase, type CaseSchema } from "./case-generator.ts";
+import { CASE_SCHEMAS, MAX_SEED, generateCase, generatedClockOrigin, generatedPackage, writeGeneratedCase, type CaseSchema } from "./case-generator.ts";
 import { command, intro, newGame, type Game } from "../play/game.ts";
 
-// `npm run generate-case -- --seed N [--schema <schema>] [--out <ordner>] [--play]`: writes a generated case folder,
-// checks it with check-case and, with --play, starts it in the terminal.
+// `npm run generate-case -- --seed N [--schema <schema>] [--out <ordner>] [--force] [--play]`: writes a
+// generated case folder, checks it with check-case and, with --play, starts it in the terminal. A
+// non-empty folder is only overwritten with --force.
 
 const args = process.argv.slice(2);
 const option = (name: string) => {
   const i = args.indexOf(name);
   return i < 0 ? undefined : args[i + 1];
 };
-const seed = Number(option("--seed"));
+const raw = option("--seed");
+// Digits only: Number("") is 0 and Number("0x10") is 16.
+const seed = raw !== undefined && /^[0-9]{1,10}$/.test(raw) ? Number(raw) : Number.NaN;
 const schema = option("--schema");
-if (!Number.isSafeInteger(seed) || seed < 0 || (schema !== undefined && !(CASE_SCHEMAS as readonly string[]).includes(schema))) {
-  console.log(`Aufruf: npm run generate-case -- --seed <zahl> [--schema ${CASE_SCHEMAS.join("|")}] [--out <ordner>] [--play]`);
+if (!(seed <= MAX_SEED) || (schema !== undefined && !(CASE_SCHEMAS as readonly string[]).includes(schema))) {
+  console.log(`Aufruf: npm run generate-case -- --seed <0..${MAX_SEED}> [--schema ${CASE_SCHEMAS.join("|")}] [--out <ordner>] [--force] [--play]`);
   process.exitCode = 2;
 } else {
   const generated = generateCase(seed, schema as CaseSchema | undefined);
   const dir = option("--out") ?? `generated/fall-${seed}`;
-  const files = writeGeneratedCase(generated, dir);
+  let files: string[];
+  try {
+    files = writeGeneratedCase(generated, dir, { force: args.includes("--force") });
+  } catch (error) {
+    console.log((error as Error).message);
+    process.exit(2);
+  }
   console.log(`„${generated.title}“ (Seed ${seed}, Schema ${generated.schema}${generated.withLie ? ", mit Lüge" : ""}): ${files.length} Dateien in ${dir}`);
   const check = checkCaseFolder(dir);
   console.log(formatCaseCheck(check));

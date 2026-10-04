@@ -65,10 +65,27 @@ describe("standalone browser build", () => {
     expect((await both("GET", "/")).body).toContain("Aktionen");
   }, 120_000);
 
+  it("plays a Zufallsfall like the server and restores it from its save", async () => {
+    const server = createWebHandler();
+    const both = async (method: string, url: string, text?: string): Promise<WebResponse> => {
+      const [a, b] = await Promise.all([server(method, url, body(text)), bundled(method, url, body(text))]);
+      expect(b).toEqual(a);
+      return a;
+    };
+    expect((await both("POST", "/zufall", "seed=42")).headers.location).toBe("/fall/zufall-42");
+    await both("POST", "/fall/zufall-42/act", "group=u&n=1&at=0");
+    const save = await both("GET", "/fall/zufall-42/save");
+    expect(save.status).toBe(200);
+    // A fresh handler (as after a page reload) gets the case back from the save under its slug.
+    const reloaded = createWebHandler();
+    expect((await reloaded("POST", "/fall/zufall-42/load", body(save.body))).status).toBe(303);
+    expect((await reloaded("GET", "/fall/zufall-42", body(undefined))).body).toContain("Spielstand geladen");
+  }, 60_000);
+
   it("solves Die leere Vitrine in the bundle", async () => {
     const V = "/fall/vitrine";
     await bundled("POST", `${V}/new`, body(undefined));
-    const labels = ["Ort durchsuchen: Innenhof", "Kann ich den vollständigen Film dieses Hoffototermins sehen?", "Gegenstand untersuchen: Noras Kamera", "Wo ist der unabhängige Archivnachweis?", "Gegenstand untersuchen: Archivterminal", "Lina Kern"];
+    const labels = ["Ort durchsuchen: Innenhof", "Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?", "Gegenstand untersuchen: Noras Kamera", "Zeichnet im Archiv ein Gerät auf, wer dort arbeitet?", "Gegenstand untersuchen: Archivterminal", "Lina Kern"];
     for (const label of labels) {
       const page = (await bundled("GET", V, body(undefined))).body;
       const form = [...page.matchAll(/<form method="post" action="\/fall\/[a-z]+\/act"[^>]*>(.*?)<\/form>/g)].find(([, inner]) =>

@@ -22,3 +22,6 @@ export function writeFileSync(): never {
 export function mkdirSync(): never {
   throw new Error("No file system in the browser build.");
 }
+export function rmSync(): never {
+  throw new Error("No file system in the browser build.");
+}

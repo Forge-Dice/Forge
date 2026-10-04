@@ -7,7 +7,8 @@ import { afterAll, describe, expect, it } from "vitest";
 import { checkCaseFolder, type CaseCheck } from "../src/authoring/check-case.ts";
 import { decodeSessionSave, encodeSessionSave } from "../src/domain/case-session-save.ts";
 import { initialSession, reduceSession, replaySession, type SessionState } from "../src/domain/case-session.ts";
-import { loadPlayPackage } from "../src/play/cases.ts";
+import { loadPlayPackage, playPackageInput, refSource } from "../src/play/cases.ts";
+import { resolveCasePackage } from "../src/domain/case-package.ts";
 import { command, newGame } from "../src/play/game.ts";
 import { createWebApp } from "../src/play/web.ts";
 import { BRIEF, briefProofProfile, briefWitness, resolveBriefPackage } from "./brieffoeffner.fixture.ts";
@@ -179,5 +180,23 @@ describe("confronting in CLI and browser", () => {
     } finally {
       await new Promise<void>((resolve) => server.close(() => resolve()));
     }
+  });
+});
+
+describe("review fixes", () => {
+  it("the same confrontation cannot be repeated: no second admission, no wasted event, not offered again", () => {
+    const first = step(prepared(), event.confront("ben", "q01", "cuff-button"));
+    if (!first.ok) throw new Error(first.code);
+    const again = step(first.state, event.confront("ben", "q01", "cuff-button"));
+    expect(again.ok || again.code).toBe("ACTION_UNAVAILABLE");
+  });
+
+  it("a confrontation whose claim the NPC holds no view on is rejected when the package is built", () => {
+    const input = playPackageInput(BRIEF) as any;
+    const ben = input.npcs.find((n: any) => n.profile.npcId === "person:ben");
+    ben.profile.confrontations[0].claim = { kind: "personResponsibleForEvent", eventId: "event:murder", personId: "person:ben" };
+    const resolved = resolveCasePackage(input, refSource(input.truth, BRIEF.salt));
+    expect(resolved.ok).toBe(false);
+    if (!resolved.ok) expect(resolved.findings[0]!.path.slice(-3)).toEqual(["confrontations", 0, "claim"]);
   });
 });

@@ -7,8 +7,8 @@ import { afterAll, describe, expect, it } from "vitest";
 import { CASE_SCHEMAS, generateCase, generatedClockOrigin, generatedPackage, writeGeneratedCase, type GeneratedCase } from "../src/authoring/case-generator.ts";
 import { checkCaseFolder } from "../src/authoring/check-case.ts";
 import type { ResolvedCasePackage } from "../src/domain/case-package.ts";
-import { initialSession, reduceSession, type SessionState } from "../src/domain/case-session.ts";
-import { accusations, newGame } from "../src/play/game.ts";
+import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../src/domain/case-session.ts";
+import { accusations, answerText, newGame } from "../src/play/game.ts";
 import { createWebApp } from "../src/play/web.ts";
 
 const scratch = mkdtempSync(join(tmpdir(), "generated-"));
@@ -140,6 +140,48 @@ describe("generated cases are playable", () => {
   });
 });
 
+describe("narrative variety", () => {
+  type Content = { brief: string; epilogue: string; voices: { npc: string; lines: Record<string, string[]> }[] };
+  const content = (seed: number) => generateCase(seed).files["public-content.json"] as Content;
+
+  it("briefs and epilogues differ across seeds; each NPC has its own voice", () => {
+    expect(new Set(SEEDS.map((s) => content(s).brief.split(". ")[0])).size).toBeGreaterThan(30);
+    expect(new Set(SEEDS.map((s) => content(s).epilogue.split("\n\n")[2])).size).toBeGreaterThan(10);
+    for (const seed of SEEDS.slice(0, 10)) {
+      const g = generateCase(seed);
+      const npcs = Object.keys(g.files).filter((f) => f.startsWith("npc-")).map((f) => (g.files[f] as { npcId: string }).npcId);
+      const voices = content(seed).voices;
+      expect(voices.map((v) => v.npc).sort()).toEqual(npcs.sort());
+      expect(new Set(voices.map((v) => v.lines.denies![0])).size).toBe(voices.length);
+    }
+  });
+
+  it("answers in the NPC's voice; a lie sounds like any other answer", () => {
+    const seed = SEEDS.find((s) => generateCase(s).withLie && generateCase(s).schema !== "timewindow")!;
+    const generated = generateCase(seed);
+    const pkg = generatedPackage(generated);
+    const culprit = culpritOf(generated);
+    const voice = content(seed).voices.find((v) => v.npc === culprit)!.lines;
+    const list = steps(generated);
+    const { state, outputs } = playSteps(pkg, list.slice(0, list.findIndex((st) => st.stepId === "ask-culprit") + 1));
+    const asked = outputs["ask-culprit"] as Extract<SessionOutput, { type: "interrogate" }>;
+    const game = { ...newGame(pkg, generatedClockOrigin(generated)), state };
+    const text = answerText(game, asked.observation);
+    expect(voice.denies!.some((line) => text.includes(`„${line}“`)), text).toBe(true);
+  });
+});
+
+describe("voices in the case format", () => {
+  it("a voice for someone who is no NPC, or two for one NPC, is rejected", () => {
+    const generated = generateCase(2);
+    const errors = (edit: (files: Record<string, any>) => void) => check(generated, edit).problems.filter((p) => p.severity === "error");
+    expect(errors(() => {})).toEqual([]);
+    expect(errors((f) => (f["public-content.json"].voices[0].npc = "person:nobody")).length).toBeGreaterThan(0);
+    expect(errors((f) => f["public-content.json"].voices.push(f["public-content.json"].voices[0])).length).toBeGreaterThan(0);
+    expect(errors((f) => (f["public-content.json"].voices[0].lines.shouts = ["Ha!"])).length).toBeGreaterThan(0);
+  });
+});
+
 describe("Zufallsfall in the browser", () => {
   it("the case list offers a seed form; a seed opens its generated case", async () => {
     const app = createWebApp();
@@ -166,3 +208,20 @@ describe("Zufallsfall in the browser", () => {
     }
   });
 });
+
+describe("review fixes", () => {
+  it("writing into a folder that already holds files is refused unless forced; forcing drops stale NPC files", () => {
+    const dir = join(scratch, "reuse");
+    writeGeneratedCase(generateCase(0), dir);
+    expect(() => writeGeneratedCase(generateCase(1), dir)).toThrow(/nicht leer/);
+    writeGeneratedCase(generateCase(1), dir, { force: true });
+    expect(checkCaseFolder(dir).ok).toBe(true);
+  });
+
+  it("seeds above 2^32-1 are rejected instead of wrapping onto another seed's case", () => {
+    expect(() => generateCase(2 ** 32 + 5)).toThrow(RangeError);
+    expect(() => generateCase(2 ** 32 - 1)).not.toThrow();
+  });
+
+});
+
