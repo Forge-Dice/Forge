@@ -135,4 +135,17 @@ describe("standalone browser build", () => {
     expect(bad.status).toBe(422);
     expect(JSON.parse(bad.body)).toMatchObject({ ok: false, title: "Die Fall-Datei wurde verändert." });
   });
+
+  it("refuses the import attacks in the bundle as the server does", async () => {
+    const dir = new URL("./fixtures/geige/", import.meta.url).pathname;
+    const files = Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, readFileSync(dir + f, "utf8")]));
+    const deep = files["release-manifest.json"]!.replace(/\}\s*$/, `,"x":${"[".repeat(100_000)}${"]".repeat(100_000)}}`);
+    const server = createWebHandler();
+    for (const text of [exportCaseFiles({ ...files, "release-manifest.json": deep }), exportCaseFiles({ ...files, "zz.json": "{}" }), "x".repeat(2 * 1024 * 1024)]) {
+      const [a, b] = await Promise.all([server("POST", "/eigener-fall", body(text)), bundled("POST", "/eigener-fall", body(text))]);
+      expect(b).toEqual(a);
+      expect(a.status).toBe(422);
+    }
+  });
 });
+
