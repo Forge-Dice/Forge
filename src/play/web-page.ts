@@ -629,8 +629,8 @@ button.suspect:hover { background: var(--blood); color: #fff; }
 .case-card:hover { transform: translateY(-3px) rotate(-.4deg); box-shadow: 0 18px 30px -12px rgba(0,0,0,.8); }
 .case-no { font: 700 12px var(--type); letter-spacing: .2em; text-transform: uppercase; color: var(--blood); }
 .case-card h2 { margin: 6px 0 10px; font-size: 26px; }
-.case-card p { flex: 1; color: #4a3d2e; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.case-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.case-card p { color: #4a3d2e; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.case-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 8px; }
 .case-card .badge { background: rgba(42,33,25,.12); color: var(--ink); border-color: rgba(42,33,25,.25); }
 .case-card .badge.solved { background: var(--ok); color: #fff; }
 .open-file { font: 600 14px var(--sans); }
