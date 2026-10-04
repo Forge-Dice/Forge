@@ -9,7 +9,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "play": "node --experimental-transform-types --no-warnings src/play/cli.ts"
+    "play": "node --experimental-transform-types --no-warnings src/play/cli.ts",
+    "check-case": "node --experimental-transform-types --no-warnings src/authoring/check-case-cli.ts"
   },
   "dependencies": {
     "zod": "4.6.5"
