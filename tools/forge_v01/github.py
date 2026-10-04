@@ -62,6 +62,11 @@ def _require(ok: bool, phase: str) -> None:
         raise _api(phase)
 
 
+def _same_id(value, expected: int) -> bool:
+    """Equality on validated ints only: Python's True == 1 must never match an id."""
+    return positive_id(value) and value == expected
+
+
 def _optional_id(value, phase: str):
     _require(value is None or positive_id(value), phase)
     return value
@@ -73,7 +78,7 @@ def _optional_id(value, phase: str):
 def read_pr(transport, pr: int, *, phase: str = "final") -> dict:
     data = _get(transport, f"{REPO_PATH}/pulls/{_id(pr, phase)}", phase)
     shape = (
-        _field(data, "number") == pr,
+        _same_id(_field(data, "number"), pr),
         isinstance(_field(data, "state"), str),
         isinstance(_field(data, "draft"), bool),
         positive_id(_field(data, "base", "repo", "id")),
@@ -107,8 +112,8 @@ def read_main(transport, *, phase: str = "final") -> dict:
 def read_run(transport, run_id: int, attempt: int, *, phase: str = "final") -> dict:
     data = _get(transport, f"{REPO_PATH}/actions/runs/{_id(run_id, phase)}/attempts/{_id(attempt, phase)}", phase)
     shape = (
-        _field(data, "id") == run_id,
-        _field(data, "run_attempt") == attempt,
+        _same_id(_field(data, "id"), run_id),
+        _same_id(_field(data, "run_attempt"), attempt),
         isinstance(_field(data, "event"), str),
         isinstance(_field(data, "path"), str),
         positive_id(_field(data, "workflow_id")),
@@ -138,10 +143,14 @@ def read_run(transport, run_id: int, attempt: int, *, phase: str = "final") -> d
 def _pages(transport, path: str, phase: str, unwrap):
     """Internal page counter 1..20; stops on a short page; a 21st page would be needed -> FAIL."""
     items: list = []
+    first_total = None
     for page in range(1, MAX_PAGES + 1):
         batch, total = unwrap(_get(transport, f"{path}?per_page={PER_PAGE}&page={page}", phase))
         _require(isinstance(batch, list) and len(batch) <= PER_PAGE, phase)
         items.extend(batch)
+        if page == 1:
+            first_total = total
+        _require(total == first_total, phase)  # a total_count changing between pages: listing not stable
         if total is not None:
             _require(len(items) <= total <= MAX_ITEMS, phase)
             if len(items) == total:
@@ -162,7 +171,8 @@ def read_reviews(transport, pr: int, *, phase: str = "final") -> list[dict]:
             isinstance(item, dict),
             positive_id(_field(item, "id")),
             user is None or isinstance(user, dict),
-            _field(item, "state") in REVIEW_STATES,
+            isinstance(_field(item, "state"), str) and item["state"] in REVIEW_STATES,
+            isinstance(item, dict) and "commit_id" in item and "submitted_at" in item,  # nullable, never absent
             _field(item, "commit_id") is None or is_sha(_field(item, "commit_id")),
             _field(item, "submitted_at") is None or isinstance(_field(item, "submitted_at"), str),
             body is None or isinstance(body, str),
@@ -199,10 +209,10 @@ def read_jobs(transport, run_id: int, attempt: int, *, phase: str = "final") -> 
         shape = (
             isinstance(item, dict),
             positive_id(_field(item, "id")),
-            _field(item, "run_id") == run_id,
+            _same_id(_field(item, "run_id"), run_id),
             positive_id(_field(item, "run_attempt")),
             isinstance(_field(item, "name"), str),
-            _field(item, "status") in JOB_STATUSES,
+            isinstance(_field(item, "status"), str) and item["status"] in JOB_STATUSES,
             conclusion is None or isinstance(conclusion, str),
         )
         _require(all(shape) and item["id"] not in seen, phase)

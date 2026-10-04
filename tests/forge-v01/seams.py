@@ -81,3 +81,10 @@ def materialize_rows_for_test(store, rows: list, destination: str) -> str:
     from objects import Leaf, Snapshot
 
     return materialize(store, Snapshot("", tuple(Leaf(p, m, o) for p, m, o in rows)), destination)
+
+
+def github_read_for_test(fn: str, answers: dict, *args):
+    """Driver entry: one github.py read over a FixedTransport built from `answers`."""
+    import github
+
+    return getattr(github, fn)(FixedTransport(answers), *args)
