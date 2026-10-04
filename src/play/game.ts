@@ -10,7 +10,7 @@ import type { InterrogationObservation, PlayerClaim } from "../domain/interrogat
 
 export type Game = { readonly pkg: ResolvedCasePackage; readonly state: SessionState };
 export type Step = { readonly game: Game; readonly text: string; readonly quit?: true };
-type Action = { readonly label: string; readonly event: unknown };
+export type Action = { readonly label: string; readonly event: unknown };
 
 /** Display convention of this case: timeline second 0 is 18:00:00 (PublicContent brief). */
 const CLOCK_ORIGIN_SECONDS = 18 * 3600;
@@ -90,11 +90,11 @@ function choose(game: Game, actions: Action[], pick: number | null, title: strin
 
 // ---------- Actions offered from the prefix Known ----------
 
-function known(game: Game, kind: string): { ref: string; label: string }[] {
+export function known(game: Game, kind: string): { ref: string; label: string }[] {
   return game.state.knowledge.known.filter((k) => k.kind === kind).map((k) => ({ ref: k.ref, label: labelOf(game, k.ref) }));
 }
 
-function investigations(game: Game): Action[] {
+export function investigations(game: Game): Action[] {
   const offer = (kind: string, action: string, verb: string) =>
     known(game, kind).map(({ ref, label }) => ({ label: `${verb}: ${label}`, event: { type: "investigate", action, target: ref } }));
   return [
@@ -105,7 +105,7 @@ function investigations(game: Game): Action[] {
 }
 
 /** Questions of known NPCs that the session would accept now (a dry run changes nothing). */
-function questions(game: Game): Action[] {
+export function questions(game: Game): Action[] {
   const { pkg, state } = game;
   return known(game, "person").flatMap(({ ref, label }) => {
     const npcId = pkg.refs.resolve(ref)?.id;
@@ -117,7 +117,7 @@ function questions(game: Game): Action[] {
 }
 
 /** D8 Vitrine convention: the chosen candidate true, every other candidate false, all four submitted. */
-function accusations(game: Game): Action[] {
+export function accusations(game: Game): Action[] {
   const { pkg } = game;
   const candidates = pkg.challenge.allowedClaims.filter((c) => c.kind === "personRoleForEvent");
   const ref = (kind: "person" | "event", id: string) => pkg.refs.refFor(kind, id)!;
@@ -173,7 +173,7 @@ function claimText(game: Game, claim: PlayerClaim | EvidenceClaim): string {
   }
 }
 
-function evidenceText(game: Game, o: EvidenceObservation): string {
+export function evidenceText(game: Game, o: EvidenceObservation): string {
   const lines = [`Fund: ${labelOf(game, o.evidence)}`, `  ${o.text}`];
   for (const report of o.reports) {
     const who = report.source.kind === "observation" ? "Beobachtung" : `Aussage von ${labelOf(game, report.source.person)}`;
@@ -191,7 +191,7 @@ const STANCES: Record<string, string> = {
   does_not_know: "Das weiß ich nicht.",
 };
 
-function answerText(game: Game, o: InterrogationObservation): string {
+export function answerText(game: Game, o: InterrogationObservation): string {
   const npcId = game.pkg.refs.resolve(o.npc)?.id;
   const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === o.questionId);
   const head = `${labelOf(game, o.npc)} auf „${question?.text ?? o.questionId}“`;
