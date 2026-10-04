@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { memoFrozen } from "./frozen-memo.ts";
 import type { InterrogationProfile, QuestionCatalogue } from "./interrogation-authoring.ts";
 
 // Same canonicalization as "forge-case-c14n-v1" (keys and every array sorted by UTF-16 code
@@ -31,9 +32,10 @@ export function serializeQuestionCatalogue(c: QuestionCatalogue): string {
   return canonicalize(c);
 }
 
-export function hashQuestionCatalogue(c: QuestionCatalogue): string {
+/** Memoized for deep-frozen (parsed) values, which the session hashes on every action. */
+export const hashQuestionCatalogue: (c: QuestionCatalogue) => string = memoFrozen((c: QuestionCatalogue): string => {
   return sha256(QUESTION_CATALOGUE_PROFILE, serializeQuestionCatalogue(c));
-}
+});
 
 export function serializeInterrogationProfile(p: InterrogationProfile): string {
   return canonicalize(p);

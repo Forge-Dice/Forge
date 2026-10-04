@@ -361,7 +361,7 @@ function releaseContextHash(
 type ManifestStep = { stepId: string; event: unknown };
 type ManifestAlternative = { report?: unknown; kind?: string; questionId?: string; evidenceId?: string; claim?: unknown; stance?: string };
 type ManifestObservation = ReleasedObservation & { alternatives?: ManifestAlternative[]; ruleId?: string; afterObservations?: string[] };
-type Manifest = {
+export type Manifest = {
   schemaVersion: 1;
   releaseContextHash: string;
   adapterVersion: string;
@@ -432,13 +432,27 @@ function sortedJson(value: unknown): string {
  */
 export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, releaseHash: string): WitnessReplay {
   return (stepIds) => {
-    let state = initialSession(pkg);
-    const cards = new Map<string, EvidenceObservation>();
-    const said = new Set<string>();
+    const events: unknown[] = [];
     for (const stepId of stepIds) {
       const step = manifest.certificateData.steps.find((s) => s.stepId === stepId);
       if (step === undefined) return { success: false, code: "INVALID_WITNESS" };
-      const result = reduceSession(pkg, state, step.event);
+      events.push(step.event);
+    }
+    return eventWitness(pkg, manifest, releaseHash)(events);
+  };
+}
+
+/**
+ * The same release rules over any player event log instead of the manifest's steps (used by the
+ * playtest bot to ask whether a player's knowledge already proves the answer).
+ */
+export function eventWitness(pkg: ResolvedCasePackage, manifest: Manifest, releaseHash: string): (events: readonly unknown[]) => ReturnType<WitnessReplay> {
+  return (events) => {
+    let state = initialSession(pkg);
+    const cards = new Map<string, EvidenceObservation>();
+    const said = new Set<string>();
+    for (const event of events) {
+      const result = reduceSession(pkg, state, event);
       if (!result.ok) return { success: false, code: "INVALID_WITNESS" };
       state = result.state;
       if (result.output.type === "investigate") {

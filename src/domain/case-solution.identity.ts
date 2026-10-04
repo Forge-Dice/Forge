@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { memoFrozen } from "./frozen-memo.ts";
 import type { CaseSolution } from "./case-solution.ts";
 
 // Canonicalization profile "forge-solution-c14n-v1" (same rules as forge-case-c14n-v1,
@@ -32,8 +33,9 @@ export function serializeCaseSolution(solution: CaseSolution): string {
   return canonicalize(solution);
 }
 
-export function hashCaseSolution(solution: CaseSolution): string {
+/** Memoized for deep-frozen (parsed) values, which the session hashes on every action. */
+export const hashCaseSolution: (solution: CaseSolution) => string = memoFrozen((solution: CaseSolution): string => {
   return createHash("sha256")
     .update(`${SOLUTION_CANONICALIZATION_PROFILE}\n${serializeCaseSolution(solution)}`, "utf8")
     .digest("hex");
-}
+});
