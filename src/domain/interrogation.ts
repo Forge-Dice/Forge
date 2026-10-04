@@ -73,9 +73,28 @@ export type InterrogationInput = {
   readonly refs: PlayerRefTranslator; // trusted port, its answers are still checked
   readonly known: readonly EntityRef[]; // derived by the trusted host (session)
   readonly questionId: unknown; // player input
+  readonly admitted?: readonly string[]; // questions whose lie this player already broke (trusted host)
 };
 
-const failure = (code: ErrorCode) => Object.freeze({ success: false, code }) as InterrogationResult;
+export type ConfrontationInput = Omit<InterrogationInput, "admitted"> & { readonly evidenceId: string };
+export type ConfrontationObservation =
+  | { readonly schemaVersion: 1; readonly npc: R; readonly questionId: QuestionId; readonly evidence: R; readonly act: "stands_by" }
+  | {
+      readonly schemaVersion: 1;
+      readonly npc: R;
+      readonly questionId: QuestionId;
+      readonly evidence: R;
+      readonly act: "admit";
+      readonly stance: Stated;
+      readonly statement: PlayerClaim;
+      readonly mentions: readonly { readonly kind: "person" | "location" | "item" | "event"; readonly ref: R }[];
+    };
+export type ConfrontationResult =
+  | { readonly success: true; readonly observation: ConfrontationObservation }
+  | { readonly success: false; readonly code: ErrorCode };
+
+type Failure = { readonly success: false; readonly code: ErrorCode };
+const failure = (code: ErrorCode) => Object.freeze({ success: false, code }) as Failure;
 const BINDING_MISMATCH = failure("BINDING_MISMATCH");
 const QUESTION_NOT_AVAILABLE = failure("QUESTION_NOT_AVAILABLE");
 const REF_UNAVAILABLE = failure("REF_UNAVAILABLE");
@@ -165,44 +184,52 @@ function playerClaim(claim: NpcVisibleClaim, t: Rt): PlayerClaim {
   }
 }
 
-export function interrogate(input: InterrogationInput): InterrogationResult {
+type Prepared =
+  | { readonly ok: false; readonly result: Failure }
+  | {
+      readonly ok: true;
+      readonly context: NpcVisibleContext;
+      readonly bridge: NpcProjectionBridge;
+      readonly rule: InterrogationProfile["rules"][number];
+      readonly question: QuestionCatalogue["questions"][number];
+      readonly npcEntity: EntityRef;
+      readonly npc: R;
+    };
+
+// Steps 1-4, shared by questioning and confronting.
+function prepare(input: Omit<InterrogationInput, "admitted">): Prepared {
   const { truth, solution, snapshot, catalogue, profile, refs, known, questionId } = input;
+  const fail = (result: Failure): Prepared => ({ ok: false, result });
   // 1. Binding.
   const truthHash = hashCaseTruth(truth);
   const boundTo = (doc: { readonly caseId: string; readonly truthHash: string }) =>
     doc.caseId === truth.caseId && doc.truthHash === truthHash;
-  if (!boundTo(catalogue) || !boundTo(profile) || !boundTo(refs)) return BINDING_MISMATCH;
-  if (profile.catalogueHash !== hashQuestionCatalogue(catalogue) || profile.npcId !== snapshot.npcId) return BINDING_MISMATCH;
+  if (!boundTo(catalogue) || !boundTo(profile) || !boundTo(refs)) return fail(BINDING_MISMATCH);
+  if (profile.catalogueHash !== hashQuestionCatalogue(catalogue) || profile.npcId !== snapshot.npcId) return fail(BINDING_MISMATCH);
   const projection = projectNpcKnowledgeWithBridge(snapshot, truth, solution);
-  if (!projection.success) return BINDING_MISMATCH;
+  if (!projection.success) return fail(BINDING_MISMATCH);
   const { context, bridge } = projection;
 
   // 2.-3. Question and askability share one player error (no existence oracle over guessable slugs).
   const rule = typeof questionId === "string" ? profile.rules.find((r) => r.questionId === questionId) : undefined;
   const question = catalogue.questions.find((q) => q.id === rule?.questionId);
-  if (rule === undefined || question === undefined) return QUESTION_NOT_AVAILABLE;
+  if (rule === undefined || question === undefined) return fail(QUESTION_NOT_AVAILABLE);
   const npcEntity: EntityRef = { kind: "person", id: profile.npcId };
   const knownKeys = new Set(known.map(keyOf));
-  if (![...question.mentions, npcEntity].every((e) => knownKeys.has(keyOf(e)))) return QUESTION_NOT_AVAILABLE;
+  if (![...question.mentions, npcEntity].every((e) => knownKeys.has(keyOf(e)))) return fail(QUESTION_NOT_AVAILABLE);
 
   // 4. NPC ref.
   const npc = refs.refFor("person", profile.npcId);
-  if (typeof npc !== "string" || !PLAYER_REF_PATTERN.test(npc)) return REF_UNAVAILABLE;
-  const head = { schemaVersion: 1, npc, questionId: rule.questionId } as const;
+  if (typeof npc !== "string" || !PLAYER_REF_PATTERN.test(npc)) return fail(REF_UNAVAILABLE);
+  return { ok: true, context, bridge, rule, question, npcEntity, npc };
+}
 
-  // 5. Decline never reads the epistemic state.
-  if (rule.act === "decline") return deepFreeze({ success: true, observation: { ...head, act: "decline" } });
+type Released = { readonly statement: PlayerClaim; readonly mentions: readonly { readonly kind: "person" | "location" | "item" | "event"; readonly ref: R }[] };
 
-  // 6.-7.
-  const sincere = decideResponse(context, bridge.visibleClaimOf(rule.claim));
-  const decision: ResponseDecision = rule.act === "lie" && sincere.claim !== null ? { stance: rule.stance, claim: sincere.claim } : sincere;
-  if (decision.stance === "does_not_know") {
-    return deepFreeze({ success: true, observation: { ...head, act: "answer", stance: "does_not_know" } });
-  }
-
-  // 8. Release: every ref through the translator, injective over statement entities and the NPC.
-  const translator = createReleaseTranslator(bridge, refs, [...question.mentions, npcEntity, ...rule.reveal]);
-  const entityByRef = new Map<R, string>([[npc, `person|${context.self.index}`]]);
+// 8. Release: every ref through the translator, injective over statement entities and the NPC.
+function release(p: Extract<Prepared, { ok: true }>, refs: PlayerRefTranslator, reveal: readonly EntityRef[], claim: NpcVisibleClaim): Released | null {
+  const translator = createReleaseTranslator(p.bridge, refs, [...p.question.mentions, p.npcEntity, ...reveal]);
+  const entityByRef = new Map<R, string>([[p.npc, `person|${p.context.self.index}`]]);
   const mentions = new Map<string, { kind: "person" | "location" | "item" | "event"; ref: R }>();
   let released = true;
   const t: Rt = (ref) => {
@@ -216,9 +243,51 @@ export function interrogate(input: InterrogationInput): InterrogationResult {
     mentions.set(visibleKey, { kind: ref.kind as "person" | "location" | "item" | "event", ref: r });
     return r;
   };
-  const statement = playerClaim(decision.claim, t);
-  if (!released) return REF_UNAVAILABLE;
-  const sorted = [...mentions.values()].sort((a, b) => (a.ref < b.ref ? -1 : a.ref > b.ref ? 1 : 0));
-  const observation = { ...head, act: "answer", stance: decision.stance, statement, mentions: sorted } as const;
-  return deepFreeze({ success: true, observation });
+  const statement = playerClaim(claim, t);
+  if (!released) return null;
+  return { statement, mentions: [...mentions.values()].sort((a, b) => (a.ref < b.ref ? -1 : a.ref > b.ref ? 1 : 0)) };
+}
+
+export function interrogate(input: InterrogationInput): InterrogationResult {
+  const p = prepare(input);
+  if (!p.ok) return p.result;
+  const { rule, context, bridge } = p;
+  const head = { schemaVersion: 1, npc: p.npc, questionId: rule.questionId } as const;
+
+  // 5. Decline never reads the epistemic state.
+  if (rule.act === "decline") return deepFreeze({ success: true, observation: { ...head, act: "decline" } });
+
+  // 6.-7. A lie the player has already broken by confrontation is answered sincerely from then on.
+  const sincere = decideResponse(context, bridge.visibleClaimOf(rule.claim));
+  const lying = rule.act === "lie" && sincere.claim !== null && !(input.admitted ?? []).includes(rule.questionId);
+  const decision: ResponseDecision = lying ? { stance: rule.stance, claim: sincere.claim } : sincere;
+  if (decision.stance === "does_not_know") {
+    return deepFreeze({ success: true, observation: { ...head, act: "answer", stance: "does_not_know" } });
+  }
+  const released = release(p, input.refs, rule.reveal, decision.claim);
+  if (released === null) return REF_UNAVAILABLE;
+  return deepFreeze({ success: true, observation: { ...head, act: "answer", stance: decision.stance, ...released } });
+}
+
+/**
+ * Confrontation (V2): the player holds a released evidence against an earlier statement. Only an
+ * authored confrontation (a lie with the evidence that refutes it) makes the NPC give in; the
+ * admission is sincere, from the NPC's own attitude. Everything else stands_by, which reads the
+ * same whether the statement was true, a lie, or the evidence beside the point.
+ */
+export function confront(input: ConfrontationInput): ConfrontationResult {
+  const p = prepare(input);
+  if (!p.ok) return p.result;
+  const { rule, profile, refs } = { ...p, profile: input.profile, refs: input.refs };
+  const evidence = refs.refFor("evidence", input.evidenceId);
+  if (typeof evidence !== "string" || !PLAYER_REF_PATTERN.test(evidence)) return REF_UNAVAILABLE;
+  const head = { schemaVersion: 1, npc: p.npc, questionId: rule.questionId, evidence } as const;
+  const stands = deepFreeze({ success: true, observation: { ...head, act: "stands_by" } }) as ConfrontationResult;
+  const breaking = (profile.confrontations ?? []).find((c) => c.questionId === rule.questionId && c.evidenceId === input.evidenceId);
+  if (rule.act !== "lie" || breaking === undefined) return stands;
+  const decision = decideResponse(p.context, p.bridge.visibleClaimOf(breaking.claim));
+  if (decision.stance === "does_not_know") return stands;
+  const released = release(p, refs, breaking.reveal, decision.claim);
+  if (released === null) return REF_UNAVAILABLE;
+  return deepFreeze({ success: true, observation: { ...head, act: "admit", stance: decision.stance, ...released } });
 }

@@ -368,7 +368,7 @@ function releaseContextHash(
 }
 
 type ManifestStep = { stepId: string; event: unknown };
-type ManifestAlternative = { report?: unknown; kind?: string; questionId?: string; claim?: unknown; stance?: string };
+type ManifestAlternative = { report?: unknown; kind?: string; questionId?: string; evidenceId?: string; claim?: unknown; stance?: string };
 type ManifestObservation = ReleasedObservation & { alternatives?: ManifestAlternative[]; ruleId?: string; afterObservations?: string[] };
 type Manifest = {
   schemaVersion: 1;
@@ -435,7 +435,8 @@ function sortedJson(value: unknown): string {
 /**
  * Witness port on the real session: replays the steps with reduceSession. An OBSERVED record is
  * released only if its evidence card was released with one of its alternative reports; a
- * REPORTED_BY_NPC once that NPC gave one of its "npc" alternatives (question, stance, statement);
+ * REPORTED_BY_NPC once that NPC gave one of its "npc" alternatives (question, stance, statement)
+ * or, confronted, one of its "admission" alternatives;
  * a PUBLIC_RULE once all of its afterObservations are released.
  */
 export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, releaseHash: string): WitnessReplay {
@@ -456,13 +457,22 @@ export function sessionWitness(pkg: ResolvedCasePackage, manifest: Manifest, rel
       if (answer !== null && answer.act === "answer" && answer.stance !== "does_not_know") {
         said.add(sortedJson([pkg.refs.resolve(answer.npc)!.id, answer.questionId, answer.stance, answer.statement]));
       }
+      const admission = result.output.type === "confront" ? result.output.observation : null;
+      if (admission !== null && admission.act === "admit") {
+        const evidenceId = pkg.refs.resolve(admission.evidence)!.id;
+        said.add(sortedJson([pkg.refs.resolve(admission.npc)!.id, "admission", admission.questionId, evidenceId, admission.stance, admission.statement]));
+      }
     }
     const released = new Set<string>();
     const records: ReleasedObservation[] = [];
     const payload = ({ alternatives, ruleId, afterObservations, ...rest }: ManifestObservation) => rest as ReleasedObservation;
     for (const o of manifest.certificateData.observations) {
       if (o.kind === "REPORTED_BY_NPC") {
-        if (o.alternatives?.some((alt) => alt.kind === "npc" && said.has(sortedJson([o.npcId, alt.questionId, alt.stance, alt.claim])))) {
+        const heard = (alt: ManifestAlternative) =>
+          alt.kind === "npc"
+            ? said.has(sortedJson([o.npcId, alt.questionId, alt.stance, alt.claim]))
+            : alt.kind === "admission" && said.has(sortedJson([o.npcId, "admission", alt.questionId, alt.evidenceId, alt.stance, alt.claim]));
+        if (o.alternatives?.some(heard)) {
           released.add(o.id);
           records.push(payload(o));
         }
@@ -514,4 +524,35 @@ export function writeFilledHashes(check: CaseCheck): string[] {
     writeFileSync(path, `${JSON.stringify(json, null, 2)}\n`);
   }
   return [...byFile.keys()];
+}
+
+/**
+ * Binds a case's authored proof (release manifest and proof profile with TO_BE_COMPUTED
+ * placeholders) to a package input, as the case check does. Used by the play host so that
+ * packages under ruleset mystery-session-v3 carry the witness that hints are derived from.
+ * Hashes already filled in (certified under v1/v2) are recomputed for the input's ruleset:
+ * stale values are the case check's finding, not the play host's.
+ */
+export function bindCaseProof(
+  input: { rulesetVersion: RulesetVersion; truth: unknown; solution: unknown; catalogue: unknown; initial: unknown; npcs: Npc[]; access: unknown; presentation: unknown; challenge: unknown; publicContent: unknown },
+  rawManifest: unknown,
+  rawProfile: unknown,
+  salt: string,
+): { profile: unknown; releaseManifest: string } {
+  const c = new Collector();
+  const truth = parseCaseTruth(input.truth);
+  const solution = parseCaseSolution(input.solution, truth);
+  const catalogue = parseQuestionCatalogue(input.catalogue, truth);
+  const index = buildPlayerRefIndex(truth, salt);
+  if (!index.success) throw new Error(`PlayerRef index: ${index.code}`);
+  const unbound = "TO_BE_COMPUTED_FOR_PLAY";
+  const manifestInput = typeof rawManifest === "object" && rawManifest !== null ? { ...rawManifest, releaseContextHash: unbound } : rawManifest;
+  const bindings = (rawProfile as { bindings?: object } | null)?.bindings;
+  const profileInput = typeof bindings === "object" && bindings !== null ? { ...(rawProfile as object), bindings: { ...bindings, releaseHash: unbound } } : rawProfile;
+  const contextHash = releaseContextHash(input, truth, solution, catalogue, index.index, salt, c);
+  const manifest = contextHash === null ? null : bindManifest(manifestInput, contextHash, index.index, c);
+  const releaseManifest = manifest === null ? null : serializeSessionJson(manifest);
+  const profile = releaseManifest === null ? null : bindProfile(profileInput, hashReleaseManifest(releaseManifest), c);
+  if (profile === null || releaseManifest === null || c.problems.length > 0) throw new Error(`Proof not bindable: ${JSON.stringify(c.problems)}`);
+  return { profile, releaseManifest };
 }

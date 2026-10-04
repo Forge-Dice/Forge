@@ -1,0 +1,447 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:nachtzug",
+  "revision": 1,
+  "title": "Der Nachtzug nach Triest",
+  "timeline": {
+    "unit": "second",
+    "originLabel": "00:00 Uhr, Mitternacht im Nachtzug"
+  },
+  "persons": [
+    {
+      "id": "person:henriette",
+      "name": "Henriette von Arx"
+    },
+    {
+      "id": "person:bruno",
+      "name": "Bruno Kessler"
+    },
+    {
+      "id": "person:clara",
+      "name": "Clara Mai"
+    },
+    {
+      "id": "person:felix",
+      "name": "Felix Roth"
+    },
+    {
+      "id": "person:janek",
+      "name": "Janek Novak"
+    },
+    {
+      "id": "person:dora",
+      "name": "Dora Lenz"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location:speisewagen",
+      "name": "Speisewagen"
+    },
+    {
+      "id": "location:liegewagen",
+      "name": "Liegewagen"
+    },
+    {
+      "id": "location:schlafwagen",
+      "name": "Gang im Schlafwagen"
+    },
+    {
+      "id": "location:abteil6",
+      "name": "Abteil 6"
+    },
+    {
+      "id": "location:abteil7",
+      "name": "Abteil 7"
+    },
+    {
+      "id": "location:bahnsteig",
+      "name": "Bahnsteig Villach Hbf"
+    }
+  ],
+  "items": [
+    {
+      "id": "item:collier",
+      "name": "Henriettes Collier"
+    },
+    {
+      "id": "item:tuer",
+      "name": "Verbindungstür Liegewagen–Schlafwagen"
+    },
+    {
+      "id": "item:dienstbuch",
+      "name": "Janeks Dienstbuch"
+    },
+    {
+      "id": "item:terminal",
+      "name": "Türterminal im Schlafwagen"
+    }
+  ],
+  "relationships": [],
+  "events": [
+    {
+      "id": "event:tee",
+      "description": "Clara bezahlt einen Tee im Speisewagen",
+      "time": {
+        "kind": "instant",
+        "at": 3000
+      },
+      "locationId": "location:speisewagen",
+      "participantIds": [
+        "person:clara"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:wein",
+      "description": "Bruno bezahlt zwei Gläser Wein im Speisewagen",
+      "time": {
+        "kind": "instant",
+        "at": 3900
+      },
+      "locationId": "location:speisewagen",
+      "participantIds": [
+        "person:bruno"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:verriegelung",
+      "description": "Janek verriegelt die Verbindungstür zum Schlafwagen und trägt es ein",
+      "time": {
+        "kind": "instant",
+        "at": 3600
+      },
+      "locationId": "location:liegewagen",
+      "participantIds": [
+        "person:janek"
+      ],
+      "itemIds": [
+        "item:tuer",
+        "item:dienstbuch"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:anruf",
+      "description": "Felix führt einen Videoanruf von seiner Liege",
+      "time": {
+        "kind": "interval",
+        "start": 4200,
+        "end": 4500
+      },
+      "locationId": "location:liegewagen",
+      "participantIds": [
+        "person:felix"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:halt",
+      "description": "Halt in Villach, Janek fertigt den Zug am Bahnsteig ab",
+      "time": {
+        "kind": "interval",
+        "start": 4680,
+        "end": 4920
+      },
+      "locationId": "location:bahnsteig",
+      "participantIds": [
+        "person:janek"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:einschluss",
+      "description": "Dora schließt sich zum Schreiben in Abteil 6 ein",
+      "time": {
+        "kind": "interval",
+        "start": 2400,
+        "end": 7800
+      },
+      "locationId": "location:abteil6",
+      "participantIds": [
+        "person:dora"
+      ],
+      "itemIds": [
+        "item:terminal"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:diebstahl",
+      "description": "Clara nimmt das Collier aus Abteil 7",
+      "time": {
+        "kind": "instant",
+        "at": 4800
+      },
+      "locationId": "location:abteil7",
+      "participantIds": [
+        "person:clara"
+      ],
+      "itemIds": [
+        "item:collier"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:entdeckung",
+      "description": "Henriette bemerkt das leere Etui",
+      "time": {
+        "kind": "instant",
+        "at": 6000
+      },
+      "locationId": "location:abteil7",
+      "participantIds": [
+        "person:henriette"
+      ],
+      "itemIds": [],
+      "causedByEventIds": [
+        "event:diebstahl"
+      ]
+    }
+  ],
+  "motives": [
+    {
+      "id": "motive:erbe",
+      "personId": "person:clara",
+      "eventIds": [
+        "event:diebstahl"
+      ],
+      "description": "Clara fürchtet um ihr Erbe"
+    }
+  ],
+  "propositions": [
+    {
+      "id": "proposition:clara-tee",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:clara",
+        "locationId": "location:speisewagen",
+        "at": 3000
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:bruno-wein",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:bruno",
+        "locationId": "location:speisewagen",
+        "at": 3900
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:felix-anruf",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:felix",
+        "locationId": "location:liegewagen",
+        "at": 4320
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:janek-bahnsteig",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:janek",
+        "locationId": "location:bahnsteig",
+        "at": 4800
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:dora-abteil",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:dora",
+        "locationId": "location:abteil6",
+        "at": 4800
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:clara-abteil7",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:clara",
+        "locationId": "location:abteil7",
+        "at": 4800
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:bruno-abteil7",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:bruno",
+        "locationId": "location:abteil7",
+        "at": 4800
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:clara-speisewagen",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:clara",
+        "locationId": "location:speisewagen",
+        "at": 4800
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:tuer-verriegelt",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:verriegelung",
+        "itemId": "item:tuer"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:dienstbuch-eintrag",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:verriegelung",
+        "itemId": "item:dienstbuch"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:dora-terminal",
+      "claim": {
+        "kind": "eventHasItem",
+        "eventId": "event:einschluss",
+        "itemId": "item:terminal"
+      },
+      "truth": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence:kassenjournal",
+      "description": "Kassenjournal des Speisewagens",
+      "source": {
+        "kind": "location",
+        "id": "location:speisewagen"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:clara-tee",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:bruno-wein",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:riegelvermerk",
+      "description": "Riegelvermerk für die Verbindungstür",
+      "source": {
+        "kind": "item",
+        "id": "item:tuer"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:tuer-verriegelt",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:abfertigung",
+      "description": "Abfertigungsmeldung Villach",
+      "source": {
+        "kind": "item",
+        "id": "item:dienstbuch"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:janek-bahnsteig",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:bildschirmfoto",
+      "description": "Bildschirmfoto von Felix' Videoanruf",
+      "source": {
+        "kind": "person",
+        "id": "person:felix"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:felix-anruf",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:terminalhinweis",
+      "description": "Türterminal im Gang",
+      "source": {
+        "kind": "location",
+        "id": "location:schlafwagen"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:dora-terminal",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:tuerlog",
+      "description": "Türprotokoll des Schlafwagens",
+      "source": {
+        "kind": "item",
+        "id": "item:terminal"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:dora-abteil",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:korken",
+      "description": "Weinkorken auf dem Teppich",
+      "source": {
+        "kind": "location",
+        "id": "location:abteil7"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:bruno-abteil7",
+          "direction": "supports"
+        }
+      ]
+    }
+  ],
+  "secrets": [
+    {
+      "id": "secret:erbe",
+      "propositionIds": [
+        "proposition:clara-abteil7"
+      ]
+    }
+  ],
+  "redHerrings": [
+    {
+      "id": "red-herring:korken",
+      "evidenceIds": [
+        "evidence:korken"
+      ],
+      "misleadingPropositionId": "proposition:bruno-abteil7"
+    }
+  ]
+}

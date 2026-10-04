@@ -1,5 +1,5 @@
 import type { EvidenceObservation } from "./evidence-presentation.ts";
-import type { InterrogationObservation } from "./interrogation.ts";
+import type { ConfrontationObservation, InterrogationObservation } from "./interrogation.ts";
 import type { EntityRef, ResolvedCasePackage } from "./case-package.ts";
 
 // PlayerKnowledge V1 (MYST-SESSION-0001A §3): a source-bound journal of what the player received,
@@ -21,6 +21,16 @@ export type ObservationRecord =
   | {
       readonly source: { readonly kind: "npc"; readonly eventIndex: number; readonly npc: string; readonly questionId: string };
       readonly observation: InterrogationObservation;
+    }
+  | {
+      readonly source: {
+        readonly kind: "confrontation";
+        readonly eventIndex: number;
+        readonly npc: string;
+        readonly questionId: string;
+        readonly evidence: string;
+      };
+      readonly observation: ConfrontationObservation;
     };
 
 export type PlayerKnowledge = {
@@ -83,6 +93,19 @@ export function recordInterrogation(knowledge: PlayerKnowledge, observation: Int
     source: Object.freeze({ kind: "npc" as const, eventIndex, npc: observation.npc, questionId: observation.questionId }),
     observation,
   });
+  return Object.freeze({
+    schemaVersion: 1,
+    known: withKnown(knowledge, mentions, Object.freeze({ kind: "event" as const, eventIndex })),
+    discoveries: knowledge.discoveries,
+    observations: Object.freeze([...knowledge.observations, record]),
+  });
+}
+
+/** Records one confrontation: an admission's explicit mentions grow Known; every one is journaled. */
+export function recordConfrontation(knowledge: PlayerKnowledge, observation: ConfrontationObservation, eventIndex: number): PlayerKnowledge {
+  const mentions = observation.act === "admit" ? observation.mentions : [];
+  const source = { kind: "confrontation" as const, eventIndex, npc: observation.npc, questionId: observation.questionId, evidence: observation.evidence };
+  const record: ObservationRecord = Object.freeze({ source: Object.freeze(source), observation });
   return Object.freeze({
     schemaVersion: 1,
     known: withKnown(knowledge, mentions, Object.freeze({ kind: "event" as const, eventIndex })),

@@ -132,8 +132,8 @@ describe("npm run play -- geige", () => {
     expect(solved).toContain("=== Auflösung ===\nIda Reiner gesteht.");
   });
 
-  it("Ida lies (ruleset v2): she claims the stage and denies the dressing room, unmarked; she is still the answer", () => {
-    expect(pkg.identity.rulesetVersion).toBe("mystery-session-v2");
+  it("Ida lies (ruleset v2 and later): she claims the stage and denies the dressing room, unmarked; she is still the answer", () => {
+    expect(pkg.identity.rulesetVersion).not.toBe("mystery-session-v1");
     const say = player();
     const f = say("f");
     const garderobe = say(`f ${numberOf(f, "Waren Sie um 20:40 in der Garderobe?")}`);

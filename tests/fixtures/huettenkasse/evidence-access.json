@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:huettenkasse",
+  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+  "entries": [
+    {
+      "evidenceId": "evidence:schrank",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:stube"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:abdruck",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:stube"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:eintrag",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:buch"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:funkbuch",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:funkraum"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:funkprotokoll",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:funkgeraet"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:stativ",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:terrasse"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:sternserie",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:kamera"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:felle",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:winterraum"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:huettenkasse",
+  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+  "solutionHash": "0eab35f9323533920749057ce9c68b1ac63752d6bdcd3aaa4b55c0925ed4707f",
+  "npcId": "person:mira",
+  "revision": 1,
+  "asOf": 9000,
+  "awareness": [
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:mira"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:gerd"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:lukas"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "event",
+        "id": "event:sternfoto"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:stube"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:funkraum"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:terrasse"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:lager"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "item",
+        "id": "item:kasse"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    }
+  ],
+  "attitudes": [
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:mira-terrasse"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 7800,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:sternfoto"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:lukas-stube"
+      },
+      "stance": {
+        "kind": "uncertain",
+        "leaning": true
+      },
+      "acquiredAt": 8400,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:foto-kamera"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 7800,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:sternfoto"
+      }
+    }
+  ]
+}

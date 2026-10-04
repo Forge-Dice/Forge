@@ -11,9 +11,9 @@ import { createWebApp } from "../src/play/web.ts";
 // Optional PublicContent.epilogue: player text rules, bound into the package identity, shown in CLI
 // and web only after a solving accusation.
 
-const CASES: PlayCaseName[] = ["vitrine", "brieföffner", "geige"];
-const SOLVER: Record<PlayCaseName, string> = { vitrine: "Lina Kern", "brieföffner": "Ben", geige: "Ida Reiner" };
-const WRONG: Record<PlayCaseName, string> = { vitrine: "Max Brandt", "brieföffner": "Anna", geige: "Paul Adler" };
+const CASES: PlayCaseName[] = ["vitrine", "brieföffner", "geige", "hüttenkasse", "nachtzug"];
+const SOLVER: Record<PlayCaseName, string> = { vitrine: "Lina Kern", "brieföffner": "Ben", geige: "Ida Reiner", "hüttenkasse": "Tobias Wenger", nachtzug: "Clara Mai" };
+const WRONG: Record<PlayCaseName, string> = { vitrine: "Max Brandt", "brieföffner": "Anna", geige: "Paul Adler", "hüttenkasse": "Lukas Brandl", nachtzug: "Bruno Kessler" };
 
 function resolveWith(name: PlayCaseName, edit: (content: any) => void) {
   const c = PLAY_CASES[name];

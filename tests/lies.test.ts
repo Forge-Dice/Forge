@@ -62,14 +62,17 @@ describe("authoring a lie", () => {
     const v1 = resolveCasePackage(input, refSource(briefRaw("truth.json"), BRIEF.salt));
     expect(v1.ok).toBe(false);
     if (!v1.ok) expect(v1.findings).toContainEqual({ code: "RULESET", path: ["npcs", 1, "profile", "rules", 0, "act"] });
-    expect(loadPlayPackage("brieföffner").identity.rulesetVersion).toBe("mystery-session-v2");
+    const v2 = resolveCasePackage({ ...playPackageInput(BRIEF), rulesetVersion: "mystery-session-v2" }, refSource(briefRaw("truth.json"), BRIEF.salt));
+    expect(v2.ok && v2.package.identity.rulesetVersion).toBe("mystery-session-v2");
+    expect(loadPlayPackage("brieföffner").identity.rulesetVersion).toBe("mystery-session-v3");
   });
 });
 
 describe("existing cases stay valid unchanged", () => {
-  it("the Vitrine is still v1 with exactly its previous package identity", () => {
-    expect(PLAY_CASES.vitrine.rulesetVersion).toBe("mystery-session-v1");
-    expect(loadPlayPackage("vitrine").identity).toEqual({
+  it("the Vitrine under v1 keeps exactly its previous package identity; play runs it under v3", () => {
+    expect(PLAY_CASES.vitrine.rulesetVersion).toBe("mystery-session-v3");
+    const v1 = resolveCasePackage({ ...playPackageInput(PLAY_CASES.vitrine), rulesetVersion: "mystery-session-v1" }, refSource(playPackageInput(PLAY_CASES.vitrine).truth, PLAY_CASES.vitrine.salt));
+    expect(v1.ok && v1.package.identity).toEqual({
       schemaVersion: 1,
       packageHash: "b1dd6757491756b3cc3f1e2aa0519d900430be5317f8745d37f5457ee261c704",
       rulesetVersion: "mystery-session-v1",
@@ -96,11 +99,13 @@ describe("solvability never trusts a lie", () => {
         p.observations.find((o: any) => o.id === "public-rule:participation").rules[0].allOf = ["observation:ben-denies"];
         p.nodes.push({ id: "observation:ben-denies", kind: "observation", observationId: "reported:ben-denies" });
         p.edges.find((e: any) => e.id === "responsible:ben").allOf = ["observation:ben-denies", "license:participation"];
+        p.witnessStepIds = p.witnessStepIds.filter((id: string) => id !== "confront-ben"); // no cuff, no confrontation
       },
       "release-manifest.json": (m) => {
         const rule = m.certificateData.observations.find((o: any) => o.id === "public-rule:participation");
         rule.rules[0].allOf = ["observation:ben-denies"];
         rule.afterObservations = ["reported:ben-denies"];
+        m.certificateData.steps = m.certificateData.steps.filter((s: any) => s.stepId !== "confront-ben");
       },
     });
 

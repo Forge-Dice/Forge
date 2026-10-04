@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:nachtzug",
+  "truthHash": "f17c172ce85d4206a7f2025e08f555f3419d08e08a7aaff94b5ec538a427094b",
+  "solutionHash": "4e864a8f60f51a008b6261683e701a9ed10bb67a727afee755d43a56b187e737",
+  "npcId": "person:felix",
+  "revision": 1,
+  "asOf": 9000,
+  "awareness": [
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:henriette"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:bruno"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:clara"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:felix"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:janek"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:dora"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:speisewagen"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:liegewagen"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:schlafwagen"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:abteil6"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:abteil7"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "item",
+        "id": "item:collier"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "event",
+        "id": "event:anruf"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    }
+  ],
+  "attitudes": [
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:felix-anruf"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 4320,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:anruf"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:clara-speisewagen"
+      },
+      "stance": {
+        "kind": "uncertain",
+        "leaning": true
+      },
+      "acquiredAt": 6000,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    }
+  ]
+}

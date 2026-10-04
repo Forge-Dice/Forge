@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:nachtzug",
+  "truthHash": "f17c172ce85d4206a7f2025e08f555f3419d08e08a7aaff94b5ec538a427094b",
+  "entries": [
+    {
+      "evidenceId": "evidence:kassenjournal",
+      "text": "Das Kassenjournal des Speisewagens, zwei Buchungen nach Mitternacht: 00:50 Uhr Clara Mai, ein Kamillentee. 01:05 Uhr Bruno Kessler, zwei Gläser Zweigelt, mit Karte bezahlt. Danach schloss der Speisewagen.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:clara"
+        },
+        {
+          "kind": "person",
+          "id": "person:bruno"
+        },
+        {
+          "kind": "location",
+          "id": "location:speisewagen"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:clara",
+            "locationId": "location:speisewagen",
+            "at": 3000
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:bruno",
+            "locationId": "location:speisewagen",
+            "at": 3900
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:riegelvermerk",
+      "text": "Riegelvermerk für die Verbindungstür zwischen Liegewagen und Schlafwagen: verriegelt 01:00 Uhr, wieder geöffnet 01:30 Uhr, gezeichnet J. Novak. Der Zettel klebt an der Tür, derselbe Eintrag steht im Dienstbuch.",
+      "mentions": [
+        {
+          "kind": "item",
+          "id": "item:tuer"
+        },
+        {
+          "kind": "event",
+          "id": "event:verriegelung"
+        },
+        {
+          "kind": "person",
+          "id": "person:janek"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:verriegelung",
+            "itemId": "item:tuer"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:abfertigung",
+      "text": "Abfertigungsmeldung Villach Hbf: Halt 01:18 bis 01:22 Uhr, Zug um 01:20:00 am Schlüsselschalter von Bahnsteig 3 abgefertigt durch J. Novak. Der Schalter steht draußen am Bahnsteig.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:janek"
+        },
+        {
+          "kind": "location",
+          "id": "location:bahnsteig"
+        },
+        {
+          "kind": "event",
+          "id": "event:halt"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:janek",
+            "locationId": "location:bahnsteig",
+            "at": 4800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:bildschirmfoto",
+      "text": "Felix zeigt dir sein Handy. Ein Bildschirmfoto seines Videoanrufs, 01:12 Uhr: Er liegt auf seiner Liege im Liegewagen, hinter ihm der Vorhang mit dem Wappen der Bahn.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:felix"
+        },
+        {
+          "kind": "location",
+          "id": "location:liegewagen"
+        },
+        {
+          "kind": "event",
+          "id": "event:anruf"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:felix",
+            "locationId": "location:liegewagen",
+            "at": 4320
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:terminalhinweis",
+      "text": "Am Ende des Gangs hängt das Türterminal des Schlafwagens. Es speichert, wann welche Abteiltür auf- und zugeht.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:schlafwagen"
+        },
+        {
+          "kind": "item",
+          "id": "item:terminal"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:tuerlog",
+      "text": "Türprotokoll: Abteil 6 von innen verriegelt 00:40 bis 02:10 Uhr, keine Öffnung dazwischen. Abteil 7 geöffnet 01:19, geschlossen 01:21 Uhr.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:dora"
+        },
+        {
+          "kind": "location",
+          "id": "location:abteil6"
+        },
+        {
+          "kind": "location",
+          "id": "location:abteil7"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:dora",
+            "locationId": "location:abteil6",
+            "at": 4800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:korken",
+      "text": "Auf dem Teppich in Abteil 7 liegt ein Korken mit dem Etikett des Zweigelt aus dem Speisewagen. Bruno Kessler trinkt diesen Wein. Wann der Korken hierher kam, sieht man ihm nicht an.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:bruno"
+        },
+        {
+          "kind": "location",
+          "id": "location:abteil7"
+        }
+      ],
+      "reports": []
+    }
+  ]
+}

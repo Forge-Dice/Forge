@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:huettenkasse",
+  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+  "entries": [
+    {
+      "evidenceId": "evidence:schrank",
+      "text": "Der Kassenschrank hinter dem Tresen steht offen, die Hüttenkasse ist weg. Obenauf liegt das Hüttenbuch, aufgeschlagen bei der heutigen Seite.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:stube"
+        },
+        {
+          "kind": "item",
+          "id": "item:kasse"
+        },
+        {
+          "kind": "item",
+          "id": "item:buch"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:abdruck",
+      "text": "Vor dem Schrank trocknet ein Stiefelabdruck mit grobem Bergführerprofil, genau wie bei Lukas Brandls Stiefeln. Wann er entstand, verrät er nicht.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lukas"
+        },
+        {
+          "kind": "location",
+          "id": "location:stube"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:eintrag",
+      "text": "Unter den Namen der Abendgäste steht ein letzter Eintrag, ohne Platz am Tisch: „21:40 Uhr, Tobias Wenger, Winterraum, Skitour zum Gletscher.“ Er war heute Abend also im Haus, auch wenn ihn beim Essen niemand gesehen hat.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:tobias"
+        },
+        {
+          "kind": "location",
+          "id": "location:winterraum"
+        },
+        {
+          "kind": "event",
+          "id": "event:eintrag"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:tobias",
+            "locationId": "location:winterraum",
+            "at": 2400
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:funkbuch",
+      "text": "Auf dem Tisch im Funkraum liegt das Funkbuch. Der letzte Eintrag ist nicht zu Ende geschrieben, das Funkgerät selbst speichert jede Verbindung.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:funkraum"
+        },
+        {
+          "kind": "item",
+          "id": "item:funkgeraet"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:funkprotokoll",
+      "text": "Das Funkgerät zeigt die letzte Verbindung: 23:05 bis 23:15 Uhr, Bergwacht Tal. Lukas Brandl meldet die Wetterlage, ab 23:08 spricht Dr. Johanna Pichler über einen Patienten. Beide Stimmen sind die ganze Zeit zu hören.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:lukas"
+        },
+        {
+          "kind": "person",
+          "id": "person:johanna"
+        },
+        {
+          "kind": "location",
+          "id": "location:funkraum"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lukas",
+            "locationId": "location:funkraum",
+            "at": 7800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:johanna",
+            "locationId": "location:funkraum",
+            "at": 7800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:stativ",
+      "text": "Auf der Terrasse steht Gerds Kamera noch auf dem Stativ, schneebedeckt. Sie lief im Intervallmodus.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:terrasse"
+        },
+        {
+          "kind": "item",
+          "id": "item:kamera"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:sternserie",
+      "text": "Bild 214 der Intervallserie, Zeitstempel 23:10:00: Gerd Sailer und Mira Hofer stehen vor dem Sternenhimmel auf der Terrasse, beide mit Stirnlampe.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:gerd"
+        },
+        {
+          "kind": "person",
+          "id": "person:mira"
+        },
+        {
+          "kind": "location",
+          "id": "location:terrasse"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:gerd",
+            "locationId": "location:terrasse",
+            "at": 7800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:mira",
+            "locationId": "location:terrasse",
+            "at": 7800
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    },
+    {
+      "evidenceId": "evidence:felle",
+      "text": "Im Winterraum hängen nasse Steigfelle über dem Ofen, daneben ein leerer Schlafsack. Die Felle tropfen noch, das Bett ist kalt.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:winterraum"
+        }
+      ],
+      "reports": []
+    }
+  ]
+}

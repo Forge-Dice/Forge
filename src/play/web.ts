@@ -1,8 +1,23 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import type { ResolvedCasePackage } from "../domain/case-package.ts";
 import { reduceSession, type SessionOutput } from "../domain/case-session.ts";
-import { accusations, answerText, evidenceText, investigations, known, loadText, newGame, questions, saveText, type Action, type Game } from "./game.ts";
-import { renderCaseList, renderGame, type Feedback } from "./web-page.ts";
+import {
+  accusations,
+  answerText,
+  confrontationText,
+  confrontations,
+  evidenceText,
+  hintText,
+  investigations,
+  known,
+  loadText,
+  newGame,
+  questions,
+  saveText,
+  type Action,
+  type Game,
+} from "./game.ts";
+import { renderCaseList, renderGame, renderHelp, type Feedback } from "./web-page.ts";
 import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./cases.ts";
 
 // `npm run play:web`: the playable cases in the browser, one local player, same session logic as
@@ -34,11 +49,14 @@ function readBody(req: IncomingMessage): Promise<string | null> {
 }
 
 /** Feedback for one accepted action: what was done, what is new, in the player's words. */
-function feedbackFor(before: Game, after: Game, action: Action, output: SessionOutput): Feedback {
+function feedbackFor(before: Game, after: Game, action: Action, output: SessionOutput, unlockedCount = 0): Feedback {
   const newKnown = after.state.knowledge.known.filter((k) => !before.state.knowledge.known.some((b) => b.ref === k.ref));
   const labels = (kind: string) => known(after, kind).filter((k) => newKnown.some((n) => n.ref === k.ref)).map((k) => k.label);
   const news = ["person", "location", "item", "event"].flatMap(labels);
-  const learned = news.length === 0 ? [] : [`Neu bekannt: ${news.join(", ")}.`];
+  const learned = [
+    ...(news.length === 0 ? [] : [`Neu bekannt: ${news.join(", ")}.`]),
+    ...(unlockedCount === 0 ? [] : [unlockedCount === 1 ? "Eine neue Spur ist offen." : `${unlockedCount} neue Spuren sind offen.`]),
+  ];
   switch (output.type) {
     case "investigate":
       if (output.observations.length === 0) {
@@ -49,8 +67,16 @@ function feedbackFor(before: Game, after: Game, action: Action, output: SessionO
         title: `${action.label}: ${output.observations.length === 1 ? "ein neuer Fund" : `${output.observations.length} neue Funde`}`,
         lines: [...output.observations.map((o) => evidenceText(after, o)), ...learned],
       };
+    case "hint":
+      return { tone: "info", title: "Hinweis", lines: [hintText(after, output.hint)] };
     case "interrogate":
-      return { tone: "info", title: "Verhör", lines: [answerText(after, output.observation), ...learned] };
+      return { tone: "info", title: "Aussage", lines: [answerText(after, output.observation), ...learned] };
+    case "confront":
+      return {
+        tone: output.observation.act === "admit" ? "ok" : "info",
+        title: output.observation.act === "admit" ? "Konfrontation: die Aussage bricht ein" : "Konfrontation",
+        lines: [confrontationText(after, output.observation), ...learned],
+      };
     case "accuse":
       return output.verdict === "solved"
         ? { tone: "ok", title: "Die Anklage sitzt.", lines: [`Du hast ${action.label} angeklagt. Der Fall ist gelöst.`] }
@@ -62,7 +88,16 @@ function feedbackFor(before: Game, after: Game, action: Action, output: SessionO
   }
 }
 
-type Slot = { game: Game; feedback: Feedback | null };
+const HINT: Action[] = [{ label: "Hinweis", event: { type: "hint" } }];
+
+type Slot = { game: Game; feedback: Feedback | null; fresh: ReadonlySet<string> };
+
+/** Labels of actions the last step made available, shown as new in the menus. */
+function unlocked(before: Game, after: Game): Set<string> {
+  const menu = (g: Game) => [...investigations(g), ...questions(g)].map((a) => a.label);
+  const old = new Set(menu(before));
+  return new Set(menu(after).filter((label) => !old.has(label)));
+}
 
 /** Request handler over one in-memory game per case; exported for tests. */
 export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {}) {
@@ -71,7 +106,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
     let s = slots.get(name);
     if (s === undefined) {
       const pkg = packages[name] ?? loadPlayPackage(name);
-      s = { game: newGame(pkg, PLAY_CASES[name].clockOrigin), feedback: { tone: "info", title: "Willkommen", lines: ["Lies die Fallakte und beginne zu ermitteln."] } };
+      s = { game: newGame(pkg, PLAY_CASES[name].clockOrigin), feedback: { tone: "info", title: "Willkommen", lines: ["Lies die Fallakte und beginne zu ermitteln."] }, fresh: new Set() };
       slots.set(name, s);
     }
     return s;
@@ -87,7 +122,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
       s.feedback = { tone: "warn", title: "Die Seite war nicht mehr aktuell.", lines: ["Bitte wähle die Aktion noch einmal."] };
       return;
     }
-    const menu = group === "u" ? investigations(game) : group === "f" ? questions(game) : group === "a" ? accusations(game) : [];
+    const menu = group === "u" ? investigations(game) : group === "f" ? questions(game) : group === "v" ? confrontations(game) : group === "a" ? accusations(game) : group === "h" ? HINT : [];
     const action = n !== null && /^[1-9][0-9]{0,3}$/.test(n) ? menu[Number(n) - 1] : undefined;
     if (action === undefined) return;
     const result = reduceSession(game.pkg, game.state, action.event);
@@ -96,7 +131,10 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
       return;
     }
     s.game = { ...game, state: result.state };
-    s.feedback = feedbackFor(game, s.game, action, result.output);
+    s.fresh = unlocked(game, s.game);
+    // A solving accusation is answered by the closing card itself.
+    const solved = result.output.type === "accuse" && result.output.verdict === "solved";
+    s.feedback = solved ? null : feedbackFor(game, s.game, action, result.output, s.fresh.size);
   }
 
   return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
@@ -111,6 +149,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
       });
       return html(res, renderCaseList(cards));
     }
+    if (req.method === "GET" && url.pathname === "/hilfe") return html(res, renderHelp());
     const match = /^\/fall\/([a-z0-9-]+)(\/(act|save|load|new))?$/.exec(url.pathname);
     const name = match === null ? null : playCaseName(match[1]);
     if (match === null || name === null) {
@@ -122,7 +161,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
     const route = `${req.method} ${match[3] ?? ""}`;
     switch (route) {
       case "GET ": {
-        const page = renderGame(s.game, slugOf(name), s.feedback);
+        const page = renderGame(s.game, slugOf(name), s.feedback, s.fresh);
         s.feedback = null;
         return html(res, page);
       }
@@ -144,14 +183,14 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
       }
       case "POST load": {
         const loaded = loadText(s.game.pkg, (await readBody(req)) ?? "", PLAY_CASES[name].clockOrigin);
-        if (loaded.ok) s.game = loaded.game;
+        if (loaded.ok) [s.game, s.fresh] = [loaded.game, new Set()];
         s.feedback = loaded.ok
           ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
           : { tone: "warn", title: loaded.text, lines: ["Lade eine unveränderte Datei, die mit diesem Fall gespeichert wurde."] };
         return redirect(res, home);
       }
       case "POST new":
-        s.game = newGame(s.game.pkg, PLAY_CASES[name].clockOrigin);
+        [s.game, s.fresh] = [newGame(s.game.pkg, PLAY_CASES[name].clockOrigin), new Set()];
         s.feedback = { tone: "info", title: "Neues Spiel", lines: ["Der Fall beginnt von vorn."] };
         return redirect(res, home);
       default:

@@ -37,7 +37,7 @@ function buttons(html: string): Map<string, Record<string, string>> {
   const formRe = /<form method="post" action="\/fall\/[a-z]+\/act"[^>]*>(.*?)<\/form>/g;
   for (const [, inner] of html.matchAll(formRe)) {
     const fields = Object.fromEntries([...inner!.matchAll(/name="(\w+)" value="([^"]*)"/g)].map(([, k, v]) => [k!, v!]));
-    const label = unescape(/<button[^>]*>(.*?)<\/button>/.exec(inner!)![1]!);
+    const label = unescape(/<button[^>]*>(.*?)<\/button>/.exec(inner!)![1]!.replace(/<[^>]+>/g, ""));
     out.set(label, fields);
   }
   return out;
@@ -117,6 +117,16 @@ describe("play:web", () => {
     expect(html).not.toContain("Kontaktbogen");
   });
 
+  it("marks done actions, newly opened leads and the result sheet", async () => {
+    await fetch(`${base}${V}/new`, { method: "POST", redirect: "manual" });
+    const html = await click("Ort durchsuchen: Innenhof");
+    expect(html).toMatch(/<section id="notice" class="notice info" role="status"/);
+    expect(html).toMatch(/<button type="submit" class="act done"><span class="visually-hidden">Ort durchsuchen: <\/span><span>Innenhof<\/span><\/button>/);
+    expect(html).toContain('class="q fresh">Kann ich den vollständigen Film dieses Hoffototermins sehen?</button>');
+    expect(html).toContain("Eine neue Spur ist offen.");
+    expect(await page()).not.toContain('id="notice"'); // shown once
+  });
+
   it("garbage form input changes nothing; unknown paths are 404", async () => {
     const before = await page();
     const at = buttons(before).values().next().value!.at!;
@@ -134,6 +144,17 @@ describe("play:web", () => {
     expect(await page()).toBe(vitrineBefore);
     expect(await page("/")).toContain("Gelöst");
     expect((await fetch(`${base}/fall/nope`)).status).toBe(404);
+  });
+
+  it("the case page carries the skippable introduction; the manual is served in the same look", async () => {
+    const html = await page();
+    expect(html).toContain('<dialog id="intro"');
+    expect(html).toContain("Überspringen");
+    expect(html).toContain('href="/hilfe"');
+    const help = await page("/hilfe");
+    expect(help).toContain("<title>Hilfe</title>");
+    expect(help).toContain("So ermittelst du");
+    expect(help).toContain("Erhebe Anklage");
   });
 
   it("no page ever contains an internal id or a PlayerRef", () => {

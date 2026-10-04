@@ -26,6 +26,16 @@
       }
     },
     {
+      "id": "reported:ben-admits",
+      "kind": "REPORTED_BY_NPC",
+      "npcId": "person:ben",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:ben-at-murder",
+        "value": true
+      }
+    },
+    {
       "id": "observed:cuff",
       "kind": "OBSERVED",
       "literal": {
@@ -149,6 +159,7 @@
   "witnessStepIds": [
     "search-library",
     "search-garden",
-    "ask-ben-presence"
+    "ask-ben-presence",
+    "confront-ben"
   ]
 }
