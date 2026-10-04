@@ -34,8 +34,10 @@ function readBody(req: IncomingMessage): Promise<string | null> {
     req.on("data", (chunk: Buffer) => {
       size += chunk.length;
       if (size > MAX_BODY) {
+        // Stop collecting but drain the rest, so the caller can still answer 413.
+        req.removeAllListeners("data");
+        req.resume();
         resolve(null);
-        req.destroy();
       } else chunks.push(chunk);
     });
     req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
@@ -133,8 +135,43 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
     s.feedback = solved ? null : feedbackFor(game, s.game, action, result.output, s.fresh.size);
   }
 
+  const text = (res: ServerResponse, status: number, body: string): void =>
+    void res.writeHead(status, { "content-type": "text/plain; charset=utf-8", connection: "close" }).end(body);
+
+  /**
+   * Local-only server: requests must name a loopback host (no DNS rebinding), and a post that
+   * carries an Origin must come from this server's own pages (no cross-site form posts).
+   */
+  function trusted(req: IncomingMessage): boolean {
+    const host = req.headers.host ?? "";
+    if (!/^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(host)) return false;
+    const origin = req.headers.origin;
+    if (req.method !== "POST" || origin === undefined) return true;
+    try {
+      return new URL(origin).host === host;
+    } catch {
+      return false;
+    }
+  }
+
+  // Every failure ends in a response: a thrown error must never become an unhandled rejection.
   return async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
-    const url = new URL(req.url ?? "/", "http://localhost");
+    try {
+      await handle(req, res);
+    } catch {
+      if (!res.headersSent) text(res, 500, "Interner Fehler.");
+      else res.destroy();
+    }
+  };
+
+  async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    let url: URL;
+    try {
+      url = new URL(req.url ?? "/", "http://localhost");
+    } catch {
+      return text(res, 400, "Ungültige Anfrage.");
+    }
+    if (!trusted(req)) return text(res, 403, "Nicht erlaubt.");
     if (req.method === "GET" && url.pathname === "/") {
       const cards = (Object.keys(PLAY_CASES) as PlayCaseName[]).map((name) => {
         const s = slot(name);
@@ -173,12 +210,16 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
         return;
       }
       case "POST act": {
-        const form = new URLSearchParams((await readBody(req)) ?? "");
+        const body = await readBody(req);
+        if (body === null) return text(res, 413, "Zu groß.");
+        const form = new URLSearchParams(body);
         act(s, form.get("group"), form.get("n"), form.get("at"));
         return redirect(res, home);
       }
       case "POST load": {
-        const loaded = loadText(s.game.pkg, (await readBody(req)) ?? "", PLAY_CASES[name].clockOrigin);
+        const body = await readBody(req);
+        if (body === null) return text(res, 413, "Zu groß.");
+        const loaded = loadText(s.game.pkg, body, PLAY_CASES[name].clockOrigin);
         if (loaded.ok) [s.game, s.fresh] = [loaded.game, new Set()];
         s.feedback = loaded.ok
           ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
@@ -192,7 +233,7 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
       default:
         res.writeHead(405, { "content-type": "text/plain; charset=utf-8" }).end("Nicht erlaubt.");
     }
-  };
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
