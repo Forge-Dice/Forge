@@ -39,7 +39,7 @@
     },
     {
       "path": "tools/forge_v01/materialize.py",
-      "sha256": "5337ff53be464886afd11e8ee12a241fca7969e1105a0bd96c4f8a976d53e962"
+      "sha256": "00ed0ec5616d05d8a866102680d11b8ccb0f0189014e026d8b9b6f16d43a7b0b"
     },
     {
       "path": "tools/forge_v01/mutations.py",
@@ -75,7 +75,7 @@
     },
     {
       "path": "tools/forge_v01/stage0.py",
-      "sha256": "e1ff71465b510f1af337a98b82fee80220b9a2875f3d7a148c78401ca45064eb"
+      "sha256": "19dd73ca80054b6004b34ff06f51a8303665084b18fff20a8263abe39ea8efbf"
     },
     {
       "path": "tools/forge_v01/vitest.config.mjs",

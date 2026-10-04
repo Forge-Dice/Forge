@@ -41,6 +41,33 @@ def _open_dir(name: str, dir_fd: int | None) -> int:
     return fd
 
 
+def _walk(path: str) -> int:
+    """Open the absolute directory `path` component by component from "/" via `_open_dir`.
+
+    No path string is ever handed to the kernel for resolution: a symlink (or non-directory)
+    at any component, the final one included, fails with ELOOP/ENOTDIR -> OSError.
+    """
+    fd = _open_dir("/", None)
+    try:
+        for name in path.split("/"):
+            if name:
+                child = _open_dir(name, fd)
+                os.close(fd)
+                fd = child
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+
+def _split(path: str) -> tuple[str, str]:
+    """Lexically normalized absolute (parent, name); `name` is never empty, "." or ".."."""
+    parent, name = os.path.split(os.path.abspath(path))
+    if not name:
+        raise _io()
+    return parent, name
+
+
 def _check_leaves(snapshot, executable: frozenset) -> list:
     """API precondition before anything is created: valid paths, admissible modes, byte order."""
     if any(not isinstance(leaf.path, str) or not leaf.path.isascii() for leaf in snapshot.leaves):
@@ -117,18 +144,20 @@ def materialize(store, snapshot, destination: str, *, executable=frozenset(), by
     base = os.path.abspath(destination)
     name = secrets.token_hex(16)
     try:
-        destfd = os.open(base, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
+        destfd = _walk(base)  # a symlink at the destination or any ancestor -> EXECUTION_IO
     except OSError:
         raise _io() from None
     try:
         os.mkdir(name, 0o700, dir_fd=destfd)
     except OSError:
-        raise _io() from None
-    finally:
         os.close(destfd)
+        raise _io() from None
     root = os.path.join(base, name)
     try:
-        rootfd = _open_dir(root, None)
+        try:
+            rootfd = _open_dir(name, destfd)
+        finally:
+            os.close(destfd)
         try:
             os.fchmod(rootfd, 0o700)
             budget = [byte_budget]
@@ -170,14 +199,23 @@ def _clear(fd: int, depth: int) -> None:
 
 
 def destroy(root: str) -> None:
-    """fd-safe recursive removal of a known root; symlinks inside are unlinked, never followed."""
+    """fd-safe recursive removal of a known root; symlinks inside are unlinked, never followed.
+
+    The root is reached from "/" one O_NOFOLLOW component at a time, so a symlink at the
+    root or any ancestor is EXECUTION_IO and nothing is deleted.
+    """
     try:
-        rootfd = _open_dir(root, None)
+        parent, name = _split(root)
+        parentfd = _walk(parent)
         try:
-            _clear(rootfd, 0)
+            rootfd = _open_dir(name, parentfd)
+            try:
+                _clear(rootfd, 0)
+            finally:
+                os.close(rootfd)
+            os.rmdir(name, dir_fd=parentfd)
         finally:
-            os.close(rootfd)
-        os.rmdir(root)
+            os.close(parentfd)
     except OSError:
         raise _io() from None
 
