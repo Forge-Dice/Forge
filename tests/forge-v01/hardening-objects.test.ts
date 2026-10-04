@@ -62,11 +62,12 @@ function boot(o: Answers): Call {
   };
 }
 
-describe("event payload: non-scalar fields", () => {
-  const [ok, actionList, actionDict] = py([
+describe("event payload: non-scalar and bool-typed fields", () => {
+  const [ok, actionList, actionDict, numberTrue] = py([
     parse(event()),
     parse(event({ action: ["synchronize"] })),
     parse(event({ action: { synchronize: 1 } })),
+    parse(event({ number: true })),
   ]);
 
   test("control: the well-formed event parses", () => {
@@ -77,5 +78,30 @@ describe("event payload: non-scalar fields", () => {
     expect(outcome(actionList!)).toBe("PR_INPUT");
     expect(outcome(actionDict!)).toBe("PR_INPUT");
   });
+
+  test("top-level number: true for PR 1 → PR_INPUT (bool is never an ID)", () => {
+    expect(outcome(numberTrue!)).toBe("PR_INPUT");
+  });
 });
 
+describe("live API answers: bool where an ID is compared", () => {
+  const [ok, attemptTrue, runIdNum, pullNumberTrue] = py([
+    boot({}),
+    boot({ run: { run_attempt: true } }),
+    boot({ run: { id: RUN + 0.5 } }),
+    boot({ pull: { number: true } }),
+  ]);
+
+  test("control: well-formed answers pass read_live and reach the fetch", () => {
+    expect(outcome(ok!)).toBe("GIT_FETCH");
+    expect(outcome(runIdNum!)).toBe("EXECUTION_API");
+  });
+
+  test("run_attempt: true for attempt 1 → EXECUTION_API", () => {
+    expect(outcome(attemptTrue!)).toBe("EXECUTION_API");
+  });
+
+  test("pull number: true for PR 1 → EXECUTION_API", () => {
+    expect(outcome(pullNumberTrue!)).toBe("EXECUTION_API");
+  });
+});
