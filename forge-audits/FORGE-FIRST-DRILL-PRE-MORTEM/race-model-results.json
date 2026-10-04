@@ -1,0 +1,296 @@
+{
+  "label": "MODEL_ONLY_NOT_LIVE",
+  "named_cases": [
+    {
+      "name": "review_before_check",
+      "events": [
+        "review",
+        "gate",
+        "check"
+      ],
+      "expected": "PASS",
+      "actual": "PASS",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": 2,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "check_before_review_next_attempt",
+      "events": [
+        "check",
+        "review",
+        "gate"
+      ],
+      "expected": "PASS",
+      "actual": "PASS",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": 2,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "main_moves",
+      "events": [
+        "review",
+        "gate",
+        "check",
+        "main_move"
+      ],
+      "expected": "PR_STALE",
+      "actual": "PR_STALE",
+      "state": {
+        "main": "B1",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": 2,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "head_moves",
+      "events": [
+        "review",
+        "gate",
+        "check",
+        "head_move"
+      ],
+      "expected": "PR_STALE",
+      "actual": "PR_STALE",
+      "state": {
+        "main": "B0",
+        "head": "H1",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": 2,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "rerun_after_main_move",
+      "events": [
+        "main_move",
+        "review",
+        "gate",
+        "check"
+      ],
+      "expected": "PR_STALE",
+      "actual": "PR_STALE",
+      "state": {
+        "main": "B1",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": null,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "developer_pushes_during_review",
+      "events": [
+        "review",
+        "head_move",
+        "gate",
+        "check"
+      ],
+      "expected": "PR_STALE",
+      "actual": "PR_STALE",
+      "state": {
+        "main": "B0",
+        "head": "H1",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": null,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "pr_closed",
+      "events": [
+        "review",
+        "gate",
+        "check",
+        "closed"
+      ],
+      "expected": "PR_STATE",
+      "actual": "PR_STATE",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": false,
+        "accessible": true,
+        "review": "H0",
+        "receipt": 2,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "branch_or_api_inaccessible",
+      "events": [
+        "review",
+        "gate",
+        "check",
+        "inaccessible"
+      ],
+      "expected": "EXECUTION_API",
+      "actual": "EXECUTION_API",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": true,
+        "accessible": false,
+        "review": "H0",
+        "receipt": 2,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "check_without_review",
+      "events": [
+        "gate",
+        "check"
+      ],
+      "expected": "REVIEW_MISSING",
+      "actual": "REVIEW_MISSING",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": null,
+        "receipt": 2,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "review_arrives_during_attempt",
+      "events": [
+        "gate",
+        "check",
+        "review"
+      ],
+      "expected": "REVIEW_CHANGED",
+      "actual": "REVIEW_CHANGED",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": 2,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "stable_wrong_head_review",
+      "events": [
+        "stale_review",
+        "gate",
+        "check"
+      ],
+      "expected": "REVIEW_BINDING",
+      "actual": "REVIEW_BINDING",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": "OLD",
+        "receipt": null,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "failed_jobs_receipt",
+      "events": [
+        "review",
+        "check"
+      ],
+      "expected": "IDENTITY_RECHECK",
+      "actual": "IDENTITY_RECHECK",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": 1,
+        "technical": true,
+        "owner": true,
+        "attempt": 2
+      }
+    },
+    {
+      "name": "developer_rerun",
+      "events": [
+        "review",
+        "gate",
+        "check"
+      ],
+      "expected": "IDENTITY_RECHECK",
+      "actual": "IDENTITY_RECHECK",
+      "state": {
+        "main": "B0",
+        "head": "H0",
+        "open": true,
+        "accessible": true,
+        "review": "H0",
+        "receipt": 2,
+        "technical": true,
+        "owner": false,
+        "attempt": 2
+      }
+    }
+  ],
+  "permutations": 720,
+  "outcomes": {
+    "PR_STALE": 480,
+    "PASS": 12,
+    "REVIEW_MISSING": 36,
+    "NOT_READY": 180,
+    "IDENTITY_RECHECK": 12
+  },
+  "pass_at_observation": 12,
+  "post_pass_revocation": {
+    "completed_check": "PASS",
+    "fresh_evaluation": "REVIEW_MISSING",
+    "automatic_check_invalidation": false
+  }
+}
