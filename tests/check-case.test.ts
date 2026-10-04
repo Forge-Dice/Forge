@@ -156,7 +156,14 @@ describe("check-case names file and field for broken cases", () => {
   });
 
   it("solvability fails when the decisive evidence is unreachable", () => {
-    const check = checkCaseFolder(variant(BRIEF, { "evidence-access.json": (a) => (a.entries[0].access = { kind: "inaccessible" }) }));
+    // Without the cuff button Ben cannot be confronted either, so that witness step goes too.
+    const check = checkCaseFolder(
+      variant(BRIEF, {
+        "evidence-access.json": (a) => (a.entries[0].access = { kind: "inaccessible" }),
+        "proof-profile.json": (p) => (p.witnessStepIds = p.witnessStepIds.filter((id: string) => id !== "confront-ben")),
+        "release-manifest.json": (m) => (m.certificateData.steps = m.certificateData.steps.filter((s: any) => s.stepId !== "confront-ben")),
+      }),
+    );
     expect(check.solvability?.status).toBe("fail");
     expect(check.solvability?.survivingAnswerCount).toBe(2);
     expectError(check, "proof-profile.json", "(Lösbarkeit)", /fail/);

@@ -7,9 +7,9 @@ import type { ConclusionClaim } from "./case-solution.ts";
 import { resolveInvestigation, type InvestigationAction } from "./evidence-access.ts";
 import { PLAYER_REF_PATTERN, releaseEvidence, type EvidenceObservation } from "./evidence-presentation.ts";
 import { QuestionIdSchema } from "./interrogation-authoring.ts";
-import { interrogate, type InterrogationObservation } from "./interrogation.ts";
+import { confront, interrogate, type ConfrontationObservation, type InterrogationObservation } from "./interrogation.ts";
 import type { ResolvedEntity } from "./player-ref.ts";
-import { initialPlayerKnowledge, recordEvidence, recordInterrogation, type PlayerKnowledge } from "./player-knowledge.ts";
+import { initialPlayerKnowledge, recordConfrontation, recordEvidence, recordInterrogation, type PlayerKnowledge } from "./player-knowledge.ts";
 import { nextHint, type Hint } from "./case-hints.ts";
 
 // Session reducer V1 (MYST-SESSION-0001B). The only door from untrusted player events into the
@@ -49,6 +49,8 @@ export const SessionEventSchema = z.discriminatedUnion("type", [
     target: Ref,
   }),
   z.strictObject({ type: z.literal("interrogate"), npc: Ref, questionId: QuestionIdSchema }),
+  // V2: hold a found evidence against an earlier statement of this NPC to this question.
+  z.strictObject({ type: z.literal("confront"), npc: Ref, questionId: QuestionIdSchema, evidence: Ref }),
   z.strictObject({
     type: z.literal("accuse"),
     literals: z.array(z.strictObject({ claim: PlayerConclusionClaimSchema, value: z.boolean() })).max(SESSION_LIMITS.maxLiterals),
@@ -70,6 +72,7 @@ export type SessionState = {
 export type SessionOutput =
   | { readonly type: "investigate"; readonly observations: readonly EvidenceObservation[] }
   | { readonly type: "interrogate"; readonly observation: InterrogationObservation }
+  | { readonly type: "confront"; readonly observation: ConfrontationObservation }
   | { readonly type: "accuse"; readonly verdict: "solved" | "not_solved" }
   | { readonly type: "hint"; readonly hint: Hint };
 export type SessionErrorCode = "ACTION_UNAVAILABLE" | "SESSION_CLOSED" | "LIMIT_REACHED" | "HOST_FAILURE";
@@ -258,11 +261,16 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
       const next = observations.reduce((k, observation) => recordEvidence(k, observation, eventIndex), knowledge);
       return { knowledge: next, output: { type: "investigate", observations }, verdict: null };
     }
-    case "interrogate": {
+    case "interrogate":
+    case "confront": {
       const npcId = own(event.npc, "person");
       const npc = pkg.npcs.find((entry) => entry.snapshot.npcId === npcId);
       if (npc === undefined) throw unavailable();
-      const result = interrogate({
+      // Questions whose lie this player already broke: the NPC answers them sincerely from then on.
+      const admitted = knowledge.observations.flatMap((r) =>
+        r.source.kind === "confrontation" && r.source.npc === event.npc && "act" in r.observation && r.observation.act === "admit" ? [r.source.questionId] : [],
+      );
+      const port = {
         truth: pkg.truth,
         // The projection re-checks the snapshot binding: a snapshot bound without a solution gets none.
         solution: npc.snapshot.solutionHash === null ? null : pkg.solution,
@@ -272,7 +280,23 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
         refs: pkg.refs,
         known: canonicalKnown(),
         questionId: event.questionId,
-      });
+      };
+      if (event.type === "confront") {
+        // Ruleset v2 only; the evidence must be found and the NPC must have stated something to it.
+        if (pkg.identity.rulesetVersion === "mystery-session-v1") throw unavailable();
+        if (!knowledge.discoveries.some((d) => d.evidence === event.evidence)) throw unavailable();
+        const stated = knowledge.observations.some(
+          (r) => r.source.kind === "npc" && r.source.npc === event.npc && r.source.questionId === event.questionId && "statement" in r.observation,
+        );
+        if (!stated) throw unavailable();
+        const result = confront({ ...port, evidenceId: own(event.evidence, "evidence") });
+        if (!result.success) throw result.code === "QUESTION_NOT_AVAILABLE" ? unavailable() : hostFailure();
+        const { observation } = result;
+        if (observation.npc !== event.npc || observation.questionId !== event.questionId || observation.evidence !== event.evidence) throw hostFailure();
+        if (observation.act === "admit") checkReleased(observation.mentions, claimRefs(observation.statement), new Set([event.npc]));
+        return { knowledge: recordConfrontation(knowledge, observation, eventIndex), output: { type: "confront", observation }, verdict: null };
+      }
+      const result = interrogate({ ...port, admitted });
       if (!result.success) throw result.code === "QUESTION_NOT_AVAILABLE" ? unavailable() : hostFailure();
       const { observation } = result;
       if (observation.npc !== event.npc || observation.questionId !== event.questionId) throw hostFailure();

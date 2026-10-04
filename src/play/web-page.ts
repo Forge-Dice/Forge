@@ -1,6 +1,4 @@
-import type { EvidenceObservation } from "../domain/evidence-presentation.ts";
-import type { InterrogationObservation } from "../domain/interrogation.ts";
-import { accusations, answerText, evidenceText, investigations, hintsUsed, known, questions, type Action, type Game } from "./game.ts";
+import { accusations, confrontations, hintsUsed, investigations, known, questions, recordText, type Action, type Game } from "./game.ts";
 
 // HTML views of the local browser front end. Pure: (game, feedback) -> page. Every label comes from
 // PublicContent or released observations through the CLI's own helpers; actions are addressed by
@@ -85,7 +83,7 @@ type FormOptions = { cls?: string; hidden?: string | undefined; confirm?: string
 
 // A short visible label gets its context (the verb) as hidden text, so the accessible name stays
 // the full menu label while the visible label is wrapped and never ends a button bare.
-function actionForm(game: Game, slug: string, group: "u" | "f" | "a" | "h", index: number, label: string, o: FormOptions = {}): string {
+function actionForm(game: Game, slug: string, group: "u" | "f" | "v" | "a" | "h", index: number, label: string, o: FormOptions = {}): string {
   const confirm = o.confirm === undefined ? "" : ` data-confirm="${escape(o.confirm)}"`;
   const hidden = o.hidden === undefined ? "" : `<span class="visually-hidden">${escape(o.hidden)}</span>`;
   return `<form method="post" action="/fall/${slug}/act"${confirm}><input type="hidden" name="group" value="${group}"><input type="hidden" name="n" value="${index + 1}"><input type="hidden" name="at" value="${game.state.events.length}"><button type="submit"${o.cls ? ` class="${o.cls}"` : ""}>${hidden === "" ? escape(label) : `${hidden}<span>${escape(label)}</span>`}</button></form>`;
@@ -113,6 +111,15 @@ function investigationList(game: Game, slug: string, fresh: ReadonlySet<string>)
   return [...groups]
     .map(([verb, forms]) => `<div class="group"><h3>${escape(verb === "" ? "Untersuchen" : verb)}</h3><div class="actions">${forms.join("")}</div></div>`)
     .join("");
+}
+
+/** V2: hold a found evidence against an earlier statement; shown only when something can be held up. */
+function confrontationSection(game: Game, slug: string): string {
+  const actions = confrontations(game);
+  if (actions.length === 0) return "";
+  const done = doneKeys(game);
+  const forms = actions.map((a, i) => actionForm(game, slug, "v", i, a.label, { cls: ["act", done.has(actionKey(a)) ? "done" : ""].filter(Boolean).join(" ") }));
+  return `\n<section id="vorhalten" class="card" tabindex="-1"><h2>Vorhalten</h2><div class="actions">${forms.join("")}</div></section>`;
 }
 
 /** Interrogation questions grouped by NPC ("Name: Frage" labels from the CLI menu). */
@@ -170,7 +177,7 @@ function journal(game: Game): string {
       journalEntry(
         game,
         r.source.kind,
-        r.source.kind === "evidence" ? evidenceText(game, r.observation as EvidenceObservation) : answerText(game, r.observation as InterrogationObservation),
+        recordText(game, r),
         r.source.eventIndex,
       ),
     )
@@ -263,7 +270,7 @@ ${
   solved
     ? ""
     : `<section id="untersuchen" class="card" tabindex="-1"><h2>Untersuchen</h2>${investigationList(game, slug, fresh)}</section>
-<section id="verhoeren" class="card" tabindex="-1"><h2>Verhören</h2>${questionList(game, slug, fresh)}</section>`
+<section id="verhoeren" class="card" tabindex="-1"><h2>Verhören</h2>${questionList(game, slug, fresh)}</section>${confrontationSection(game, slug)}`
 }
 <section id="journal" class="card" tabindex="-1"><h2>${solved ? "Dein Ermittlungsweg" : "Journal"}</h2>${journal(game)}</section>
 ${
