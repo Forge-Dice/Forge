@@ -1,0 +1,411 @@
+{
+  "generated_at": "2026-10-04",
+  "environment": {
+    "node": "v22.16.0",
+    "npm": "10.9.2",
+    "git": "2.47.3",
+    "docker": "unavailable",
+    "unshare_network": "Operation not permitted"
+  },
+  "total": 44,
+  "passed": 17,
+  "failed": 27,
+  "results": [
+    {
+      "id": "FX-01",
+      "attack": "npm lifecycle preinstall",
+      "expected_containment": "script must not execute during install",
+      "actual": "contained",
+      "evidence": "rc=0; marker=False",
+      "remaining_risk": "ignore-scripts does not protect later test/config execution",
+      "passed": true
+    },
+    {
+      "id": "FX-02",
+      "attack": "npm lifecycle install",
+      "expected_containment": "script must not execute during install",
+      "actual": "contained",
+      "evidence": "rc=0; marker=False",
+      "remaining_risk": "ignore-scripts does not protect later test/config execution",
+      "passed": true
+    },
+    {
+      "id": "FX-03",
+      "attack": "npm lifecycle postinstall",
+      "expected_containment": "script must not execute during install",
+      "actual": "contained",
+      "evidence": "rc=0; marker=False",
+      "remaining_risk": "ignore-scripts does not protect later test/config execution",
+      "passed": true
+    },
+    {
+      "id": "FX-04",
+      "attack": "npm lifecycle preprepare",
+      "expected_containment": "script must not execute during install",
+      "actual": "contained",
+      "evidence": "rc=0; marker=False",
+      "remaining_risk": "ignore-scripts does not protect later test/config execution",
+      "passed": true
+    },
+    {
+      "id": "FX-05",
+      "attack": "npm lifecycle prepare",
+      "expected_containment": "script must not execute during install",
+      "actual": "contained",
+      "evidence": "rc=0; marker=False",
+      "remaining_risk": "ignore-scripts does not protect later test/config execution",
+      "passed": true
+    },
+    {
+      "id": "FX-06",
+      "attack": "npm lifecycle postprepare",
+      "expected_containment": "script must not execute during install",
+      "actual": "contained",
+      "evidence": "rc=0; marker=False",
+      "remaining_risk": "ignore-scripts does not protect later test/config execution",
+      "passed": true
+    },
+    {
+      "id": "FX-07",
+      "attack": "npm/test script code execution",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; marker created",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-08",
+      "attack": "test import side effect",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; marker created",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-09",
+      "attack": "child_process exec",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; marker created",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-10",
+      "attack": "child_process spawn",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; marker created",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-11",
+      "attack": "filesystem parent escape",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; parent canary written",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-12",
+      "attack": "HOME write",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; HOME canary written",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-13",
+      "attack": "environment dump",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; CANARY_ENV_9f4b observable",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-14",
+      "attack": "temp write",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; TMPDIR canary written",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-15",
+      "attack": "cache poisoning",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; HOME/.npm poison written",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-16",
+      "attack": "artifact poisoning",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; candidate artifact.json written",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-17",
+      "attack": "process spawning",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; 20 child spawns allowed",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-18",
+      "attack": "output flood",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; stdout=1048576 bytes",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-19",
+      "attack": "background/infinite process",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "bounded by outer timeout only",
+      "evidence": "rc=124 after timeout",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": true
+    },
+    {
+      "id": "FX-20",
+      "attack": "memory exhaustion",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "bounded by outer timeout only",
+      "evidence": "rc=124 after timeout",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": true
+    },
+    {
+      "id": "FX-21",
+      "attack": "huge test enumeration",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; 500000-entry loop completed",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-22",
+      "attack": "Vitest config execution",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; vitest.config.executed marker written",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-23",
+      "attack": "Vite config execution",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; vite.config.executed marker written",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-24",
+      "attack": "repository write",
+      "expected_containment": "must be denied or bounded inside Stage-2 sandbox",
+      "actual": "attack capability available",
+      "evidence": "rc=0; repo-write marker written",
+      "remaining_risk": "host execution is not a production sandbox",
+      "passed": false
+    },
+    {
+      "id": "FX-25",
+      "attack": "NODE_OPTIONS loader",
+      "expected_containment": "environment/PATH must be supervisor-owned and scrubbed",
+      "actual": "attack capability available",
+      "evidence": "rc=0; loader-hit=True",
+      "remaining_risk": "must validate exact executable paths and env allowlist",
+      "passed": false
+    },
+    {
+      "id": "FX-26",
+      "attack": "PATH hijack",
+      "expected_containment": "environment/PATH must be supervisor-owned and scrubbed",
+      "actual": "attack capability available",
+      "evidence": "rc=0; fake git executed",
+      "remaining_risk": "must validate exact executable paths and env allowlist",
+      "passed": false
+    },
+    {
+      "id": "FX-27",
+      "attack": "symlink escape",
+      "expected_containment": "candidate links must be rejected before materialization",
+      "actual": "outside modified",
+      "evidence": "rc=0; outside=POISON",
+      "remaining_risk": "controlled materialization/link rejection still required",
+      "passed": false
+    },
+    {
+      "id": "FX-28",
+      "attack": "hardlink escape",
+      "expected_containment": "candidate links must be rejected before materialization",
+      "actual": "outside modified",
+      "evidence": "rc=0; outside=POISON",
+      "remaining_risk": "controlled materialization/link rejection still required",
+      "passed": false
+    },
+    {
+      "id": "FX-29",
+      "attack": "git credential read",
+      "expected_containment": "no real credentials/HOME credential store visible to test sandbox",
+      "actual": "credential canary visible",
+      "evidence": "CANARY_GIT_SECRET observable from fake HOME",
+      "remaining_risk": "Stage-2 HOME must be empty/private; no persisted git credentials",
+      "passed": false
+    },
+    {
+      "id": "FX-30",
+      "attack": "TCP network access",
+      "expected_containment": "network must be disabled for untrusted tests",
+      "actual": "network syscall available",
+      "evidence": "local TCP connection succeeded",
+      "remaining_risk": "no network namespace/container proof available locally",
+      "passed": false
+    },
+    {
+      "id": "FX-31",
+      "attack": "HTTP network access",
+      "expected_containment": "network must be disabled for untrusted tests",
+      "actual": "network syscall available",
+      "evidence": "local HTTP request succeeded",
+      "remaining_risk": "no network namespace/container proof available locally",
+      "passed": false
+    },
+    {
+      "id": "FX-32",
+      "attack": "UDP network access",
+      "expected_containment": "network must be disabled for untrusted tests",
+      "actual": "network syscall available",
+      "evidence": "UDP send rc=0",
+      "remaining_risk": "no network namespace/container proof available locally",
+      "passed": false
+    },
+    {
+      "id": "FX-33",
+      "attack": "CPU exhaustion",
+      "expected_containment": "resource abuse must terminate/fail",
+      "actual": "bounded",
+      "evidence": "timeout rc=124",
+      "remaining_risk": "host-lab primitives are not proof of workflow/container enforcement",
+      "passed": true
+    },
+    {
+      "id": "FX-34",
+      "attack": "memory bound",
+      "expected_containment": "resource abuse must terminate/fail",
+      "actual": "bounded",
+      "evidence": "explicit prlimit caused failure/timeout under bound",
+      "remaining_risk": "host-lab primitives are not proof of workflow/container enforcement",
+      "passed": true
+    },
+    {
+      "id": "FX-35",
+      "attack": "file-size bound",
+      "expected_containment": "resource abuse must terminate/fail",
+      "actual": "bounded",
+      "evidence": "write failed EFBIG under ulimit -f",
+      "remaining_risk": "host-lab primitives are not proof of workflow/container enforcement",
+      "passed": true
+    },
+    {
+      "id": "FX-36",
+      "attack": "package.json data only",
+      "expected_containment": "static inspection must not execute candidate content",
+      "actual": "contained",
+      "evidence": "static read; marker=False",
+      "remaining_risk": "later tools must still use trusted configs",
+      "passed": true
+    },
+    {
+      "id": "FX-37",
+      "attack": "package-lock data only",
+      "expected_containment": "static inspection must not execute candidate content",
+      "actual": "contained",
+      "evidence": "static read; marker=False",
+      "remaining_risk": "later tools must still use trusted configs",
+      "passed": true
+    },
+    {
+      "id": "FX-38",
+      "attack": "tsconfig data only",
+      "expected_containment": "static inspection must not execute candidate content",
+      "actual": "contained",
+      "evidence": "static read; marker=False",
+      "remaining_risk": "later tools must still use trusted configs",
+      "passed": true
+    },
+    {
+      "id": "FX-39",
+      "attack": "Stage1→Stage2 HOME cache (shared)",
+      "expected_containment": "Stage 2 must receive no mutable Stage-1 state except authenticated minimal identifiers",
+      "actual": "poisoning channel survives",
+      "evidence": "hit=True",
+      "remaining_risk": "fresh GitHub job helps only if caches/artifacts/env are not explicitly bridged",
+      "passed": false
+    },
+    {
+      "id": "FX-40",
+      "attack": "Stage1→Stage2 HOME cache (fresh)",
+      "expected_containment": "Stage 2 must receive no mutable Stage-1 state except authenticated minimal identifiers",
+      "actual": "contained",
+      "evidence": "hit=False",
+      "remaining_risk": "fresh GitHub job helps only if caches/artifacts/env are not explicitly bridged",
+      "passed": true
+    },
+    {
+      "id": "FX-41",
+      "attack": "Stage1→Stage2 temp (shared)",
+      "expected_containment": "Stage 2 must receive no mutable Stage-1 state except authenticated minimal identifiers",
+      "actual": "poisoning channel survives",
+      "evidence": "hit=True",
+      "remaining_risk": "fresh GitHub job helps only if caches/artifacts/env are not explicitly bridged",
+      "passed": false
+    },
+    {
+      "id": "FX-42",
+      "attack": "Stage1→Stage2 temp (fresh)",
+      "expected_containment": "Stage 2 must receive no mutable Stage-1 state except authenticated minimal identifiers",
+      "actual": "contained",
+      "evidence": "hit=False",
+      "remaining_risk": "fresh GitHub job helps only if caches/artifacts/env are not explicitly bridged",
+      "passed": true
+    },
+    {
+      "id": "FX-43",
+      "attack": "Stage1→Stage2 artifact (shared)",
+      "expected_containment": "Stage 2 must receive no mutable Stage-1 state except authenticated minimal identifiers",
+      "actual": "poisoning channel survives",
+      "evidence": "hit=True",
+      "remaining_risk": "fresh GitHub job helps only if caches/artifacts/env are not explicitly bridged",
+      "passed": false
+    },
+    {
+      "id": "FX-44",
+      "attack": "Stage1→Stage2 artifact (fresh)",
+      "expected_containment": "Stage 2 must receive no mutable Stage-1 state except authenticated minimal identifiers",
+      "actual": "contained",
+      "evidence": "hit=False",
+      "remaining_risk": "fresh GitHub job helps only if caches/artifacts/env are not explicitly bridged",
+      "passed": true
+    }
+  ]
+}
