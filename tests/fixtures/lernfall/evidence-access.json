@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+  "entries": [
+    {
+      "evidenceId": "evidence:shoeprint",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:clubhouse"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:training-list",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:field"
+          }
+        ]
+      }
+    }
+  ]
+}

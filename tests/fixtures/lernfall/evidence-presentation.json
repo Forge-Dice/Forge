@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+  "entries": [
+    {
+      "evidenceId": "evidence:shoeprint",
+      "text": "Vor dem offenen Kassenschrank ist ein frischer, schlammiger Stollenabdruck. Solche Fußballschuhe trägt im Verein nur Jonas. Wann der Abdruck entstand, zeigt er nicht.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:jonas"
+        },
+        {
+          "kind": "location",
+          "id": "location:clubhouse"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:training-list",
+      "text": "Die Trainingsliste vom Nachmittag, vom Schiedsrichter gegengezeichnet: Mila leitete das Training, Kurt stand im Tor. Beide waren von 16:50 bis 17:10 auf dem Platz.",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:mila"
+        },
+        {
+          "kind": "person",
+          "id": "person:kurt"
+        },
+        {
+          "kind": "location",
+          "id": "location:field"
+        }
+      ],
+      "reports": [
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:mila",
+            "locationId": "location:field",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:kurt",
+            "locationId": "location:field",
+            "at": 3600
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        }
+      ]
+    }
+  ]
+}

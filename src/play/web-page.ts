@@ -68,7 +68,7 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false): 
   const cards = cases
     .map((c, i) => {
       const solved = c.progress === "Gelöst";
-      const badge = c.progress === null ? `<span class="badge">Neu</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
+      const badge = c.progress === null ? `<span class="badge">${c.slug === "lernfall" ? "Zum Einstieg" : "Neu"}</span>` : `<span class="badge${solved ? " solved" : ""}">${escape(c.progress)}</span>`;
       return `<li><a class="case-card${solved ? " is-solved" : ""}" href="/fall/${escape(c.slug)}"><span class="case-no">Akte Nr. ${String(i + 1).padStart(3, "0")}</span><h2>${escape(c.title)}</h2>${difficultyTag(c.difficulty)}<p>${escape(c.teaser)}</p><span class="case-foot">${badge}<span class="open-file" aria-hidden="true">Akte öffnen →</span></span>${
         solved ? `<span class="stamp small" aria-hidden="true">Gelöst</span>` : ""
       }</a></li>`;
@@ -77,7 +77,7 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false): 
   return layout(
     "Fälle",
     `<a class="skip" href="#faelle">Zu den Fällen springen</a>
-<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a>${editorLink ? ` <a class="button ghost" href="/editor">Fall-Editor</a>` : ""}</p></header>
+<header class="masthead"><p class="kicker">Ermittlungsbüro</p><h1>Kriminalfälle</h1><p class="lead">Lies die Akte, sichere Spuren, befrage die Beteiligten und erhebe Anklage, wenn deine Nachweise tragen.</p><p class="lead">Neu hier? Fang mit dem Lern-Fall an: <a href="/fall/lernfall">Die Vereinskasse</a> führt dich in wenigen Minuten durch jeden Schritt, auch durch das Vorhalten einer Lüge.</p><p><a class="button ghost" href="/hilfe">So ermittelst du <span aria-hidden="true">→</span></a>${editorLink ? ` <a class="button ghost" href="/editor">Fall-Editor</a>` : ""}</p></header>
 <main id="faelle" class="shelf"><h2 class="visually-hidden">Offene Akten</h2><ul class="cases">${cards}</ul>
 <section class="random-case" aria-labelledby="zufall"><h2 id="zufall">Zufallsfall</h2><p>Ein erzeugter Fall, jedes Mal ein anderes Schema. Gleicher Seed, gleicher Fall; leer lassen für einen zufälligen.</p><form method="post" action="/zufall"><label for="seed">Seed</label> <input id="seed" name="seed" inputmode="numeric" pattern="[0-9]{0,9}" maxlength="9" placeholder="z. B. 42"> <button type="submit">Zufallsfall öffnen</button></form></section>
 <p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>`,
@@ -317,7 +317,7 @@ const INTRO_STEPS: readonly { icon: string; title: string; text: string }[] = [
   {
     icon: ICON(`<path d="M10 6h20l8 8v28H10z"/><path d="M30 6v8h8"/><path d="M16 22h16M16 28h16M16 34h10"/>`),
     title: "Lies die Fallakte",
-    text: "In der Akte stehen der Auftrag, der Hintergrund und die Regeln des Falls. Der Auftrag ist die Frage, die du am Ende beantworten musst.",
+    text: "In der Akte stehen der Auftrag, der Hintergrund und die Regeln des Falls. Der Auftrag ist die Frage, die du am Ende beantworten musst. Neu hier? Der Lern-Fall „Die Vereinskasse“ übt jeden Schritt in wenigen Minuten.",
   },
   {
     icon: ICON(`<circle cx="20" cy="20" r="11"/><path d="M28 28l12 12"/>`),

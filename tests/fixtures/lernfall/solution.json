@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "revision": 1,
+  "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+  "resolutions": [
+    {
+      "eventId": "event:theft",
+      "targets": [
+        {
+          "kind": "item",
+          "id": "item:cashbox"
+        }
+      ],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": [
+          {
+            "personId": "person:jonas",
+            "roles": [
+              "direct_actor"
+            ]
+          }
+        ]
+      },
+      "intent": "intended",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    },
+    {
+      "eventId": "event:training",
+      "targets": [],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": []
+      },
+      "intent": "not_applicable",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "conclusion:jonas-responsible",
+      "claim": {
+        "kind": "personResponsibleForEvent",
+        "personId": "person:jonas",
+        "eventId": "event:theft"
+      }
+    },
+    {
+      "id": "conclusion:mila-responsible",
+      "claim": {
+        "kind": "personResponsibleForEvent",
+        "personId": "person:mila",
+        "eventId": "event:theft"
+      }
+    },
+    {
+      "id": "conclusion:kurt-responsible",
+      "claim": {
+        "kind": "personResponsibleForEvent",
+        "personId": "person:kurt",
+        "eventId": "event:theft"
+      }
+    }
+  ],
+  "requiredConclusions": [
+    {
+      "conclusionId": "conclusion:jonas-responsible",
+      "value": true
+    },
+    {
+      "conclusionId": "conclusion:mila-responsible",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:kurt-responsible",
+      "value": false
+    }
+  ]
+}

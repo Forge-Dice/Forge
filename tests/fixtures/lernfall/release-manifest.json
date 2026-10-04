@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "releaseContextHash": "523c34652739caf7616a1a5b1cef8041e4c7d1e131e90030454579c0f9be020e",
+  "adapterVersion": "forge-release-proof-v1",
+  "certificateData": {
+    "schemaVersion": 1,
+    "steps": [
+      {
+        "stepId": "search-clubhouse",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:clubhouse"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-field",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:field"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-jonas",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:jonas"
+            }
+          },
+          "questionId": "question:q01"
+        }
+      },
+      {
+        "stepId": "confront-jonas",
+        "event": {
+          "type": "confront",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:jonas"
+            }
+          },
+          "questionId": "question:q01",
+          "evidence": {
+            "$playerRefOf": {
+              "kind": "evidence",
+              "id": "evidence:shoeprint"
+            }
+          }
+        }
+      }
+    ],
+    "observations": [
+      {
+        "id": "reported:jonas-denies",
+        "kind": "REPORTED_BY_NPC",
+        "npcId": "person:jonas",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:jonas-in-clubhouse",
+          "value": false
+        },
+        "alternatives": [
+          {
+            "kind": "npc",
+            "questionId": "question:q01",
+            "claim": {
+              "kind": "personAt",
+              "person": {
+                "$playerRefOf": {
+                  "kind": "person",
+                  "id": "person:jonas"
+                }
+              },
+              "location": {
+                "$playerRefOf": {
+                  "kind": "location",
+                  "id": "location:clubhouse"
+                }
+              },
+              "at": 3600
+            },
+            "stance": "denies"
+          }
+        ]
+      },
+      {
+        "id": "reported:jonas-admits",
+        "kind": "REPORTED_BY_NPC",
+        "npcId": "person:jonas",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:jonas-in-clubhouse",
+          "value": true
+        },
+        "alternatives": [
+          {
+            "kind": "admission",
+            "questionId": "question:q01",
+            "evidenceId": "evidence:shoeprint",
+            "claim": {
+              "kind": "personAt",
+              "person": {
+                "$playerRefOf": {
+                  "kind": "person",
+                  "id": "person:jonas"
+                }
+              },
+              "location": {
+                "$playerRefOf": {
+                  "kind": "location",
+                  "id": "location:clubhouse"
+                }
+              },
+              "at": 3600
+            },
+            "stance": "affirms"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:confession",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "responsible:jonas",
+            "allOf": [
+              "observation:jonas-admits"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:jonas-responsible",
+              "value": true
+            }
+          }
+        ],
+        "ruleId": "rule:confession",
+        "afterObservations": [
+          "reported:jonas-admits"
+        ]
+      },
+      {
+        "id": "observed:mila",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:mila-on-field",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:training-list"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:mila"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:field"
+                  }
+                },
+                "at": 3600
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "observed:kurt",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:kurt-on-field",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:training-list"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:kurt"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:field"
+                  }
+                },
+                "at": 3600
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:alibi",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "alibi:mila",
+            "allOf": [
+              "observation:mila"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:mila-responsible",
+              "value": false
+            }
+          },
+          {
+            "edgeId": "alibi:kurt",
+            "allOf": [
+              "observation:kurt"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:kurt-responsible",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:alibi",
+        "afterObservations": [
+          "observed:mila",
+          "observed:kurt"
+        ]
+      }
+    ]
+  }
+}
