@@ -11,6 +11,7 @@ import {
 } from "./npc-knowledge.projection.ts";
 import type { EntityRef, InterrogationProfile, QuestionCatalogue, QuestionId } from "./interrogation-authoring.ts";
 import { hashQuestionCatalogue } from "./interrogation-authoring.identity.ts";
+import { deepFreeze } from "./shared.ts";
 
 // Runtime half of NPC interrogation V1 (MYST-0005B). One question in, one observation out:
 // the NPC's stance comes from exactly one structurally matching attitude of its projection;
@@ -100,11 +101,6 @@ const QUESTION_NOT_AVAILABLE = failure("QUESTION_NOT_AVAILABLE");
 const REF_UNAVAILABLE = failure("REF_UNAVAILABLE");
 
 const keyOf = (ref: { readonly kind: string; readonly id: string }) => `${ref.kind}|${ref.id}`;
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) for (const child of Object.values(value)) deepFreeze(child);
-  return Object.freeze(value);
-}
 
 // Structural equality: same kind, every field equal; refs by kind and index. No inference.
 function sameClaim(a: NpcVisibleClaim, b: NpcVisibleClaim): boolean {

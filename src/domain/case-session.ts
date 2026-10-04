@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { CasePackageIdentity, ResolvedCasePackage } from "./case-package.ts";
+import { rulesetAllows, type CasePackageIdentity, type ResolvedCasePackage } from "./case-package.ts";
 import { serializeSessionJson, utf8Length, validateSessionJson } from "./case-package.identity.ts";
 import { parseAccusation, type Accusation } from "./case-accusation.ts";
 import { evaluateChallengeAccusation } from "./accusation-challenge.ts";
@@ -11,6 +11,7 @@ import { confront, interrogate, type ConfrontationObservation, type Interrogatio
 import type { ResolvedEntity } from "./player-ref.ts";
 import { initialPlayerKnowledge, recordConfrontation, recordEvidence, recordInterrogation, type PlayerKnowledge } from "./player-knowledge.ts";
 import { nextHint, type Hint } from "./case-hints.ts";
+import { deepFreezeUnfrozen } from "./shared.ts";
 
 // Session reducer V1 (MYST-SESSION-0001B). The only door from untrusted player events into the
 // gameplay ports. Every incoming ref must already be in the prefix Known; every released ref must
@@ -55,7 +56,7 @@ export const SessionEventSchema = z.discriminatedUnion("type", [
     type: z.literal("accuse"),
     literals: z.array(z.strictObject({ claim: PlayerConclusionClaimSchema, value: z.boolean() })).max(SESSION_LIMITS.maxLiterals),
   }),
-  // Ruleset mystery-session-v3 only; the reducer rejects it under v1/v2.
+  // confront and hint are gated by ruleset version (rulesetAllows, case-package.ts).
   z.strictObject({ type: z.literal("hint") }),
 ]);
 
@@ -93,14 +94,6 @@ class Reject {
 const unavailable = () => new Reject("ACTION_UNAVAILABLE");
 const hostFailure = () => new Reject("HOST_FAILURE");
 
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
-}
-
 /** Exact UTF-8 length of C(value), or null when the value is not plain session JSON within limits. */
 function jsonBytes(value: unknown): number | null {
   try {
@@ -135,7 +128,7 @@ const sameIdentity = (a: CasePackageIdentity, b: CasePackageIdentity) =>
 
 export function initialSession(pkg: ResolvedCasePackage): SessionState {
   const { schemaVersion, packageHash, rulesetVersion } = pkg.identity;
-  return deepFreeze({
+  return deepFreezeUnfrozen({
     identity: { schemaVersion, packageHash, rulesetVersion },
     phase: "active",
     events: [],
@@ -157,7 +150,7 @@ export function reduceSession(pkg: ResolvedCasePackage, state: SessionState, inp
     if (Array.isArray(literals) && literals.length > SESSION_LIMITS.maxLiterals) return reject("ACTION_UNAVAILABLE");
     const parsed = SessionEventSchema.safeParse(input);
     if (!parsed.success) return reject("ACTION_UNAVAILABLE");
-    const event = deepFreeze(parsed.data);
+    const event = deepFreezeUnfrozen(parsed.data);
 
     const eventIndex = state.events.length;
     const step = evaluate(pkg, state.knowledge, event, eventIndex, state.events);
@@ -169,14 +162,14 @@ export function reduceSession(pkg: ResolvedCasePackage, state: SessionState, inp
     const events = Object.freeze([...state.events, event]);
     eventBytes.set(events, historyBytes(state.events) + ownBytes);
     const verdicts = step.verdict === null ? state.verdicts : [...state.verdicts, { eventIndex, verdict: step.verdict }];
-    const next: SessionState = deepFreeze({
+    const next: SessionState = deepFreezeUnfrozen({
       identity: state.identity,
       phase: step.verdict === "solved" ? "solved" : "active",
       events,
       knowledge: step.knowledge,
       verdicts,
     });
-    return deepFreeze({ ok: true, state: next, output: step.output });
+    return deepFreezeUnfrozen({ ok: true, state: next, output: step.output });
   } catch (error) {
     // Trusted ports may throw; that is a host failure, never a player verdict.
     return reject(error instanceof Reject ? error.code : "HOST_FAILURE");
@@ -282,8 +275,8 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
         questionId: event.questionId,
       };
       if (event.type === "confront") {
-        // Ruleset v2 only; the evidence must be found and the NPC must have stated something to it.
-        if (pkg.identity.rulesetVersion === "mystery-session-v1") throw unavailable();
+        // The evidence must be found and the NPC must have stated something to it.
+        if (!rulesetAllows(pkg.identity.rulesetVersion, "confront")) throw unavailable();
         if (!knowledge.discoveries.some((d) => d.evidence === event.evidence)) throw unavailable();
         const stated = knowledge.observations.some(
           (r) => r.source.kind === "npc" && r.source.npc === event.npc && r.source.questionId === event.questionId && "statement" in r.observation,
@@ -304,8 +297,8 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
       return { knowledge: recordInterrogation(knowledge, observation, eventIndex), output: { type: "interrogate", observation }, verdict: null };
     }
     case "hint": {
-      // Only v3 offers hints; without a bound witness there is nothing to derive them from.
-      if (pkg.identity.rulesetVersion !== "mystery-session-v3") throw unavailable();
+      // Without a bound witness there is nothing to derive hints from.
+      if (!rulesetAllows(pkg.identity.rulesetVersion, "hints")) throw unavailable();
       const hint = nextHint(pkg, knowledge, events);
       if (hint === null) throw unavailable();
       return { knowledge, output: { type: "hint", hint }, verdict: null };

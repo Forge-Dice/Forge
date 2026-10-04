@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { byCodeUnits, isWellFormed } from "./shared.ts";
 
 // Session JSON profile C and identity hashes of a case package (MYST-SESSION-0001A §2).
 // C sorts object keys by UTF-16 code units but keeps every array in its given order: sets are
@@ -10,21 +11,6 @@ export const SESSION_JSON_LIMITS = Object.freeze({ maxDepth: 32, maxNodes: 100_0
 export type SessionJsonCheck =
   | { readonly ok: true }
   | { readonly ok: false; readonly code: "LIMIT" | "SHAPE"; readonly path: readonly (string | number)[] };
-
-const byCodeUnits = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
-
-function isWellFormed(text: string): boolean {
-  for (let i = 0; i < text.length; i++) {
-    const unit = text.charCodeAt(i);
-    if (unit >= 0xdc00 && unit <= 0xdfff) return false;
-    if (unit >= 0xd800 && unit <= 0xdbff) {
-      const next = text.charCodeAt(i + 1);
-      if (!(next >= 0xdc00 && next <= 0xdfff)) return false;
-      i++;
-    }
-  }
-  return true;
-}
 
 /**
  * Iterative plain-JSON check before any recursive work: no functions, undefined, symbols, BigInt,

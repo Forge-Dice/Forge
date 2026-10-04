@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { CaseTruth } from "./case-truth.ts";
+import { byCodeUnits, canonicalJson } from "./shared.ts";
 
 // Canonicalization profile "forge-case-c14n-v1":
 // - object keys sorted recursively by UTF-16 code units (no localeCompare)
@@ -10,26 +11,8 @@ import type { CaseTruth } from "./case-truth.ts";
 
 export const CANONICALIZATION_PROFILE = "forge-case-c14n-v1";
 
-function byCodeUnits(a: string, b: string): number {
-  return a < b ? -1 : a > b ? 1 : 0;
-}
-
-function canonicalize(value: unknown): string {
-  if (Array.isArray(value)) {
-    // Copy before sorting: the snapshot's arrays are frozen and must never be reordered.
-    return `[${value.map(canonicalize).sort(byCodeUnits).join(",")}]`;
-  }
-  if (typeof value === "object" && value !== null) {
-    const entries = Object.keys(value)
-      .sort(byCodeUnits)
-      .map((key) => `${JSON.stringify(key)}:${canonicalize((value as Record<string, unknown>)[key])}`);
-    return `{${entries.join(",")}}`;
-  }
-  return JSON.stringify(value);
-}
-
 export function serializeCaseTruth(truth: CaseTruth): string {
-  return canonicalize(truth);
+  return canonicalJson(truth);
 }
 
 export function hashCaseTruth(truth: CaseTruth): string {
