@@ -132,7 +132,7 @@ export type ExtraCase = { readonly pkg: ResolvedCasePackage; readonly clockOrigi
 
 export function createWebHandler(
   packages: Partial<Record<PlayCaseName, ResolvedCasePackage>> = {},
-  options: { readonly editorLink?: boolean; readonly extraCase?: (slug: string) => ExtraCase | null } = {},
+  options: { readonly editorLink?: boolean; readonly extraCase?: (slug: string) => ExtraCase | null; readonly maxGenerated?: number } = {},
 ): WebHandler {
   const slots = new Map<PlayCaseName, Slot>();
   const slot = (name: PlayCaseName): Slot => {
@@ -146,7 +146,9 @@ export function createWebHandler(
   };
   const slugOf = (name: PlayCaseName) => PLAY_CASES[name].dir;
   // Generated cases ("Zufallsfall"): one slot per seed, created on first visit; the oldest is
-  // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
+  // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound. The
+  // browser build keeps them all (its own player's cases, each with a save in localStorage).
+  const maxGenerated = options.maxGenerated ?? MAX_GENERATED;
   const generated = new Map<number, { slot: Slot; clockOrigin: number }>();
   const extras = new Map<string, { version: string; slot: Slot }>();
   // Imported cases ("Eigenen Fall laden"), keyed by eigen-<digest>; the oldest is dropped beyond MAX_IMPORTED.
@@ -176,7 +178,7 @@ export function createWebHandler(
       const game = newGame(generatedPackage(generatedCase), clockOrigin);
       g = { slot: { game, feedback: { tone: "info", title: `Zufallsfall ${seed}`, lines: ["Ein erzeugter Fall. Lies die Fallakte und beginne zu ermitteln."] }, fresh: new Set() }, clockOrigin };
       generated.set(seed, g);
-      if (generated.size > MAX_GENERATED) generated.delete(generated.keys().next().value!);
+      if (generated.size > maxGenerated) generated.delete(generated.keys().next().value!);
     }
     return { slot: g.slot, slug: `zufall-${seed}`, clockOrigin: g.clockOrigin, seed };
   };
@@ -323,8 +325,9 @@ export function createWebHandler(
         if (body === null) return text(413, "Zu groß.");
         const { seed, text: saved } = unwrapSave(body);
         const into = seed === null || seed === t.seed ? t : target(`zufall-${seed}`)!;
-        loadInto(into, saved);
-        return redirect(`/fall/${into.slug}`);
+        const to = `/fall/${into.slug}`;
+        // The browser build's shell restores saves silently and needs to tell a failed load apart.
+        return loadInto(into, saved) ? redirect(to) : { status: 303, headers: { location: to, "x-load-failed": "1" }, body: "" };
       }
       case "POST new":
         [s.game, s.fresh] = [newGame(s.game.pkg, t.clockOrigin), new Set()];
