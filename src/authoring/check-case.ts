@@ -43,8 +43,8 @@ import { refSource } from "../play/cases.ts";
 // field. Host/author tool: messages may contain private IDs and are never shown to players.
 
 export type Problem = { readonly file: string; readonly field: string; readonly message: string; readonly severity: "error" | "warning" };
-/** A hash placeholder the tool computed; `--fix` writes these values into the files. */
-export type FilledHash = { readonly file: string; readonly field: string; readonly value: string };
+/** A hash the tool computed: for a TO_BE_COMPUTED placeholder, or (stale) to replace an outdated value. */
+export type FilledHash = { readonly file: string; readonly field: string; readonly value: string; readonly stale?: true };
 export type CaseCheck = {
   readonly dir: string;
   readonly problems: readonly Problem[];
@@ -98,6 +98,7 @@ class Collector {
         this.filled.push({ file, field: `${prefix}${key}`, value });
       } else if (given !== value) {
         this.warning(file, `${prefix}${key}`, `erwartet ${value}`);
+        this.filled.push({ file, field: `${prefix}${key}`, value, stale: true });
       }
     }
   }
@@ -383,8 +384,10 @@ function bindManifest(raw: unknown, contextHash: string, index: PlayerRefIndex, 
   const manifest = substitute(raw, []) as Manifest;
   const given = manifest.releaseContextHash;
   if (typeof given === "string" && !PLACEHOLDER.test(given) && given !== contextHash) {
-    c.error(FILES.releaseManifest, "releaseContextHash", `veraltet: das Paket hat ${contextHash}`);
-    ok = false;
+    // Stale after an edit of a component: an error, but checking goes on with the current value so
+    // that --fix can rewrite this and the dependent profile releaseHash in one pass.
+    c.error(FILES.releaseManifest, "releaseContextHash", `veraltet: das Paket hat ${contextHash} (--fix trägt ihn ein)`);
+    c.filled.push({ file: FILES.releaseManifest, field: "releaseContextHash", value: contextHash, stale: true });
   }
   if (ok && typeof given === "string" && PLACEHOLDER.test(given)) c.filled.push({ file: FILES.releaseManifest, field: "releaseContextHash", value: contextHash });
   return ok ? { ...manifest, releaseContextHash: contextHash } : null;
@@ -398,8 +401,8 @@ function bindProfile(raw: unknown, releaseHash: string, c: Collector): unknown {
   }
   const given = bindings.releaseHash;
   if (typeof given === "string" && !PLACEHOLDER.test(given) && given !== releaseHash) {
-    c.error(FILES.proofProfile, "bindings.releaseHash", `veraltet: das Release-Manifest hat ${releaseHash}`);
-    return null;
+    c.error(FILES.proofProfile, "bindings.releaseHash", `veraltet: das Release-Manifest hat ${releaseHash} (--fix trägt ihn ein)`);
+    c.filled.push({ file: FILES.proofProfile, field: "bindings.releaseHash", value: releaseHash, stale: true });
   }
   if (typeof given === "string" && PLACEHOLDER.test(given)) c.filled.push({ file: FILES.proofProfile, field: "bindings.releaseHash", value: releaseHash });
   return { ...raw, bindings: { ...bindings, releaseHash } };
@@ -456,7 +459,7 @@ export function formatCaseCheck(check: CaseCheck): string {
   const warnings = check.problems.filter((p) => p.severity === "warning");
   for (const p of errors) lines.push(`  FEHLER  ${p.file} › ${p.field}: ${p.message}`);
   for (const p of warnings) lines.push(`  Hinweis ${p.file} › ${p.field}: ${p.message}`);
-  for (const f of check.filled) lines.push(`  berechnet ${f.file} › ${f.field} = ${f.value}`);
+  for (const f of check.filled.filter((f) => f.stale !== true)) lines.push(`  berechnet ${f.file} › ${f.field} = ${f.value}`);
   if (check.solvability !== null) {
     const s = check.solvability;
     lines.push(`  Lösbarkeit: ${s.status.toUpperCase()} (${s.survivingAnswerCount} mögliche Antwort${s.survivingAnswerCount === 1 ? "" : "en"})`);
@@ -465,7 +468,7 @@ export function formatCaseCheck(check: CaseCheck): string {
   return lines.join("\n");
 }
 
-/** `--fix`: writes the computed hashes into their placeholder fields; returns the files changed. */
+/** `--fix`: writes the computed hashes into placeholder and stale fields; returns the files changed. */
 export function writeFilledHashes(check: CaseCheck): string[] {
   const byFile = new Map<string, FilledHash[]>();
   for (const f of check.filled) byFile.set(f.file, [...(byFile.get(f.file) ?? []), f]);

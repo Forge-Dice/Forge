@@ -3,7 +3,7 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, unlinkSync, writeFileSync } 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { checkCaseFolder, formatCaseCheck, type CaseCheck } from "../src/authoring/check-case.ts";
+import { checkCaseFolder, formatCaseCheck, writeFilledHashes, type CaseCheck } from "../src/authoring/check-case.ts";
 
 const FIXTURES = new URL("./fixtures/", import.meta.url).pathname;
 const VITRINE = join(FIXTURES, "vitrine");
@@ -138,6 +138,21 @@ describe("check-case names file and field for broken cases", () => {
       "bindings.releaseHash",
       /veraltet/,
     );
+  });
+
+  it("an edited player text makes the release hashes stale; one --fix pass repairs both", () => {
+    const dir = variant(join(FIXTURES, "geige"), { "public-content.json": (p) => (p.epilogue = "Ida gesteht.") });
+    const check = checkCaseFolder(dir);
+    expectError(check, "release-manifest.json", "releaseContextHash", /veraltet.*--fix/);
+    expectError(check, "proof-profile.json", "bindings.releaseHash", /veraltet/);
+    expect(check.filled.map((f) => [f.file, f.field, f.stale])).toEqual([
+      ["release-manifest.json", "releaseContextHash", true],
+      ["proof-profile.json", "bindings.releaseHash", true],
+    ]);
+    expect(writeFilledHashes(check)).toEqual(["release-manifest.json", "proof-profile.json"]);
+    const fixed = checkCaseFolder(dir);
+    expect(fixed.ok).toBe(true);
+    expect(fixed.filled).toEqual([]);
   });
 
   it("solvability fails when the decisive evidence is unreachable", () => {
