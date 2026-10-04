@@ -3,8 +3,67 @@
 // page is rendered into a frame, links and forms are routed to the handler, and each case's
 // Session C save is kept in localStorage so the game survives a reload.
 (() => {
-  const app = globalThis.kriminalfaelle;
+  const local = globalThis.kriminalfaelle;
   const frame = document.getElementById("kf");
+  // The handler runs in a Web Worker started from this page's own two scripts (case files and
+  // bundle), so a slow request (a Zufallsfall with a wished difficulty) never freezes the page.
+  // Without workers (or if it fails to start) the same handler runs here, as before.
+  const app = { slugs: local.slugs, handle: local.handle };
+  let worker = null;
+  const pending = new Map();
+  let nextId = 0;
+  const useLocal = () => {
+    worker = null;
+    app.handle = local.handle;
+    for (const [, p] of pending) local.handle(p.method, p.url, async () => p.body).then(p.resolve, p.reject);
+    pending.clear();
+  };
+  try {
+    const [files, bundle] = document.scripts;
+    const url = URL.createObjectURL(new Blob([files.textContent, "\nglobalThis.__kfWorker = true;\n", bundle.textContent], { type: "text/javascript" }));
+    worker = new Worker(url);
+    worker.onerror = (e) => { e.preventDefault?.(); useLocal(); };
+    worker.onmessage = ({ data }) => {
+      if (data.progress !== undefined) return showProgress(data.progress);
+      const p = pending.get(data.id);
+      if (p === undefined) return;
+      pending.delete(data.id);
+      if (data.error !== undefined) p.reject(new Error(data.error));
+      else p.resolve(data.res);
+    };
+    app.handle = async (method, url, body) => {
+      if (worker === null) return local.handle(method, url, body);
+      const text = await body();
+      return new Promise((resolve, reject) => {
+        const id = nextId++;
+        pending.set(id, { method, url, body: text, resolve, reject });
+        worker.postMessage({ id, method, url, body: text });
+      });
+    };
+  } catch {
+    useLocal();
+  }
+
+  // A request that takes a moment gets a small indicator with the worker's progress.
+  const busy = document.createElement("div");
+  busy.setAttribute("role", "status");
+  busy.style.cssText = "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:calc(100% - 32px);padding:12px 18px;border-radius:8px;background:#1c1814;color:#f5eedf;font:16px system-ui;box-shadow:0 4px 18px rgba(0,0,0,.35);z-index:10";
+  busy.hidden = true;
+  document.body.append(busy);
+  let busyTimer = null;
+  function showProgress(text) {
+    busy.textContent = text;
+    busy.hidden = false;
+  }
+  async function withIndicator(promise) {
+    busyTimer = setTimeout(() => showProgress("Der Fall wird vorbereitet …"), 300);
+    try {
+      return await promise;
+    } finally {
+      clearTimeout(busyTimer);
+      busy.hidden = true;
+    }
+  }
   const boot = document.getElementById("boot");
   const KEY = "kriminalfaelle.spielstand.";
   // Imported cases ("Eigenen Fall laden") are kept as their checked file and re-imported on start.
@@ -42,10 +101,10 @@
   const PAGE_SHIM = `<script>window.kfVisit = (u) => parent.kfGo("GET", u); window.fetch = (u, o) => parent.kfFetch(String(u), o || {}); window.focus();<\/script>`;
 
   async function go(method, url, body) {
-    let res = await request(method, url, body);
+    let res = await withIndicator(request(method, url, body));
     for (let hops = 0; res.status === 303 && hops < 5; hops++) {
       url = res.headers.location;
-      res = await request("GET", url);
+      res = await withIndicator(request("GET", url));
     }
     if (res.headers["content-disposition"]) return download(res);
     const html = res.headers["content-type"]?.startsWith("text/html")
