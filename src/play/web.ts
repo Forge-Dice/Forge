@@ -90,6 +90,24 @@ function feedbackFor(before: Game, after: Game, action: Action, output: SessionO
 
 const HINT: Action[] = [{ label: "Hinweis", event: { type: "hint" } }];
 
+/** Saves of generated cases carry their seed around the unchanged Session C text. */
+const wrapSave = (seed: number, text: string): string => JSON.stringify({ zufallsfall: seed, spielstand: text });
+
+function unwrapSave(body: string): { seed: number | null; text: string } {
+  try {
+    const v: unknown = JSON.parse(body);
+    if (typeof v === "object" && v !== null && !Array.isArray(v) && Object.keys(v).length === 2) {
+      const { zufallsfall, spielstand } = v as Record<string, unknown>;
+      if (Number.isInteger(zufallsfall) && (zufallsfall as number) >= 0 && (zufallsfall as number) < 1e9 && typeof spielstand === "string") {
+        return { seed: zufallsfall as number, text: spielstand };
+      }
+    }
+  } catch {
+    // Not JSON: the session decoder reports it.
+  }
+  return { seed: null, text: body };
+}
+
 type Slot = { game: Game; feedback: Feedback | null; fresh: ReadonlySet<string> };
 
 /** Labels of actions the last step made available, shown as new in the menus. */
@@ -128,10 +146,10 @@ export function createWebHandler(
   // dropped beyond MAX_GENERATED so arbitrary seeds cannot grow the memory without bound.
   const generated = new Map<number, { slot: Slot; clockOrigin: number }>();
   const extras = new Map<string, { version: string; slot: Slot }>();
-  type Target = { readonly slot: Slot; readonly slug: string; readonly clockOrigin: number };
+  type Target = { readonly slot: Slot; readonly slug: string; readonly clockOrigin: number; readonly seed: number | null };
   const target = (slug: string | undefined): Target | null => {
     const name = playCaseName(slug);
-    if (name !== null) return { slot: slot(name), slug: slugOf(name), clockOrigin: PLAY_CASES[name].clockOrigin };
+    if (name !== null) return { slot: slot(name), slug: slugOf(name), clockOrigin: PLAY_CASES[name].clockOrigin, seed: null };
     const extra = slug === undefined || options.extraCase === undefined ? null : options.extraCase(slug);
     if (extra !== null) {
       let e = extras.get(slug!);
@@ -139,7 +157,7 @@ export function createWebHandler(
         e = { version: extra.version, slot: { game: newGame(extra.pkg, extra.clockOrigin), feedback: { tone: "info", title: "Probespiel", lines: ["Der gespeicherte Stand deiner Arbeitskopie."] }, fresh: new Set() } };
         extras.set(slug!, e);
       }
-      return { slot: e.slot, slug: slug!, clockOrigin: extra.clockOrigin };
+      return { slot: e.slot, slug: slug!, clockOrigin: extra.clockOrigin, seed: null };
     }
     const m = /^zufall-(0|[1-9][0-9]{0,8})$/.exec(slug ?? "");
     if (m === null) return null;
@@ -153,11 +171,25 @@ export function createWebHandler(
       generated.set(seed, g);
       if (generated.size > MAX_GENERATED) generated.delete(generated.keys().next().value!);
     }
-    return { slot: g.slot, slug: `zufall-${seed}`, clockOrigin: g.clockOrigin };
+    return { slot: g.slot, slug: `zufall-${seed}`, clockOrigin: g.clockOrigin, seed };
   };
   const redirect = (to: string): WebResponse => ({ status: 303, headers: { location: to }, body: "" });
   const html = (body: string): WebResponse => ({ status: 200, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }, body });
   const text = (status: number, body: string): WebResponse => ({ status, headers: { "content-type": "text/plain; charset=utf-8" }, body });
+
+  // The case list's own result sheet (a save that fits no case); shown once.
+  let homeFeedback: Feedback | null = null;
+
+  /** Loads a save into a case; the feedback says how it went. */
+  function loadInto(t: Target, text: string): boolean {
+    const s = t.slot;
+    const loaded = loadText(s.game.pkg, text, t.clockOrigin);
+    if (loaded.ok) [s.game, s.fresh] = [loaded.game, new Set()];
+    s.feedback = loaded.ok
+      ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
+      : { tone: "warn", title: loaded.text, lines: ["Lade eine unveränderte Datei, die mit diesem Fall gespeichert wurde."] };
+    return loaded.ok;
+  }
 
   function act(s: Slot, group: string | null, n: string | null, at: string | null): void {
     const { game } = s;
@@ -196,7 +228,36 @@ export function createWebHandler(
         const progress = s.game.state.phase === "solved" ? "Gelöst" : steps === 0 ? null : `${steps} Aktionen`;
         return { slug: slugOf(name), title: publicContent.title, teaser: publicContent.brief.split("\n")[0]!, progress, difficulty: PLAY_CASES[name].difficulty };
       });
-      return html(renderCaseList(cards, options.editorLink === true));
+      const recent = [...generated].reverse().map(([seed, g]) => {
+        const steps = g.slot.game.state.events.length;
+        return {
+          slug: `zufall-${seed}`,
+          title: `${g.slot.game.pkg.publicContent.title} (Seed ${seed})`,
+          progress: g.slot.game.state.phase === "solved" ? "Gelöst" : steps === 0 ? null : `${steps} Aktionen`,
+        };
+      });
+      const page = renderCaseList(cards, options.editorLink === true, { recent, feedback: homeFeedback });
+      homeFeedback = null;
+      return html(page);
+    }
+    if (method === "POST" && url.pathname === "/laden") {
+      // Any save from the case list: a generated case's file names its seed, a fixed case's save
+      // is matched by its package. Answers with the page to open (the list posts by script).
+      const { seed, text: saved } = unwrapSave((await readBody()) ?? "");
+      if (seed !== null) {
+        const t = target(`zufall-${seed}`)!;
+        loadInto(t, saved);
+        return text(200, `/fall/${t.slug}`);
+      }
+      for (const name of Object.keys(PLAY_CASES) as PlayCaseName[]) {
+        const t = target(slugOf(name))!;
+        if (loadText(t.slot.game.pkg, saved, t.clockOrigin).ok) {
+          loadInto(t, saved);
+          return text(200, `/fall/${t.slug}`);
+        }
+      }
+      homeFeedback = { tone: "warn", title: "Diese Datei passt zu keinem Fall.", lines: ["Lade eine unveränderte Datei, die mit „Speichern“ heruntergeladen wurde."] };
+      return text(200, "/");
     }
     if (method === "GET" && url.pathname === "/hilfe") return html(renderHelp());
     if (method === "POST" && url.pathname === "/zufall") {
@@ -226,7 +287,7 @@ export function createWebHandler(
         return {
           status: 200,
           headers: { "content-type": "application/json; charset=utf-8", "content-disposition": `attachment; filename="${t.slug}.save.json"` },
-          body: saved.text,
+          body: t.seed === null ? saved.text : wrapSave(t.seed, saved.text),
         };
       }
       case "POST act": {
@@ -237,14 +298,13 @@ export function createWebHandler(
         return redirect(home);
       }
       case "POST load": {
+        // A generated case's save opens its own seed, wherever it was chosen.
         const body = await readBody();
         if (body === null) return text(413, "Zu groß.");
-        const loaded = loadText(s.game.pkg, body, t.clockOrigin);
-        if (loaded.ok) [s.game, s.fresh] = [loaded.game, new Set()];
-        s.feedback = loaded.ok
-          ? { tone: "ok", title: "Spielstand geladen", lines: [`${s.game.state.events.length} Aktionen wiederhergestellt.`] }
-          : { tone: "warn", title: loaded.text, lines: ["Lade eine unveränderte Datei, die mit diesem Fall gespeichert wurde."] };
-        return redirect(home);
+        const { seed, text: saved } = unwrapSave(body);
+        const into = seed === null || seed === t.seed ? t : target(`zufall-${seed}`)!;
+        loadInto(into, saved);
+        return redirect(`/fall/${into.slug}`);
       }
       case "POST new":
         [s.game, s.fresh] = [newGame(s.game.pkg, t.clockOrigin), new Set()];
