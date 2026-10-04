@@ -47,10 +47,13 @@ function playByHints(name: PlayCaseName): { game: Game; hints: Hint[]; firstOfSt
       }
       break;
     }
-    if (h.hint.kind === "interrogate" && h.hint.questionId !== null) {
+    if (h.hint.kind === "confront" && h.hint.evidence !== null) {
+      game = apply(game, { type: "confront", npc: h.hint.target, questionId: h.hint.questionId, evidence: h.hint.evidence });
+      acted = true;
+    } else if (h.hint.kind === "interrogate" && h.hint.questionId !== null) {
       game = apply(game, { type: "interrogate", npc: h.hint.target, questionId: h.hint.questionId });
       acted = true;
-    } else if (h.hint.kind !== "interrogate" && h.hint.level >= 2) {
+    } else if (h.hint.kind !== "interrogate" && h.hint.kind !== "confront" && h.hint.level >= 2) {
       game = apply(game, { type: "investigate", action: h.hint.kind, target: h.hint.target });
       acted = true;
     }
@@ -69,16 +72,16 @@ describe.each(CASES)("hints in %s", (name) => {
   it("levels rise on the same step (vague, then concrete) and stop at 3", () => {
     let game = newGame(pkg);
     const levels: Hint[] = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       const h = hint(game);
       game = h.game;
       levels.push(h.hint);
     }
-    expect(levels.map((h) => h.level)).toEqual([1, 2, 3, 3]);
+    expect(levels.map((h) => h.level)).toEqual([1, 2, 3]);
     expect(levels[0]!.target).toBeNull();
     expect(levels[1]!.target).not.toBeNull();
     expect(new Set(levels.map((h) => `${h.kind}|${h.target ?? levels[1]!.target}`)).size).toBe(1);
-    expect(hintsUsed(game)).toBe(4);
+    expect(hintsUsed(game)).toBe(3);
     // A hint changes nothing but the event log: no knowledge, no observations.
     expect(game.state.knowledge).toEqual(initialSession(pkg).knowledge);
   });
@@ -90,7 +93,8 @@ describe.each(CASES)("hints in %s", (name) => {
     for (const h of hints) {
       if (h.target !== null) expect(game.state.knowledge.known.some((k) => k.ref === h.target)).toBe(true);
       if (h.level === 1) expect(h.target).toBeNull();
-      if (h.questionId !== null) expect([h.kind, h.level]).toEqual(["interrogate", 3]);
+      if (h.questionId !== null) expect(["interrogate", "confront"]).toContain(h.kind);
+      if (h.questionId !== null) expect(h.level).toBe(3);
     }
     // After a step is done, the next hint starts vague again.
     expect(firstOfStep.length).toBeGreaterThan(2);
@@ -109,7 +113,7 @@ describe.each(CASES)("hints in %s", (name) => {
       if (h.kind === "accuse") for (const p of people) expect(text).not.toContain(p);
     }
     for (const level of [1, 2, 3] as const) {
-      const text = hintText(game, { level, kind: "accuse", target: null, questionId: null });
+      const text = hintText(game, { level, kind: "accuse", target: null, questionId: null, evidence: null });
       for (const p of people) expect(text).not.toContain(p);
     }
   });
@@ -126,7 +130,11 @@ describe.each(CASES)("hints in %s", (name) => {
     if (!loaded.ok) throw new Error(loaded.text);
     expect(loaded.game.state).toEqual(game.state);
     expect(hintsUsed(loaded.game)).toBe(3);
-    expect(hint(loaded.game).hint).toEqual(hint(game).hint);
+    const next = (g: Game) => {
+      const r = reduceSession(pkg, g.state, { type: "hint" });
+      return r.ok ? r.output : r.code;
+    };
+    expect(next(loaded.game)).toEqual(next(game));
     const replay = replaySession(pkg, game.state.events);
     expect(replay.ok && (replay.state as SessionState)).toEqual(game.state);
   });
@@ -211,5 +219,25 @@ describe("web", () => {
     expect(await page()).toContain("Hinweise genutzt: 0");
     await fetch(`${base}/fall/vitrine/load`, { method: "POST", redirect: "manual", body: saved });
     expect(await page()).toContain("Hinweise genutzt: 1");
+  });
+});
+
+describe("review fixes", () => {
+  it("a confrontation step of the witness is hinted and must be done before the accusation hint", () => {
+    const { hints } = playByHints("brieföffner");
+    const kinds = hints.map((h) => h.kind);
+    expect(kinds).toContain("confront");
+    expect(kinds.indexOf("confront")).toBeLessThan(kinds.indexOf("accuse"));
+    const confront = hints.find((h) => h.kind === "confront" && h.level === 3)!;
+    expect(confront.evidence).not.toBeNull();
+  });
+
+  it.each(CASES)("%s: after three hints on one step the next is refused, so hints cannot use up the action limit", (name) => {
+    const pkg = loadPlayPackage(name);
+    let game = newGame(pkg);
+    for (let i = 0; i < 3; i++) game = hint(game).game;
+    const fourth = reduceSession(pkg, game.state, { type: "hint" });
+    expect(fourth.ok || fourth.code).toBe("ACTION_UNAVAILABLE");
+    expect(command(game, "h").text).toBe("Genauer geht der Hinweis nicht. Folge dem letzten Hinweis.");
   });
 });

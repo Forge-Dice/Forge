@@ -8,6 +8,7 @@ import {
   confrontations,
   evidenceText,
   hintText,
+  hintUnavailableText,
   investigations,
   known,
   loadText,
@@ -121,7 +122,8 @@ export function createWebApp(packages: Partial<Record<PlayCaseName, ResolvedCase
     if (action === undefined) return;
     const result = reduceSession(game.pkg, game.state, action.event);
     if (!result.ok) {
-      s.feedback = { tone: "warn", title: SESSION_ERRORS[result.code]!, lines: [] };
+      const title = group === "h" && result.code === "ACTION_UNAVAILABLE" ? hintUnavailableText(game) : SESSION_ERRORS[result.code]!;
+      s.feedback = { tone: "warn", title, lines: [] };
       return;
     }
     s.game = { ...game, state: result.state };

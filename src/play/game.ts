@@ -1,6 +1,6 @@
-import type { ResolvedCasePackage } from "../domain/case-package.ts";
+import { rulesetAllows, type ResolvedCasePackage } from "../domain/case-package.ts";
 import { initialSession, reduceSession, type SessionOutput, type SessionState } from "../domain/case-session.ts";
-import { hintCount, type Hint } from "../domain/case-hints.ts";
+import { hintCount, hintsExhausted, type Hint } from "../domain/case-hints.ts";
 import { encodeSessionSave, loadSessionSaveForPlayer } from "../domain/case-session-save.ts";
 import type { EvidenceObservation, PlayerClaim as EvidenceClaim } from "../domain/evidence-presentation.ts";
 import type { ConfrontationObservation, InterrogationObservation, PlayerClaim } from "../domain/interrogation.ts";
@@ -79,7 +79,7 @@ export function command(game: Game, line: string): Step {
     case "hinweis":
     case "h": {
       const result = reduceSession(game.pkg, game.state, { type: "hint" });
-      if (!result.ok) return say(result.code === "ACTION_UNAVAILABLE" ? "Für diesen Fall gibt es keine Hinweise." : SESSION_ERRORS[result.code]!);
+      if (!result.ok) return say(result.code === "ACTION_UNAVAILABLE" ? hintUnavailableText(game) : SESSION_ERRORS[result.code]!);
       const next = { ...game, state: result.state };
       return { game: next, text: outputText(next, result.output) };
     }
@@ -240,6 +240,14 @@ export function answerText(game: Game, o: InterrogationObservation): string {
   return "statement" in o ? `${said}\n  (zur Behauptung: ${claimText(game, o.statement)})` : said;
 }
 
+/** Why a hint was refused: none for this case, or the last one was already as concrete as it gets. */
+export function hintUnavailableText(game: Game): string {
+  const offered = rulesetAllows(game.pkg.identity.rulesetVersion, "hints") && game.pkg.proof !== null;
+  return offered && hintsExhausted(game.pkg, game.state.knowledge, game.state.events)
+    ? "Genauer geht der Hinweis nicht. Folge dem letzten Hinweis."
+    : "Für diesen Fall gibt es keine Hinweise.";
+}
+
 /** Hints taken so far (they are session events, so saves keep the count). */
 export const hintsUsed = (game: Game): number => hintCount(game.state.events);
 
@@ -263,6 +271,13 @@ export function hintText(game: Game, hint: Hint): string {
     const npcId = hint.target === null ? undefined : game.pkg.refs.resolve(hint.target)?.id;
     const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === hint.questionId);
     return question === undefined ? `${head} Befrage ${label}.` : `${head} Frag ${label}: „${question.text}“`;
+  }
+  if (hint.kind === "confront") {
+    if (label === null) return `${head} Eine Aussage passt nicht zu dem, was du gefunden hast. Halte sie vor.`;
+    const npcId = hint.target === null ? undefined : game.pkg.refs.resolve(hint.target)?.id;
+    const question = game.pkg.publicContent.questionTexts.find((q) => q.npc === npcId && q.questionId === hint.questionId);
+    if (question === undefined || hint.evidence === null) return `${head} Halte ${label} einen Fund vor, der der Aussage widerspricht.`;
+    return `${head} Halte ${label} zu „${question.text}“ vor: ${labelOf(game, hint.evidence)}.`;
   }
   const vague = { search_location: "Ein Ort, den du kennst, verdient eine gründliche Durchsuchung.", examine_item: "Ein Gegenstand verdient einen genaueren Blick.", examine_person: "Sieh dir eine Person genauer an." };
   const verb = { search_location: "Ort durchsuchen", examine_item: "Gegenstand untersuchen", examine_person: "Person untersuchen" };
