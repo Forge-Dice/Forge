@@ -1,140 +1,217 @@
 {
   "schemaVersion": 1,
-  "releaseContextHash": "207ac0927d0c3369a8c9531bb2cb1892c3f3efa08252d88aa161f730fcc6175b",
+  "releaseContextHash": "51d575de0478f9a7904ef396393018b9ae599a7fc6fce821fdbf523d60dd1edf",
   "adapterVersion": "forge-release-proof-v1",
   "certificateData": {
     "schemaVersion": 1,
     "steps": [
       {
-        "stepId": "search-stube",
+        "stepId": "search-laterne",
         "event": {
           "type": "investigate",
           "action": "search_location",
           "target": {
             "$playerRefOf": {
               "kind": "location",
-              "id": "location:stube"
+              "id": "location:laterne"
             }
           }
         }
       },
       {
-        "stepId": "read-buch",
+        "stepId": "search-strand",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:strand"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-faehrhaus",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:faehrhaus"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-telefon",
         "event": {
           "type": "investigate",
           "action": "examine_item",
           "target": {
             "$playerRefOf": {
               "kind": "item",
-              "id": "item:buch"
+              "id": "item:telefon"
             }
           }
         }
       },
       {
-        "stepId": "ask-lukas-funk",
+        "stepId": "search-hafen",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:hafen"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "read-pegel",
+        "event": {
+          "type": "investigate",
+          "action": "examine_item",
+          "target": {
+            "$playerRefOf": {
+              "kind": "item",
+              "id": "item:pegelkamera"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "search-vogelwarte",
+        "event": {
+          "type": "investigate",
+          "action": "search_location",
+          "target": {
+            "$playerRefOf": {
+              "kind": "location",
+              "id": "location:vogelwarte"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-ole-boot",
         "event": {
           "type": "interrogate",
           "npc": {
             "$playerRefOf": {
               "kind": "person",
-              "id": "person:lukas"
+              "id": "person:ole"
             }
           },
           "questionId": "question:q01"
         }
       },
       {
-        "stepId": "read-funkgeraet",
-        "event": {
-          "type": "investigate",
-          "action": "examine_item",
-          "target": {
-            "$playerRefOf": {
-              "kind": "item",
-              "id": "item:funkgeraet"
-            }
-          }
-        }
-      },
-      {
-        "stepId": "search-terrasse",
-        "event": {
-          "type": "investigate",
-          "action": "search_location",
-          "target": {
-            "$playerRefOf": {
-              "kind": "location",
-              "id": "location:terrasse"
-            }
-          }
-        }
-      },
-      {
-        "stepId": "read-kamera",
-        "event": {
-          "type": "investigate",
-          "action": "examine_item",
-          "target": {
-            "$playerRefOf": {
-              "kind": "item",
-              "id": "item:kamera"
-            }
-          }
-        }
-      },
-      {
-        "stepId": "ask-rosa-buch",
+        "stepId": "ask-hinrich-pegel",
         "event": {
           "type": "interrogate",
           "npc": {
             "$playerRefOf": {
               "kind": "person",
-              "id": "person:rosa"
+              "id": "person:hinrich"
             }
           },
           "questionId": "question:q04"
         }
       },
       {
-        "stepId": "search-funkraum",
-        "event": {
-          "type": "investigate",
-          "action": "search_location",
-          "target": {
-            "$playerRefOf": {
-              "kind": "location",
-              "id": "location:funkraum"
-            }
-          }
-        }
-      },
-      {
-        "stepId": "ask-gerd-terrasse",
+        "stepId": "ask-jasper-strand",
         "event": {
           "type": "interrogate",
           "npc": {
             "$playerRefOf": {
               "kind": "person",
-              "id": "person:gerd"
+              "id": "person:jasper"
+            }
+          },
+          "questionId": "question:q06"
+        }
+      },
+      {
+        "stepId": "confront-jasper",
+        "event": {
+          "type": "confront",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:jasper"
+            }
+          },
+          "questionId": "question:q06",
+          "evidence": {
+            "$playerRefOf": {
+              "kind": "evidence",
+              "id": "evidence:visitenkarte"
+            }
+          }
+        }
+      },
+      {
+        "stepId": "ask-frauke-telefon",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:frauke"
+            }
+          },
+          "questionId": "question:q03"
+        }
+      },
+      {
+        "stepId": "ask-ole-haus",
+        "event": {
+          "type": "interrogate",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ole"
             }
           },
           "questionId": "question:q02"
+        }
+      },
+      {
+        "stepId": "confront-ole",
+        "event": {
+          "type": "confront",
+          "npc": {
+            "$playerRefOf": {
+              "kind": "person",
+              "id": "person:ole"
+            }
+          },
+          "questionId": "question:q02",
+          "evidence": {
+            "$playerRefOf": {
+              "kind": "evidence",
+              "id": "evidence:pegelfoto"
+            }
+          }
         }
       }
     ],
     "observations": [
       {
-        "id": "observed:lukas",
+        "id": "observed:hinrich",
         "kind": "OBSERVED",
         "literal": {
           "kind": "proposition",
-          "propositionId": "proposition:lukas-funk",
+          "propositionId": "proposition:hinrich-grog",
           "value": true
         },
         "source": {
           "kind": "evidence",
-          "evidenceId": "evidence:funkprotokoll"
+          "evidenceId": "evidence:kassenbuch"
         },
         "alternatives": [
           {
@@ -144,16 +221,16 @@
                 "person": {
                   "$playerRefOf": {
                     "kind": "person",
-                    "id": "person:lukas"
+                    "id": "person:hinrich"
                   }
                 },
                 "location": {
                   "$playerRefOf": {
                     "kind": "location",
-                    "id": "location:funkraum"
+                    "id": "location:faehrhaus"
                   }
                 },
-                "at": 7800
+                "at": 6300
               },
               "stance": "affirms",
               "source": {
@@ -165,37 +242,37 @@
         ]
       },
       {
-        "id": "public-rule:lukas",
+        "id": "public-rule:hinrich",
         "kind": "PUBLIC_RULE",
         "rules": [
           {
-            "edgeId": "exclude:lukas",
+            "edgeId": "exclude:hinrich",
             "allOf": [
-              "observation:lukas"
+              "observation:hinrich"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-lukas",
+              "conclusionId": "conclusion:actor-hinrich",
               "value": false
             }
           }
         ],
-        "ruleId": "rule:presence",
+        "ruleId": "rule:deich",
         "afterObservations": [
-          "observed:lukas"
+          "observed:hinrich"
         ]
       },
       {
-        "id": "observed:johanna",
+        "id": "observed:jasper",
         "kind": "OBSERVED",
         "literal": {
           "kind": "proposition",
-          "propositionId": "proposition:johanna-funk",
+          "propositionId": "proposition:jasper-notruf",
           "value": true
         },
         "source": {
           "kind": "evidence",
-          "evidenceId": "evidence:funkprotokoll"
+          "evidenceId": "evidence:anrufliste"
         },
         "alternatives": [
           {
@@ -205,16 +282,16 @@
                 "person": {
                   "$playerRefOf": {
                     "kind": "person",
-                    "id": "person:johanna"
+                    "id": "person:jasper"
                   }
                 },
                 "location": {
                   "$playerRefOf": {
                     "kind": "location",
-                    "id": "location:funkraum"
+                    "id": "location:faehrhaus"
                   }
                 },
-                "at": 7800
+                "at": 7380
               },
               "stance": "affirms",
               "source": {
@@ -226,37 +303,37 @@
         ]
       },
       {
-        "id": "public-rule:johanna",
+        "id": "public-rule:jasper",
         "kind": "PUBLIC_RULE",
         "rules": [
           {
-            "edgeId": "exclude:johanna",
+            "edgeId": "exclude:jasper",
             "allOf": [
-              "observation:johanna"
+              "observation:jasper"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-johanna",
+              "conclusionId": "conclusion:actor-jasper",
               "value": false
             }
           }
         ],
-        "ruleId": "rule:presence",
+        "ruleId": "rule:deich",
         "afterObservations": [
-          "observed:johanna"
+          "observed:jasper"
         ]
       },
       {
-        "id": "observed:gerd",
+        "id": "observed:frauke",
         "kind": "OBSERVED",
         "literal": {
           "kind": "proposition",
-          "propositionId": "proposition:gerd-terrasse",
+          "propositionId": "proposition:frauke-anruf",
           "value": true
         },
         "source": {
           "kind": "evidence",
-          "evidenceId": "evidence:sternserie"
+          "evidenceId": "evidence:anrufliste"
         },
         "alternatives": [
           {
@@ -266,16 +343,16 @@
                 "person": {
                   "$playerRefOf": {
                     "kind": "person",
-                    "id": "person:gerd"
+                    "id": "person:frauke"
                   }
                 },
                 "location": {
                   "$playerRefOf": {
                     "kind": "location",
-                    "id": "location:terrasse"
+                    "id": "location:faehrhaus"
                   }
                 },
-                "at": 7800
+                "at": 7200
               },
               "stance": "affirms",
               "source": {
@@ -287,37 +364,37 @@
         ]
       },
       {
-        "id": "public-rule:gerd",
+        "id": "public-rule:frauke",
         "kind": "PUBLIC_RULE",
         "rules": [
           {
-            "edgeId": "exclude:gerd",
+            "edgeId": "exclude:frauke",
             "allOf": [
-              "observation:gerd"
+              "observation:frauke"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-gerd",
+              "conclusionId": "conclusion:actor-frauke",
               "value": false
             }
           }
         ],
         "ruleId": "rule:presence",
         "afterObservations": [
-          "observed:gerd"
+          "observed:frauke"
         ]
       },
       {
-        "id": "observed:mira",
+        "id": "observed:ole",
         "kind": "OBSERVED",
         "literal": {
           "kind": "proposition",
-          "propositionId": "proposition:mira-terrasse",
+          "propositionId": "proposition:ole-hafen",
           "value": true
         },
         "source": {
           "kind": "evidence",
-          "evidenceId": "evidence:sternserie"
+          "evidenceId": "evidence:pegelfoto"
         },
         "alternatives": [
           {
@@ -327,16 +404,16 @@
                 "person": {
                   "$playerRefOf": {
                     "kind": "person",
-                    "id": "person:mira"
+                    "id": "person:ole"
                   }
                 },
                 "location": {
                   "$playerRefOf": {
                     "kind": "location",
-                    "id": "location:terrasse"
+                    "id": "location:hafen"
                   }
                 },
-                "at": 7800
+                "at": 7200
               },
               "stance": "affirms",
               "source": {
@@ -348,37 +425,37 @@
         ]
       },
       {
-        "id": "public-rule:mira",
+        "id": "public-rule:ole",
         "kind": "PUBLIC_RULE",
         "rules": [
           {
-            "edgeId": "exclude:mira",
+            "edgeId": "exclude:ole",
             "allOf": [
-              "observation:mira"
+              "observation:ole"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-mira",
+              "conclusionId": "conclusion:actor-ole",
               "value": false
             }
           }
         ],
         "ruleId": "rule:presence",
         "afterObservations": [
-          "observed:mira"
+          "observed:ole"
         ]
       },
       {
-        "id": "observed:tobias",
+        "id": "observed:marlene",
         "kind": "OBSERVED",
         "literal": {
           "kind": "proposition",
-          "propositionId": "proposition:tobias-eintrag",
+          "propositionId": "proposition:marlene-warte",
           "value": true
         },
         "source": {
           "kind": "evidence",
-          "evidenceId": "evidence:eintrag"
+          "evidenceId": "evidence:nachtkamera"
         },
         "alternatives": [
           {
@@ -388,13 +465,74 @@
                 "person": {
                   "$playerRefOf": {
                     "kind": "person",
-                    "id": "person:tobias"
+                    "id": "person:marlene"
                   }
                 },
                 "location": {
                   "$playerRefOf": {
                     "kind": "location",
-                    "id": "location:winterraum"
+                    "id": "location:vogelwarte"
+                  }
+                },
+                "at": 7200
+              },
+              "stance": "affirms",
+              "source": {
+                "kind": "observation"
+              }
+            },
+            "licenseRuleId": "rule:certified-sources"
+          }
+        ]
+      },
+      {
+        "id": "public-rule:marlene",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:marlene",
+            "allOf": [
+              "observation:marlene"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-marlene",
+              "value": false
+            }
+          }
+        ],
+        "ruleId": "rule:presence",
+        "afterObservations": [
+          "observed:marlene"
+        ]
+      },
+      {
+        "id": "observed:knut",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:knut-landung",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:schlauchboot"
+        },
+        "alternatives": [
+          {
+            "report": {
+              "claim": {
+                "kind": "personAt",
+                "person": {
+                  "$playerRefOf": {
+                    "kind": "person",
+                    "id": "person:knut"
+                  }
+                },
+                "location": {
+                  "$playerRefOf": {
+                    "kind": "location",
+                    "id": "location:strand"
                   }
                 },
                 "at": 2400
@@ -409,32 +547,34 @@
         ]
       },
       {
-        "id": "public-rule:tobias",
+        "id": "public-rule:knut",
         "kind": "PUBLIC_RULE",
         "rules": [
           {
-            "edgeId": "remaining:tobias",
+            "edgeId": "remaining:knut",
             "allOf": [
-              "literal:lukas",
-              "literal:johanna",
-              "literal:gerd",
-              "literal:mira",
-              "observation:tobias"
+              "literal:hinrich",
+              "literal:jasper",
+              "literal:frauke",
+              "literal:ole",
+              "literal:marlene",
+              "observation:knut"
             ],
             "yields": {
               "kind": "conclusion",
-              "conclusionId": "conclusion:actor-tobias",
+              "conclusionId": "conclusion:actor-knut",
               "value": true
             }
           }
         ],
         "ruleId": "rule:roster",
         "afterObservations": [
-          "observed:lukas",
-          "observed:johanna",
-          "observed:gerd",
-          "observed:mira",
-          "observed:tobias"
+          "observed:hinrich",
+          "observed:jasper",
+          "observed:frauke",
+          "observed:ole",
+          "observed:marlene",
+          "observed:knut"
         ]
       }
     ],
@@ -442,12 +582,30 @@
       {
         "routeId": "befragen",
         "stepIds": [
-          "ask-rosa-buch",
-          "read-buch",
-          "search-funkraum",
-          "read-funkgeraet",
-          "ask-gerd-terrasse",
-          "read-kamera"
+          "ask-ole-boot",
+          "search-strand",
+          "search-faehrhaus",
+          "read-telefon",
+          "ask-hinrich-pegel",
+          "read-pegel",
+          "search-vogelwarte"
+        ]
+      },
+      {
+        "routeId": "vorhalten",
+        "stepIds": [
+          "search-laterne",
+          "search-strand",
+          "ask-jasper-strand",
+          "confront-jasper",
+          "ask-frauke-telefon",
+          "read-telefon",
+          "search-faehrhaus",
+          "search-hafen",
+          "read-pegel",
+          "ask-ole-haus",
+          "confront-ole",
+          "search-vogelwarte"
         ]
       }
     ]

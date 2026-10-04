@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "entries": [
+    {
+      "evidenceId": "evidence:schaltprotokoll",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:laterne"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:pfeife",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:laterne"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:sandspuren",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:laterne"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:schlauchboot",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:strand"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:visitenkarte",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:strand"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:kassenbuch",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:faehrhaus"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:anrufliste",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:telefon"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:pegelmast",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:hafen"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:pegelfoto",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "examine_item",
+            "itemId": "item:pegelkamera"
+          }
+        ]
+      }
+    },
+    {
+      "evidenceId": "evidence:nachtkamera",
+      "access": {
+        "kind": "discoverable",
+        "paths": [
+          {
+            "kind": "search_location",
+            "locationId": "location:vogelwarte"
+          }
+        ]
+      }
+    }
+  ]
+}

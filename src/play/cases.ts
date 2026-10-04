@@ -28,6 +28,7 @@ export const PLAY_CASES = {
   geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3" },
   "hüttenkasse": { dir: "huettenkasse", npcs: ["rosa", "lukas", "mira", "gerd", "tobias"], salt: "4a774a774a774a774a774a774a774a77", clockOrigin: 21 * 3600, rulesetVersion: "mystery-session-v3" },
   nachtzug: { dir: "nachtzug", npcs: ["janek", "felix", "bruno", "dora", "clara"], salt: "7a147a147a147a147a147a147a147a14", clockOrigin: 0, rulesetVersion: "mystery-session-v3" },
+  leuchtfeuer: { dir: "leuchtfeuer", npcs: ["hinrich", "frauke", "ole", "marlene", "jasper", "knut"], salt: "1e0c1e0c1e0c1e0c1e0c1e0c1e0c1e0c", clockOrigin: 0, rulesetVersion: "mystery-session-v3" },
 } as const satisfies Record<string, PlayCase>;
 export type PlayCaseName = keyof typeof PLAY_CASES;
 

@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "title": "Das dunkle Leuchtfeuer",
+  "brief": "Hallig Süderhörn, Herbststurm. Um 02:00 Uhr erlischt das Leuchtfeuer für zwanzig Minuten, und der Frachter „Greta“ läuft im Nebel auf die Sandbank. Die Besatzung wird gerettet, die Ladung ist verloren. Das Schaltprotokoll im Turm lässt keinen Zweifel: Jemand hat die Lampe von Hand abgeschaltet.\n\nAuf der Hallig sind in dieser Nacht, soweit man weiß, nur fünf Menschen: der Wärter Hinrich Paulsen, die Wirtin Frauke Jensen, der Fischer Ole Brodersen, die Vogelkundlerin Marlene Voss und Jasper Kühl, ein Gutachter der Reederei. Hinrich schwört, er habe den Turm um Mitternacht abgeschlossen, und den Schlüssel hat nur er. Finde heraus, wer das Feuer gelöscht hat. Nicht jede Lüge verbirgt die Tat, und nicht jeder Mensch auf der Hallig steht auf dieser Liste.",
+  "challengeQuestion": "Wer hat das Leuchtfeuer um 02:00 im Laternenraum abgeschaltet?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:hinrich"
+      },
+      "label": "Hinrich Paulsen",
+      "role": "Leuchtturmwärter"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:frauke"
+      },
+      "label": "Frauke Jensen",
+      "role": "Wirtin des Fährhauses"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:ole"
+      },
+      "label": "Ole Brodersen",
+      "role": "Krabbenfischer"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:marlene"
+      },
+      "label": "Marlene Voss",
+      "role": "Vogelkundlerin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:jasper"
+      },
+      "label": "Jasper Kühl",
+      "role": "Gutachter der Reederei"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:knut"
+      },
+      "label": "Knut Sievers",
+      "role": "entlassener Steuermann der „Greta“"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:laterne"
+      },
+      "label": "Laternenraum",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:faehrhaus"
+      },
+      "label": "Fährhaus",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:hafen"
+      },
+      "label": "Hafen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:vogelwarte"
+      },
+      "label": "Vogelwarte",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:oleshaus"
+      },
+      "label": "Oles Haus",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:strand"
+      },
+      "label": "Weststrand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:schalter"
+      },
+      "label": "Lampenschalter",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:telefon"
+      },
+      "label": "Telefon des Fährhauses",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:pegelkamera"
+      },
+      "label": "Pegelkamera am Hafen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:pegelwartung"
+      },
+      "label": "Wartung der Pegelkamera",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:landung"
+      },
+      "label": "Landung am Weststrand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:treffen"
+      },
+      "label": "Treffen am Weststrand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:grog"
+      },
+      "label": "Grog im Fährhaus",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:beringung"
+      },
+      "label": "Beringung in der Vogelwarte",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:ablegen"
+      },
+      "label": "Oles Kutter legt ab",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:anruf"
+      },
+      "label": "Anruf beim Arzt",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:notruf"
+      },
+      "label": "Notruf an die Küstenwache",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:sabotage"
+      },
+      "label": "Erlöschen des Leuchtfeuers um 02:00",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:schaltprotokoll"
+      },
+      "label": "Schaltprotokoll",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:pfeife"
+      },
+      "label": "Pfeife",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:sandspuren"
+      },
+      "label": "Sandspuren",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:schlauchboot"
+      },
+      "label": "Schlauchboot",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:visitenkarte"
+      },
+      "label": "Visitenkarte",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kassenbuch"
+      },
+      "label": "Kassenbuch",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:anrufliste"
+      },
+      "label": "Anrufliste",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:pegelmast"
+      },
+      "label": "Pegelmast",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:pegelfoto"
+      },
+      "label": "Pegelfoto",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:nachtkamera"
+      },
+      "label": "Infrarotbild",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:hinrich",
+      "questionId": "question:q04",
+      "text": "Läuft die Kamera am Hafen auch nachts?"
+    },
+    {
+      "npc": "person:hinrich",
+      "questionId": "question:q05",
+      "text": "Waren Sie um 02:00 im Laternenraum?"
+    },
+    {
+      "npc": "person:frauke",
+      "questionId": "question:q03",
+      "text": "Haben Sie um 02:00 telefoniert?"
+    },
+    {
+      "npc": "person:frauke",
+      "questionId": "question:q05",
+      "text": "War Hinrich Paulsen um 02:00 im Laternenraum?"
+    },
+    {
+      "npc": "person:ole",
+      "questionId": "question:q01",
+      "text": "Lag heute Nacht ein fremdes Boot an der Hallig?"
+    },
+    {
+      "npc": "person:ole",
+      "questionId": "question:q02",
+      "text": "Waren Sie um 02:00 zu Hause?"
+    },
+    {
+      "npc": "person:marlene",
+      "questionId": "question:q08",
+      "text": "Waren Sie um 02:00 in der Vogelwarte?"
+    },
+    {
+      "npc": "person:marlene",
+      "questionId": "question:q05",
+      "text": "War Hinrich Paulsen um 02:00 im Laternenraum?"
+    },
+    {
+      "npc": "person:jasper",
+      "questionId": "question:q06",
+      "text": "Waren Sie um 01:00 am Weststrand?"
+    },
+    {
+      "npc": "person:jasper",
+      "questionId": "question:q09",
+      "text": "Haben Sie um 02:03 vom Fährhaus aus die Küstenwache angerufen?"
+    },
+    {
+      "npc": "person:knut",
+      "questionId": "question:q07",
+      "text": "Waren Sie um 02:00 im Laternenraum?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Was ein Protokoll, ein Foto, ein Bootsbuch oder eine Anrufliste mit Uhrzeit festhält, gilt als Tatsache. Aussagen von Personen können irren oder lügen."
+    },
+    {
+      "id": "rule:presence",
+      "text": "Das Leuchtfeuer wurde um 02:00 im Laternenraum von genau einer Person von Hand abgeschaltet. Wer um 02:00 nachweislich an einem anderen Ort war, scheidet aus."
+    },
+    {
+      "id": "rule:deich",
+      "text": "Vom Dorf mit Fährhaus und Hafen zum Leuchtturm sind es über den Deich 25 Minuten zu Fuß, einen anderen Weg gibt es nicht. Wer zwischen 01:35 und 02:25 nachweislich im Fährhaus oder im Hafen war, kann um 02:00 nicht im Laternenraum gewesen sein."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Seit 01:00 steht die Sturmflut über den Prielen, niemand kam auf die Hallig oder herunter. In Frage kommt jede Person, die in dieser Nacht nachweislich auf der Hallig war, auch wer im Dorf niemandem begegnet ist. Sind alle anderen ausgeschlossen, bleibt die letzte Person."
+    }
+  ],
+  "epilogue": "Knut Sievers wartet am Weststrand neben seinem Schlauchboot, als hätte er gewusst, dass jemand kommt. Die Reederei hatte ihn nach zwanzig Jahren auf der „Greta“ entlassen, ohne Abfindung. Um 00:40 landete er auf der Hallig, um 01:00 traf er Jasper Kühl am Strand und erfuhr von ihm, dass die Greta in dieser Nacht vorbeikommt. Jasper ahnte nicht, was Knut vorhatte, und log aus Angst, mit hineingezogen zu werden. Um 02:00 stieg Knut die Wendeltreppe hinauf und legte den Schalter um.\n\nHinrich hatte den Turm nicht abgeschlossen. Er hatte Pfeife und Schlüssel am Abend neben der Lampe liegen lassen und saß um 01:45 beim Grog im Fährhaus. Marlene sah in der Nacht ein Licht die Treppe hinaufsteigen und hielt es ehrlich für Hinrichs Laterne. Und Ole log nur, weil er um zwei ohne Licht zum Schmuggeln auslief. Das Leuchtfeuer brennt wieder."
+}

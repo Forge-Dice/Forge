@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:leuchtfeuer",
+  "truthHash": "1c9bff24c34375d596eed27f594fe625c042cec34f93bfde2be9ade900740fb4",
+  "solutionHash": "1eaa66b623fc61fa801b954e9bda99ceb0bf8e66dcd4c6f6e491a9c69208aed1",
+  "npcId": "person:marlene",
+  "revision": 1,
+  "asOf": 9000,
+  "awareness": [
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:hinrich"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:frauke"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:ole"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:marlene"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:jasper"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:laterne"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:faehrhaus"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:hafen"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:vogelwarte"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:oleshaus"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    }
+  ],
+  "attitudes": [
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:marlene-warte"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 7200,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:beringung"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:hinrich-laterne"
+      },
+      "stance": {
+        "kind": "uncertain",
+        "leaning": true
+      },
+      "acquiredAt": 7200,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    }
+  ]
+}
