@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "caseId": "case:huettenkasse",
   "revision": 1,
-  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+  "truthHash": "7eb089891564275ca1e43ee76a8404bc99768a906729973fd1df2c668701e070",
   "resolutions": [
     {
       "eventId": "event:diebstahl",

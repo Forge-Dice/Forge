@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "caseId": "case:huettenkasse",
-  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
-  "solutionHash": "0eab35f9323533920749057ce9c68b1ac63752d6bdcd3aaa4b55c0925ed4707f",
+  "truthHash": "7eb089891564275ca1e43ee76a8404bc99768a906729973fd1df2c668701e070",
+  "solutionHash": "6e404e5860e94d0494fc326b1519ec7944a4d48ca3bf322c99a0c0b72af2232e",
   "npcId": "person:gerd",
   "revision": 1,
   "asOf": 9000,
