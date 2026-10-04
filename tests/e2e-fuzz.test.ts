@@ -15,8 +15,16 @@ import { rng } from "./case-solvability.fixture.ts";
 const CASES = Object.keys(PLAY_CASES) as PlayCaseName[];
 const INTERNAL_ID = /\b(?:case|person|location|item|event|evidence|proposition|conclusion|question|secret|red-herring|rule):[a-z0-9]/;
 const PLAYER_REF = /pr1_[0-9a-hjkmnp-tv-z]{16}/;
+// Response times. Handler work is a few milliseconds per request (at most ~12 ms measured for
+// the largest case), so a fixed per-request wall-clock limit only measured machine load: with
+// other test files on all cores, single requests stalled past 250 ms in scheduling and GC. The
+// budget for a request is therefore 250 ms scaled by how slow a trivial request (the help page,
+// no game work) is right then, against the same trivial request measured at the start; and the
+// typical request must stay fast in absolute terms, which a slower handler cannot hide behind.
 const SHOWN_LIMIT_MS = 250;
+const MEDIAN_LIMIT_MS = 50;
 
+const median = (xs: readonly number[]) => [...xs].sort((a, b) => a - b)[xs.length >> 1] ?? 0;
 const leaks = (text: string) => [INTERNAL_ID.exec(text)?.[0], PLAYER_REF.exec(text)?.[0]].filter((x) => x !== undefined);
 
 describe.each(CASES)("game layer fuzz: %s", (name) => {
@@ -91,33 +99,46 @@ describe("HTTP fuzz over the web server", () => {
     const rand = rng(name.length * 104729);
     const problems: string[] = [];
     // The save download is the Session C event log (PlayerRefs and question IDs by design), not a page.
-    const check = (label: string, r: { status: number; body: string; ms: number }, page = true) => {
+    const probe = async () => (await timed("/hilfe")).ms;
+    const warmup: number[] = [];
+    for (let i = 0; i < 15; i++) warmup.push(await probe());
+    const baseline = Math.max(1, median(warmup));
+    const durations = new Map<string, number[]>(); // per kind of request: "GET", "POST act", ...
+    const check = async (label: string, r: { status: number; body: string; ms: number }, page = true) => {
       if (r.status >= 500) problems.push(`${label}: status ${r.status}`);
-      if (r.ms > SHOWN_LIMIT_MS) problems.push(`${label}: ${Math.round(r.ms)} ms`);
+      const kind = label.replace(/ \d+$/, "");
+      durations.set(kind, [...(durations.get(kind) ?? []), r.ms]);
+      if (r.ms > SHOWN_LIMIT_MS) {
+        const load = Math.max(1, (await probe()) / baseline);
+        if (r.ms > SHOWN_LIMIT_MS * load) problems.push(`${label}: ${Math.round(r.ms)} ms (budget ${Math.round(SHOWN_LIMIT_MS * load)} ms)`);
+      }
       for (const leak of page ? leaks(r.body) : []) problems.push(`${label}: leak ${leak}`);
       if (r.body.includes("Technischer Fehler")) problems.push(`${label}: host failure shown`);
     };
     await timed(`${slug}/new`, { method: "POST" });
     for (let step = 0; step < 120; step++) {
       const page = await timed(slug);
-      check(`GET ${step}`, page);
+      await check(`GET ${step}`, page);
       const at = /name="at" value="([^"]+)"/.exec(page.body)?.[1] ?? "0";
       const group = ["u", "f", "a", "h", "x", ""][Math.floor(rand() * 6)]!;
       const n = rand() < 0.85 ? String(1 + Math.floor(rand() * 12)) : ["0", "-1", "abc", "99999", "1e3", ""][Math.floor(rand() * 6)]!;
       const stale = rand() < 0.1 ? `${at}x` : at;
-      check(`POST act ${step}`, await timed(`${slug}/act`, form({ group, n, at: stale })));
+      await check(`POST act ${step}`, await timed(`${slug}/act`, form({ group, n, at: stale })));
       if (rand() < 0.15) {
         const saved = await timed(`${slug}/save`);
-        check(`save ${step}`, saved, false);
+        await check(`save ${step}`, saved, false);
         if (saved.status === 200) {
-          check(`load ${step}`, await timed(`${slug}/load`, { method: "POST", body: saved.body }));
+          await check(`load ${step}`, await timed(`${slug}/load`, { method: "POST", body: saved.body }));
           const again = await timed(`${slug}/save`);
           if (again.body !== saved.body) problems.push(`save/load not identical at ${step}`);
         }
       }
-      if (rand() < 0.03) check(`load garbage ${step}`, await timed(`${slug}/load`, { method: "POST", body: "{\"schemaVersion\":1}" }));
+      if (rand() < 0.03) await check(`load garbage ${step}`, await timed(`${slug}/load`, { method: "POST", body: "{\"schemaVersion\":1}" }));
     }
-    check("case list", await timed("/"));
+    await check("case list", await timed("/"));
+    for (const [kind, ms] of durations) {
+      if (ms.length >= 5 && median(ms) > MEDIAN_LIMIT_MS) problems.push(`${kind}: median ${Math.round(median(ms))} ms over ${ms.length} requests`);
+    }
     expect([...new Set(problems)].slice(0, 10)).toEqual([]);
   }, 120_000);
 });
