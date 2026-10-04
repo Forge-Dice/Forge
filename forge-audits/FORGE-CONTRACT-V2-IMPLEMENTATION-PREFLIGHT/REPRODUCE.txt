@@ -1,0 +1,83 @@
+FORGE CONTRACT V2 IMPLEMENTATION PREFLIGHT — REPRODUCTION
+
+This bundle is a read-only preflight deliverable, not a V2 implementation.
+No production changes are included. Schema/marker/hash literals in the lab are
+illustrative test fixtures, not the authoritative Format-2 wire representation.
+Do not copy them into production. The owner's supplied handoff is binding;
+remaining wire and policy decisions are explicitly unresolved in the report.
+
+MAIN EXAMINED
+Forge-Dice/Forge
+3d7545d843883418348004e68717399a64da7a7d
+Date: 2026-10-03, Europe/Vienna.
+Node: v24.19.0. Git version is recorded in preflight-evidence.json.
+
+PURE SCRATCH / REAL-GIT EXPERIMENTS
+Prerequisites: node and git on PATH. No npm dependencies required.
+Extract the evidence bundle into a fresh scratch directory, then run:
+
+  node preflight-lab.mjs scratch/git-objects
+  node start-gate-model.mjs
+
+The first command creates a bare disposable Git repository and writes commit
+objects with hash-object/mktree/commit-tree. It does not create branches, change
+canonical refs or contact the network. Use a fresh directory for reproducibility.
+It writes outputs/preflight-evidence.json and outputs/graph-history.txt.
+The second consumes that evidence and writes outputs/start-gate-model-results.json.
+The scripts currently expect their generated outputs relative to the working
+directory. Do not run them inside the canonical production repository.
+
+Expected assertions:
+  28 Git graphs
+  21 staleness cases (plus historical-touch diagnostics)
+  33 illustrative framing/schema cases
+  26 finding histories, including assigned-reviewer preservation
+  16 gate-composition cases
+  TOTAL 124
+
+Git graph checks use real objects and complete parent lists. Merge objects are
+constructed with commit-tree to make adversarial trees/parents explicit. This
+is not a test of GitHub's merge UI, authentication or branch protection.
+The gate composition model consumes separately validated outcomes. It does
+not claim to validate arbitrary raw observation payloads or patch the kernel.
+
+BASELINE VALIDATION
+The assessment used an isolated clone with core.autocrlf=false and no tracked
+changes. A first inspection clone was also used; neither was published.
+
+Equivalent commands for a separate scratch checkout:
+  git -c core.autocrlf=false clone https://github.com/Forge-Dice/Forge.git baseline
+  git -C baseline checkout --detach 3d7545d843883418348004e68717399a64da7a7d
+  cd baseline
+  npm ci --ignore-scripts
+  node node_modules/typescript/bin/tsc --noEmit
+  node node_modules/vitest/vitest.mjs run --reporter=json --outputFile=../baseline-tests.json
+  git diff --check
+  git status --short
+
+Actual npm invocation used bundled pnpm dlx npm@11.6.2 because npm was absent
+from PATH. Installation: 40 packages; npm audit output: zero vulnerabilities.
+TypeScript: passed.
+Full suite: 1087 tests, 1085 passed, 2 timed out at their unchanged 5000 ms limit.
+Duration approximately 78.62 seconds.
+
+Targeted follow-up, after the graph lab finished:
+  node node_modules/vitest/vitest.mjs run tests/forge-red-team/differential.test.ts -t "seed [12]:" --reporter=json --outputFile=../baseline-timeout-rerun.json
+
+Both selected cases passed at their original limits; 29 unselected cases skipped.
+Duration approximately 7.77 seconds. This does not turn the original full-suite
+invocation into a passing run. No timeout, test or repository file was repaired.
+
+ARTIFACTS
+FORGE-CONTRACT-V2-IMPLEMENTATION-PREFLIGHT.md: full 16-section report.
+preflight-evidence.json: graph SHAs, results, input cases and finding histories.
+graph-history.txt: actual child/parent SHA records for lab commits.
+start-gate-model-results.json: 16 composition assertions.
+baseline-contract-inventory.json: actual production parser results and metadata.
+source-manifest.json: selected examined file line counts and raw SHA-256 digests.
+baseline-tests.json: full baseline Vitest result including both timeouts.
+baseline-timeout-rerun.json: targeted rerun result.
+preflight-lab.mjs: self-contained non-normative scratch experiment.
+start-gate-model.mjs: self-contained gate composition experiment.
+
+No Format-2 contract, approval, registration or production patch is delivered.

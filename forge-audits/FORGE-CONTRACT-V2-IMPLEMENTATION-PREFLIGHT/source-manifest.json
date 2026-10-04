@@ -1,0 +1,42 @@
+[
+  {
+    "path": "src/forge/contract-document.ts",
+    "lines": 145,
+    "sha256": "0e49ccac8309e8e6ee6edf41260eddaa990021ec3efea246b4f53d8eb76e31ab"
+  },
+  {
+    "path": "src/forge/start-gate.ts",
+    "lines": 101,
+    "sha256": "90078e8ac2723d70122bcd47393cac349657f24ab278c1723792d8f0744330de"
+  },
+  {
+    "path": "src/forge/events.ts",
+    "lines": 153,
+    "sha256": "715a92348beb539a192d4c131cba78c9ae29a0ee5bccd604a0d66f6c98125615"
+  },
+  {
+    "path": "src/forge/runs.ts",
+    "lines": 88,
+    "sha256": "f61aa8dbc092fa6a21f0ad3930bf984eda1abd83846bd3419221a796bdc48fdc"
+  },
+  {
+    "path": "src/forge/state.ts",
+    "lines": 452,
+    "sha256": "87c2f76fb18f3bf769a667638e3a50e355866d116c883f2d397d87f47e31ffed"
+  },
+  {
+    "path": "src/forge/kernel.ts",
+    "lines": 30,
+    "sha256": "6900b9ac778e88860c77dee2e53441e85ec59324be10ec676cfe062413e5640a"
+  },
+  {
+    "path": "tests/forge/dogfood.test.ts",
+    "lines": 171,
+    "sha256": "2da4fb31d738b0d75856b3e1ceb51c51a2ae045ed69a31979da5008e051908f3"
+  },
+  {
+    "path": "forge/contracts/TASK-0004.md",
+    "lines": 604,
+    "sha256": "c80677d8db3a6dd21872ab3f6203b4c695c98855b558f0e53d80103d45c8e9bd"
+  }
+]

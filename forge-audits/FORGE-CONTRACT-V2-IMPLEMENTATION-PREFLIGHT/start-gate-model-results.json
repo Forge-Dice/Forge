@@ -1,0 +1,174 @@
+[
+  {
+    "id": "T1",
+    "name": "Format1 keeps C",
+    "expected": true,
+    "actual": {
+      "allowed": true,
+      "startFromCommit": "85f2078c23274927aa4bef262f027e52f5d2ff76"
+    }
+  },
+  {
+    "id": "T2",
+    "name": "Format2 starts R",
+    "expected": true,
+    "actual": {
+      "allowed": true,
+      "startFromCommit": "a0177b46ff680327f569c1036b8e6a126f1abcd5"
+    }
+  },
+  {
+    "id": "T3",
+    "name": "wrong approval hash",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "CONTRACT_NOT_APPROVED"
+      ]
+    }
+  },
+  {
+    "id": "T4",
+    "name": "superseded contract",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "CONTRACT_NOT_CURRENT"
+      ]
+    }
+  },
+  {
+    "id": "T5",
+    "name": "active run",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "RUN_ALREADY_ACTIVE"
+      ]
+    }
+  },
+  {
+    "id": "T6",
+    "name": "blocking contract finding persists",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "OPEN_BLOCKING_FINDING"
+      ]
+    }
+  },
+  {
+    "id": "T7",
+    "name": "dependency not accepted",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "DEPENDENCY_INVALID"
+      ]
+    }
+  },
+  {
+    "id": "T8",
+    "name": "dependency absent S",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "DEPENDENCY_INVALID"
+      ]
+    }
+  },
+  {
+    "id": "T9",
+    "name": "contract hash mismatch",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "CONTRACT_HASH_MISMATCH"
+      ]
+    }
+  },
+  {
+    "id": "T10",
+    "name": "M not containing C",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "C_NOT_IN_M",
+        "M_PARENTS"
+      ]
+    }
+  },
+  {
+    "id": "T11",
+    "name": "stale read",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "SPEC_STALE:src/a.ts"
+      ]
+    }
+  },
+  {
+    "id": "T12",
+    "name": "stale modify",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "SPEC_STALE:src/b.ts"
+      ]
+    }
+  },
+  {
+    "id": "T13",
+    "name": "create collision",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "CREATE_TARGET_EXISTS:src/new.ts"
+      ]
+    }
+  },
+  {
+    "id": "T14",
+    "name": "changed then reverted inputs",
+    "expected": true,
+    "actual": {
+      "allowed": true,
+      "startFromCommit": "a0177b46ff680327f569c1036b8e6a126f1abcd5"
+    }
+  },
+  {
+    "id": "T15",
+    "name": "run before registration",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "CONTRACT_CHANGED",
+        "M_NOT_FIRST_PARENT_R"
+      ]
+    }
+  },
+  {
+    "id": "T16",
+    "name": "R reachable only through side branch",
+    "expected": false,
+    "actual": {
+      "allowed": false,
+      "reasons": [
+        "R_NOT_MAIN"
+      ]
+    }
+  }
+]

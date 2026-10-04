@@ -1,0 +1,2464 @@
+{
+  "profile": "Non-normative scratch policies; wire/framing are illustrative only. Finding assignment strengthened after confirmed owner handoff.",
+  "gitVersion": "git version 2.53.0.windows.3",
+  "graph": [
+    {
+      "id": "G01",
+      "name": "normal merge, later R",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "reasons": [],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+        "h": "314dc8505cec5e4561fc1cdd930b51e7dabd5279"
+      }
+    },
+    {
+      "id": "G02",
+      "name": "no main advancement",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "reasons": [],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "23bc7f4e2e9f7dc42d63dae0d2b010c5ee0d1c08",
+        "r": "23bc7f4e2e9f7dc42d63dae0d2b010c5ee0d1c08",
+        "h": "23bc7f4e2e9f7dc42d63dae0d2b010c5ee0d1c08"
+      }
+    },
+    {
+      "id": "G03",
+      "name": "R equals M",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "reasons": [],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "h": "a469d5bd85c0056331c9d2f67bb36aa97684153e"
+      }
+    },
+    {
+      "id": "G04",
+      "name": "R older than H but first-parent main",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "reasons": [],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+        "h": "314dc8505cec5e4561fc1cdd930b51e7dabd5279"
+      }
+    },
+    {
+      "id": "G05",
+      "name": "stale main graph valid; staleness separately rejects",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "reasons": [],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "f54c348c1e06b445877063e9c2e451e1a879a777",
+        "r": "f54c348c1e06b445877063e9c2e451e1a879a777",
+        "h": "f54c348c1e06b445877063e9c2e451e1a879a777"
+      }
+    },
+    {
+      "id": "G06",
+      "name": "contract commit with extra code",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_EXTRA_DELTA",
+        "M_EXTRA_DELTA"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "1acbdf72f60c3e0c553c09812c8ebcdc6bc07575",
+        "m": "477c4191da2000ebcb38c3613e3a1c6be67f2125",
+        "r": "477c4191da2000ebcb38c3613e3a1c6be67f2125",
+        "h": "477c4191da2000ebcb38c3613e3a1c6be67f2125"
+      }
+    },
+    {
+      "id": "G07",
+      "name": "extra code in earlier contract branch commit",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_EXTRA_DELTA",
+        "C_PARENT_NOT_S",
+        "M_EXTRA_DELTA"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "32310b2976ad25156d367daa91ebc36dc511dc6c",
+        "m": "ad7be956ec54cebcd784f792b77e3297c28aa4b5",
+        "r": "ad7be956ec54cebcd784f792b77e3297c28aa4b5",
+        "h": "ad7be956ec54cebcd784f792b77e3297c28aa4b5"
+      }
+    },
+    {
+      "id": "G08",
+      "name": "extra code changed then reverted on contract branch",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_PARENT_NOT_S"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "f50629f7ba0817be00ca07a61879be31344f02ae",
+        "m": "2000240266295c1bfdba89ca53376425a0318d95",
+        "r": "2000240266295c1bfdba89ca53376425a0318d95",
+        "h": "2000240266295c1bfdba89ca53376425a0318d95"
+      }
+    },
+    {
+      "id": "G09",
+      "name": "C is a merge commit",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_PARENT_NOT_S"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "1ab2b3d50d9405ea1066be9be04c8beec6d3bc45",
+        "m": "a66e2f66a09f154c1d39fa512db1d773522b6054",
+        "r": "a66e2f66a09f154c1d39fa512db1d773522b6054",
+        "h": "a66e2f66a09f154c1d39fa512db1d773522b6054"
+      }
+    },
+    {
+      "id": "G10",
+      "name": "C foreign second parent injects history",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_PARENT_NOT_S"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "5e985b518f8a268d8b6f7b889c198f8b2b3d4136",
+        "m": "e7fe1e451b8f3ce70548339df76a852056c1e731",
+        "r": "e7fe1e451b8f3ce70548339df76a852056c1e731",
+        "h": "e7fe1e451b8f3ce70548339df76a852056c1e731"
+      }
+    },
+    {
+      "id": "G11",
+      "name": "M foreign third parent",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "M_PARENTS"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "2cc8552040efba832713455e2a56f529f3ba0fa3",
+        "r": "2cc8552040efba832713455e2a56f529f3ba0fa3",
+        "h": "2cc8552040efba832713455e2a56f529f3ba0fa3"
+      }
+    },
+    {
+      "id": "G12",
+      "name": "M parent order reversed",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "M_EXTRA_DELTA",
+        "M_PARENTS"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "c4a5ece62f0459ba2133431ee14fb15bb852c677",
+        "r": "c4a5ece62f0459ba2133431ee14fb15bb852c677",
+        "h": "c4a5ece62f0459ba2133431ee14fb15bb852c677"
+      }
+    },
+    {
+      "id": "G13",
+      "name": "contract blob changed C to M",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "CONTRACT_CHANGED"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "aa858805d9424641df736ffd761495e98f68f64b",
+        "r": "aa858805d9424641df736ffd761495e98f68f64b",
+        "h": "aa858805d9424641df736ffd761495e98f68f64b"
+      }
+    },
+    {
+      "id": "G14",
+      "name": "M not containing C",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_NOT_IN_M",
+        "M_PARENTS"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "39bb550ec7da2ea50022acc7031dbdaf45e9b109",
+        "r": "39bb550ec7da2ea50022acc7031dbdaf45e9b109",
+        "h": "39bb550ec7da2ea50022acc7031dbdaf45e9b109"
+      }
+    },
+    {
+      "id": "G15",
+      "name": "unrelated C grafted at M",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_PARENT_NOT_S"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "42fb2ccac3c07c4792c5cac7910f1e6c92a1904e",
+        "m": "c4c4c4af10756d66d1de46bc40840cbe844d2984",
+        "r": "c4c4c4af10756d66d1de46bc40840cbe844d2984",
+        "h": "c4c4c4af10756d66d1de46bc40840cbe844d2984"
+      }
+    },
+    {
+      "id": "G16",
+      "name": "foreign M first parent",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "M_EXTRA_DELTA",
+        "S_NOT_MAIN_BASE"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "ad7871ba4f62ef81f9d260babdbbee223e73fa87",
+        "r": "ad7871ba4f62ef81f9d260babdbbee223e73fa87",
+        "h": "ad7871ba4f62ef81f9d260babdbbee223e73fa87"
+      }
+    },
+    {
+      "id": "G17",
+      "name": "runBase before registration",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "CONTRACT_CHANGED",
+        "M_NOT_FIRST_PARENT_R"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "6622c325fcd3aa9b487e5ec058c1abfb16895e9f",
+        "h": "314dc8505cec5e4561fc1cdd930b51e7dabd5279"
+      }
+    },
+    {
+      "id": "G18",
+      "name": "R on unmerged side branch",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "R_NOT_MAIN"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "f174e666e380d78618ccc375da94ad956e3681bc",
+        "h": "314dc8505cec5e4561fc1cdd930b51e7dabd5279"
+      }
+    },
+    {
+      "id": "G19",
+      "name": "R reachable only as main second parent",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "R_NOT_MAIN"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "f174e666e380d78618ccc375da94ad956e3681bc",
+        "h": "945c1b072a90138e00d817322bd4ae88646c874b"
+      }
+    },
+    {
+      "id": "G20",
+      "name": "contract changed after registration",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "CONTRACT_CHANGED"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "fa381d019631c2240474ff53cec1a2eae2078db2",
+        "h": "fa381d019631c2240474ff53cec1a2eae2078db2"
+      }
+    },
+    {
+      "id": "G21",
+      "name": "merge conflict resolution injects code",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "M_EXTRA_DELTA"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "791ca25610bfe29d33bd44f63430b38f3356f6f3",
+        "r": "791ca25610bfe29d33bd44f63430b38f3356f6f3",
+        "h": "791ca25610bfe29d33bd44f63430b38f3356f6f3"
+      }
+    },
+    {
+      "id": "G22",
+      "name": "fast-forward registration deferred",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "M_PARENTS"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "r": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "h": "85f2078c23274927aa4bef262f027e52f5d2ff76"
+      }
+    },
+    {
+      "id": "G23",
+      "name": "squash registration deferred",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_NOT_IN_M",
+        "M_PARENTS"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "39bb550ec7da2ea50022acc7031dbdaf45e9b109",
+        "r": "39bb550ec7da2ea50022acc7031dbdaf45e9b109",
+        "h": "39bb550ec7da2ea50022acc7031dbdaf45e9b109"
+      }
+    },
+    {
+      "id": "G24",
+      "name": "wrong specifiedAgainst",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "C_EXTRA_DELTA",
+        "C_PARENT_NOT_S"
+      ],
+      "commits": {
+        "s": "6622c325fcd3aa9b487e5ec058c1abfb16895e9f",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+        "h": "314dc8505cec5e4561fc1cdd930b51e7dabd5279"
+      }
+    },
+    {
+      "id": "G25",
+      "name": "wrong C selected as parent base",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "CONTRACT_CHANGED",
+        "CONTRACT_MISSING_OR_MODE",
+        "C_EXTRA_DELTA",
+        "C_PARENT_NOT_S",
+        "M_PARENTS"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+        "h": "314dc8505cec5e4561fc1cdd930b51e7dabd5279"
+      }
+    },
+    {
+      "id": "G26",
+      "name": "wrong M selected later commit",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "M_EXTRA_DELTA",
+        "M_PARENTS"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+        "r": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+        "h": "314dc8505cec5e4561fc1cdd930b51e7dabd5279"
+      }
+    },
+    {
+      "id": "G27",
+      "name": "R itself normal main merge",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "reasons": [],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "eb2c577ff27d8aef895f65c31b72c5a94ed4505f",
+        "h": "eb2c577ff27d8aef895f65c31b72c5a94ed4505f"
+      }
+    },
+    {
+      "id": "G28",
+      "name": "wrong main snapshot excludes M",
+      "expected": "REJECT",
+      "actual": "REJECT",
+      "reasons": [
+        "R_NOT_MAIN"
+      ],
+      "commits": {
+        "s": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+        "c": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+        "m": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+        "r": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+        "h": "6622c325fcd3aa9b487e5ec058c1abfb16895e9f"
+      }
+    }
+  ],
+  "staleness": [
+    {
+      "id": "S01",
+      "name": "unchanged",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [],
+      "historicalTouched": []
+    },
+    {
+      "id": "S02",
+      "name": "changed then reverted",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "f088ff3230ec5b56cd9b038f138a29ee8a9b22e1",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [],
+      "historicalTouched": [
+        "src/a.ts"
+      ]
+    },
+    {
+      "id": "S03",
+      "name": "read changed",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "21e7fad498a01a72f09a11655395a97794ad0618",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:src/a.ts"
+      ],
+      "historicalTouched": [
+        "src/a.ts"
+      ]
+    },
+    {
+      "id": "S04",
+      "name": "scope modify changed",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "a13be608099b07049123f537a7877dfd9a944e8b",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:src/b.ts"
+      ],
+      "historicalTouched": [
+        "src/b.ts"
+      ]
+    },
+    {
+      "id": "S05",
+      "name": "read deleted",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "4b8543b8726352f1480c15954b57affd34341b0a",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:src/a.ts"
+      ],
+      "historicalTouched": [
+        "src/a.ts"
+      ]
+    },
+    {
+      "id": "S06",
+      "name": "read renamed",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "ba5ed6259f89c4f6ae9eda919ed0ffc2269af99b",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:src/a.ts"
+      ],
+      "historicalTouched": [
+        "src/a.ts"
+      ]
+    },
+    {
+      "id": "S07",
+      "name": "new file under read directory",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "97ed0c829eaed3a610cdba9aa36b31c0cd43b7ff",
+      "reads": [
+        "src/"
+      ],
+      "modify": [],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:src/"
+      ],
+      "historicalTouched": [
+        "src/other.ts"
+      ]
+    },
+    {
+      "id": "S08",
+      "name": "new sibling under exact file selector",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "78bbdffc40d1165dde941578d3318cdd49eddeb0",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [],
+      "historicalTouched": []
+    },
+    {
+      "id": "S09",
+      "name": "create target appeared",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "8ef3536db3dda30b047f2776f640b4f698a04123",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "CREATE_TARGET_EXISTS:src/new.ts"
+      ],
+      "historicalTouched": []
+    },
+    {
+      "id": "S10",
+      "name": "unrelated file change",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "a4de564fc1b3ba0b8062e5d959e6541c82f6e99b",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [],
+      "historicalTouched": []
+    },
+    {
+      "id": "S11",
+      "name": "watched lockfile changes",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "c669a6ee118e6b12d65a95263fb797ce3cd3ea6f",
+      "reads": [
+        "package-lock.json"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:package-lock.json"
+      ],
+      "historicalTouched": [
+        "package-lock.json"
+      ]
+    },
+    {
+      "id": "S12",
+      "name": "unwatched lockfile demonstrates incomplete declaration",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "5ece9ef7274ae008836e6387c07eff090ca526b5",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [],
+      "historicalTouched": []
+    },
+    {
+      "id": "S13",
+      "name": "main merge changes watched file",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "f54c348c1e06b445877063e9c2e451e1a879a777",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:src/a.ts"
+      ],
+      "historicalTouched": [
+        "src/a.ts"
+      ]
+    },
+    {
+      "id": "S14",
+      "name": "main merge unrelated",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "eb2c577ff27d8aef895f65c31b72c5a94ed4505f",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [],
+      "historicalTouched": []
+    },
+    {
+      "id": "S15",
+      "name": "mode only change",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "c3ee355cce865ab62614892cb65626b4a2929592",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:src/a.ts"
+      ],
+      "historicalTouched": [
+        "src/a.ts"
+      ]
+    },
+    {
+      "id": "S16",
+      "name": "file becomes symlink",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "ae458be039957491a47182f1689a6d795fd4775b",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_STALE:src/a.ts"
+      ],
+      "historicalTouched": [
+        "src/a.ts"
+      ]
+    },
+    {
+      "id": "S17",
+      "name": "read missing at S",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "b8e9d6fad00dbcb1a7662cb9d9d4093a6f8d3652",
+      "reads": [
+        "absent.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "SPEC_INPUT_INVALID:absent.ts"
+      ],
+      "historicalTouched": []
+    },
+    {
+      "id": "S18",
+      "name": "create was already at S",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "f231df9cac165508d0dad1347b99b69cd779e9e5",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/a.ts"
+      ],
+      "result": [
+        "CREATE_PRESENT_AT_S:src/a.ts",
+        "CREATE_TARGET_EXISTS:src/a.ts"
+      ],
+      "historicalTouched": []
+    },
+    {
+      "id": "S19",
+      "name": "create directory conflict",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "b21fb269d381cf73d219b329b58bee6136cbe841",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [
+        "CREATE_TARGET_EXISTS:src/new.ts"
+      ],
+      "historicalTouched": []
+    },
+    {
+      "id": "S20",
+      "name": "create ancestor is a file",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "fb8171dc86ecd72a542ec304d8bc1564cf8a0eed",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/a.ts/x"
+      ],
+      "result": [
+        "CREATE_PARENT_BLOCKED:src/a.ts"
+      ],
+      "historicalTouched": []
+    },
+    {
+      "id": "S21",
+      "name": "merge discards side change",
+      "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+      "R": "3c8979cfd4d3f795d0b6d97900fc4f28c87010df",
+      "reads": [
+        "src/a.ts"
+      ],
+      "modify": [
+        "src/b.ts"
+      ],
+      "creates": [
+        "src/new.ts"
+      ],
+      "result": [],
+      "historicalTouched": [
+        "src/a.ts"
+      ]
+    }
+  ],
+  "framing": [
+    {
+      "id": "F01",
+      "name": "canonical LF unicode",
+      "expected": "OK",
+      "actual": "OK",
+      "hash": "fc194ae6615208c11d49a677b1d5bd335fc0d618f1200e1023130de86ba0f38e"
+    },
+    {
+      "id": "F02",
+      "name": "truncated before marker",
+      "expected": "END",
+      "actual": "END"
+    },
+    {
+      "id": "F03",
+      "name": "truncated within marker",
+      "expected": "END",
+      "actual": "END"
+    },
+    {
+      "id": "F04",
+      "name": "missing final LF",
+      "expected": "END",
+      "actual": "END"
+    },
+    {
+      "id": "F05",
+      "name": "duplicate full-line marker",
+      "expected": "END",
+      "actual": "END"
+    },
+    {
+      "id": "F06",
+      "name": "bytes after marker",
+      "expected": "END",
+      "actual": "END"
+    },
+    {
+      "id": "F07",
+      "name": "blank line after marker",
+      "expected": "END",
+      "actual": "END"
+    },
+    {
+      "id": "F08",
+      "name": "CRLF",
+      "expected": "CR",
+      "actual": "CR"
+    },
+    {
+      "id": "F09",
+      "name": "BOM",
+      "expected": "BOM",
+      "actual": "BOM"
+    },
+    {
+      "id": "F10",
+      "name": "malformed JSON",
+      "expected": "JSON",
+      "actual": "JSON"
+    },
+    {
+      "id": "F11",
+      "name": "inline marker text in markdown",
+      "expected": "OK",
+      "actual": "OK",
+      "hash": "a2b9d811911cf827ce08567543418973a3e1b45bc6ffff785039917b0ab592e7"
+    },
+    {
+      "id": "F12",
+      "name": "exact marker line inside markdown fence",
+      "expected": "END",
+      "actual": "END"
+    },
+    {
+      "id": "F13",
+      "name": "invalid UTF8",
+      "expected": "UTF8",
+      "actual": "UTF8"
+    },
+    {
+      "id": "F14",
+      "name": "NUL in body",
+      "expected": "NUL",
+      "actual": "NUL"
+    },
+    {
+      "id": "F15",
+      "name": "status field smuggling",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F16",
+      "name": "unknown metadata",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F17",
+      "name": "runBase in metadata",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F18",
+      "name": "C in metadata",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F19",
+      "name": "duplicate JSON key",
+      "expected": "CANONICAL",
+      "actual": "CANONICAL"
+    },
+    {
+      "id": "F20",
+      "name": "noncanonical spacing",
+      "expected": "CANONICAL",
+      "actual": "CANONICAL"
+    },
+    {
+      "id": "F21",
+      "name": "Format1 passed to V2",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F22",
+      "name": "unknown Format",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F23",
+      "name": "empty requiredChecks",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F24",
+      "name": "read traversal",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F25",
+      "name": "overlapping scope",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F26",
+      "name": "unresolved dependency",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F27",
+      "name": "first revision with supersedes",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F28",
+      "name": "revision2 correct shape",
+      "expected": "OK",
+      "actual": "OK",
+      "hash": "8787519e6bd0e06de44f12a5766f454d6f6e7cb72313003e307a0baf8eba8137"
+    },
+    {
+      "id": "F29",
+      "name": "revision2 skips predecessor",
+      "expected": "SCHEMA",
+      "actual": "SCHEMA"
+    },
+    {
+      "id": "F30",
+      "name": "NFC body",
+      "expected": "OK",
+      "actual": "OK",
+      "hash": "bc6eb70b39473300eca042098d10801fc50f24c06c174fb688c355f280e90a4b"
+    },
+    {
+      "id": "F31",
+      "name": "NFD body",
+      "expected": "OK",
+      "actual": "OK",
+      "hash": "a26ac5d12fb2d5be2f60f949584cda86b84a09692cfa1a80ae0e0af35d8cf3f0"
+    },
+    {
+      "id": "F32",
+      "name": "shortened body with intact marker",
+      "expected": "OK",
+      "actual": "OK",
+      "hash": "7ee1473f667571d46ccbb586ae55053fe6e7724b54bf9e3669a81af97a7aaabe"
+    },
+    {
+      "id": "F33",
+      "name": "different canonical key order",
+      "expected": "OK",
+      "actual": "OK",
+      "hash": "156bbda4eb498357fdd46467491279467ce3b13d71dd79649c650846837ee43c"
+    }
+  ],
+  "findings": [
+    {
+      "id": "K01",
+      "name": "finding created revision N",
+      "expected": "OK",
+      "actual": "OK",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K02",
+      "name": "version bump omits blocker",
+      "expected": "OPEN_BLOCKING_FINDING",
+      "actual": "OPEN_BLOCKING_FINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K03",
+      "name": "same finding explicitly resolved",
+      "expected": "OK",
+      "actual": "OK",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K04",
+      "name": "same finding ignored",
+      "expected": "OPEN_BLOCKING_FINDING",
+      "actual": "OPEN_BLOCKING_FINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K05",
+      "name": "renamed summary same id",
+      "expected": "OPEN_BLOCKING_FINDING",
+      "actual": "OPEN_BLOCKING_FINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "renamed",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K06",
+      "name": "renamed id leaves original open",
+      "expected": "OPEN_BLOCKING_FINDING",
+      "actual": "OPEN_BLOCKING_FINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [
+            {
+              "id": "F-002",
+              "severity": "non_blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K07",
+      "name": "reviewer changed no resolution",
+      "expected": "OPEN_BLOCKING_FINDING",
+      "actual": "OPEN_BLOCKING_FINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-C"
+        }
+      ]
+    },
+    {
+      "id": "K08",
+      "name": "replacement reviewer cannot silently erase assignment",
+      "expected": "ASSIGNED_REVIEWER_REQUIRED",
+      "actual": "ASSIGNED_REVIEWER_REQUIRED",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-C"
+        }
+      ]
+    },
+    {
+      "id": "K09",
+      "name": "anchor moved",
+      "expected": "OPEN_BLOCKING_FINDING",
+      "actual": "OPEN_BLOCKING_FINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C9"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K10",
+      "name": "new blocker added old resolved",
+      "expected": "OPEN_BLOCKING_FINDING",
+      "actual": "OPEN_BLOCKING_FINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [
+            {
+              "id": "F-002",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K11",
+      "name": "new nonblocking added old resolved",
+      "expected": "OK",
+      "actual": "OK",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [
+            {
+              "id": "F-002",
+              "severity": "non_blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K12",
+      "name": "old approval reused",
+      "expected": "WRONG_REVIEW_HASH",
+      "actual": "WRONG_REVIEW_HASH",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K13",
+      "name": "unknown resolution",
+      "expected": "RESOLUTION_UNKNOWN",
+      "actual": "RESOLUTION_UNKNOWN",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-404",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K14",
+      "name": "resolution wrong origin hash",
+      "expected": "RESOLUTION_BINDING",
+      "actual": "RESOLUTION_BINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K15",
+      "name": "empty resolution rationale",
+      "expected": "RESOLUTION_BINDING",
+      "actual": "RESOLUTION_BINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": ""
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K16",
+      "name": "spec author resolves",
+      "expected": "NOT_INDEPENDENT",
+      "actual": "NOT_INDEPENDENT",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "spec-author"
+        }
+      ]
+    },
+    {
+      "id": "K17",
+      "name": "blocking downgraded",
+      "expected": "BLOCKING_DOWNGRADE",
+      "actual": "BLOCKING_DOWNGRADE",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "non_blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K18",
+      "name": "duplicate task revision",
+      "expected": "REVISION_NOT_NEXT",
+      "actual": "REVISION_NOT_NEXT",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        }
+      ]
+    },
+    {
+      "id": "K19",
+      "name": "rollback revision",
+      "expected": "REVISION_NOT_NEXT",
+      "actual": "REVISION_NOT_NEXT",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "prev": null,
+          "author": "spec-author"
+        }
+      ]
+    },
+    {
+      "id": "K20",
+      "name": "supersedes skips predecessor",
+      "expected": "SUPERSEDES_MISMATCH",
+      "actual": "SUPERSEDES_MISMATCH",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "revision",
+          "n": 3,
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        }
+      ]
+    },
+    {
+      "id": "K21",
+      "name": "self-cycle supersedes",
+      "expected": "SUPERSEDES_MISMATCH",
+      "actual": "SUPERSEDES_MISMATCH",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "author": "spec-author"
+        }
+      ]
+    },
+    {
+      "id": "K22",
+      "name": "blocker persists through two bumps",
+      "expected": "OPEN_BLOCKING_FINDING",
+      "actual": "OPEN_BLOCKING_FINDING",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "revision",
+          "n": 3,
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "prev": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "findings": [],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K23",
+      "name": "resolved at r2 stays resolved at r3",
+      "expected": "OK",
+      "actual": "OK",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 3,
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "prev": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "findings": [],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K24",
+      "name": "resolution duplicate ids",
+      "expected": "DUPLICATE_ID",
+      "actual": "DUPLICATE_ID",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            },
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K25",
+      "name": "review twice same hash",
+      "expected": "ALREADY_REVIEWED",
+      "actual": "ALREADY_REVIEWED",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    },
+    {
+      "id": "K26",
+      "name": "resolved id reused",
+      "expected": "ID_REUSE",
+      "actual": "ID_REUSE",
+      "events": [
+        {
+          "type": "revision",
+          "n": 1,
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "prev": null,
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "changes_requested",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 2,
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "prev": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "findings": [],
+          "resolutions": [
+            {
+              "id": "F-001",
+              "origin": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "rationale": "C4 now specifies exact bound; verified at current hash"
+            }
+          ],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        },
+        {
+          "type": "revision",
+          "n": 3,
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "prev": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "author": "spec-author"
+        },
+        {
+          "type": "review",
+          "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "findings": [
+            {
+              "id": "F-001",
+              "severity": "blocking",
+              "summary": "boundary wrong",
+              "anchor": "C4"
+            }
+          ],
+          "resolutions": [],
+          "verdict": "approved",
+          "reviewer": "independent-B"
+        }
+      ]
+    }
+  ],
+  "commitObjects": {
+    "S": "a304cf6ed760313baa6de85e0a155d60fec10a47",
+    "C": "85f2078c23274927aa4bef262f027e52f5d2ff76",
+    "P unrelated main advance": "6622c325fcd3aa9b487e5ec058c1abfb16895e9f",
+    "M normal registration merge": "a469d5bd85c0056331c9d2f67bb36aa97684153e",
+    "R later main": "a0177b46ff680327f569c1036b8e6a126f1abcd5",
+    "H current main observation": "314dc8505cec5e4561fc1cdd930b51e7dabd5279",
+    "M directly from S": "23bc7f4e2e9f7dc42d63dae0d2b010c5ee0d1c08",
+    "P changes read": "4761c9d38eba00515f5b31aff3999ac255e04d14",
+    "M stale read main": "f54c348c1e06b445877063e9c2e451e1a879a777",
+    "C with extra code": "1acbdf72f60c3e0c553c09812c8ebcdc6bc07575",
+    "M carries extra code": "477c4191da2000ebcb38c3613e3a1c6be67f2125",
+    "extra code before C": "d71cd2838edee46f49de8645a3ede73b200bed74",
+    "C after extra code": "32310b2976ad25156d367daa91ebc36dc511dc6c",
+    "M with code branch": "ad7be956ec54cebcd784f792b77e3297c28aa4b5",
+    "C removes preceding code": "f50629f7ba0817be00ca07a61879be31344f02ae",
+    "M net clean but branch dirty": "2000240266295c1bfdba89ca53376425a0318d95",
+    "unrelated root": "c175c0b464d385eb4c8f7b73877ca7db58697891",
+    "C merge same tree": "1ab2b3d50d9405ea1066be9be04c8beec6d3bc45",
+    "M with merge C": "a66e2f66a09f154c1d39fa512db1d773522b6054",
+    "C foreign second parent": "5e985b518f8a268d8b6f7b889c198f8b2b3d4136",
+    "M with foreign C parent": "e7fe1e451b8f3ce70548339df76a852056c1e731",
+    "M octopus injection": "2cc8552040efba832713455e2a56f529f3ba0fa3",
+    "M reversed parents": "c4a5ece62f0459ba2133431ee14fb15bb852c677",
+    "M changed contract blob": "aa858805d9424641df736ffd761495e98f68f64b",
+    "M lacks C but copies blob": "39bb550ec7da2ea50022acc7031dbdaf45e9b109",
+    "unrelated C": "42fb2ccac3c07c4792c5cac7910f1e6c92a1904e",
+    "M unrelated C": "c4c4c4af10756d66d1de46bc40840cbe844d2984",
+    "M fake main first parent": "ad7871ba4f62ef81f9d260babdbbee223e73fa87",
+    "side run": "f174e666e380d78618ccc375da94ad956e3681bc",
+    "main merges side R": "945c1b072a90138e00d817322bd4ae88646c874b",
+    "R changed contract": "fa381d019631c2240474ff53cec1a2eae2078db2",
+    "M adds code absent C": "791ca25610bfe29d33bd44f63430b38f3356f6f3",
+    "unrelated code merge side": "85d9eb017d119ad898dff5ca086b6101fbb934fa",
+    "later main merge": "eb2c577ff27d8aef895f65c31b72c5a94ed4505f",
+    "watched changed": "07dec38b264140830f26987bf1a9464a074eeb9a",
+    "watched reverted": "f088ff3230ec5b56cd9b038f138a29ee8a9b22e1",
+    "stale read changed": "21e7fad498a01a72f09a11655395a97794ad0618",
+    "stale scope modify changed": "a13be608099b07049123f537a7877dfd9a944e8b",
+    "stale read deleted": "4b8543b8726352f1480c15954b57affd34341b0a",
+    "stale read renamed": "ba5ed6259f89c4f6ae9eda919ed0ffc2269af99b",
+    "stale new file under read directory": "97ed0c829eaed3a610cdba9aa36b31c0cd43b7ff",
+    "stale new sibling under exact file selector": "78bbdffc40d1165dde941578d3318cdd49eddeb0",
+    "stale create target appeared": "8ef3536db3dda30b047f2776f640b4f698a04123",
+    "stale unrelated file change": "a4de564fc1b3ba0b8062e5d959e6541c82f6e99b",
+    "stale watched lockfile changes": "c669a6ee118e6b12d65a95263fb797ce3cd3ea6f",
+    "stale unwatched lockfile demonstrates incomplete declaration": "5ece9ef7274ae008836e6387c07eff090ca526b5",
+    "stale mode only change": "c3ee355cce865ab62614892cb65626b4a2929592",
+    "stale file becomes symlink": "ae458be039957491a47182f1689a6d795fd4775b",
+    "stale read missing at S": "b8e9d6fad00dbcb1a7662cb9d9d4093a6f8d3652",
+    "stale create was already at S": "f231df9cac165508d0dad1347b99b69cd779e9e5",
+    "stale create directory conflict": "b21fb269d381cf73d219b329b58bee6136cbe841",
+    "stale create ancestor is a file": "fb8171dc86ecd72a542ec304d8bc1564cf8a0eed",
+    "side temporary watched edit": "6f2b32434f2d424e9705b02ead09afa29cf26aa2",
+    "merge discards side edit": "3c8979cfd4d3f795d0b6d97900fc4f28c87010df"
+  },
+  "counts": {
+    "graph": 28,
+    "staleness": 21,
+    "framing": 33,
+    "findings": 26
+  },
+  "findingPolicy": "Fail closed on reviewer replacement absent a proven reassignment rule. Reassignment wire/authority remains unresolved."
+}

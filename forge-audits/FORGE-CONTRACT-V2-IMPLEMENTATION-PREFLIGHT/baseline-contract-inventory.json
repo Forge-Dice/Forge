@@ -1,0 +1,211 @@
+[
+  {
+    "name": "FORGE-CORE-0001A-PATCH-0001.md",
+    "result": {
+      "ok": true,
+      "document": {
+        "ref": {
+          "taskId": "FORGE-CORE-0001A-PATCH-0001",
+          "contractVersion": 1,
+          "contentHash": "3e9125a53525a982dd23941ba390089a14ef231f863e1243c3104343825181ad"
+        },
+        "metadata": {
+          "forgeContractFormat": 1,
+          "taskId": "FORGE-CORE-0001A-PATCH-0001",
+          "contractVersion": 1,
+          "baseCommit": "f712e50a1562233f31564af8218cef9fd1097b7c",
+          "dependencies": [],
+          "scope": {
+            "create": [
+              "tests/forge/architecture-approval.test.ts"
+            ],
+            "modify": [
+              "src/forge/state.ts",
+              "tests/forge-red-team/findings.test.ts",
+              "tests/forge-red-team/model.ts"
+            ]
+          },
+          "requiredChecks": [
+            {
+              "name": "typecheck",
+              "command": "npm run typecheck"
+            },
+            {
+              "name": "test",
+              "command": "npm test"
+            }
+          ],
+          "mutationSmoke": "required"
+        }
+      }
+    }
+  },
+  {
+    "name": "FORGE-CORE-0001A.md",
+    "result": {
+      "ok": true,
+      "document": {
+        "ref": {
+          "taskId": "FORGE-CORE-0001A",
+          "contractVersion": 1,
+          "contentHash": "af91442ec38f712076648da97464c887e4925819c13838afe1fd7923b8fc4c69"
+        },
+        "metadata": {
+          "forgeContractFormat": 1,
+          "taskId": "FORGE-CORE-0001A",
+          "contractVersion": 1,
+          "baseCommit": "e9cb8e23c765deee5fab2d16bc0b793f53708714",
+          "dependencies": [],
+          "scope": {
+            "create": [
+              "src/forge/primitives.ts",
+              "src/forge/identity.ts",
+              "src/forge/contract-document.ts",
+              "src/forge/ancestry.ts",
+              "src/forge/events.ts",
+              "src/forge/state.ts",
+              "src/forge/start-gate.ts",
+              "src/forge/kernel.ts",
+              "src/forge/node-sha256.ts",
+              "src/forge/freeze.ts",
+              "tests/forge/fixtures.ts",
+              "tests/forge/contract-document.test.ts",
+              "tests/forge/identity.test.ts",
+              "tests/forge/ancestry.test.ts",
+              "tests/forge/state.test.ts",
+              "tests/forge/start-gate.test.ts",
+              "tests/forge/kernel.test.ts",
+              "tests/forge/dogfood.test.ts",
+              "tests/forge/typecheck.ts"
+            ],
+            "modify": []
+          },
+          "requiredChecks": [
+            {
+              "name": "typecheck",
+              "command": "npm run typecheck"
+            },
+            {
+              "name": "test",
+              "command": "npm test"
+            }
+          ],
+          "mutationSmoke": "required"
+        }
+      }
+    }
+  },
+  {
+    "name": "FORGE-CORE-0001B.md",
+    "result": {
+      "ok": true,
+      "document": {
+        "ref": {
+          "taskId": "FORGE-CORE-0001B",
+          "contractVersion": 1,
+          "contentHash": "680db30f45ca77b449fa0565d94db11475135f42c871ad589f5445355f279f6d"
+        },
+        "metadata": {
+          "forgeContractFormat": 1,
+          "taskId": "FORGE-CORE-0001B",
+          "contractVersion": 1,
+          "baseCommit": "8cae4ccaec11f4fe693a496987e3ab31bd05dad0",
+          "dependencies": [],
+          "scope": {
+            "create": [
+              "src/forge/runs.ts",
+              "src/forge/verification.ts",
+              "tests/forge/run-fixtures.ts",
+              "tests/forge/runs.test.ts",
+              "tests/forge/verification.test.ts",
+              "tests/forge/review-acceptance.test.ts",
+              "tests/forge/scenarios.test.ts"
+            ],
+            "modify": [
+              "src/forge/events.ts",
+              "src/forge/state.ts",
+              "src/forge/start-gate.ts",
+              "src/forge/kernel.ts",
+              "tests/forge/fixtures.ts",
+              "tests/forge/typecheck.ts",
+              "tests/forge/start-gate.test.ts",
+              "tests/forge/state.test.ts",
+              "tests/forge/kernel.test.ts"
+            ]
+          },
+          "requiredChecks": [
+            {
+              "name": "typecheck",
+              "command": "npm run typecheck"
+            },
+            {
+              "name": "test",
+              "command": "npm test"
+            }
+          ],
+          "mutationSmoke": "required"
+        }
+      }
+    }
+  },
+  {
+    "name": "FORGE-CORE-0001B.v2.md",
+    "result": {
+      "ok": true,
+      "document": {
+        "ref": {
+          "taskId": "FORGE-CORE-0001B",
+          "contractVersion": 2,
+          "contentHash": "7db0e7220ea674b39282b79235a42d51759907c44f1e31b4e7fe56b03e863bd6"
+        },
+        "metadata": {
+          "forgeContractFormat": 1,
+          "taskId": "FORGE-CORE-0001B",
+          "contractVersion": 2,
+          "baseCommit": "4cbbb25955bf73da0273309e4857de067bc0fb2e",
+          "dependencies": [],
+          "scope": {
+            "create": [
+              "tests/forge/repair-v2.test.ts"
+            ],
+            "modify": [
+              "src/forge/runs.ts",
+              "src/forge/verification.ts",
+              "src/forge/state.ts",
+              "tests/forge/verification.test.ts",
+              "tests/forge/typecheck.ts",
+              "tests/forge/dogfood.test.ts",
+              "tests/forge/kernel.test.ts",
+              "tests/forge-red-team/findings.test.ts",
+              "tests/forge-red-team/model.ts",
+              "tests/forge-red-team/differential.test.ts"
+            ]
+          },
+          "requiredChecks": [
+            {
+              "name": "typecheck",
+              "command": "npm run typecheck"
+            },
+            {
+              "name": "test",
+              "command": "npm test"
+            }
+          ],
+          "mutationSmoke": "required"
+        }
+      }
+    }
+  },
+  {
+    "name": "TASK-0004.md",
+    "result": {
+      "ok": false,
+      "issues": [
+        {
+          "code": "FRONTMATTER_MISSING",
+          "path": []
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "file": "FORGE-CONTRACT-V2-IMPLEMENTATION-PREFLIGHT.md",
+    "sha256": "f49db5519befe392335bfd44b735ec1c02a9cb36ce6848dbf81fd574725c858e"
+  },
+  {
+    "file": "REPRODUCE.txt",
+    "sha256": "7b0b68267bc8f71b037323e635e16ec7e9d545c244e5e338b1ad5f5242c1261b"
+  },
+  {
+    "file": "preflight-evidence.json",
+    "sha256": "4774a90d801687d4487c967b099af064efbeb76fcd57a7123f0448193fa60178"
+  },
+  {
+    "file": "graph-history.txt",
+    "sha256": "dd35901d4499082b7644ad2d0f1b9e14f7d48a32efdb99121c6807380023f053"
+  },
+  {
+    "file": "start-gate-model-results.json",
+    "sha256": "ef53e504c141e5980b7b46f3ecb87d008fa47f315daae7f1ccc7667e56c8c0d2"
+  },
+  {
+    "file": "baseline-contract-inventory.json",
+    "sha256": "cb653dc4787eae4b16d07c070d9b6103615140aede0cb3aa1c015cb2f1301df9"
+  },
+  {
+    "file": "source-manifest.json",
+    "sha256": "fb7b258e311ca8603776ebdd037e97375edc7472a148a1f72f429a70b2d6a4fd"
+  },
+  {
+    "file": "baseline-tests.json",
+    "sha256": "da44d2a540d4ec43cdcef19e4a33aac2ddce3a0a7c351f350215a509701ec8df"
+  },
+  {
+    "file": "baseline-timeout-rerun.json",
+    "sha256": "b63ca2eb3120efd189688def7a463778186f1b28a834979f5b1ff2f572a3757a"
+  },
+  {
+    "file": "preflight-lab.mjs",
+    "sha256": "8ccd3f958015c4387fa3e8aac825b509c570e3600f8a4e7ff5b860019c823d4b"
+  },
+  {
+    "file": "start-gate-model.mjs",
+    "sha256": "e17d2b994546538fc7dcb24fcaad7085f41e7dc422adf13009857188f55df27c"
+  }
+]
