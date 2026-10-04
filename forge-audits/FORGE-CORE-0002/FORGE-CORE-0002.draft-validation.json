@@ -1,0 +1,226 @@
+{
+  "title": "FORGE-CORE-0002 DRAFT IMPLEMENTATION CONTRACT - draft validation",
+  "checkedAt": "2026-10-03T15:10:55.450Z",
+  "repository": "Forge-Dice/Forge",
+  "baseline": "3d7545d843883418348004e68717399a64da7a7d",
+  "draft": {
+    "file": "FORGE-CORE-0002.contract.DRAFT.md",
+    "bytes": 65833,
+    "sha256": "5259bb488886f23782608527c83cbfb1cdfd443884a12687ee3bbfa385c09c25",
+    "contentHash": "a492926a8fe5d540f61a1644408802080a4c4a543489d729bd7b14b46d063c3f",
+    "metadata": {
+      "forgeContractFormat": 1,
+      "taskId": "FORGE-CORE-0002",
+      "contractVersion": 1,
+      "baseCommit": "3d7545d843883418348004e68717399a64da7a7d",
+      "dependencies": [],
+      "scope": {
+        "create": [],
+        "modify": [
+          "src/forge/contract-document.ts",
+          "src/forge/events.ts",
+          "src/forge/primitives.ts",
+          "src/forge/runs.ts",
+          "src/forge/start-gate.ts",
+          "src/forge/state.ts",
+          "src/forge/verification.ts",
+          "tests/forge-red-team/differential.test.ts",
+          "tests/forge-red-team/findings.test.ts",
+          "tests/forge-red-team/model.ts",
+          "tests/forge/contract-document.test.ts",
+          "tests/forge/dogfood.test.ts",
+          "tests/forge/fixtures.ts",
+          "tests/forge/repair-v2.test.ts",
+          "tests/forge/review-acceptance.test.ts",
+          "tests/forge/run-fixtures.ts",
+          "tests/forge/runs.test.ts",
+          "tests/forge/scenarios.test.ts",
+          "tests/forge/start-gate.test.ts",
+          "tests/forge/verification.test.ts"
+        ]
+      },
+      "requiredChecks": [
+        {
+          "name": "typecheck",
+          "command": "npm run typecheck"
+        },
+        {
+          "name": "test",
+          "command": "npm test"
+        }
+      ],
+      "mutationSmoke": "required"
+    }
+  },
+  "authority": {
+    "file": "FORGE-V0.1-ARCHITECTURE-FREEZE.md",
+    "sha256": "a07847c7f4e8a459863e88d1c57d6e4cb81509a46725d5b870a6f1c18b599a79"
+  },
+  "checks": {
+    "currentParserAccepted": true,
+    "format1": true,
+    "contentHashIndependent": true,
+    "roundtripBytes": true,
+    "noBOM": true,
+    "noCR": true,
+    "finalSingleLF": true,
+    "scopeExactly20": true,
+    "scopeAllExisting": true,
+    "scope7Production13Test": true,
+    "metadataHasOnlyV1Keys": true,
+    "adversarial84Unique": true,
+    "mutants8Unique": true,
+    "taskPathNotInRunScope": true,
+    "noTrackedChangesInClone": true
+  },
+  "sourceChecks": [
+    {
+      "path": "src/forge/contract-document.ts",
+      "sha256": "0e49ccac8309e8e6ee6edf41260eddaa990021ec3efea246b4f53d8eb76e31ab",
+      "exact": true
+    },
+    {
+      "path": "src/forge/primitives.ts",
+      "sha256": "66d2bcff4e12c418d464e187f82152bf243aa5dc1e87a21ad3693dc5e86497c7",
+      "exact": true
+    },
+    {
+      "path": "src/forge/freeze.ts",
+      "sha256": "4b69d4fafe30cfaf91d189ab15c1a97f98bc6bfafd9dda4e19f3dc6b2be06f1a",
+      "exact": true
+    },
+    {
+      "path": "src/forge/node-sha256.ts",
+      "sha256": "d3c748e70e5e5b85ff72365c2d51eddf10878e63aba89de5cc318d8b034f3262",
+      "exact": true
+    }
+  ],
+  "historical": [
+    {
+      "path": "forge/contracts/FORGE-CORE-0001A.md",
+      "bytes": 21296,
+      "contentHash": "af91442ec38f712076648da97464c887e4925819c13838afe1fd7923b8fc4c69",
+      "format": 1
+    },
+    {
+      "path": "forge/contracts/FORGE-CORE-0001A-PATCH-0001.md",
+      "bytes": 4817,
+      "contentHash": "3e9125a53525a982dd23941ba390089a14ef231f863e1243c3104343825181ad",
+      "format": 1
+    },
+    {
+      "path": "forge/contracts/FORGE-CORE-0001B.md",
+      "bytes": 16142,
+      "contentHash": "680db30f45ca77b449fa0565d94db11475135f42c871ad589f5445355f279f6d",
+      "format": 1
+    },
+    {
+      "path": "forge/contracts/FORGE-CORE-0001B.v2.md",
+      "bytes": 15579,
+      "contentHash": "7db0e7220ea674b39282b79235a42d51759907c44f1e31b4e7fe56b03e863bd6",
+      "format": 1
+    }
+  ],
+  "adversarialIds": [
+    "C2-01",
+    "C2-02",
+    "C2-03",
+    "C2-04",
+    "C2-05",
+    "C2-06",
+    "C2-07",
+    "C2-08",
+    "C2-09",
+    "C2-10",
+    "C2-11",
+    "C2-12",
+    "C2-13",
+    "C2-14",
+    "C2-15",
+    "C2-16",
+    "C2-17",
+    "C2-18",
+    "C2-19",
+    "C2-20",
+    "C2-21",
+    "C2-22",
+    "C2-23",
+    "C2-24",
+    "C2-25",
+    "C2-26",
+    "C2-27",
+    "C2-28",
+    "C2-29",
+    "C2-30",
+    "C2-31",
+    "C2-32",
+    "C2-33",
+    "C2-34",
+    "C2-35",
+    "C2-36",
+    "C2-37",
+    "C2-38",
+    "C2-39",
+    "C2-40",
+    "C2-41",
+    "C2-42",
+    "C2-43",
+    "C2-44",
+    "C2-45",
+    "C2-46",
+    "C2-47",
+    "C2-48",
+    "C2-49",
+    "C2-50",
+    "C2-51",
+    "C2-52",
+    "C2-53",
+    "C2-54",
+    "C2-55",
+    "C2-56",
+    "C2-57",
+    "C2-58",
+    "C2-59",
+    "C2-60",
+    "C2-61",
+    "C2-62",
+    "C2-63",
+    "C2-64",
+    "C2-65",
+    "C2-66",
+    "C2-67",
+    "C2-68",
+    "C2-69",
+    "C2-70",
+    "C2-71",
+    "C2-72",
+    "C2-73",
+    "C2-74",
+    "C2-75",
+    "C2-76",
+    "C2-77",
+    "C2-78",
+    "C2-79",
+    "C2-80",
+    "C2-81",
+    "C2-82",
+    "C2-83",
+    "C2-84"
+  ],
+  "mutantIds": [
+    "m1",
+    "m2",
+    "m3",
+    "m4",
+    "m5",
+    "m6",
+    "m7",
+    "m8"
+  ],
+  "limitations": [
+    "No CORE-0002 implementation was written or executed.",
+    "84 cases and eight mutants are future acceptance requirements, not passing experiment results.",
+    "Original RTN prose and original PKG section 8 unavailable; normative semantics from Freeze plus user clarification.",
+    "No canonical GitHub writes, commits, branches, PRs or settings changes."
+  ]
+}
