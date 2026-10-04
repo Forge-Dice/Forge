@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "title": "Der verschwundene Preiskürbis",
+  "brief": "Dorffest in Unterbrunn, Blasmusik und Zwetschgendatschi. Um 15:00 Uhr verschwindet „Otto“, der Preiskürbis, aus dem Wiegezelt: 312 Kilo, Dorfrekord, eine Stunde vor der Prämierung. Die Festwaage hat den Moment auf die Sekunde festgehalten. Der Bürgermeister spricht von einem Anschlag auf die Dorfgemeinschaft, die Blaskapelle spielt vorsichtshalber leiser.\n\nAuf dem Fest sind, soweit man weiß: Bürgermeister Alois Hübner, die Vorjahressiegerin Hilde Moosbrugger, Feuerwehrkommandant Sepp Gruber, Hildes Enkelin Lotte Brandl und Resi Huber, die Wirtin im Bierzelt. Finde heraus, wer Otto um 15:00 aus dem Zelt gerollt hat. Nicht jede Flunkerei verbirgt die Tat, und nicht jeder Gast steht auf der Liste.",
+  "challengeQuestion": "Wer hat den Preiskürbis um 15:00 aus dem Wiegezelt gerollt?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:alois"
+      },
+      "label": "Alois Hübner",
+      "role": "Bürgermeister und Preisrichter"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:hilde"
+      },
+      "label": "Hilde Moosbrugger",
+      "role": "Hobbygärtnerin, Vorjahressiegerin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:sepp"
+      },
+      "label": "Sepp Gruber",
+      "role": "Kommandant der Freiwilligen Feuerwehr"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:lotte"
+      },
+      "label": "Lotte Brandl",
+      "role": "Hildes Enkelin, Kassiererin am Kuchenstand"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:resi"
+      },
+      "label": "Resi Huber",
+      "role": "Wirtin im Bierzelt"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:ferdl"
+      },
+      "label": "Ferdinand Kranz",
+      "role": "Kürbisbauer aus Oberbrunn"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:wiegezelt"
+      },
+      "label": "Wiegezelt",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:buehne"
+      },
+      "label": "Festbühne",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:kuchenstand"
+      },
+      "label": "Kuchenstand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:tombola"
+      },
+      "label": "Tombolastand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:bierzelt"
+      },
+      "label": "Bierzelt",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:feuerwehr"
+      },
+      "label": "Feuerwehrstand",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:parkwiese"
+      },
+      "label": "Parkwiese",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kuerbis"
+      },
+      "label": "Preiskürbis „Otto“",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:kamera"
+      },
+      "label": "Kamera der Lokalzeitung",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:wiegen"
+      },
+      "label": "Wiegen der Kürbisse",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:anlieferung"
+      },
+      "label": "Hildes Anlieferung",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:ankunft"
+      },
+      "label": "Ankunft auf der Parkwiese",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:kuchen"
+      },
+      "label": "Kuchenverkauf",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:rede"
+      },
+      "label": "Festrede",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:tombola"
+      },
+      "label": "Griff in die Lostrommel",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:anstich"
+      },
+      "label": "Anstich des zweiten Fasses",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:raub"
+      },
+      "label": "Verschwinden des Kürbisses um 15:00",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:waage"
+      },
+      "label": "Waagenprotokoll",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:handschuhe"
+      },
+      "label": "Gartenhandschuhe",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:schleifspur"
+      },
+      "label": "Schleifspur",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:parkschein"
+      },
+      "label": "Parkschein",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:stativ"
+      },
+      "label": "Kamerastativ",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:festvideo"
+      },
+      "label": "Festvideo",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:kuchenbon"
+      },
+      "label": "Kassenstreifen",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:tombolafoto"
+      },
+      "label": "Tombolafoto",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:zapfanlage"
+      },
+      "label": "Zapfanlage",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:resi",
+      "questionId": "question:q01",
+      "text": "Ist Ihnen heute ein Fremder aufgefallen?",
+      "answer": "Freilich! Der Kranz Ferdl aus Oberbrunn hat um 14:40 seinen Leiterwagen auf die Parkwiese gestellt. Der kommt sonst nie zu uns, der sagt, unser Bier schmeckt nach Gießkanne."
+    },
+    {
+      "npc": "person:resi",
+      "questionId": "question:q02",
+      "text": "Haben Sie um 15:00 im Bierzelt angestochen?",
+      "answer": "Ja, Schlag drei, das zweite Fass. Bei der Hitze trinken die Leut wie die Kamele."
+    },
+    {
+      "npc": "person:sepp",
+      "questionId": "question:q03",
+      "text": "Waren Sie um 15:00 am Feuerwehrstand?",
+      "answer": "Selbstverständlich! Ein Kommandant verlässt seinen Posten nicht. Nie.",
+      "admission": "Also gut. Nein, ich war nicht am Stand. Ich war an der Tombola. Der Rasenmäher, verstehen Sie? Meiner ist so alt."
+    },
+    {
+      "npc": "person:alois",
+      "questionId": "question:q04",
+      "text": "Waren Sie um 15:00 auf der Festbühne?",
+      "answer": "Aber gewiss doch! Um 15:00 hielt ich die Festrede, das Herzstück des Tages. Ich bin immer noch bewegt."
+    },
+    {
+      "npc": "person:alois",
+      "questionId": "question:q05",
+      "text": "Hat jemand Ihre Festrede aufgezeichnet?",
+      "answer": "Natürlich, die Lokalzeitung filmt jedes Wort. Eine Rede wie diese gehört ins Archiv."
+    },
+    {
+      "npc": "person:lotte",
+      "questionId": "question:q06",
+      "text": "War der Bürgermeister um 15:00 im Wiegezelt?",
+      "answer": "Ich glaub schon! Der redet doch die ganze Zeit von dem Kürbis. Gesehen hab ich ihn aber nicht so richtig."
+    },
+    {
+      "npc": "person:lotte",
+      "questionId": "question:q07",
+      "text": "Waren Sie um 15:00 am Kuchenstand?",
+      "answer": "Ja! Ich hab kassiert. Oma sagt, ich darf das, weil ich am besten rechnen kann."
+    },
+    {
+      "npc": "person:hilde",
+      "questionId": "question:q08",
+      "text": "Waren Sie um 15:00 im Wiegezelt?",
+      "answer": "Nein. Um drei stand ich am Kuchenstand. Und bevor Sie fragen, ich gönne dem Otto seinen Rekord. Ein bisschen."
+    },
+    {
+      "npc": "person:hilde",
+      "questionId": "question:q09",
+      "text": "War Sepp Gruber um 15:00 an der Tombola?",
+      "answer": "Was der Sepp treibt, geht mich nichts an. Ich bin doch keine Petze."
+    },
+    {
+      "npc": "person:ferdl",
+      "questionId": "question:q10",
+      "text": "Waren Sie um 14:40 auf der Parkwiese?",
+      "answer": "Ich? Auf eurem Fest? Nein. Ich war daheim in Oberbrunn und hab meine Bertha gegossen.",
+      "admission": "Ja, mei. Ich war da, um 14:40, mit dem Wagen. Man wird sich ja wohl ein Fest anschauen dürfen."
+    },
+    {
+      "npc": "person:ferdl",
+      "questionId": "question:q11",
+      "text": "Waren Sie um 15:00 im Wiegezelt?",
+      "answer": "Dazu sag ich nix. Und den Otto hab ich auch noch nie gesehen."
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Was eine Waage, ein Video, ein Foto, ein Kassenstreifen, eine Zapfanlage oder ein Parkschein mit Uhrzeit festhält, gilt als Tatsache. Was die Leute erzählen, kann irren, flunkern oder glatt gelogen sein."
+    },
+    {
+      "id": "rule:presence",
+      "text": "Der Kürbis wurde um 15:00 im Wiegezelt von genau einer Person hinausgerollt. Wer um 15:00 nachweislich an einem anderen Ort war, scheidet aus."
+    },
+    {
+      "id": "rule:roster",
+      "text": "Seit 14:45 sind die Tore des Festgeländes samt Parkwiese wegen des Andrangs zu, niemand kam mehr herein oder hinaus. In Frage kommt jede Person, die heute nachweislich auf dem Fest war, auch wer auf keiner Liste steht. Sind alle anderen ausgeschlossen, bleibt die letzte Person."
+    }
+  ],
+  "epilogue": "Hinter dem Stall des Kranz-Hofs in Oberbrunn, unter einer Plane und zwei Pferdedecken, liegt Otto, wohlbehalten und leicht beleidigt. Ferdinand Kranz hatte es nicht verwunden, dass seine Bertha mit 298 Kilo nur Zweite werden sollte. Um 14:40 stellte er den Leiterwagen auf die Parkwiese, um 15:00, mitten in der Festrede, schlug er die Plane hinter dem Zelt hoch und rollte Otto über den Festplatz. Gesehen hat es niemand, alle hörten dem Bürgermeister zu. Oder taten so.\n\nHilde hatte ihre Handschuhe schon mittags beim Anliefern liegen lassen. Lotte hielt den Bürgermeister ehrlich für verdächtig, weil er so oft von Otto sprach. Und Sepp log nur, weil er um drei heimlich an der Tombola nach dem Rasenmäher fischte. Otto gewinnt den ersten Preis, Bertha bekommt eine Urkunde für Fleiß, und Ferdl muss beim nächsten Fest den Ausschank übernehmen."
+}
