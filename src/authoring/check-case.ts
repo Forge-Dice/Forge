@@ -353,7 +353,7 @@ function unbind(raw: unknown, path: string[]): unknown {
 const SOURCE_FILE = "source.json";
 
 /** Digest of a file's player texts only (TEXT_FIELDS, in document order). */
-function textDigest(raw: unknown): string {
+export function textDigest(raw: unknown): string {
   const texts: string[] = [];
   const walk = (v: unknown, key: string): void => {
     if (Array.isArray(v)) v.forEach((x) => walk(x, key === VOICE_LINES ? key : ""));

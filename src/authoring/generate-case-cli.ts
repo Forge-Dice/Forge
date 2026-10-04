@@ -5,7 +5,7 @@ import { command, intro, newGame, type Game } from "../play/game.ts";
 import { generateCaseOfDifficulty, isDifficulty } from "./case-difficulty.ts";
 import { difficultyText } from "../play/difficulty.ts";
 
-// `npm run generate-case -- --seed N [--schema <schema> | --difficulty 1..5] [--out <ordner>] [--force] [--play]`: writes a
+// `npm run generate-case -- --seed N [--schema <schema> | --difficulty 1..5] [--lang de|en] [--out <ordner>] [--force] [--play]`: writes a
 // generated case folder, checks it with check-case and, with --play, starts it in the terminal. A
 // non-empty folder is only overwritten with --force.
 
@@ -19,8 +19,10 @@ const raw = option("--seed");
 const seed = raw !== undefined && /^[0-9]{1,10}$/.test(raw) ? Number(raw) : Number.NaN;
 const schema = option("--schema");
 const level = option("--difficulty");
+// --lang en: also check the English variant and play in English (both are always written).
+const lang = option("--lang") ?? "de";
 const difficulty = level === undefined ? undefined : /^[1-5]$/.test(level) ? Number(level) : Number.NaN;
-if (!(seed <= MAX_SEED) || (schema !== undefined && !(CASE_SCHEMAS as readonly string[]).includes(schema)) || (difficulty !== undefined && (!isDifficulty(difficulty) || schema !== undefined))) {
+if (!(seed <= MAX_SEED) || (schema !== undefined && !(CASE_SCHEMAS as readonly string[]).includes(schema)) || (difficulty !== undefined && (!isDifficulty(difficulty) || schema !== undefined)) || (lang !== "de" && lang !== "en")) {
   console.log(`Aufruf: npm run generate-case -- --seed <0..${MAX_SEED}> [--schema ${CASE_SCHEMAS.join("|")} | --difficulty 1..5] [--out <ordner>] [--force] [--play]`);
   process.exitCode = 2;
 } else {
@@ -40,10 +42,10 @@ if (!(seed <= MAX_SEED) || (schema !== undefined && !(CASE_SCHEMAS as readonly s
     process.exit(2);
   }
   console.log(`„${generated.title}“ (Seed ${seed}${generated.seed === seed ? "" : `, Fallseed ${generated.seed}`}, Schema ${generated.schema}${generated.withLie ? ", mit Lüge" : ""}): ${files.length} Dateien in ${dir}`);
-  const check = checkCaseFolder(dir);
+  const check = checkCaseFolder(dir, lang === "en" ? "en" : undefined);
   console.log(formatCaseCheck(check));
   if (!check.ok) process.exitCode = 1;
-  else if (args.includes("--play")) await play(newGame(generatedPackage(generated), generatedClockOrigin(generated)));
+  else if (args.includes("--play")) await play(lang === "en" ? newGame(generatedPackage(generated, "en"), generatedClockOrigin(generated), "en") : newGame(generatedPackage(generated), generatedClockOrigin(generated)));
 }
 
 async function play(start: Game): Promise<void> {
