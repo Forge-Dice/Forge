@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:verstummte-geige",
+  "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
+  "catalogueHash": "b350762a60b40d419bfd3a5c6dfd0410a5002c7810736f4f2bbfcdbbba494853",
+  "npcId": "person:vera",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q02",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:paul",
+        "locationId": "location:foyer",
+        "at": 2400
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q03",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:henrik",
+        "locationId": "location:loge",
+        "at": 2400
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q04",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:ida",
+        "locationId": "location:buehne",
+        "at": 2400
+      },
+      "reveal": []
+    }
+  ]
+}

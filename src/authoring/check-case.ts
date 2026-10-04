@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { parseCaseTruth, type CaseTruth } from "../domain/case-truth.ts";
@@ -43,9 +43,12 @@ import { refSource } from "../play/cases.ts";
 // field. Host/author tool: messages may contain private IDs and are never shown to players.
 
 export type Problem = { readonly file: string; readonly field: string; readonly message: string; readonly severity: "error" | "warning" };
+/** A hash placeholder the tool computed; `--fix` writes these values into the files. */
+export type FilledHash = { readonly file: string; readonly field: string; readonly value: string };
 export type CaseCheck = {
   readonly dir: string;
   readonly problems: readonly Problem[];
+  readonly filled: readonly FilledHash[];
   readonly checkedFiles: readonly string[];
   readonly solvability: SolvabilityReport | null;
   readonly ok: boolean;
@@ -75,6 +78,29 @@ const fieldOf = (path: readonly PropertyKey[]): string =>
 /** Error collector: a failed step records its problems and yields null, later steps skip. */
 class Collector {
   readonly problems: Problem[] = [];
+  readonly filled: FilledHash[] = [];
+  /**
+   * Binding hash fields (top level and `bindings`) of one raw file: a placeholder is replaced by the
+   * computed value, a concrete wrong value gets a hint with the expected one (the parser reports it).
+   */
+  bindHash(file: string, raw: unknown, key: string, value: string): void {
+    const holders: [Record<string, unknown>, string][] = [];
+    if (typeof raw === "object" && raw !== null) {
+      holders.push([raw as Record<string, unknown>, ""]);
+      const bindings = (raw as { bindings?: unknown }).bindings;
+      if (typeof bindings === "object" && bindings !== null) holders.push([bindings as Record<string, unknown>, "bindings."]);
+    }
+    for (const [holder, prefix] of holders) {
+      const given = holder[key];
+      if (typeof given !== "string") continue;
+      if (PLACEHOLDER.test(given)) {
+        holder[key] = value;
+        this.filled.push({ file, field: `${prefix}${key}`, value });
+      } else if (given !== value) {
+        this.warning(file, `${prefix}${key}`, `erwartet ${value}`);
+      }
+    }
+  }
   readonly checked: string[] = [];
   error(file: string, field: string, message: string) {
     this.problems.push({ file, field, message, severity: "error" });
@@ -129,6 +155,7 @@ export function checkCaseFolder(dir: string): CaseCheck {
   const finish = (solvability: SolvabilityReport | null = null): CaseCheck => ({
     dir,
     problems: c.problems,
+    filled: c.filled,
     checkedFiles: c.checked,
     solvability,
     ok: c.problems.every((p) => p.severity !== "error") && solvability?.status === "pass",
@@ -148,11 +175,19 @@ export function checkCaseFolder(dir: string): CaseCheck {
   for (const finding of validateCaseSemantics(truth).findings) {
     c.error(FILES.truth, finding.subjectIds.join(", ") || "(Fall)", `${finding.code}: ${finding.message}`);
   }
+  // Binding hashes are computed, never typed: fill placeholders in dependency order.
+  const bindAll = (key: string, value: string, keys: (keyof typeof FILES)[], npcPart: ("snapshot" | "profile")[]) => {
+    for (const k of keys) c.bindHash(FILES[k], raw[k], key, value);
+    for (const npc of npcs) for (const part of npcPart) c.bindHash(`${part === "snapshot" ? "npc" : "interrogation"}-${npc.name}.json`, npc[part], key, value);
+  };
+  bindAll("truthHash", hashCaseTruth(truth), ["solution", "access", "presentation", "catalogue", "challenge", "proofProfile"], ["snapshot", "profile"]);
   const solution = raw.solution === undefined ? null : c.parse(FILES.solution, () => parseCaseSolution(raw.solution, truth));
   const parseWith = <T>(key: keyof typeof FILES, parse: () => T) => (raw[key] === undefined ? null : c.parse(FILES[key], parse));
   const access = parseWith("access", () => parseEvidenceAccessMap(raw.access, truth));
   const presentation = parseWith("presentation", () => parseEvidencePresentation(raw.presentation, truth));
+  if (solution !== null) bindAll("solutionHash", hashCaseSolution(solution), ["challenge", "proofProfile"], ["snapshot"]);
   const catalogue = parseWith("catalogue", () => parseQuestionCatalogue(raw.catalogue, truth));
+  if (catalogue !== null) bindAll("catalogueHash", hashQuestionCatalogue(catalogue), [], ["profile"]);
   const challenge = solution === null ? null : parseWith("challenge", () => parseAccusationChallenge(raw.challenge, truth, solution));
   const parsedNpcs = npcs.map((npc) => ({
     name: npc.name,
@@ -247,6 +282,12 @@ const PACKAGE_CODES: Record<PackageFinding["code"], string> = {
   PROOF_BINDING: "Beweis passt nicht zum Paket",
 };
 
+/** Sharper messages for findings whose bare code says too little to an author. */
+const PACKAGE_HINTS: Record<string, string> = {
+  "PROOF_BINDING certificateData.steps": "die stepIds der Schritte müssen genau proof-profile.json › witnessStepIds entsprechen, in derselben Reihenfolge",
+  "PROOF_BINDING certificateData.observations": "jede Beobachtung des Profils braucht genau einen Eintrag im Manifest und umgekehrt",
+};
+
 function reportPackageFinding(finding: PackageFinding, npcNames: string[], c: Collector): void {
   const [root, index, part, ...rest] = finding.path;
   let file = PACKAGE_FILES[String(root)];
@@ -258,7 +299,7 @@ function reportPackageFinding(finding: PackageFinding, npcNames: string[], c: Co
     file = index === "profile" ? FILES.proofProfile : FILES.releaseManifest;
     field = finding.path.slice(2);
   }
-  c.error(file ?? "(Paket)", fieldOf(field), PACKAGE_CODES[finding.code]);
+  c.error(file ?? "(Paket)", fieldOf(field), PACKAGE_HINTS[`${finding.code} ${fieldOf(field)}`] ?? PACKAGE_CODES[finding.code]);
 }
 
 type Npc = { snapshot: unknown; profile: unknown };
@@ -341,6 +382,7 @@ function bindManifest(raw: unknown, contextHash: string, index: PlayerRefIndex, 
     c.error(FILES.releaseManifest, "releaseContextHash", `veraltet: das Paket hat ${contextHash}`);
     ok = false;
   }
+  if (ok && typeof given === "string" && PLACEHOLDER.test(given)) c.filled.push({ file: FILES.releaseManifest, field: "releaseContextHash", value: contextHash });
   return ok ? { ...manifest, releaseContextHash: contextHash } : null;
 }
 
@@ -355,6 +397,7 @@ function bindProfile(raw: unknown, releaseHash: string, c: Collector): unknown {
     c.error(FILES.proofProfile, "bindings.releaseHash", `veraltet: das Release-Manifest hat ${releaseHash}`);
     return null;
   }
+  if (typeof given === "string" && PLACEHOLDER.test(given)) c.filled.push({ file: FILES.proofProfile, field: "bindings.releaseHash", value: releaseHash });
   return { ...raw, bindings: { ...bindings, releaseHash } };
 }
 
@@ -409,10 +452,28 @@ export function formatCaseCheck(check: CaseCheck): string {
   const warnings = check.problems.filter((p) => p.severity === "warning");
   for (const p of errors) lines.push(`  FEHLER  ${p.file} › ${p.field}: ${p.message}`);
   for (const p of warnings) lines.push(`  Hinweis ${p.file} › ${p.field}: ${p.message}`);
+  for (const f of check.filled) lines.push(`  berechnet ${f.file} › ${f.field} = ${f.value}`);
   if (check.solvability !== null) {
     const s = check.solvability;
     lines.push(`  Lösbarkeit: ${s.status.toUpperCase()} (${s.survivingAnswerCount} mögliche Antwort${s.survivingAnswerCount === 1 ? "" : "en"})`);
   }
   lines.push(check.ok ? `OK: ${check.checkedFiles.length} Dateien geprüft, Fall lösbar.` : `NICHT OK: ${errors.length} Fehler.`);
   return lines.join("\n");
+}
+
+/** `--fix`: writes the computed hashes into their placeholder fields; returns the files changed. */
+export function writeFilledHashes(check: CaseCheck): string[] {
+  const byFile = new Map<string, FilledHash[]>();
+  for (const f of check.filled) byFile.set(f.file, [...(byFile.get(f.file) ?? []), f]);
+  for (const [file, fills] of byFile) {
+    const path = join(check.dir, file);
+    const json = JSON.parse(readFileSync(path, "utf8"));
+    for (const { field, value } of fills) {
+      const keys = field.split(".");
+      const holder = keys.slice(0, -1).reduce((o, k) => o[k], json);
+      holder[keys.at(-1)!] = value;
+    }
+    writeFileSync(path, `${JSON.stringify(json, null, 2)}\n`);
+  }
+  return [...byFile.keys()];
 }

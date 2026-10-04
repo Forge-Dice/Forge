@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 1,
+  "bindings": {
+    "caseId": "case:verstummte-geige",
+    "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
+    "solutionHash": "12e84c6b14ee0ca7b8ebd0c8674d703a9fca1f8122bf7be55bd1a9d1244cb501",
+    "releaseHash": "128ddb56476df5a5329b61a5e2ea60d6cfe513a1e9faa92c657f105f20ce85d5"
+  },
+  "answerScope": [
+    "conclusion:actor-ida",
+    "conclusion:actor-paul",
+    "conclusion:actor-kurt",
+    "conclusion:actor-vera",
+    "conclusion:actor-henrik"
+  ],
+  "ambiguityPolicy": "must_disambiguate",
+  "question": {
+    "kind": "required_literals"
+  },
+  "observations": [
+    {
+      "id": "observed:paul",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:paul-foyer",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:pausenfoto"
+      }
+    },
+    {
+      "id": "public-rule:paul",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:paul",
+          "allOf": [
+            "observation:paul"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-paul",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:vera",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:vera-foyer",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:pausenfoto"
+      }
+    },
+    {
+      "id": "public-rule:vera",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:vera",
+          "allOf": [
+            "observation:vera"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-vera",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:kurt",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:kurt-keller",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:heizungsprotokoll"
+      }
+    },
+    {
+      "id": "public-rule:kurt",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:kurt",
+          "allOf": [
+            "observation:kurt"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-kurt",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:henrik",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:henrik-loge",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:logenprotokoll"
+      }
+    },
+    {
+      "id": "public-rule:henrik",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "exclude:henrik",
+          "allOf": [
+            "observation:henrik"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-henrik",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "public-rule:remaining",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "remaining:ida",
+          "allOf": [
+            "literal:paul",
+            "literal:vera",
+            "literal:kurt",
+            "literal:henrik"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:actor-ida",
+            "value": true
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "observation:paul",
+      "kind": "observation",
+      "observationId": "observed:paul"
+    },
+    {
+      "id": "license:paul",
+      "kind": "observation",
+      "observationId": "public-rule:paul"
+    },
+    {
+      "id": "literal:paul",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-paul",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:vera",
+      "kind": "observation",
+      "observationId": "observed:vera"
+    },
+    {
+      "id": "license:vera",
+      "kind": "observation",
+      "observationId": "public-rule:vera"
+    },
+    {
+      "id": "literal:vera",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-vera",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:kurt",
+      "kind": "observation",
+      "observationId": "observed:kurt"
+    },
+    {
+      "id": "license:kurt",
+      "kind": "observation",
+      "observationId": "public-rule:kurt"
+    },
+    {
+      "id": "literal:kurt",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-kurt",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:henrik",
+      "kind": "observation",
+      "observationId": "observed:henrik"
+    },
+    {
+      "id": "license:henrik",
+      "kind": "observation",
+      "observationId": "public-rule:henrik"
+    },
+    {
+      "id": "literal:henrik",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-henrik",
+        "value": false
+      }
+    },
+    {
+      "id": "literal:ida",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:actor-ida",
+        "value": true
+      }
+    },
+    {
+      "id": "license:remaining",
+      "kind": "observation",
+      "observationId": "public-rule:remaining"
+    }
+  ],
+  "edges": [
+    {
+      "id": "exclude:paul",
+      "allOf": [
+        "observation:paul",
+        "license:paul"
+      ],
+      "to": "literal:paul",
+      "license": "license:paul"
+    },
+    {
+      "id": "exclude:vera",
+      "allOf": [
+        "observation:vera",
+        "license:vera"
+      ],
+      "to": "literal:vera",
+      "license": "license:vera"
+    },
+    {
+      "id": "exclude:kurt",
+      "allOf": [
+        "observation:kurt",
+        "license:kurt"
+      ],
+      "to": "literal:kurt",
+      "license": "license:kurt"
+    },
+    {
+      "id": "exclude:henrik",
+      "allOf": [
+        "observation:henrik",
+        "license:henrik"
+      ],
+      "to": "literal:henrik",
+      "license": "license:henrik"
+    },
+    {
+      "id": "remaining:ida",
+      "allOf": [
+        "literal:paul",
+        "literal:vera",
+        "literal:kurt",
+        "literal:henrik",
+        "license:remaining"
+      ],
+      "to": "literal:ida",
+      "license": "license:remaining"
+    }
+  ],
+  "witnessStepIds": [
+    "search-foyer",
+    "ask-kurt-keller",
+    "search-keller",
+    "read-schaltschrank",
+    "search-loge"
+  ]
+}

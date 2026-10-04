@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:verstummte-geige",
+  "revision": 1,
+  "truthHash": "033652be2c752c99f29e0e377f8928c8d665dfd2d9b254fa879ac3032f52ae0c",
+  "resolutions": [
+    {
+      "eventId": "event:diebstahl",
+      "targets": [
+        {
+          "kind": "item",
+          "id": "item:geige"
+        }
+      ],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": [
+          {
+            "personId": "person:ida",
+            "roles": [
+              "direct_actor"
+            ]
+          }
+        ]
+      },
+      "intent": "intended",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "conclusion:actor-ida",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:ida",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-paul",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:paul",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-kurt",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:kurt",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-vera",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:vera",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:actor-henrik",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:henrik",
+        "eventId": "event:diebstahl",
+        "role": "direct_actor"
+      }
+    }
+  ],
+  "requiredConclusions": [
+    {
+      "conclusionId": "conclusion:actor-ida",
+      "value": true
+    },
+    {
+      "conclusionId": "conclusion:actor-paul",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-kurt",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-vera",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:actor-henrik",
+      "value": false
+    }
+  ]
+}
