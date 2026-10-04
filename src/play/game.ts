@@ -202,11 +202,26 @@ export function accusations(game: Game): Action[] {
 
 // ---------- Rendering ----------
 
+// Menus label every candidate action, so both lookups are indexed once per package and per
+// knowledge state (both immutable) instead of scanned per label.
+const labelIndex = new WeakMap<object, Map<string, string>>();
+const knownIndex = new WeakMap<object, Set<string>>();
+
 function labelOf(game: Game, ref: string): string {
+  const known = game.state.knowledge.known;
+  let refs = knownIndex.get(known);
+  if (refs === undefined) knownIndex.set(known, (refs = new Set(known.map((k) => k.ref))));
+  if (!refs.has(ref)) return "(unbekannt)";
+  const { labels } = game.pkg.publicContent;
+  let index = labelIndex.get(labels);
+  if (index === undefined) {
+    index = new Map();
+    // First label per entity wins, as with find().
+    for (const l of labels) if (!index.has(`${l.entity.kind}\0${l.entity.id}`)) index.set(`${l.entity.kind}\0${l.entity.id}`, l.label);
+    labelIndex.set(labels, index);
+  }
   const entity = game.pkg.refs.resolve(ref);
-  const isKnown = game.state.knowledge.known.some((k) => k.ref === ref);
-  const label = entity && game.pkg.publicContent.labels.find((l) => l.entity.kind === entity.kind && l.entity.id === entity.id);
-  return isKnown && label ? label.label : msg(game).unknownLabel;
+  return (entity && index.get(`${entity.kind}\0${entity.id}`)) || msg(game).unknownLabel;
 }
 
 function claimText(game: Game, claim: PlayerClaim | EvidenceClaim): string {

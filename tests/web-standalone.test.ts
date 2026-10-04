@@ -12,6 +12,8 @@ import { readdirSync, readFileSync } from "node:fs";
 let html: string;
 let scripts: string[];
 let bundled: WebHandler;
+/** A new bundled handler, as after a page load: tests that compare state start from one. */
+let freshBundled: () => WebHandler;
 
 beforeAll(async () => {
   html = await buildStandalone();
@@ -20,8 +22,9 @@ beforeAll(async () => {
   // Files and bundle only (the page shell needs a DOM and is exercised in the browser), in this
   // realm: zod's plain-object checks would reject values crossing a vm context boundary.
   (0, eval)(`${scripts[0]}\n${scripts[1]}`);
-  const g = globalThis as { kriminalfaelle?: { handle: WebHandler } };
+  const g = globalThis as { kriminalfaelle?: { handle: WebHandler; create: () => WebHandler } };
   bundled = g.kriminalfaelle!.handle;
+  freshBundled = g.kriminalfaelle!.create;
   delete g.kriminalfaelle; // the embedded files stay: cases load on first use
 }, 120_000);
 
@@ -43,6 +46,7 @@ describe("standalone browser build", () => {
 
   it("plays every case exactly like the server, saves included", async () => {
     const server = createWebHandler();
+    const bundled = freshBundled();
     const both = async (method: string, url: string, text?: string): Promise<WebResponse> => {
       const [a, b] = await Promise.all([server(method, url, body(text)), bundled(method, url, body(text))]);
       expect(b).toEqual(a);
@@ -70,6 +74,7 @@ describe("standalone browser build", () => {
 
   it("plays a Zufallsfall like the server and restores it from its save", async () => {
     const server = createWebHandler();
+    const bundled = freshBundled();
     const both = async (method: string, url: string, text?: string): Promise<WebResponse> => {
       const [a, b] = await Promise.all([server(method, url, body(text)), bundled(method, url, body(text))]);
       expect(b).toEqual(a);
@@ -153,6 +158,7 @@ describe("standalone browser build", () => {
     const dir = new URL("./fixtures/geige/", import.meta.url).pathname;
     const share = exportCaseFiles(Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, readFileSync(dir + f, "utf8")])));
     const server = createWebHandler();
+    const bundled = freshBundled();
     const [a, b] = await Promise.all([server("POST", "/eigener-fall", body(share)), bundled("POST", "/eigener-fall", body(share))]);
     expect(b).toEqual(a);
     expect(a.status).toBe(200);
@@ -172,6 +178,7 @@ describe("standalone browser build", () => {
     const files = Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, readFileSync(dir + f, "utf8")]));
     const deep = files["release-manifest.json"]!.replace(/\}\s*$/, `,"x":${"[".repeat(100_000)}${"]".repeat(100_000)}}`);
     const server = createWebHandler();
+    const bundled = freshBundled();
     for (const text of [exportCaseFiles({ ...files, "release-manifest.json": deep }), exportCaseFiles({ ...files, "zz.json": "{}" }), "x".repeat(2 * 1024 * 1024)]) {
       const [a, b] = await Promise.all([server("POST", "/eigener-fall", body(text)), bundled("POST", "/eigener-fall", body(text))]);
       expect(b).toEqual(a);

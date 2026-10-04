@@ -4,7 +4,7 @@ import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { checkCaseFolder } from "../src/authoring/check-case.ts";
 import { applyEdits, caseSources, CaseWorkspace, editsFromForm, getAt } from "../src/play/editor.ts";
 import { renderEditor } from "../src/play/editor-page.ts";
@@ -120,6 +120,8 @@ describe("editor over HTTP", () => {
   });
   afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())));
   const post = (path: string, body: Record<string, string>) => fetch(`${base}${path}`, { method: "POST", body: new URLSearchParams(body), redirect: "manual" });
+  // Opening is idempotent: every test has the working copy, whatever ran before it.
+  beforeEach(() => post("/editor/open", { source: "fixtures/geige" }));
 
   it("the start page and the case list link to the editor; opening copies the case", async () => {
     expect(await (await fetch(`${base}/`)).text()).toContain('href="/editor"');

@@ -12,6 +12,13 @@ import { checkCaseFolder } from "../src/authoring/check-case.ts";
 const NAMES = Object.keys(PLAY_CASES) as PlayCaseName[];
 const pkgs = new Map(NAMES.map((name) => [name, loadPlayPackage(name)]));
 const pkg = (name: PlayCaseName) => pkgs.get(name)!;
+// The full playtest per case (DEFAULT_SEEDS, as npm run playtest): measured once, read by every
+// test about whole-case reports. The bot is deterministic, so sharing it changes no result.
+const fullReports = new Map<PlayCaseName, ReturnType<typeof playtestCase>>();
+const fullReport = (name: PlayCaseName) => {
+  if (!fullReports.has(name)) fullReports.set(name, playtestCase(pkg(name), DEFAULT_SEEDS));
+  return fullReports.get(name)!;
+};
 const FIXTURES = new URL("./fixtures/", import.meta.url).pathname;
 
 describe("deduction oracle", () => {
@@ -88,13 +95,13 @@ describe("rating", () => {
 
   it("the difficulty stored in cases.ts is the measured one (npm run playtest prints the value to enter)", { timeout: 120_000 }, () => {
     for (const name of NAMES) {
-      expect(PLAY_CASES[name].difficulty, name).toBe(playtestCase(pkg(name), DEFAULT_SEEDS).rating);
+      expect(PLAY_CASES[name].difficulty, name).toBe(fullReport(name).rating);
     }
   });
 
   it("finds: needed ones are cited by the proof, never more than available", { timeout: 60_000 }, () => {
     for (const name of NAMES) {
-      const { metrics } = playtestCase(pkg(name), 1);
+      const { metrics } = fullReport(name);
       expect(metrics.findsNeeded).toBeGreaterThan(0);
       expect(metrics.findsNeeded).toBeLessThanOrEqual(metrics.findsAvailable);
     }
@@ -115,7 +122,7 @@ describe("balance warnings", () => {
 
   it("the red-herring pull shares add up to one when anyone was wrongly accused", { timeout: 60_000 }, () => {
     for (const name of NAMES) {
-      const { metrics } = playtestCase(pkg(name), 2);
+      const { metrics } = fullReport(name);
       const total = Object.values(metrics.redHerringPull).reduce((a, b) => a + b, 0);
       if (metrics.wrongAccusations > 0) expect(Math.abs(total - 1)).toBeLessThan(0.05);
     }

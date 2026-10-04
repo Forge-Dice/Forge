@@ -32,6 +32,8 @@ if (scope.__kfWorker === true) {
 } else {
   scope.kriminalfaelle = {
     handle: createWebHandler({}, { maxGenerated: Infinity }),
+    // A fresh handler with no games in memory (tests compare it with a fresh server handler).
+    create: () => createWebHandler({}, { maxGenerated: Infinity }),
     slugs: Object.values(PLAY_CASES).map((c) => c.dir),
   };
 }

@@ -298,8 +298,17 @@ type Coverage = { finds: Set<string>; mentioned: Set<string>; actions: number };
 function exhaust(pkg: ResolvedCasePackage): Coverage {
   let game = newGame(pkg);
   const done = new Set<string>();
+  // The first menu action not yet taken, as if the whole menu were built: investigations as they
+  // are, questions and confrontations only if the session accepts them. Built lazily, and the dry
+  // run only for actions not taken yet: the full menus cost a dry run per statement and find.
+  const fresh = (a: Action) => !done.has(JSON.stringify(a.event));
+  // Each menu in its salt-free order (stable); sorting before the dry run keeps the same order.
+  const firstOpen = (): Action | undefined =>
+    stable(pkg, investigations(game)).find(fresh) ??
+    stable(pkg, questionCandidates(game)).find((a) => fresh(a) && acceptedNow(game, a)) ??
+    stable(pkg, confrontationCandidates(game)).find((a) => fresh(a) && acceptedNow(game, a));
   for (;;) {
-    const next = [investigations(game), questions(game), confrontations(game)].flatMap((m) => stable(pkg, m)).find((a) => !done.has(JSON.stringify(a.event)));
+    const next = firstOpen();
     if (next === undefined || done.size >= MAX_ACTIONS * 2) break;
     done.add(JSON.stringify(next.event));
     const result = reduceSession(pkg, game.state, next.event);

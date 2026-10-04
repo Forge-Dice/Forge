@@ -13,7 +13,7 @@ const pkg = loadPlayPackage("vitrine");
 const V = "/fall/vitrine";
 let server: Server;
 let base: string;
-const pages: string[] = [];
+const INTERNAL = /\b(case|person|location|item|event|evidence|proposition|conclusion|question|relationship|motive|secret|red-herring):[a-z0-9]/;
 
 beforeAll(async () => {
   const app = createWebApp({ vitrine: pkg });
@@ -23,11 +23,27 @@ beforeAll(async () => {
 });
 afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())));
 
+/** A served page; every one is checked for internal ids and PlayerRefs as it arrives. */
 async function page(path = V): Promise<string> {
   const html = await (await fetch(`${base}${path}`)).text();
-  pages.push(html);
+  expect(html, path).not.toMatch(INTERNAL);
+  expect(html, path).not.toMatch(/pr1_[0-9a-z]{16}/);
   return html;
 }
+
+// Every test starts the Vitrine from its own state, so the tests hold in any order.
+const fresh = () => fetch(`${base}${V}/new`, { method: "POST", redirect: "manual" });
+
+/** Route A from a new game to the solution (the route test asserts each step). */
+const ROUTE_A = [
+  "Ort durchsuchen: Innenhof",
+  "Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?",
+  "Gegenstand untersuchen: Noras Kamera",
+  "Zeichnet im Archiv ein Gerät auf, wer dort arbeitet?",
+  "Gegenstand untersuchen: Archivterminal",
+  "Max Brandt",
+  "Lina Kern",
+];
 
 const unescape = (s: string) => s.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 
@@ -50,8 +66,6 @@ async function click(label: string, path = V): Promise<string> {
   return page(path);
 }
 
-const INTERNAL = /\b(case|person|location|item|event|evidence|proposition|conclusion|question|relationship|motive|secret|red-herring):[a-z0-9]/;
-
 describe("play:web", () => {
   it("the start page offers every case", async () => {
     const html = await page("/");
@@ -64,6 +78,7 @@ describe("play:web", () => {
   });
 
   it("shows the case file, known entities and actions from PublicContent", async () => {
+    await fresh();
     const html = await page();
     expect(html).toContain("<title>Die leere Vitrine</title>");
     expect(html).toContain("Fallakte");
@@ -73,6 +88,7 @@ describe("play:web", () => {
   });
 
   it("Route A through the browser forms reaches the solution", async () => {
+    await fresh();
     let html = await click("Ort durchsuchen: Innenhof");
     expect(html).toContain("Kontaktbogen");
     html = await click("Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?");
@@ -92,6 +108,8 @@ describe("play:web", () => {
   });
 
   it("save downloads the Session C text, load restores it, a broken file is refused", async () => {
+    await fresh();
+    for (const label of ROUTE_A) await click(label);
     const res = await fetch(`${base}${V}/save`);
     expect(res.headers.get("content-disposition")).toContain("vitrine.save.json");
     const text = await res.text();
@@ -128,6 +146,7 @@ describe("play:web", () => {
   });
 
   it("garbage form input changes nothing; unknown paths are 404", async () => {
+    await fresh();
     const before = await page();
     const at = buttons(before).values().next().value!.at!;
     for (const body of ["group=x&n=1", "group=u&n=0", "group=u&n=99999", "group=u&n=1e3", ""]) {
@@ -177,13 +196,5 @@ describe("play:web", () => {
     expect(await page()).toContain("Spielstand geladen");
     expect(await (await fetch(`${base}/laden`, { method: "POST", body: "{}" })).text()).toBe("/");
     expect(await page("/")).toContain("Diese Datei passt zu keinem Fall.");
-  });
-
-  it("no page ever contains an internal id or a PlayerRef", () => {
-    expect(pages.length).toBeGreaterThan(10);
-    for (const html of pages) {
-      expect(html).not.toMatch(INTERNAL);
-      expect(html).not.toMatch(/pr1_[0-9a-z]{16}/);
-    }
   });
 });
