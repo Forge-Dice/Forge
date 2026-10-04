@@ -1,0 +1,23 @@
+{
+  "reproductionExit": 0,
+  "evidenceMembersByteIdentical": [
+    "assertions.jsonl",
+    "configurations.json",
+    "semantic-cases.PRIVATE.json",
+    "comparisons.json",
+    "D8-matrix.json",
+    "subset-grid.json",
+    "progression.json"
+  ],
+  "resultByteIdentical": true,
+  "exactPatchAnchors": 20,
+  "profileAnnexMatchesEmbeddedNEW": true,
+  "configurations": 128,
+  "assertions": 16817,
+  "failures": 0,
+  "productionExecuted": false,
+  "canonicalBaseline": "3d7545d843883418348004e68717399a64da7a7d",
+  "supplementalOriginalSources": 7,
+  "originalSourceTotal": 60,
+  "certificateDataArrayPolicy": "ORDERED; matches package closure R04"
+}

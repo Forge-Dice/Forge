@@ -1,0 +1,2869 @@
+{
+  "truth": {
+    "schemaVersion": 1,
+    "caseId": "case:leere-vitrine-v1",
+    "revision": 1,
+    "title": "Die leere Vitrine",
+    "timeline": {
+      "unit": "second",
+      "originLabel": "18:00:00 am Schließabend"
+    },
+    "persons": [
+      {
+        "id": "person:max",
+        "name": "Max Brandt"
+      },
+      {
+        "id": "person:lina",
+        "name": "Lina Kern"
+      },
+      {
+        "id": "person:nora",
+        "name": "Nora Weiss"
+      },
+      {
+        "id": "person:oskar",
+        "name": "Oskar Falk"
+      }
+    ],
+    "locations": [
+      {
+        "id": "location:galerie",
+        "name": "Galerie"
+      },
+      {
+        "id": "location:hof",
+        "name": "Innenhof"
+      },
+      {
+        "id": "location:archiv",
+        "name": "Archiv"
+      },
+      {
+        "id": "location:werkstatt",
+        "name": "Werkstatt"
+      },
+      {
+        "id": "location:foyer",
+        "name": "Foyer"
+      }
+    ],
+    "items": [
+      {
+        "id": "item:medaille",
+        "name": "Goldmedaille „Morgenstern“"
+      },
+      {
+        "id": "item:schluessel",
+        "name": "Vitrinenschlüssel"
+      },
+      {
+        "id": "item:kamera",
+        "name": "Noras Kamera"
+      },
+      {
+        "id": "item:terminal",
+        "name": "Archivterminal"
+      },
+      {
+        "id": "item:kassette",
+        "name": "Transportkassette"
+      }
+    ],
+    "relationships": [],
+    "events": [
+      {
+        "id": "event:e01",
+        "description": "Alle vier bleiben nach der Schließung im Museum.",
+        "time": {
+          "kind": "instant",
+          "at": 0
+        },
+        "locationId": "location:foyer",
+        "participantIds": [
+          "person:max",
+          "person:lina",
+          "person:nora",
+          "person:oskar"
+        ],
+        "itemIds": [],
+        "causedByEventIds": []
+      },
+      {
+        "id": "event:e02",
+        "description": "Max betrachtet die Medaille; Oskar beobachtet ihn. Max entnimmt sie nicht.",
+        "time": {
+          "kind": "instant",
+          "at": 120
+        },
+        "locationId": "location:galerie",
+        "participantIds": [
+          "person:max",
+          "person:oskar"
+        ],
+        "itemIds": [
+          "item:medaille"
+        ],
+        "causedByEventIds": []
+      },
+      {
+        "id": "event:e03",
+        "description": "Oskar übergibt Lina den Vitrinenschlüssel.",
+        "time": {
+          "kind": "instant",
+          "at": 180
+        },
+        "locationId": "location:archiv",
+        "participantIds": [
+          "person:oskar",
+          "person:lina"
+        ],
+        "itemIds": [
+          "item:schluessel"
+        ],
+        "causedByEventIds": []
+      },
+      {
+        "id": "event:e04",
+        "description": "Lina entnimmt die Medaille eigenhändig.",
+        "time": {
+          "kind": "instant",
+          "at": 240
+        },
+        "locationId": "location:galerie",
+        "participantIds": [
+          "person:lina"
+        ],
+        "itemIds": [
+          "item:medaille",
+          "item:schluessel"
+        ],
+        "causedByEventIds": []
+      },
+      {
+        "id": "event:e05",
+        "description": "Nora und Max sind im synchronisierten Hoffoto erfasst.",
+        "time": {
+          "kind": "interval",
+          "start": 220,
+          "end": 280
+        },
+        "locationId": "location:hof",
+        "participantIds": [
+          "person:max",
+          "person:nora"
+        ],
+        "itemIds": [
+          "item:kamera"
+        ],
+        "causedByEventIds": []
+      },
+      {
+        "id": "event:e06",
+        "description": "Oskar arbeitet im Archiv, die Archivkamera erfasst ihn.",
+        "time": {
+          "kind": "interval",
+          "start": 220,
+          "end": 280
+        },
+        "locationId": "location:archiv",
+        "participantIds": [
+          "person:oskar"
+        ],
+        "itemIds": [
+          "item:terminal"
+        ],
+        "causedByEventIds": []
+      },
+      {
+        "id": "event:e07",
+        "description": "Lina legt die Medaille in die Transportkassette; das öffentliche Bild zeigt nur den geschlossenen Deckel.",
+        "time": {
+          "kind": "instant",
+          "at": 300
+        },
+        "locationId": "location:werkstatt",
+        "participantIds": [
+          "person:lina"
+        ],
+        "itemIds": [
+          "item:medaille",
+          "item:kassette"
+        ],
+        "causedByEventIds": []
+      },
+      {
+        "id": "event:e08",
+        "description": "Nora entdeckt die leere Vitrine.",
+        "time": {
+          "kind": "instant",
+          "at": 360
+        },
+        "locationId": "location:galerie",
+        "participantIds": [
+          "person:nora"
+        ],
+        "itemIds": [],
+        "causedByEventIds": []
+      }
+    ],
+    "motives": [
+      {
+        "id": "motive:lina",
+        "personId": "person:lina",
+        "eventIds": [
+          "event:e04"
+        ],
+        "description": "Lina will eine unerlaubte Reparatur vor der morgigen Leihgeberprüfung verbergen. Motive sind hier Erzählung, keine Proof-Prämisse."
+      }
+    ],
+    "propositions": [
+      {
+        "id": "proposition:p01",
+        "claim": {
+          "kind": "personAt",
+          "personId": "person:max",
+          "locationId": "location:galerie",
+          "at": 120
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p02",
+        "claim": {
+          "kind": "personAt",
+          "personId": "person:max",
+          "locationId": "location:galerie",
+          "at": 240
+        },
+        "truth": false
+      },
+      {
+        "id": "proposition:p03",
+        "claim": {
+          "kind": "personAt",
+          "personId": "person:max",
+          "locationId": "location:hof",
+          "at": 240
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p04",
+        "claim": {
+          "kind": "personAt",
+          "personId": "person:nora",
+          "locationId": "location:hof",
+          "at": 240
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p05",
+        "claim": {
+          "kind": "personAt",
+          "personId": "person:oskar",
+          "locationId": "location:archiv",
+          "at": 240
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p06",
+        "claim": {
+          "kind": "personAt",
+          "personId": "person:lina",
+          "locationId": "location:galerie",
+          "at": 240
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p07",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e03",
+          "personId": "person:lina"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p08",
+        "claim": {
+          "kind": "eventHasItem",
+          "eventId": "event:e03",
+          "itemId": "item:schluessel"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p09",
+        "claim": {
+          "kind": "eventHasItem",
+          "eventId": "event:e06",
+          "itemId": "item:terminal"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p10",
+        "claim": {
+          "kind": "eventHasItem",
+          "eventId": "event:e05",
+          "itemId": "item:kamera"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p11",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e07",
+          "personId": "person:lina"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p12",
+        "claim": {
+          "kind": "eventHasItem",
+          "eventId": "event:e04",
+          "itemId": "item:medaille"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p13",
+        "claim": {
+          "kind": "eventHasItem",
+          "eventId": "event:e07",
+          "itemId": "item:medaille"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p14",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e04",
+          "personId": "person:max"
+        },
+        "truth": false
+      },
+      {
+        "id": "proposition:p15",
+        "claim": {
+          "kind": "eventHasItem",
+          "eventId": "event:e04",
+          "itemId": "item:schluessel"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p16",
+        "claim": {
+          "kind": "eventHasItem",
+          "eventId": "event:e07",
+          "itemId": "item:kassette"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p17",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e03",
+          "personId": "person:oskar"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p18",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e05",
+          "personId": "person:nora"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p19",
+        "claim": {
+          "kind": "personAt",
+          "personId": "person:lina",
+          "locationId": "location:archiv",
+          "at": 180
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p20",
+        "claim": {
+          "kind": "personAt",
+          "personId": "person:lina",
+          "locationId": "location:werkstatt",
+          "at": 300
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p21",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e01",
+          "personId": "person:max"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p22",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e01",
+          "personId": "person:lina"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p23",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e01",
+          "personId": "person:nora"
+        },
+        "truth": true
+      },
+      {
+        "id": "proposition:p24",
+        "claim": {
+          "kind": "eventHasParticipant",
+          "eventId": "event:e01",
+          "personId": "person:oskar"
+        },
+        "truth": true
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence:d01",
+        "description": "Besucherstempel bestätigt Max um 18:02 in der Galerie. Keine Entnahmebehauptung.",
+        "source": {
+          "kind": "location",
+          "id": "location:galerie"
+        },
+        "links": [
+          {
+            "propositionId": "proposition:p01",
+            "direction": "supports"
+          }
+        ]
+      },
+      {
+        "id": "evidence:d02",
+        "description": "Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität.",
+        "source": {
+          "kind": "event",
+          "id": "event:e04"
+        },
+        "links": [
+          {
+            "propositionId": "proposition:p12",
+            "direction": "supports"
+          }
+        ]
+      },
+      {
+        "id": "evidence:d03",
+        "description": "Kontaktbogen zeigt Nora beim Hoffototermin, aber keine Uhrzeit und keinen vollständigen Film.",
+        "source": {
+          "kind": "location",
+          "id": "location:hof"
+        },
+        "links": [
+          {
+            "propositionId": "proposition:p18",
+            "direction": "supports"
+          }
+        ]
+      },
+      {
+        "id": "evidence:d04",
+        "description": "Vollständiger Kamerafilm zeigt Max und Nora um 18:04:00 im Hof.",
+        "source": {
+          "kind": "item",
+          "id": "item:kamera"
+        },
+        "links": [
+          {
+            "propositionId": "proposition:p03",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p04",
+            "direction": "supports"
+          }
+        ]
+      },
+      {
+        "id": "evidence:d05",
+        "description": "Archivkamera zeigt Oskar um 18:04:00 im Archiv.",
+        "source": {
+          "kind": "item",
+          "id": "item:terminal"
+        },
+        "links": [
+          {
+            "propositionId": "proposition:p05",
+            "direction": "supports"
+          }
+        ]
+      },
+      {
+        "id": "evidence:d06",
+        "description": "Werkstattaufnahme zeigt Lina um 18:05 an einer geschlossenen Transportkassette. Inhalt nicht sichtbar.",
+        "source": {
+          "kind": "location",
+          "id": "location:werkstatt"
+        },
+        "links": [
+          {
+            "propositionId": "proposition:p11",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p16",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p20",
+            "direction": "supports"
+          }
+        ]
+      },
+      {
+        "id": "evidence:d07",
+        "description": "Quittung bestätigt Oskar und Lina bei der Schlüsselübergabe um 18:03.",
+        "source": {
+          "kind": "location",
+          "id": "location:archiv"
+        },
+        "links": [
+          {
+            "propositionId": "proposition:p07",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p08",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p17",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p19",
+            "direction": "supports"
+          }
+        ]
+      },
+      {
+        "id": "evidence:d08",
+        "description": "Schließliste nennt genau die vier Personen, die im Museum verblieben.",
+        "source": {
+          "kind": "location",
+          "id": "location:foyer"
+        },
+        "links": [
+          {
+            "propositionId": "proposition:p21",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p22",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p23",
+            "direction": "supports"
+          },
+          {
+            "propositionId": "proposition:p24",
+            "direction": "supports"
+          }
+        ]
+      }
+    ],
+    "secrets": [
+      {
+        "id": "secret:medaille",
+        "propositionIds": [
+          "proposition:p06",
+          "proposition:p13",
+          "proposition:p15"
+        ]
+      }
+    ],
+    "redHerrings": [
+      {
+        "id": "red-herring:max",
+        "evidenceIds": [
+          "evidence:d01"
+        ],
+        "misleadingPropositionId": "proposition:p02"
+      }
+    ]
+  },
+  "solution": {
+    "schemaVersion": 1,
+    "caseId": "case:leere-vitrine-v1",
+    "revision": 1,
+    "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+    "resolutions": [
+      {
+        "eventId": "event:e04",
+        "targets": [
+          {
+            "kind": "item",
+            "id": "item:medaille"
+          }
+        ],
+        "responsibility": {
+          "completeness": "complete",
+          "assignments": [
+            {
+              "personId": "person:lina",
+              "roles": [
+                "direct_actor"
+              ]
+            }
+          ]
+        },
+        "intent": "intended",
+        "mechanism": "ordinary",
+        "causesComplete": true
+      }
+    ],
+    "conclusions": [
+      {
+        "id": "conclusion:actor-max",
+        "claim": {
+          "kind": "personRoleForEvent",
+          "personId": "person:max",
+          "eventId": "event:e04",
+          "role": "direct_actor"
+        }
+      },
+      {
+        "id": "conclusion:actor-lina",
+        "claim": {
+          "kind": "personRoleForEvent",
+          "personId": "person:lina",
+          "eventId": "event:e04",
+          "role": "direct_actor"
+        }
+      },
+      {
+        "id": "conclusion:actor-nora",
+        "claim": {
+          "kind": "personRoleForEvent",
+          "personId": "person:nora",
+          "eventId": "event:e04",
+          "role": "direct_actor"
+        }
+      },
+      {
+        "id": "conclusion:actor-oskar",
+        "claim": {
+          "kind": "personRoleForEvent",
+          "personId": "person:oskar",
+          "eventId": "event:e04",
+          "role": "direct_actor"
+        }
+      }
+    ],
+    "requiredConclusions": [
+      {
+        "conclusionId": "conclusion:actor-max",
+        "value": false
+      },
+      {
+        "conclusionId": "conclusion:actor-lina",
+        "value": true
+      },
+      {
+        "conclusionId": "conclusion:actor-nora",
+        "value": false
+      },
+      {
+        "conclusionId": "conclusion:actor-oskar",
+        "value": false
+      }
+    ]
+  },
+  "case-host.design": {
+    "status": "CASE-SPECIFIC PROPOSAL / DESIGN INPUT; NOT IMPLEMENTED ON MAIN",
+    "sourceMain": "3d7545d843883418348004e68717399a64da7a7d",
+    "saltHex": "00112233445566778899aabbccddeeff",
+    "proofPolicy": {
+      "profile": "vitrine-proof-v1",
+      "rootMode": "explicit-certified-evidence-observations-only",
+      "rules": [
+        "manual_presence_elsewhere_excludes_direct_actor",
+        "closed_four_person_single_direct_actor"
+      ],
+      "licensedInstanceRelease": "only after public premises are actually released; never export private proof graph",
+      "engineVersion": "scratch-v1"
+    },
+    "redHerringDesign": {
+      "evidenceId": "evidence:d01",
+      "trueObservation": "proposition:p01",
+      "misleadingConclusion": {
+        "conclusionId": "conclusion:actor-max",
+        "value": true
+      },
+      "correctionEvidence": "evidence:d04",
+      "status": "CASE-SPECIFIC PROPOSAL; native RedHerring cannot reference ConclusionClaim"
+    },
+    "initialKnown": [
+      {
+        "kind": "person",
+        "id": "person:max"
+      },
+      {
+        "kind": "person",
+        "id": "person:lina"
+      },
+      {
+        "kind": "person",
+        "id": "person:nora"
+      },
+      {
+        "kind": "person",
+        "id": "person:oskar"
+      },
+      {
+        "kind": "location",
+        "id": "location:galerie"
+      },
+      {
+        "kind": "location",
+        "id": "location:hof"
+      },
+      {
+        "kind": "location",
+        "id": "location:archiv"
+      },
+      {
+        "kind": "location",
+        "id": "location:werkstatt"
+      },
+      {
+        "kind": "location",
+        "id": "location:foyer"
+      },
+      {
+        "kind": "item",
+        "id": "item:medaille"
+      },
+      {
+        "kind": "event",
+        "id": "event:e04"
+      }
+    ],
+    "challenge": {
+      "eventId": "event:e04",
+      "crimeTime": 240,
+      "crimeLocation": "location:galerie",
+      "publicRoster": [
+        "person:max",
+        "person:lina",
+        "person:nora",
+        "person:oskar"
+      ],
+      "answerScope": [
+        {
+          "kind": "personRoleForEvent",
+          "personId": "person:max",
+          "eventId": "event:e04",
+          "role": "direct_actor"
+        },
+        {
+          "kind": "personRoleForEvent",
+          "personId": "person:lina",
+          "eventId": "event:e04",
+          "role": "direct_actor"
+        },
+        {
+          "kind": "personRoleForEvent",
+          "personId": "person:nora",
+          "eventId": "event:e04",
+          "role": "direct_actor"
+        },
+        {
+          "kind": "personRoleForEvent",
+          "personId": "person:oskar",
+          "eventId": "event:e04",
+          "role": "direct_actor"
+        }
+      ],
+      "requireAllFour": true,
+      "requireReleasedProof": true,
+      "playerVerdicts": [
+        "solved",
+        "not_solved"
+      ]
+    },
+    "publicRules": [
+      {
+        "id": "rule:manual-presence",
+        "text": "Die Medaille wurde um 18:04:00 in der Galerie von einer einzelnen Person eigenhändig entnommen. Wer nachweislich zu genau diesem Zeitpunkt an einem anderen Ort war, scheidet als direkter Entnehmer aus."
+      },
+      {
+        "id": "rule:closed-roster",
+        "text": "Nur Max, Lina, Nora und Oskar kommen als direkte Entnehmer in Betracht. Es gab genau einen direkten Entnehmer. Sind drei ausgeschlossen, bleibt die vierte Person."
+      },
+      {
+        "id": "rule:certified-sources",
+        "text": "Die als Beobachtung freigegebenen Bildnachweise sind in diesem Fall unverfälscht und mit dem Entnahmesensor synchronisiert. Zeugenaussagen können irren. Ein Besuch zu einer anderen Uhrzeit und eine Gesprächsverweigerung beweisen keine eigenhändige Entnahme."
+      }
+    ],
+    "access": {
+      "evidence:d01": {
+        "kind": "search_location",
+        "target": "location:galerie"
+      },
+      "evidence:d02": {
+        "kind": "search_location",
+        "target": "location:galerie"
+      },
+      "evidence:d03": {
+        "kind": "search_location",
+        "target": "location:hof"
+      },
+      "evidence:d04": {
+        "kind": "examine_item",
+        "target": "item:kamera"
+      },
+      "evidence:d05": {
+        "kind": "examine_item",
+        "target": "item:terminal"
+      },
+      "evidence:d06": {
+        "kind": "search_location",
+        "target": "location:werkstatt"
+      },
+      "evidence:d07": {
+        "kind": "search_location",
+        "target": "location:archiv"
+      },
+      "evidence:d08": {
+        "kind": "search_location",
+        "target": "location:foyer"
+      }
+    },
+    "presentation": {
+      "evidence:d01": {
+        "title": "Besucherstempel",
+        "text": "Der Besucherstempel bestätigt: Max war um 18:02 in der Galerie. Über den Zeitpunkt 18:04 sagt der Stempel nichts.",
+        "observed": [
+          "proposition:p01"
+        ]
+      },
+      "evidence:d02": {
+        "title": "Entnahmeprotokoll",
+        "text": "Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität.",
+        "observed": [
+          "proposition:p12"
+        ]
+      },
+      "evidence:d03": {
+        "title": "Kontaktbogen",
+        "text": "Nora ist auf einem undatierten Kontaktbogen des Hoffototermins erkennbar. Frage sie nach dem vollständigen Fotonachweis.",
+        "observed": [
+          "proposition:p18"
+        ]
+      },
+      "evidence:d04": {
+        "title": "Vollständiger Hoffilm",
+        "text": "Vollständiger Kamerafilm zeigt Max und Nora um 18:04:00 im Hof.",
+        "observed": [
+          "proposition:p03",
+          "proposition:p04"
+        ]
+      },
+      "evidence:d05": {
+        "title": "Archivaufnahme",
+        "text": "Archivkamera zeigt Oskar um 18:04:00 im Archiv.",
+        "observed": [
+          "proposition:p05"
+        ]
+      },
+      "evidence:d06": {
+        "title": "Werkstattaufnahme",
+        "text": "Werkstattaufnahme, 18:05: Lina steht an einer geschlossenen Transportkassette. Ihr Inhalt ist nicht sichtbar.",
+        "observed": [
+          "proposition:p11",
+          "proposition:p16",
+          "proposition:p20"
+        ]
+      },
+      "evidence:d07": {
+        "title": "Schlüsselquittung",
+        "text": "Quittung bestätigt Oskar und Lina bei der Schlüsselübergabe um 18:03.",
+        "observed": [
+          "proposition:p07",
+          "proposition:p08",
+          "proposition:p17",
+          "proposition:p19"
+        ]
+      },
+      "evidence:d08": {
+        "title": "Schließliste",
+        "text": "Schließliste nennt genau die vier Personen, die im Museum verblieben.",
+        "observed": [
+          "proposition:p21",
+          "proposition:p22",
+          "proposition:p23",
+          "proposition:p24"
+        ]
+      }
+    },
+    "questionText": {
+      "question:q01": {
+        "npc": "person:max",
+        "text": "Waren Sie um 18:02 in der Galerie?"
+      },
+      "question:q02": {
+        "npc": "person:max",
+        "text": "Waren Sie um 18:04 in der Galerie?"
+      },
+      "question:q03": {
+        "npc": "person:max",
+        "text": "Waren Sie um 18:04 im Hof?"
+      },
+      "question:q04": {
+        "npc": "person:max",
+        "text": "War Lina um 18:04 in der Galerie?"
+      },
+      "question:q05": {
+        "npc": "person:max",
+        "text": "Wo ist der vollständige Fotonachweis?"
+      },
+      "question:q06": {
+        "npc": "person:nora",
+        "text": "War Max um 18:04 im Hof?"
+      },
+      "question:q07": {
+        "npc": "person:nora",
+        "text": "Waren Sie um 18:04 im Hof?"
+      },
+      "question:q08": {
+        "npc": "person:nora",
+        "text": "Kann ich den vollständigen Film dieses Hoffototermins sehen?"
+      },
+      "question:q09": {
+        "npc": "person:nora",
+        "text": "War Max um 18:04 in der Galerie?"
+      },
+      "question:q10": {
+        "npc": "person:nora",
+        "text": "War Lina um 18:04 in der Galerie?"
+      },
+      "question:q11": {
+        "npc": "person:oskar",
+        "text": "War Max um 18:02 in der Galerie?"
+      },
+      "question:q12": {
+        "npc": "person:oskar",
+        "text": "War Max um 18:04 in der Galerie?"
+      },
+      "question:q13": {
+        "npc": "person:oskar",
+        "text": "Waren Sie um 18:04 im Archiv?"
+      },
+      "question:q14": {
+        "npc": "person:oskar",
+        "text": "Wo ist der unabhängige Archivnachweis?"
+      },
+      "question:q15": {
+        "npc": "person:oskar",
+        "text": "War Lina um 18:03 bei Ihnen im Archiv?"
+      },
+      "question:q16": {
+        "npc": "person:lina",
+        "text": "Waren Sie um 18:04 in der Galerie?"
+      },
+      "question:q17": {
+        "npc": "person:lina",
+        "text": "Hat Max die Medaille eigenhändig entnommen?"
+      },
+      "question:q18": {
+        "npc": "person:lina",
+        "text": "Waren Sie um 18:05 in der Werkstatt?"
+      },
+      "question:q19": {
+        "npc": "person:lina",
+        "text": "War Nora um 18:04 im Hof?"
+      },
+      "question:q20": {
+        "npc": "person:lina",
+        "text": "Möchten Sie zur Entnahme Stellung nehmen?"
+      }
+    },
+    "publicEventLabels": {
+      "event:e01": "Schließrunde",
+      "event:e02": "Galeriebesuch um 18:02",
+      "event:e03": "Schlüsselübergabe um 18:03",
+      "event:e04": "Entnahme um 18:04",
+      "event:e05": "Hoffototermin",
+      "event:e06": "Archivarbeit",
+      "event:e07": "Werkstattaufnahme um 18:05",
+      "event:e08": "Entdeckung der leeren Vitrine"
+    },
+    "personRoles": {
+      "person:max": "Historiker und Vertreter der ehemaligen Eigentümerfamilie",
+      "person:lina": "Restauratorin",
+      "person:nora": "Museumsfotografin",
+      "person:oskar": "Aufsicht und Schlüsselverwalter"
+    },
+    "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+    "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
+    "catalogueHash": "c039106c98bf55e0eddb3bc407269690e69bbdfa52dc9953f95516f3d1d871a8",
+    "entityLabels": {
+      "person:max": "Max Brandt",
+      "person:lina": "Lina Kern",
+      "person:nora": "Nora Weiss",
+      "person:oskar": "Oskar Falk",
+      "location:galerie": "Galerie",
+      "location:hof": "Innenhof",
+      "location:archiv": "Archiv",
+      "location:werkstatt": "Werkstatt",
+      "location:foyer": "Foyer",
+      "item:medaille": "Goldmedaille „Morgenstern“",
+      "item:schluessel": "Vitrinenschlüssel",
+      "item:kamera": "Noras Kamera",
+      "item:terminal": "Archivterminal",
+      "item:kassette": "Transportkassette",
+      "event:e01": "Schließrunde",
+      "event:e02": "Galeriebesuch um 18:02",
+      "event:e03": "Schlüsselübergabe um 18:03",
+      "event:e04": "Entnahme um 18:04",
+      "event:e05": "Hoffototermin",
+      "event:e06": "Archivarbeit",
+      "event:e07": "Werkstattaufnahme um 18:05",
+      "event:e08": "Entdeckung der leeren Vitrine",
+      "evidence:d01": "Besucherstempel",
+      "evidence:d02": "Entnahmeprotokoll",
+      "evidence:d03": "Kontaktbogen",
+      "evidence:d04": "Vollständiger Hoffilm",
+      "evidence:d05": "Archivaufnahme",
+      "evidence:d06": "Werkstattaufnahme",
+      "evidence:d07": "Schlüsselquittung",
+      "evidence:d08": "Schließliste"
+    }
+  },
+  "questions.input": {
+    "schemaVersion": 1,
+    "caseId": "case:leere-vitrine-v1",
+    "truthHash": "TO_BE_BOUND",
+    "revision": 1,
+    "questions": [
+      {
+        "id": "question:q01",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          }
+        ]
+      },
+      {
+        "id": "question:q02",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          }
+        ]
+      },
+      {
+        "id": "question:q03",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "location",
+            "id": "location:hof"
+          }
+        ]
+      },
+      {
+        "id": "question:q04",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          }
+        ]
+      },
+      {
+        "id": "question:q05",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          }
+        ]
+      },
+      {
+        "id": "question:q06",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "location",
+            "id": "location:hof"
+          }
+        ]
+      },
+      {
+        "id": "question:q07",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:nora"
+          },
+          {
+            "kind": "location",
+            "id": "location:hof"
+          }
+        ]
+      },
+      {
+        "id": "question:q08",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:nora"
+          },
+          {
+            "kind": "event",
+            "id": "event:e05"
+          }
+        ]
+      },
+      {
+        "id": "question:q09",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          }
+        ]
+      },
+      {
+        "id": "question:q10",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          }
+        ]
+      },
+      {
+        "id": "question:q11",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          }
+        ]
+      },
+      {
+        "id": "question:q12",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          }
+        ]
+      },
+      {
+        "id": "question:q13",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:oskar"
+          },
+          {
+            "kind": "location",
+            "id": "location:archiv"
+          }
+        ]
+      },
+      {
+        "id": "question:q14",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:oskar"
+          }
+        ]
+      },
+      {
+        "id": "question:q15",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          {
+            "kind": "location",
+            "id": "location:archiv"
+          }
+        ]
+      },
+      {
+        "id": "question:q16",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          }
+        ]
+      },
+      {
+        "id": "question:q17",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "event",
+            "id": "event:e04"
+          }
+        ]
+      },
+      {
+        "id": "question:q18",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          {
+            "kind": "location",
+            "id": "location:werkstatt"
+          }
+        ]
+      },
+      {
+        "id": "question:q19",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:nora"
+          },
+          {
+            "kind": "location",
+            "id": "location:hof"
+          }
+        ]
+      },
+      {
+        "id": "question:q20",
+        "mentions": [
+          {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          {
+            "kind": "event",
+            "id": "event:e04"
+          }
+        ]
+      }
+    ]
+  },
+  "npcs": {
+    "max": {
+      "schemaVersion": 1,
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "TO_BE_BOUND",
+      "solutionHash": "TO_BE_BOUND",
+      "npcId": "person:max",
+      "revision": 1,
+      "asOf": 480,
+      "awareness": [
+        {
+          "subject": {
+            "kind": "event",
+            "id": "event:e05"
+          },
+          "acquiredAt": 400,
+          "provenance": {
+            "kind": "author_modeled_inference"
+          }
+        },
+        {
+          "subject": {
+            "kind": "item",
+            "id": "item:kamera"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "location",
+            "id": "location:galerie"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "location",
+            "id": "location:hof"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:max"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        }
+      ],
+      "attitudes": [
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p01"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 120,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e02"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p02"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": false
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e05"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p03"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e05"
+          }
+        }
+      ]
+    },
+    "lina": {
+      "schemaVersion": 1,
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "TO_BE_BOUND",
+      "solutionHash": "TO_BE_BOUND",
+      "npcId": "person:lina",
+      "revision": 1,
+      "asOf": 480,
+      "awareness": [
+        {
+          "subject": {
+            "kind": "event",
+            "id": "event:e04"
+          },
+          "acquiredAt": 400,
+          "provenance": {
+            "kind": "author_modeled_inference"
+          }
+        },
+        {
+          "subject": {
+            "kind": "location",
+            "id": "location:hof"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "location",
+            "id": "location:werkstatt"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:max"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:nora"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        }
+      ],
+      "attitudes": [
+        {
+          "subject": {
+            "kind": "conclusion",
+            "id": "conclusion:actor-max"
+          },
+          "stance": {
+            "kind": "belief",
+            "value": false
+          },
+          "acquiredAt": 400,
+          "provenance": {
+            "kind": "author_modeled_inference"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p20"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 300,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e07"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p06"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e04"
+          }
+        }
+      ]
+    },
+    "nora": {
+      "schemaVersion": 1,
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "TO_BE_BOUND",
+      "solutionHash": "TO_BE_BOUND",
+      "npcId": "person:nora",
+      "revision": 1,
+      "asOf": 480,
+      "awareness": [
+        {
+          "subject": {
+            "kind": "event",
+            "id": "event:e05"
+          },
+          "acquiredAt": 400,
+          "provenance": {
+            "kind": "author_modeled_inference"
+          }
+        },
+        {
+          "subject": {
+            "kind": "item",
+            "id": "item:kamera"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "location",
+            "id": "location:galerie"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "location",
+            "id": "location:hof"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:max"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:nora"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        }
+      ],
+      "attitudes": [
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p03"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e05"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p04"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e05"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p10"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e05"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p02"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": false
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e05"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p06"
+          },
+          "stance": {
+            "kind": "uncertain",
+            "leaning": null
+          },
+          "acquiredAt": 400,
+          "provenance": {
+            "kind": "author_modeled_inference"
+          }
+        }
+      ]
+    },
+    "oskar": {
+      "schemaVersion": 1,
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "TO_BE_BOUND",
+      "solutionHash": "TO_BE_BOUND",
+      "npcId": "person:oskar",
+      "revision": 1,
+      "asOf": 480,
+      "awareness": [
+        {
+          "subject": {
+            "kind": "event",
+            "id": "event:e06"
+          },
+          "acquiredAt": 400,
+          "provenance": {
+            "kind": "author_modeled_inference"
+          }
+        },
+        {
+          "subject": {
+            "kind": "item",
+            "id": "item:terminal"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "location",
+            "id": "location:archiv"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "location",
+            "id": "location:galerie"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:max"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        },
+        {
+          "subject": {
+            "kind": "person",
+            "id": "person:oskar"
+          },
+          "acquiredAt": 0,
+          "provenance": {
+            "kind": "prior_knowledge"
+          }
+        }
+      ],
+      "attitudes": [
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p01"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 120,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e02"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p02"
+          },
+          "stance": {
+            "kind": "belief",
+            "value": true
+          },
+          "acquiredAt": 400,
+          "provenance": {
+            "kind": "author_modeled_inference"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p05"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e06"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p09"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 240,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e06"
+          }
+        },
+        {
+          "subject": {
+            "kind": "proposition",
+            "id": "proposition:p19"
+          },
+          "stance": {
+            "kind": "knowledge",
+            "value": true
+          },
+          "acquiredAt": 180,
+          "provenance": {
+            "kind": "witnessed_event",
+            "eventId": "event:e03"
+          }
+        }
+      ]
+    }
+  },
+  "profiles": {
+    "max": {
+      "schemaVersion": 1,
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "TO_BE_BOUND",
+      "catalogueHash": "TO_BE_BOUND",
+      "npcId": "person:max",
+      "revision": 1,
+      "rules": [
+        {
+          "questionId": "question:q01",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:galerie",
+            "at": 120
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q02",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:galerie",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q03",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q04",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lina",
+            "locationId": "location:galerie",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q05",
+          "act": "answer",
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e05",
+            "itemId": "item:kamera"
+          },
+          "reveal": [
+            {
+              "kind": "event",
+              "id": "event:e05"
+            },
+            {
+              "kind": "item",
+              "id": "item:kamera"
+            }
+          ]
+        }
+      ]
+    },
+    "lina": {
+      "schemaVersion": 1,
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "TO_BE_BOUND",
+      "catalogueHash": "TO_BE_BOUND",
+      "npcId": "person:lina",
+      "revision": 1,
+      "rules": [
+        {
+          "questionId": "question:q16",
+          "act": "decline"
+        },
+        {
+          "questionId": "question:q17",
+          "act": "answer",
+          "claim": {
+            "kind": "personRoleForEvent",
+            "personId": "person:max",
+            "eventId": "event:e04",
+            "role": "direct_actor"
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q18",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lina",
+            "locationId": "location:werkstatt",
+            "at": 300
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q19",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:nora",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q20",
+          "act": "decline"
+        }
+      ]
+    },
+    "nora": {
+      "schemaVersion": 1,
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "TO_BE_BOUND",
+      "catalogueHash": "TO_BE_BOUND",
+      "npcId": "person:nora",
+      "revision": 1,
+      "rules": [
+        {
+          "questionId": "question:q06",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q07",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:nora",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q08",
+          "act": "answer",
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e05",
+            "itemId": "item:kamera"
+          },
+          "reveal": [
+            {
+              "kind": "item",
+              "id": "item:kamera"
+            }
+          ]
+        },
+        {
+          "questionId": "question:q09",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:galerie",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q10",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lina",
+            "locationId": "location:galerie",
+            "at": 240
+          },
+          "reveal": []
+        }
+      ]
+    },
+    "oskar": {
+      "schemaVersion": 1,
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "TO_BE_BOUND",
+      "catalogueHash": "TO_BE_BOUND",
+      "npcId": "person:oskar",
+      "revision": 1,
+      "rules": [
+        {
+          "questionId": "question:q11",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:galerie",
+            "at": 120
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q12",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:galerie",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q13",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:oskar",
+            "locationId": "location:archiv",
+            "at": 240
+          },
+          "reveal": []
+        },
+        {
+          "questionId": "question:q14",
+          "act": "answer",
+          "claim": {
+            "kind": "eventHasItem",
+            "eventId": "event:e06",
+            "itemId": "item:terminal"
+          },
+          "reveal": [
+            {
+              "kind": "event",
+              "id": "event:e06"
+            },
+            {
+              "kind": "item",
+              "id": "item:terminal"
+            }
+          ]
+        },
+        {
+          "questionId": "question:q15",
+          "act": "answer",
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:lina",
+            "locationId": "location:archiv",
+            "at": 180
+          },
+          "reveal": []
+        }
+      ]
+    }
+  },
+  "proof": {
+    "schemaVersion": 1,
+    "bindings": {
+      "caseId": "case:leere-vitrine-v1",
+      "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+      "solutionHash": "52b7912e999d19866fbdf7c6cb4b3cd76c50c74af8f11d39f0e89c4e3c10adcf",
+      "releaseHash": "2eaf25cc615449937eb6cc6ea6cc7b50f344bd1e7824a3b8165885efea2ed0a9"
+    },
+    "answerScope": [
+      "conclusion:actor-max",
+      "conclusion:actor-lina",
+      "conclusion:actor-nora",
+      "conclusion:actor-oskar"
+    ],
+    "ambiguityPolicy": "must_disambiguate",
+    "question": {
+      "kind": "required_literals"
+    },
+    "observations": [
+      {
+        "id": "observed:hof-contact",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p18",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:d03"
+        }
+      },
+      {
+        "id": "observed:max",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p03",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:d04"
+        }
+      },
+      {
+        "id": "public-rule:max",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:max",
+            "allOf": [
+              "observation:max"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-max",
+              "value": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "observed:nora",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p04",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:d04"
+        }
+      },
+      {
+        "id": "public-rule:nora",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:nora",
+            "allOf": [
+              "observation:nora"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-nora",
+              "value": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "observed:oskar",
+        "kind": "OBSERVED",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p05",
+          "value": true
+        },
+        "source": {
+          "kind": "evidence",
+          "evidenceId": "evidence:d05"
+        }
+      },
+      {
+        "id": "public-rule:oskar",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "exclude:oskar",
+            "allOf": [
+              "observation:oskar"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-oskar",
+              "value": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "public-rule:remaining",
+        "kind": "PUBLIC_RULE",
+        "rules": [
+          {
+            "edgeId": "remaining:lina",
+            "allOf": [
+              "literal:max",
+              "literal:nora",
+              "literal:oskar"
+            ],
+            "yields": {
+              "kind": "conclusion",
+              "conclusionId": "conclusion:actor-lina",
+              "value": true
+            }
+          }
+        ]
+      }
+    ],
+    "nodes": [
+      {
+        "id": "observation:hof-contact",
+        "kind": "observation",
+        "observationId": "observed:hof-contact"
+      },
+      {
+        "id": "observation:max",
+        "kind": "observation",
+        "observationId": "observed:max"
+      },
+      {
+        "id": "literal:max",
+        "kind": "literal",
+        "literal": {
+          "kind": "conclusion",
+          "conclusionId": "conclusion:actor-max",
+          "value": false
+        }
+      },
+      {
+        "id": "license:max",
+        "kind": "observation",
+        "observationId": "public-rule:max"
+      },
+      {
+        "id": "observation:nora",
+        "kind": "observation",
+        "observationId": "observed:nora"
+      },
+      {
+        "id": "literal:nora",
+        "kind": "literal",
+        "literal": {
+          "kind": "conclusion",
+          "conclusionId": "conclusion:actor-nora",
+          "value": false
+        }
+      },
+      {
+        "id": "license:nora",
+        "kind": "observation",
+        "observationId": "public-rule:nora"
+      },
+      {
+        "id": "observation:oskar",
+        "kind": "observation",
+        "observationId": "observed:oskar"
+      },
+      {
+        "id": "literal:oskar",
+        "kind": "literal",
+        "literal": {
+          "kind": "conclusion",
+          "conclusionId": "conclusion:actor-oskar",
+          "value": false
+        }
+      },
+      {
+        "id": "license:oskar",
+        "kind": "observation",
+        "observationId": "public-rule:oskar"
+      },
+      {
+        "id": "literal:lina",
+        "kind": "literal",
+        "literal": {
+          "kind": "conclusion",
+          "conclusionId": "conclusion:actor-lina",
+          "value": true
+        }
+      },
+      {
+        "id": "license:remaining",
+        "kind": "observation",
+        "observationId": "public-rule:remaining"
+      }
+    ],
+    "edges": [
+      {
+        "id": "exclude:max",
+        "allOf": [
+          "observation:max",
+          "license:max"
+        ],
+        "to": "literal:max",
+        "license": "license:max"
+      },
+      {
+        "id": "exclude:nora",
+        "allOf": [
+          "observation:nora",
+          "license:nora"
+        ],
+        "to": "literal:nora",
+        "license": "license:nora"
+      },
+      {
+        "id": "exclude:oskar",
+        "allOf": [
+          "observation:oskar",
+          "license:oskar"
+        ],
+        "to": "literal:oskar",
+        "license": "license:oskar"
+      },
+      {
+        "id": "remaining:lina",
+        "allOf": [
+          "literal:max",
+          "literal:nora",
+          "literal:oskar",
+          "license:remaining"
+        ],
+        "to": "literal:lina",
+        "license": "license:remaining"
+      }
+    ],
+    "witnessStepIds": [
+      "search-hof",
+      "ask-nora-photo",
+      "read-camera",
+      "ask-oskar-record",
+      "read-terminal"
+    ]
+  },
+  "presentation": {
+    "schemaVersion": 1,
+    "caseId": "case:leere-vitrine-v1",
+    "truthHash": "77b2ec917f721522e2d623fe74cd7158bc9311216d2e42c865f5879cdf71bbef",
+    "entries": [
+      {
+        "evidenceId": "evidence:d01",
+        "text": "Der Besucherstempel bestätigt: Max war um 18:02 in der Galerie. Über den Zeitpunkt 18:04 sagt der Stempel nichts.",
+        "mentions": [
+          {
+            "kind": "location",
+            "id": "location:galerie"
+          },
+          {
+            "kind": "person",
+            "id": "person:max"
+          }
+        ],
+        "reports": [
+          {
+            "claim": {
+              "kind": "personAt",
+              "personId": "person:max",
+              "locationId": "location:galerie",
+              "at": 120
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          }
+        ]
+      },
+      {
+        "evidenceId": "evidence:d02",
+        "text": "Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität.",
+        "mentions": [
+          {
+            "kind": "event",
+            "id": "event:e04"
+          },
+          {
+            "kind": "item",
+            "id": "item:medaille"
+          }
+        ],
+        "reports": [
+          {
+            "claim": {
+              "kind": "eventHasItem",
+              "eventId": "event:e04",
+              "itemId": "item:medaille"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          }
+        ]
+      },
+      {
+        "evidenceId": "evidence:d03",
+        "text": "Nora ist auf einem undatierten Kontaktbogen des Hoffototermins erkennbar. Frage sie nach dem vollständigen Fotonachweis.",
+        "mentions": [
+          {
+            "kind": "event",
+            "id": "event:e05"
+          },
+          {
+            "kind": "person",
+            "id": "person:nora"
+          }
+        ],
+        "reports": [
+          {
+            "claim": {
+              "kind": "eventHasParticipant",
+              "eventId": "event:e05",
+              "personId": "person:nora"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          }
+        ]
+      },
+      {
+        "evidenceId": "evidence:d04",
+        "text": "Vollständiger Kamerafilm zeigt Max und Nora um 18:04:00 im Hof.",
+        "mentions": [
+          {
+            "kind": "location",
+            "id": "location:hof"
+          },
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "person",
+            "id": "person:nora"
+          }
+        ],
+        "reports": [
+          {
+            "claim": {
+              "kind": "personAt",
+              "personId": "person:max",
+              "locationId": "location:hof",
+              "at": 240
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "personAt",
+              "personId": "person:nora",
+              "locationId": "location:hof",
+              "at": 240
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          }
+        ]
+      },
+      {
+        "evidenceId": "evidence:d05",
+        "text": "Archivkamera zeigt Oskar um 18:04:00 im Archiv.",
+        "mentions": [
+          {
+            "kind": "location",
+            "id": "location:archiv"
+          },
+          {
+            "kind": "person",
+            "id": "person:oskar"
+          }
+        ],
+        "reports": [
+          {
+            "claim": {
+              "kind": "personAt",
+              "personId": "person:oskar",
+              "locationId": "location:archiv",
+              "at": 240
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          }
+        ]
+      },
+      {
+        "evidenceId": "evidence:d06",
+        "text": "Werkstattaufnahme, 18:05: Lina steht an einer geschlossenen Transportkassette. Ihr Inhalt ist nicht sichtbar.",
+        "mentions": [
+          {
+            "kind": "event",
+            "id": "event:e07"
+          },
+          {
+            "kind": "item",
+            "id": "item:kassette"
+          },
+          {
+            "kind": "location",
+            "id": "location:werkstatt"
+          },
+          {
+            "kind": "person",
+            "id": "person:lina"
+          }
+        ],
+        "reports": [
+          {
+            "claim": {
+              "kind": "eventHasParticipant",
+              "eventId": "event:e07",
+              "personId": "person:lina"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "eventHasItem",
+              "eventId": "event:e07",
+              "itemId": "item:kassette"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "personAt",
+              "personId": "person:lina",
+              "locationId": "location:werkstatt",
+              "at": 300
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          }
+        ]
+      },
+      {
+        "evidenceId": "evidence:d07",
+        "text": "Quittung bestätigt Oskar und Lina bei der Schlüsselübergabe um 18:03.",
+        "mentions": [
+          {
+            "kind": "event",
+            "id": "event:e03"
+          },
+          {
+            "kind": "item",
+            "id": "item:schluessel"
+          },
+          {
+            "kind": "location",
+            "id": "location:archiv"
+          },
+          {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          {
+            "kind": "person",
+            "id": "person:oskar"
+          }
+        ],
+        "reports": [
+          {
+            "claim": {
+              "kind": "eventHasParticipant",
+              "eventId": "event:e03",
+              "personId": "person:lina"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "eventHasItem",
+              "eventId": "event:e03",
+              "itemId": "item:schluessel"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "eventHasParticipant",
+              "eventId": "event:e03",
+              "personId": "person:oskar"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "personAt",
+              "personId": "person:lina",
+              "locationId": "location:archiv",
+              "at": 180
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          }
+        ]
+      },
+      {
+        "evidenceId": "evidence:d08",
+        "text": "Schließliste nennt genau die vier Personen, die im Museum verblieben.",
+        "mentions": [
+          {
+            "kind": "event",
+            "id": "event:e01"
+          },
+          {
+            "kind": "person",
+            "id": "person:lina"
+          },
+          {
+            "kind": "person",
+            "id": "person:max"
+          },
+          {
+            "kind": "person",
+            "id": "person:nora"
+          },
+          {
+            "kind": "person",
+            "id": "person:oskar"
+          }
+        ],
+        "reports": [
+          {
+            "claim": {
+              "kind": "eventHasParticipant",
+              "eventId": "event:e01",
+              "personId": "person:max"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "eventHasParticipant",
+              "eventId": "event:e01",
+              "personId": "person:lina"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "eventHasParticipant",
+              "eventId": "event:e01",
+              "personId": "person:nora"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          },
+          {
+            "claim": {
+              "kind": "eventHasParticipant",
+              "eventId": "event:e01",
+              "personId": "person:oskar"
+            },
+            "stance": "affirms",
+            "source": {
+              "kind": "observation"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "factivity": {
+    "status": "LAB ADAPTER PROPOSAL, NOT accepted Session or MYST-0004 API",
+    "presentationBytesSha256": "008c09ce5ecdadce4bc55dfcbf5370f09f4550e9793d8fbdd5162658f204804c",
+    "certificates": [
+      {
+        "observationId": "observed:hof-contact",
+        "evidenceId": "evidence:d03",
+        "report": {
+          "claim": {
+            "kind": "eventHasParticipant",
+            "eventId": "event:e05",
+            "personId": "person:nora"
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        "publicLicense": "rule:certified-sources",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p18",
+          "value": true
+        }
+      },
+      {
+        "observationId": "observed:max",
+        "evidenceId": "evidence:d04",
+        "report": {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:max",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        "publicLicense": "rule:certified-sources",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p03",
+          "value": true
+        }
+      },
+      {
+        "observationId": "observed:nora",
+        "evidenceId": "evidence:d04",
+        "report": {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:nora",
+            "locationId": "location:hof",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        "publicLicense": "rule:certified-sources",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p04",
+          "value": true
+        }
+      },
+      {
+        "observationId": "observed:oskar",
+        "evidenceId": "evidence:d05",
+        "report": {
+          "claim": {
+            "kind": "personAt",
+            "personId": "person:oskar",
+            "locationId": "location:archiv",
+            "at": 240
+          },
+          "stance": "affirms",
+          "source": {
+            "kind": "observation"
+          }
+        },
+        "publicLicense": "rule:certified-sources",
+        "literal": {
+          "kind": "proposition",
+          "propositionId": "proposition:p05",
+          "value": true
+        }
+      }
+    ]
+  }
+}
