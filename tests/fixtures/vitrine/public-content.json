@@ -249,102 +249,122 @@
     {
       "npc": "person:lina",
       "questionId": "question:q16",
-      "text": "Waren Sie um 18:04 in der Galerie?"
+      "text": "Waren Sie um 18:04 in der Galerie?",
+      "answer": "Dazu äußere ich mich nicht. Fragen Sie jemand anderen."
     },
     {
       "npc": "person:lina",
       "questionId": "question:q17",
-      "text": "Hat Max die Medaille eigenhändig entnommen?"
+      "text": "Hat Max die Medaille eigenhändig entnommen?",
+      "answer": "Max? Nein, das hat er nicht."
     },
     {
       "npc": "person:lina",
       "questionId": "question:q18",
-      "text": "Waren Sie um 18:05 in der Werkstatt?"
+      "text": "Waren Sie um 18:05 in der Werkstatt?",
+      "answer": "Ja, um 18:05 war ich in meiner Werkstatt, an meinem Arbeitstisch."
     },
     {
       "npc": "person:lina",
       "questionId": "question:q19",
-      "text": "War Nora um 18:04 im Hof?"
+      "text": "War Nora um 18:04 im Hof?",
+      "answer": "Ob Nora im Hof war? Das kann ich Ihnen nicht sagen."
     },
     {
       "npc": "person:lina",
       "questionId": "question:q20",
-      "text": "Wollen Sie mir etwas zur Medaille sagen?"
+      "text": "Wollen Sie mir etwas zur Medaille sagen?",
+      "answer": "Zur Medaille habe ich nichts zu sagen."
     },
     {
       "npc": "person:max",
       "questionId": "question:q01",
-      "text": "Waren Sie um 18:02 in der Galerie?"
+      "text": "Waren Sie um 18:02 in der Galerie?",
+      "answer": "Ja, um 18:02 war ich in der Galerie, das gebe ich offen zu."
     },
     {
       "npc": "person:max",
       "questionId": "question:q02",
-      "text": "Waren Sie um 18:04 in der Galerie?"
+      "text": "Waren Sie um 18:04 in der Galerie?",
+      "answer": "Nein! Um 18:04 war ich längst nicht mehr dort."
     },
     {
       "npc": "person:max",
       "questionId": "question:q03",
-      "text": "Waren Sie um 18:04 im Hof?"
+      "text": "Waren Sie um 18:04 im Hof?",
+      "answer": "Ja, um 18:04 stand ich im Hof."
     },
     {
       "npc": "person:max",
       "questionId": "question:q04",
-      "text": "War Lina um 18:04 in der Galerie?"
+      "text": "War Lina um 18:04 in der Galerie?",
+      "answer": "Woher soll ich das wissen? Ich war ja nicht dort."
     },
     {
       "npc": "person:max",
       "questionId": "question:q05",
-      "text": "Wurde der Fototermin im Hof vollständig gefilmt?"
+      "text": "Wurde der Fototermin im Hof vollständig gefilmt?",
+      "answer": "Gefilmt? Davon verstehe ich nichts, da müssen Sie Nora fragen."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q06",
-      "text": "War Max um 18:04 im Hof?"
+      "text": "War Max um 18:04 im Hof?",
+      "answer": "Ja, Max stand um 18:04 bei mir im Hof."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q07",
-      "text": "Waren Sie um 18:04 im Hof?"
+      "text": "Waren Sie um 18:04 im Hof?",
+      "answer": "Ja, ich war im Hof und habe fotografiert."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q08",
-      "text": "Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?"
+      "text": "Lief Ihre Kamera beim Fototermin im Hof die ganze Zeit?",
+      "answer": "Ja, die Kamera lief durchgehend. Beim Termin lasse ich sie immer mitlaufen."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q09",
-      "text": "War Max um 18:04 in der Galerie?"
+      "text": "War Max um 18:04 in der Galerie?",
+      "answer": "Nein, in der Galerie war er nicht, er stand doch bei mir."
     },
     {
       "npc": "person:nora",
       "questionId": "question:q10",
-      "text": "War Lina um 18:04 in der Galerie?"
+      "text": "War Lina um 18:04 in der Galerie?",
+      "answer": "Lina? Hm. Ich war draußen, das kann ich nicht sicher sagen."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q11",
-      "text": "War Max um 18:02 in der Galerie?"
+      "text": "War Max um 18:02 in der Galerie?",
+      "answer": "Jawohl, Herr Brandt war um 18:02 in der Galerie."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q12",
-      "text": "War Max um 18:04 in der Galerie?"
+      "text": "War Max um 18:04 in der Galerie?",
+      "answer": "Jawohl. Um 18:04 war Herr Brandt in der Galerie, da bin ich ganz sicher."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q13",
-      "text": "Waren Sie um 18:04 im Archiv?"
+      "text": "Waren Sie um 18:04 im Archiv?",
+      "answer": "Jawohl, ich war im Archiv bei meiner Arbeit."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q14",
-      "text": "Zeichnet im Archiv ein Gerät auf, wer dort arbeitet?"
+      "text": "Zeichnet im Archiv ein Gerät auf, wer dort arbeitet?",
+      "answer": "Jawohl, das Archiv hat ein Protokollgerät. Wer dort arbeitet, steht drin."
     },
     {
       "npc": "person:oskar",
       "questionId": "question:q15",
-      "text": "War Lina um 18:03 bei Ihnen im Archiv?"
+      "text": "War Lina um 18:03 bei Ihnen im Archiv?",
+      "answer": "Jawohl, Frau Kern kam um 18:03 zu mir ins Archiv."
     }
   ],
   "publicRules": [

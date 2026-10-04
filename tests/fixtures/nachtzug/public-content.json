@@ -257,57 +257,69 @@
     {
       "npc": "person:janek",
       "questionId": "question:q01",
-      "text": "Haben Sie heute Nacht die Tür zum Schlafwagen verriegelt?"
+      "text": "Haben Sie heute Nacht die Tür zum Schlafwagen verriegelt?",
+      "answer": "Ja, die Tür zum Schlafwagen habe ich heute Nacht verriegelt, wie vorgeschrieben."
     },
     {
       "npc": "person:janek",
       "questionId": "question:q02",
-      "text": "War Clara Mai um 01:20 im Speisewagen?"
+      "text": "War Clara Mai um 01:20 im Speisewagen?",
+      "answer": "Frau Mai im Speisewagen? Das kann ich nicht mit Sicherheit sagen."
     },
     {
       "npc": "person:felix",
       "questionId": "question:q06",
-      "text": "Waren Sie um 01:12 im Liegewagen?"
+      "text": "Waren Sie um 01:12 im Liegewagen?",
+      "answer": "Ja, um 01:12 war ich im Liegewagen."
     },
     {
       "npc": "person:felix",
       "questionId": "question:q02",
-      "text": "War Clara Mai um 01:20 im Speisewagen?"
+      "text": "War Clara Mai um 01:20 im Speisewagen?",
+      "answer": "Ich glaube schon, dass sie im Speisewagen saß. Es war aber spät."
     },
     {
       "npc": "person:bruno",
       "questionId": "question:q05",
-      "text": "Waren Sie nach 01:00 noch im Speisewagen?"
+      "text": "Waren Sie nach 01:00 noch im Speisewagen?",
+      "answer": "Aber ja, nach eins saß ich noch im Speisewagen, bei einem Glas."
     },
     {
       "npc": "person:bruno",
       "questionId": "question:q03",
-      "text": "Waren Sie um 01:20 in Abteil 7?"
+      "text": "Waren Sie um 01:20 in Abteil 7?",
+      "answer": "In Abteil 7? Nein, was hätte ich da verloren."
     },
     {
       "npc": "person:bruno",
       "questionId": "question:q02",
-      "text": "War Clara Mai um 01:20 im Speisewagen?"
+      "text": "War Clara Mai um 01:20 im Speisewagen?",
+      "answer": "Die junge Frau Mai? Möglich. Sicher bin ich mir nicht."
     },
     {
       "npc": "person:dora",
       "questionId": "question:q04",
-      "text": "Waren Sie um 01:20 in Ihrem Abteil eingeschlossen?"
+      "text": "Waren Sie um 01:20 in Ihrem Abteil eingeschlossen?",
+      "answer": "Ja, ich hatte mich eingeschlossen. Ich schreibe nachts und will dabei allein sein."
     },
     {
       "npc": "person:dora",
       "questionId": "question:q03",
-      "text": "War Bruno Kessler um 01:20 in Abteil 7?"
+      "text": "War Bruno Kessler um 01:20 in Abteil 7?",
+      "answer": "Bruno in Abteil 7? Eine reizvolle Vorstellung, aber sicher bin ich mir nicht."
     },
     {
       "npc": "person:clara",
       "questionId": "question:q02",
-      "text": "Waren Sie um 01:20 im Speisewagen?"
+      "text": "Waren Sie um 01:20 im Speisewagen?",
+      "answer": "Ja, ich saß im Speisewagen. Felix hat mich doch gesehen.",
+      "admission": "Nein. Ich war um 01:20 nicht im Speisewagen."
     },
     {
       "npc": "person:clara",
       "questionId": "question:q03",
-      "text": "War Bruno Kessler um 01:20 in Abteil 7?"
+      "text": "War Bruno Kessler um 01:20 in Abteil 7?",
+      "answer": "Über Bruno sage ich nichts."
     }
   ],
   "publicRules": [

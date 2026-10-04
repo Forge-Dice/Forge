@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "caseId": "case:letter-opener",
-  "revision": 1,
-  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "revision": 2,
+  "truthHash": "24accd1071c10c9b3539b46ab1034c22293f64d0b84fcf3fc861d7bca2610f96",
   "resolutions": [
     {
       "eventId": "event:murder",
@@ -80,6 +80,14 @@
         "eventId": "event:murder",
         "value": "intended"
       }
+    },
+    {
+      "id": "conclusion:dorian-responsible",
+      "claim": {
+        "kind": "personResponsibleForEvent",
+        "personId": "person:dorian",
+        "eventId": "event:murder"
+      }
     }
   ],
   "requiredConclusions": [
@@ -89,6 +97,10 @@
     },
     {
       "conclusionId": "conclusion:anna-responsible",
+      "value": false
+    },
+    {
+      "conclusionId": "conclusion:dorian-responsible",
       "value": false
     }
   ]

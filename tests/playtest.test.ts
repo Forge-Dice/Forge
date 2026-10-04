@@ -104,10 +104,13 @@ describe("rating", () => {
 describe("balance warnings", () => {
   const brief = playtestCase(pkg("brieföffner"), 2);
 
-  it("Der Brieföffner: solvable too early, a red herring nobody mentions, finds outside the proof", () => {
-    expect(brief.warnings).toContain("schon nach 2 Aktionen lösbar: zu früh");
-    expect(brief.warnings.some((w) => w.startsWith("falsche Fährte Clara wird nie berührt"))).toBe(true);
-    expect(brief.warnings.some((w) => /^2 von 4 Funden trägt die Beweiskette nie: /.test(w))).toBe(true);
+  it("Der Brieföffner (revision 5): the butler pulls wrong accusations, the proof needs the confrontation", () => {
+    expect(brief.warnings.some((w) => w.includes("zu früh"))).toBe(false);
+    expect(brief.warnings.some((w) => w.includes("nie berührt"))).toBe(false);
+    expect(brief.metrics.redHerringPull["person:dorian"]).toBeGreaterThan(0);
+    // The cuff button counts: the admission it forces is on the proof.
+    expect(brief.warnings).toContain("2 von 5 Funden trägt die Beweiskette nie: Fingerabdruck, Teetablett");
+    expect(Math.min(...brief.runs.flatMap((r) => (r.readyAfter === null ? [] : [r.readyAfter])))).toBeGreaterThanOrEqual(5);
   });
 
   it("the red-herring pull shares add up to one when anyone was wrongly accused", { timeout: 60_000 }, () => {
@@ -120,7 +123,7 @@ describe("balance warnings", () => {
 
   it("the text report names the rating and prints every warning as a hint", () => {
     const text = formatPlaytest(pkg("brieföffner"), brief);
-    expect(text).toContain("Schwierigkeit: ●○○○○ sehr leicht (1/5)");
+    expect(text).toContain(`Schwierigkeit: ${difficultyText(brief.rating)} (${brief.rating}/5)`);
     for (const w of brief.warnings) expect(text).toContain(`Hinweis Spieltest: ${w}`);
     expect(text).not.toMatch(/(person|evidence|event|item|location):[a-z]/);
   });
