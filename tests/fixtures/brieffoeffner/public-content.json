@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "title": "Der Brieföffner",
+  "brief": "Ein Abendessen im Landhaus. Gegen 20:25 Uhr wird Clara in der Bibliothek tot aufgefunden, getötet mit dem Brieföffner vom Schreibtisch. Im Haus waren außer ihr nur Anna und Ben.\n\nDein Auftrag: Finde heraus, wer für Claras Tod verantwortlich ist. Durchsuche Bibliothek und Garten, untersuche, was du findest, und befrage Anna und Ben. Nicht jede Spur führt zum Täter, und eine Gesprächsverweigerung ist kein Geständnis.",
+  "challengeQuestion": "Wer ist für Claras Tod verantwortlich?",
+  "labels": [
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:anna"
+      },
+      "label": "Anna",
+      "role": "Nichte der Hausherrin"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:ben"
+      },
+      "label": "Ben",
+      "role": "Geschäftspartner"
+    },
+    {
+      "entity": {
+        "kind": "person",
+        "id": "person:clara"
+      },
+      "label": "Clara",
+      "role": "das Opfer"
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:library"
+      },
+      "label": "Bibliothek",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "location",
+        "id": "location:garden"
+      },
+      "label": "Garten",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:letter-opener"
+      },
+      "label": "Brieföffner",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "item",
+        "id": "item:gloves"
+      },
+      "label": "Gartenhandschuhe",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:murder"
+      },
+      "label": "Claras Tod um 20:25",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:argument"
+      },
+      "label": "Streit über das Testament",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "event",
+        "id": "event:walk"
+      },
+      "label": "Annas Gartenarbeit",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:cuff-button"
+      },
+      "label": "Manschettenknopf",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:fingerprint"
+      },
+      "label": "Fingerabdruck",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:muddy-path"
+      },
+      "label": "Fußspuren im Beet",
+      "role": null
+    },
+    {
+      "entity": {
+        "kind": "evidence",
+        "id": "evidence:gloves-dirty"
+      },
+      "label": "Erdige Handschuhe",
+      "role": null
+    }
+  ],
+  "questionTexts": [
+    {
+      "npc": "person:anna",
+      "questionId": "question:q01",
+      "text": "War Ben bei Claras Tod dabei?"
+    },
+    {
+      "npc": "person:anna",
+      "questionId": "question:q02",
+      "text": "Waren Sie bei Claras Tod dabei?"
+    },
+    {
+      "npc": "person:anna",
+      "questionId": "question:q04",
+      "text": "Waren Sie um 20:25 im Garten?"
+    },
+    {
+      "npc": "person:anna",
+      "questionId": "question:q05",
+      "text": "Waren Sie um 20:25 in der Bibliothek?"
+    },
+    {
+      "npc": "person:ben",
+      "questionId": "question:q01",
+      "text": "Waren Sie bei Claras Tod dabei?"
+    },
+    {
+      "npc": "person:ben",
+      "questionId": "question:q02",
+      "text": "War Anna bei Claras Tod dabei?"
+    },
+    {
+      "npc": "person:ben",
+      "questionId": "question:q03",
+      "text": "Wurde Clara mit dem Brieföffner getötet?"
+    },
+    {
+      "npc": "person:ben",
+      "questionId": "question:q04",
+      "text": "War Anna um 20:25 im Garten?"
+    }
+  ],
+  "publicRules": [
+    {
+      "id": "rule:certified-sources",
+      "text": "Was ein Fundstück selbst zeigt, gilt als Tatsache. Aussagen von Personen können irren."
+    },
+    {
+      "id": "rule:alibi",
+      "text": "Wer um 20:25 im Garten war, war an Claras Tod nicht beteiligt und ist nicht verantwortlich."
+    },
+    {
+      "id": "rule:participation",
+      "text": "Außer Clara war genau eine Person bei ihrem Tod dabei. Wer dabei war, ist verantwortlich."
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "solutionHash": "043fe945472d7cec41b7faeea39c07fea6d0f572f25e29f8002fc69f85089010",
+  "npcId": "person:ben",
+  "revision": 1,
+  "asOf": 3600,
+  "awareness": [
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:anna"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:ben"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "person",
+        "id": "person:clara"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:library"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "location",
+        "id": "location:garden"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "item",
+        "id": "item:letter-opener"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "event",
+        "id": "event:argument"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    },
+    {
+      "subject": {
+        "kind": "event",
+        "id": "event:murder"
+      },
+      "acquiredAt": 0,
+      "provenance": {
+        "kind": "prior_knowledge"
+      }
+    }
+  ],
+  "attitudes": [
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:ben-at-murder"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 1500,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:murder"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:ben-at-argument"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 900,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:argument"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:opener-used"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": true
+      },
+      "acquiredAt": 1500,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:murder"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:anna-at-murder"
+      },
+      "stance": {
+        "kind": "knowledge",
+        "value": false
+      },
+      "acquiredAt": 1500,
+      "provenance": {
+        "kind": "witnessed_event",
+        "eventId": "event:murder"
+      }
+    },
+    {
+      "subject": {
+        "kind": "proposition",
+        "id": "proposition:anna-in-garden"
+      },
+      "stance": {
+        "kind": "belief",
+        "value": true
+      },
+      "acquiredAt": 1500,
+      "provenance": {
+        "kind": "author_modeled_inference"
+      }
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "revision": 1,
+  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "resolutions": [
+    {
+      "eventId": "event:murder",
+      "targets": [
+        {
+          "kind": "person",
+          "id": "person:clara"
+        }
+      ],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": [
+          {
+            "personId": "person:ben",
+            "roles": [
+              "direct_actor"
+            ]
+          }
+        ]
+      },
+      "intent": "intended",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    },
+    {
+      "eventId": "event:argument",
+      "targets": [],
+      "responsibility": {
+        "completeness": "complete",
+        "assignments": []
+      },
+      "intent": "not_applicable",
+      "mechanism": "ordinary",
+      "causesComplete": true
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "conclusion:ben-responsible",
+      "claim": {
+        "kind": "personResponsibleForEvent",
+        "personId": "person:ben",
+        "eventId": "event:murder"
+      }
+    },
+    {
+      "id": "conclusion:anna-responsible",
+      "claim": {
+        "kind": "personResponsibleForEvent",
+        "personId": "person:anna",
+        "eventId": "event:murder"
+      }
+    },
+    {
+      "id": "conclusion:clara-responsible",
+      "claim": {
+        "kind": "personResponsibleForEvent",
+        "personId": "person:clara",
+        "eventId": "event:murder"
+      }
+    },
+    {
+      "id": "conclusion:ben-actor",
+      "claim": {
+        "kind": "personRoleForEvent",
+        "personId": "person:ben",
+        "eventId": "event:murder",
+        "role": "direct_actor"
+      }
+    },
+    {
+      "id": "conclusion:intended",
+      "claim": {
+        "kind": "eventIntent",
+        "eventId": "event:murder",
+        "value": "intended"
+      }
+    }
+  ],
+  "requiredConclusions": [
+    {
+      "conclusionId": "conclusion:ben-responsible",
+      "value": true
+    },
+    {
+      "conclusionId": "conclusion:anna-responsible",
+      "value": false
+    }
+  ]
+}

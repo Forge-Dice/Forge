@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "revision": 1,
+  "questions": [
+    {
+      "id": "question:q01",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:ben"
+        },
+        {
+          "kind": "event",
+          "id": "event:murder"
+        }
+      ]
+    },
+    {
+      "id": "question:q02",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "event",
+          "id": "event:murder"
+        }
+      ]
+    },
+    {
+      "id": "question:q03",
+      "mentions": [
+        {
+          "kind": "event",
+          "id": "event:murder"
+        },
+        {
+          "kind": "item",
+          "id": "item:letter-opener"
+        }
+      ]
+    },
+    {
+      "id": "question:q04",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "location",
+          "id": "location:garden"
+        }
+      ]
+    },
+    {
+      "id": "question:q05",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:anna"
+        },
+        {
+          "kind": "location",
+          "id": "location:library"
+        }
+      ]
+    }
+  ]
+}

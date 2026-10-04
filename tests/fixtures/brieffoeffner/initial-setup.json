@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "known": [
+    {
+      "kind": "person",
+      "id": "person:anna"
+    },
+    {
+      "kind": "person",
+      "id": "person:ben"
+    },
+    {
+      "kind": "person",
+      "id": "person:clara"
+    },
+    {
+      "kind": "location",
+      "id": "location:library"
+    },
+    {
+      "kind": "location",
+      "id": "location:garden"
+    },
+    {
+      "kind": "item",
+      "id": "item:letter-opener"
+    },
+    {
+      "kind": "event",
+      "id": "event:murder"
+    }
+  ]
+}

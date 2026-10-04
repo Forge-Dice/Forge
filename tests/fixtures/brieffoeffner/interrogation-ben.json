@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:letter-opener",
+  "truthHash": "bc3543f23e997592a98131415a0fcb84ef2787431dbeb3ae84748f68c0c1a3f5",
+  "catalogueHash": "93248f8bd8684d32d27a167b24765ec7396278ac5a6816147ae6c1f98336dd5d",
+  "npcId": "person:ben",
+  "revision": 1,
+  "rules": [
+    {
+      "questionId": "question:q01",
+      "act": "decline"
+    },
+    {
+      "questionId": "question:q02",
+      "act": "answer",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:murder",
+        "personId": "person:anna"
+      },
+      "reveal": []
+    },
+    {
+      "questionId": "question:q03",
+      "act": "decline"
+    },
+    {
+      "questionId": "question:q04",
+      "act": "answer",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:anna",
+        "locationId": "location:garden",
+        "at": 1500
+      },
+      "reveal": []
+    }
+  ]
+}
