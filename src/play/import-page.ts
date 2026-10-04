@@ -1,3 +1,4 @@
+import { MAX_SHARE_BYTES } from "./case-share.ts";
 import { escape, layout } from "./web-page.ts";
 
 // "Eigenen Fall laden": pick a case file (exported by the editor); the browser posts its exact
@@ -39,6 +40,8 @@ const show = (title, lines, tone) => {
 input.addEventListener("change", async () => {
   const file = input.files[0];
   if (!file) return;
+  // Not even read into memory when it is too large; the handler checks the size again.
+  if (file.size > ${MAX_SHARE_BYTES}) { input.value = ""; return show("Die Datei ist zu groß.", ["Höchstens ${MAX_SHARE_BYTES / 1024} KB."], "warn"); }
   show("Der Fall wird geprüft …", [], "info");
   try {
     const res = await fetch("/eigener-fall", { method: "POST", headers: { "content-type": "application/json;charset=utf-8" }, body: await file.text() });
