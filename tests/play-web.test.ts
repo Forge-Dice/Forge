@@ -144,6 +144,17 @@ describe("play:web", () => {
     expect((await fetch(`${base}/fall/nope`)).status).toBe(404);
   });
 
+  it("the case page carries the skippable introduction; the manual is served in the same look", async () => {
+    const html = await page();
+    expect(html).toContain('<dialog id="intro"');
+    expect(html).toContain("Überspringen");
+    expect(html).toContain('href="/hilfe"');
+    const help = await page("/hilfe");
+    expect(help).toContain("<title>Hilfe</title>");
+    expect(help).toContain("So ermittelst du");
+    expect(help).toContain("Erhebe Anklage");
+  });
+
   it("no page ever contains an internal id or a PlayerRef", () => {
     expect(pages.length).toBeGreaterThan(10);
     for (const html of pages) {
