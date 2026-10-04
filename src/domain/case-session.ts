@@ -3,7 +3,7 @@ import type { CasePackageIdentity, ResolvedCasePackage } from "./case-package.ts
 import { serializeSessionJson, utf8Length, validateSessionJson } from "./case-package.identity.ts";
 import { parseAccusation, type Accusation } from "./case-accusation.ts";
 import { evaluateChallengeAccusation } from "./accusation-challenge.ts";
-import type { ConclusionClaim } from "./case-solution.ts";
+import { claimKey, type ConclusionClaim } from "./case-solution.ts";
 import { resolveInvestigation, type InvestigationAction } from "./evidence-access.ts";
 import { PLAYER_REF_PATTERN, releaseEvidence, type EvidenceObservation } from "./evidence-presentation.ts";
 import { QuestionIdSchema } from "./interrogation-authoring.ts";
@@ -300,7 +300,8 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
       return { knowledge: recordInterrogation(knowledge, observation, eventIndex), output: { type: "interrogate", observation }, verdict: null };
     }
     case "accuse": {
-      const literals = event.literals.map(({ claim, value }) => ({ claim: canonicalClaim(claim, own), value }));
+      const asserted = event.literals.map(({ claim, value }) => ({ claim: canonicalClaim(claim, own), value }));
+      const literals = [...asserted, ...unknownSuspects(pkg, canonicalKnown(), asserted)];
       let accusation: Accusation;
       try {
         accusation = parseAccusation(
@@ -316,6 +317,24 @@ function evaluate(pkg: ResolvedCasePackage, knowledge: PlayerKnowledge, event: S
       return { knowledge, output: { type: "accuse", verdict: result.verdict }, verdict: result.verdict };
     }
   }
+}
+
+/**
+ * Late suspects: a player can only name persons they know, so every in-scope person claim about a
+ * person they do not know yet counts as "not accused" (value false). Accusing before the culprit is
+ * known therefore stays not_solved, and the accusation never reveals how many suspects exist.
+ */
+function unknownSuspects(
+  pkg: ResolvedCasePackage,
+  known: readonly ResolvedEntity[],
+  asserted: readonly { readonly claim: ConclusionClaim }[],
+): { claim: ConclusionClaim; value: false }[] {
+  const knownPersons = new Set(known.filter((k) => k.kind === "person").map((k) => k.id));
+  const keys = new Set(asserted.map((l) => claimKey(l.claim)));
+  return pkg.challenge.allowedClaims
+    .filter((claim) => (claim.kind === "personRoleForEvent" || claim.kind === "personResponsibleForEvent") && !knownPersons.has(claim.personId))
+    .filter((claim) => !keys.has(claimKey(claim as ConclusionClaim)))
+    .map((claim) => ({ claim: structuredClone(claim) as ConclusionClaim, value: false as const }));
 }
 
 /** Field-wise transport conversion into the canonical claim; no status resolution. */

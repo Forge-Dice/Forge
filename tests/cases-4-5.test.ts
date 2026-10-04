@@ -7,8 +7,8 @@ import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "..
 import { command, newGame, type Game } from "../src/play/game.ts";
 
 // Cases 4 and 5, authored against check-case only.
-// "Die Hüttenkasse": the thief is the guest everyone believes has left; only the hut book proves
-// he is in the house, and the roster rule needs that proof. "Der Nachtzug nach Triest": an alibi
+// "Die Hüttenkasse": the thief is a late suspect; nobody saw him at dinner, only the hut book
+// introduces him and proves he is in the house, and the roster rule needs that proof. "Der Nachtzug nach Triest": an alibi
 // puzzle; two suspects are excluded by sightings before the theft plus the locked connecting door.
 
 const FIXTURES = new URL("./fixtures/", import.meta.url).pathname;
@@ -101,7 +101,7 @@ describe("Die Hüttenkasse", () => {
   it("plays to the solution in the CLI; the boot print is a false lead", () => {
     const { say, pick } = player("hüttenkasse");
     expect(pick("u", "Gaststube")).toContain("Bergführerprofil");
-    expect(say("a")).toContain("Tobias Wenger");
+    expect(say("a")).not.toContain("Tobias Wenger");
     expect(pick("a", "Lukas Brandl")).toContain("noch nicht");
     expect(pick("u", "Hüttenbuch")).toContain("Tobias Wenger war um 21:40:00 am Ort „Winterraum“");
     expect(pick("f", "Haben Sie um 23:10 im Funkraum gefunkt?")).toContain("„Ja.“");

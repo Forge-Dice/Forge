@@ -142,11 +142,18 @@ export function confrontations(game: Game): Action[] {
   });
 }
 
-/** D8 convention: one candidate true, every other candidate of the challenge false, all submitted together. */
+/**
+ * D8 convention: one candidate true, every other known candidate of the challenge false, all
+ * submitted together. Only persons the player knows are offered; the session counts the rest as
+ * not accused.
+ */
 export function accusations(game: Game): Action[] {
   const { pkg } = game;
-  const candidates = pkg.challenge.allowedClaims.filter((c) => c.kind === "personRoleForEvent" || c.kind === "personResponsibleForEvent");
   const ref = (kind: "person" | "event", id: string) => pkg.refs.refFor(kind, id)!;
+  const isKnown = (id: string) => game.state.knowledge.known.some((k) => k.kind === "person" && k.ref === ref("person", id));
+  const candidates = pkg.challenge.allowedClaims
+    .filter((c) => c.kind === "personRoleForEvent" || c.kind === "personResponsibleForEvent")
+    .filter((c) => isKnown(c.personId));
   const claim = (c: (typeof candidates)[number]) => {
     const base = { kind: c.kind, person: ref("person", c.personId), event: ref("event", c.eventId) };
     return c.kind === "personRoleForEvent" ? { ...base, role: c.role } : base;
