@@ -1,0 +1,1102 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Forge V0.1 Bootstrap Experimental Report</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f5f8;color:#202936;font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}header{background:#122238;color:#fff;padding:30px max(24px,calc((100% - 1100px)/2))}header small{letter-spacing:.13em;color:#a9bfd4}header p{margin:8px 0 0}main{max-width:1160px;margin:26px auto;padding:40px;background:white;border:1px solid #dce3eb;border-radius:12px}h1{font-size:30px;line-height:1.25;color:#122238}h2{font-size:24px;line-height:1.3;margin-top:54px;padding-top:18px;border-top:3px solid #d7e3ef;scroll-margin-top:20px}h3{font-size:20px}a{color:#155b98}p,li{overflow-wrap:anywhere}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em;background:#edf2f7;padding:2px 4px;border-radius:3px}pre{overflow:auto;background:#112033;color:#e1eaf5;padding:20px;border-radius:8px;line-height:1.5}pre code{padding:0;background:transparent;color:inherit;white-space:pre}table{border-collapse:collapse;min-width:650px;width:100%;font-size:14px;line-height:1.5}th,td{padding:11px 12px;text-align:left;border:1px solid #dbe2ea;vertical-align:top}th{background:#e8eef5;font-weight:650}tr:nth-child(even){background:#f8fafc}.table-scroll{overflow-x:auto;margin:20px 0}.toc{background:#f3f7fb;border-left:4px solid #2e698e;padding:18px 22px;margin:26px 0}.toc ul{padding-left:20px}.toc>ul>li{list-style:none}.toc>ul>li>a{font-weight:bold}.toc li{margin:4px 0}strong{font-weight:700}@media(max-width:700px){body{font-size:15px}main{margin:0;padding:22px 16px;border:0;border-radius:0}h1{font-size:25px}h2{font-size:21px}header{padding:20px 16px}pre{padding:14px}table{font-size:13px}}@media print{body{background:white}main{border:0;margin:0;padding:0;max-width:none}header,.toc{display:none}h2{break-after:avoid}tr{break-inside:avoid}pre{white-space:pre-wrap}pre code{white-space:pre-wrap}.table-scroll{overflow:visible}table{min-width:0}a{color:#202936}}</style></head><body><header><small>FORGE • EXPERIMENTAL ENGINEERING</small><p>Read-only Baseline · lokale Experimente · klar getrennte Evidenz</p></header><main><h1 id="forge-v01-bootstrap-experimental-report">FORGE V0.1 BOOTSTRAP EXPERIMENTAL REPORT</h1><div class="toc">
+<ul>
+<li><a href="#forge-v01-bootstrap-experimental-report">FORGE V0.1 BOOTSTRAP EXPERIMENTAL REPORT</a><ul>
+<li><a href="#1-baseline">1. Baseline</a></li>
+<li><a href="#2-h1-result">2. H1 Result</a></li>
+<li><a href="#3-h2-result">3. H2 Result</a></li>
+<li><a href="#4-h3-result">4. H3 Result</a></li>
+<li><a href="#5-trusted-checkout">5. Trusted Checkout</a></li>
+<li><a href="#6-canonical-diff-collector">6. Canonical Diff Collector</a></li>
+<li><a href="#7-test-baseline">7. Test Baseline</a></li>
+<li><a href="#8-npm-ci-threat-result">8. npm ci Threat Result</a></li>
+<li><a href="#9-safe-execution-boundary">9. Safe Execution Boundary</a></li>
+<li><a href="#10-two-stage-verifier">10. Two-Stage Verifier</a></li>
+<li><a href="#11-check-semantics">11. Check Semantics</a></li>
+<li><a href="#12-owner-recheck">12. Owner Recheck</a></li>
+<li><a href="#13-minimal-rulesets">13. Minimal Rulesets</a></li>
+<li><a href="#14-workflow-draft">14. Workflow Draft</a></li>
+<li><a href="#15-verifier-design">15. Verifier Design</a></li>
+<li><a href="#16-first-drill">16. First Drill</a></li>
+<li><a href="#17-lockout-matrix">17. Lockout Matrix</a></li>
+<li><a href="#18-exact-five-step-bootstrap">18. Exact Five-Step Bootstrap</a></li>
+<li><a href="#19-remaining-unknowns">19. Remaining Unknowns</a></li>
+<li><a href="#20-go-no-go">20. GO / NO-GO</a><ul>
+<li><a href="#quellen-und-laborbelege">Quellen und Laborbelege</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<p><strong>Read-only Remote-Labor · 3. Oktober 2026 · Forge-Dice/Forge</strong></p>
+<p><strong>Ergebnis: GO für die lokale Verifier-Implementierung und einen isolierten Live-Drill; NO-GO für die Behauptung, der kanonische Bootstrap sei bereits sicher aktiviert.</strong> Die wichtigsten lokalen Fragen sind durch reproduzierte Experimente beantwortet. GitHub-Schreib-, Merge- und Bypass-Verhalten wurde nicht live verändert oder getestet.</p>
+<p><strong>Entscheidungen:</strong> H1 REMOVE. H2 getrennte, bypassfreie Lösch-/Force-Push-Sicherung. H3 ein trusted PR-Workflow ohne Dispatch, Owner-Recheck über Re-run all jobs. Sieben Branch-/Tag-Rulesets plus eine repositoryweite Actions-Ausführungspolicy sind die hier kleinste nachvollziehbar begründete Kombination bei zusätzlichem Owner-only-Merge und gesperrtem direktem Owner-main-Push. Eine Reduktion auf sechs würde in dieser Zerlegung eine Garantie aufgeben oder eine gleichwertige weitere Schutzschicht verstecken.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Evidenzklasse</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LIVE VERIFIED</td>
+<td>Aktueller GitHub-Zustand durch Lesezugriff bestätigt; keine Mutationsexperimente damit gemeint.</td>
+</tr>
+<tr>
+<td>EXPERIMENTALLY VERIFIED</td>
+<td>Lokaler Versuch ausgeführt, konkrete Resultate im Laborpaket. Kein Beweis für GitHub-Serversemantik.</td>
+</tr>
+<tr>
+<td>DOCUMENTED</td>
+<td>Aktuelle Primärdokumentation gelesen; Quellen unten und an den Entscheidungen.</td>
+</tr>
+<tr>
+<td>INFERRED</td>
+<td>Technische Ableitung oder vorgeschlagenes Design; noch kein End-to-End-Livebeweis.</td>
+</tr>
+<tr>
+<td>UNKNOWN</td>
+<td>Mit den verfügbaren Lesezugriffen beziehungsweise ohne Live-Eingriff nicht geklärt.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-baseline">1. Baseline</h2>
+<p><strong>LIVE VERIFIED.</strong> Repository-ID <code>1401864629</code>, Default-Branch <code>main</code>, Visibility <strong>public</strong>. Initialer Remote-HEAD/main:</p>
+<p><code>3d7545d843883418348004e68717399a64da7a7d</code></p>
+<p>PR <a href="https://github.com/Forge-Dice/Forge/pull/2">#2</a>: <strong>open, draft</strong>, Titel „IDENTITY SPIKE: forge-codex organization authentication“, Autor <code>forge-codex</code>/ID <code>337272506</code>. Head <code>forge/run/codex/IDENTITY-SPIKE-1</code> bei <code>8dc692b0adc82e9dd2ccef60b6013006e700a744</code>; Base ist obiger main-SHA. Ein Commit, null geänderte Dateien. Der lokale Object-Diff bestätigt <code>[]</code>. Der PR-Text sagt ausdrücklich „Do not merge“. Daraus folgt eine bestätigte PR-Erstellung unter dieser Identität, keine Aussage über alle zukünftigen Token-Rechte oder wirksame Push-Grenzen.</p>
+<p>Leseabfragen bestätigen <code>Wuerfelduell</code>: <strong>admin</strong>, <code>forge-codex</code>: <strong>write</strong>. User-IDs sind aus den verbundenen Account-Metadaten beziehungsweise PR-Daten bekannt; Commit-author/committer-Felder werden nicht als authentifizierte Pusher-Identität verwendet.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline-Element</th>
+<th>Aktueller Befund</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.github/workflows/**</code> auf main</td>
+<td>Keine Dateien</td>
+<td>LIVE VERIFIED</td>
+</tr>
+<tr>
+<td><code>CODEOWNERS</code> auf main</td>
+<td>Nicht vorhanden</td>
+<td>LIVE VERIFIED</td>
+</tr>
+<tr>
+<td>Datei mit Policy-/Ruleset-Namen auf main</td>
+<td>Keine</td>
+<td>LIVE VERIFIED</td>
+</tr>
+<tr>
+<td>Repository-Ruleset-Liste</td>
+<td><code>[]</code></td>
+<td>LIVE VERIFIED</td>
+</tr>
+<tr>
+<td>Klassische Branch Protection</td>
+<td>API 403, „Resource not accessible by integration“</td>
+<td>UNKNOWN</td>
+</tr>
+<tr>
+<td>Actions-Workflow-API / Actions-Policy-API</td>
+<td>Connector lehnt Endpunkte ab; nicht mit „deaktiviert“ oder „leer“ gleichsetzen</td>
+<td>UNKNOWN</td>
+</tr>
+<tr>
+<td>Historische Governance-Dateien</td>
+<td><code>forge/contracts/*</code>, <code>forge/approvals/*</code>, <code>forge/reviews/*</code>, <code>forge/coordination/*</code>, <code>forge/BASELINE-STATUS.md</code></td>
+<td>LIVE VERIFIED</td>
+</tr>
+<tr>
+<td>Aktueller Bootstrap-Verifier</td>
+<td>Kein Workflow, keine aktuelle Bootstrap-Policy im main-Dateibaum</td>
+<td>LIVE VERIFIED</td>
+</tr>
+</tbody>
+</table></div>
+<p>Historische Verträge und der Baseline-Guide sind vorhanden; sie ersetzen keine nachgewiesen aktive GitHub-Schutzkonfiguration. Kein <code>AGENTS.md</code> im gelesenen main-Baum. Arbeitsgrundlage war ein Wegwerf-Clone mit <code>--no-checkout</code>; Ausführung erfolgte in separaten lokalen Exporten. Kein Commit, Branch, PR, Kommentar, Review oder Settings-Schreibzugriff im kanonischen Repository.</p>
+<p>Aktuelle <code>package.json</code>, unverändert:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;forge-mystery-case-truth&quot;,
+  &quot;version&quot;: &quot;0.0.0&quot;,
+  &quot;private&quot;: true,
+  &quot;type&quot;: &quot;module&quot;,
+  &quot;engines&quot;: { &quot;node&quot;: &quot;&gt;=22&quot; },
+  &quot;scripts&quot;: { &quot;typecheck&quot;: &quot;tsc --noEmit&quot;, &quot;test&quot;: &quot;vitest run&quot; },
+  &quot;dependencies&quot;: { &quot;zod&quot;: &quot;4.6.5&quot; },
+  &quot;devDependencies&quot;: {
+    &quot;@types/node&quot;: &quot;22.20.5&quot;,
+    &quot;typescript&quot;: &quot;7.0.2&quot;,
+    &quot;vitest&quot;: &quot;5.0.3&quot;
+  }
+}
+</code></pre>
+<p><strong>EXPERIMENTALLY VERIFIED:</strong> Linux, Git <code>2.51.1</code>, Node <code>24.19.0</code>, npm <code>11.9.0</code>. Vitest <strong>5.0.3</strong> installiert gemäß Lockfile. Zwei frische Installationen: normal und <code>--ignore-scripts</code>; beide Typechecks erfolgreich und jeweils <strong>1.087/1.087 Tests erfolgreich, 22 Testdateien, 0 skipped, 0 todo, 0 failed</strong>. JSON meldet 125 Test-Suites; das ist nicht die Anzahl der Dateien. Node 22 selbst wurde hier nicht getestet: <code>&gt;=22</code> ist die Repository-Anforderung, kein in diesem Labor nachgewiesenes vollständiges Runtime-Supportspektrum.</p>
+<h2 id="2-h1-result">2. H1 Result</h2>
+<p><strong>Entscheidung: REMOVE <code>require_last_push_approval</code>.</strong></p>
+<p><strong>DOCUMENTED:</strong> GitHub beschreibt diese Option als notwendige Freigabe durch eine andere Person als den letzten Pusher. <code>required_approving_review_count</code> und <code>require_last_push_approval</code> sind eigenständige API-Parameter. Eigene PRs können vom Autor nicht selbst mit einer zählenden Approval freigegeben werden. [S1, S2, S15]</p>
+<p><strong>INFERRED für die exakte Kombination:</strong> <code>required approvals=0</code> hebt die zusätzliche Last-Push-Bedingung nicht auf. Bei Owner als PR-Autor und ohne irgendeine andere Approval ist ein regulärer Merge unter wirksamer Last-Push-Regel nicht möglich. Owner als letzter Pusher scheitert zusätzlich unmittelbar an „someone other than“. Ein Admin-/Owner-Bypass wäre ein Bypass, kein regulärer Erfüllungsweg. Eine externe AI-Review-Attestation zählt nicht als GitHub-Approval.</p>
+<p><strong>UNKNOWN / nicht LIVE VERIFIED:</strong> Ob die konkrete aktuelle GitHub-UI die Kombination 0+true direkt speichert und die exakte serverseitige Blockiermeldung. Es gibt hier keinen verfügbaren Repo-Erstellungs-/Admin-Experimentpfad für ein unabhängiges GitHub-Testrepository. Es wurde deshalb keines angelegt. Lokale Git-Simulation kann GitHubs Review-Engine nicht beweisen.</p>
+<p>Technische Folgerung: native Approvals 0, Last-Push false, Codeowner-Approval false für diesen Single-Owner-Pfad. Owner-Attestation wird vom Verifier an <code>{repo, PR, base, head, contract, verifier, AI-report}</code> gebunden. <code>CODEOWNERS</code> kann Orientierung liefern, darf aber nicht unbemerkt eine erneute Selbstfreigabe-Sperre einführen.</p>
+<h2 id="3-h2-result">3. H2 Result</h2>
+<p><strong>DOCUMENTED:</strong> Bypass gilt innerhalb eines Rulesets. Mehrere passende Rulesets wirken gemeinsam; ein Bypass in der Namespace-Schreibregel beseitigt nicht eine unabhängige bypassfreie Löschsperre. [S1–S3]</p>
+<p><strong>INFERRED:</strong> Die häufige fehlerhafte Kombination lautet: „Restrict updates + Restrict deletions“ in einem Ruleset mit <code>forge-codex: always bypass</code>. Derselbe Bypass erlaubt dann auch Löschen. Deshalb universelle Regeln und Actor-Schreibregeln trennen.</p>
+<p><strong>V0.1-Entscheidung:</strong> Force-Push in allen Branch-Namespaces verbieten. Die Ein-Commit-Form eines Contracts benötigt keine umgeschriebene bereits gepushte Branch-Spitze: jede Revision erhält einen neuen Branch, etwa <code>forge/contract/CORE-0002-v2</code>. Ein Commit pro Revisionsbranch; alte Branches bleiben erhalten. Vor dem ersten Push darf lokal natürlich amendiert werden. Das spart eine separate Ausnahme-Schicht.</p>
+<p>Falls „dieselbe Contract-Branch muss nach jeder Revision wieder exakt einen Commit haben“ verbindlich ist, wird Force-Push dort technisch erforderlich. Dann universelle Löschsperre separat halten, globale Force-Push-Sperre ohne Contract-Namespace, und eine eigene Contract-Force-Push-Regel mit exakt dessen zulässigem Autor ergänzen. Das ist mindestens eine weitere Regelgruppe; nicht heimlich in einen allgemeinen Bypass packen.</p>
+<p><strong>EXPERIMENTALLY VERIFIED:</strong> Das lokale 7-Regel-Modell prüft Cross-Namespace-Schreiben, Merge-Akteure, Lösch-/Force-Push-Invarianten und Tag-Sperre. Entfernen jedes einzelnen Rulesets erzeugt ein Gegenbeispiel. Das belegt die Konsistenz dieses Modells, keinen mathematischen Minimalitätsbeweis über sämtliche GitHub-Produkte und keinen Live-Server-Test.</p>
+<p>„Niemand“ gilt für Ref-Operationen bei unveränderter Schutzkonfiguration. Ein Repository-Admin kann Schutzkonfiguration ändern; Branch-Rulesets können ihrem Administrator nicht die Administration entziehen. Auch das Löschen des gesamten Repositorys ist nicht durch eine Branch-Löschsperre abgesichert.</p>
+<h2 id="4-h3-result">4. H3 Result</h2>
+<p><strong>DOCUMENTED:</strong> <code>workflow_dispatch</code> kann eine ausgewählte Branch-/Tag-Version verwenden. Ein Owner-Check allein im YAML auf einer Developer-veränderbaren Branch ist daher keine unabhängige Sicherheitsgrenze. Reusable Workflows erben den Event-Kontext; ein zweites Wrapper-YAML behebt dieses Grundproblem nicht. [S4, S5]</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Design</th>
+<th>Trusted Source / Event</th>
+<th>Token / Actor / Attribution</th>
+<th>Komplexität und Urteil</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A: PR-target + Dispatch in einem Workflow</td>
+<td>PR-target: Default-Branch; Dispatch: gewählter Ref</td>
+<td>YAML-Actor-Guard auf manipulierbarem Dispatch-Ref entfernbar; Dispatch-Jobchecks sind keine verlässliche PR-Pflichterfüllung</td>
+<td>Klein auf Papier, zusätzliche externe Event-/Actor-Policy erforderlich. Für V0.1 verwerfen.</td>
+</tr>
+<tr>
+<td>B: PR verifier + Owner recheck</td>
+<td>Nur echte Plattformkontrolle schützt separaten Dispatch-Wrapper</td>
+<td>Zwei Dateien trennen Bedienung, nicht automatisch Rechte; doppelte Checknamen riskant</td>
+<td>Mehr Oberfläche ohne Bedarf. Verwerfen.</td>
+</tr>
+<tr>
+<td>C: beide Wrapper → reusable</td>
+<td>Reusable muss immutable/trusted referenziert und Caller geprüft werden</td>
+<td>Keine automatische Owner-only-Garantie; Caller-/Permissions-/Event-Validierung nötig</td>
+<td>Drei Workflow-Dateien statt einer. Verwerfen.</td>
+</tr>
+<tr>
+<td>D: workflow_run / check-suite</td>
+<td>Default-Branch-Finalizer möglich; vorgelagerter Run bleibt untrusted</td>
+<td>Privilegierte Weiterverarbeitung und Artefakt-Provenienz müssen abgesichert werden; Check-Suite-Rekursion eingeschränkt</td>
+<td>Für externen Publisher sinnvoll, für diesen kleinen V0.1 unnötig.</td>
+</tr>
+<tr>
+<td>Gewählt: nur PR-target, Re-run all jobs</td>
+<td>Ein Default-Branch-Workflow, ein Event-Typ</td>
+<td>Beide Jobs <code>permissions: {}</code>, keine Credentials, kein Dispatch</td>
+<td>Kleinste hier vorgeschlagene sichere Variante <strong>unter untenstehenden Plattform- und Execution-Annahmen</strong>.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>DOCUMENTED, wichtig für Oktober 2026:</strong> GitHub beschreibt inzwischen repositoryweite Actions-Ausführungspolicies für öffentliche Repositories. Sie können erlaubte Events und Akteure außerhalb des YAML begrenzen. [S6, S7]</p>
+<p><strong>INFERRED, zwingende Voraussetzung:</strong> Eine aktive Policy für <strong>alle</strong> Workflows, keine Path-Ausnahmen: ausschließlich <code>pull_request_target</code>; Actor-Allowlist <code>Wuerfelduell</code> und <code>forge-codex</code> mit numerischen IDs. Dadurch sollen Developer-<code>push</code>-/<code>pull_request</code>-/Dispatch-Workflows bereits vor Ausführung blockiert werden. Alle auf main vorhandenen PR-target-Workflows bleiben Teil der trusted computing base; keine unerwarteten weiteren Workflows.</p>
+<p>Ohne diese Voraussetzung kann ein Developer auf seiner zulässigen Branch einen neuen <code>push</code>-Workflow anlegen. Stage 1 lehnt den PR zwar ab, aber zu spät, um den Workflow-Start zu verhindern. Auch ein GitHub-Actions-App-Pin für Checknamen unterscheidet dann nicht zwischen vertrauenswürdigem und eingeschleustem Actions-Workflow. <strong>Ohne wirksame Plattformpolicy: NO-GO für dieses Design.</strong></p>
+<p><strong>UNKNOWN:</strong> Effektive Actions-Policies in Forge-Dice/Forge und Live-Verhalten von Re-runs unter der neuen Policy. Die Dokumentation kündigt für betroffene öffentliche Repositories eine Default-Blockierung von PR-target zum <strong>2. November 2026</strong> an; die benötigte explizite Event-Zulassung und etwaige übergeordnete Restriktionen müssen vor Aktivierung geprüft werden. [S8]</p>
+<h2 id="5-trusted-checkout">5. Trusted Checkout</h2>
+<p><strong>EXPERIMENTALLY VERIFIED:</strong> <code>git_lab.py</code> erzeugte ausschließlich lokale Wegwerf-Repositories. Enthalten: Replacement-Ref, Merge-Commit, Symlink, Gitlink, executable bit, Rename, Delete, leere und binäre Datei, Unicode-Pfad mit Zeilenumbruch/Tab, case-only Rename und gleichzeitige <code>A.ts</code>/<code>a.ts</code>-Dateien. Marker zeigen, ob ein konfigurierter Treiber ausgeführt wurde.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Lokales Resultat / sichere Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GIT_NO_REPLACE_OBJECTS=1</code></td>
+<td>Liest ursprüngliche Objekte. Ohne Flag konnte <code>refs/replace</code> den Head wie den Base-Tree aussehen lassen. Alle Git-Prozesse müssen dieselbe gesäuberte Umgebung erhalten.</td>
+</tr>
+<tr>
+<td><code>git cat-file -t SHA</code>, <code>git cat-file -p SHA</code>, <code>git cat-file blob OID</code></td>
+<td>Rohobjekte/Typen lesbar, kein Checkout. Nicht <code>--filters</code> oder <code>--textconv</code> verwenden.</td>
+</tr>
+<tr>
+<td><code>git ls-tree -r -z --full-tree SHA</code></td>
+<td>Vollständige Tree-Einträge; NUL-sicher. Symlink = <code>120000 blob</code>; Gitlink = <code>160000 commit</code>.</td>
+</tr>
+<tr>
+<td><code>git diff-tree --no-commit-id --raw -r -z --no-renames --no-ext-diff --no-textconv BASE HEAD</code></td>
+<td>Expliziter Tree-Paarvergleich geeignet. Ein einzelner Merge-Commit mit Default-Diff lieferte dagegen keine Änderungsausgabe.</td>
+</tr>
+<tr>
+<td><code>git diff --raw --no-abbrev -z --no-renames --no-ext-diff --no-textconv BASE HEAD --</code></td>
+<td>Geeignete zusätzliche Gegenprüfung. Keine externe Diff-/Textconv-Ausführung im Versuch.</td>
+</tr>
+<tr>
+<td><code>git merge-base --is-ancestor BASE HEAD</code></td>
+<td>Geeignet in vollständiger, sauberer ODB. Fehlender Ancestor oder shallow/graft metadata: fail closed.</td>
+</tr>
+<tr>
+<td><code>git merge-tree --write-tree BASE HEAD</code></td>
+<td>Sauberer einfacher Versuch erfolgreich. Zweiter Versuch mit divergierenden Trees und konfiguriertem Merge-Treiber führte diesen aus. Nicht als inhärent ausführungslos behandeln. Für V0.1 entfallen lassen.</td>
+</tr>
+<tr>
+<td><code>objects/info/alternates</code></td>
+<td>Wird auch bei gesäuberten Umgebungsvariablen weiterhin berücksichtigt. Umgebungsreinigung allein reicht nicht.</td>
+</tr>
+<tr>
+<td>Blob-Materialisierung</td>
+<td>Base ohne Git-Checkout materialisiert; gefährlicher Head vor Materialisierung abgelehnt. Keine Symlink-/Gitlink-Auflösung.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>INFERRED: minimaler Erwerbs-/Exportvertrag.</strong> Neues leeres, verifier-eigenes Bare-Repository; leeres Template-Verzeichnis; keine lokale Kopie fremder <code>.git</code>, kein <code>--shared</code>, <code>--reference</code>, Submodule oder LFS-Schritt. System/global Git-Konfiguration deaktivieren, Umgebung per Allowlist, <code>GIT_NO_REPLACE_OBJECTS=1</code>, <code>GIT_NO_LAZY_FETCH=1</code>, Hooks <code>/dev/null</code>, keine Credential-Helper und keine HTTP-Extraheader. Feste HTTPS-Remote, nur main und <code>refs/pull/&lt;Integer&gt;/head</code>, <code>--no-tags --no-recurse-submodules</code>. SHA mit voller 40-stelliger Hex-Syntax prüfen, Fetch-Ref-Ergebnis gegen erwarteten SHA vergleichen; jede Abweichung/Unvollständigkeit abbrechen.</p>
+<p>Lokale <code>config</code>, <code>include*</code>, alternates, grafts, shallow-/promisor-Metadaten explizit ablehnen. Fetch enthält Objekte, nicht die <code>.git/config</code> des Autors. Trotzdem muss das lokal erzeugte Repository unter alleiniger Kontrolle des Verifiers bleiben. <code>.gitmodules</code> und <code>.gitattributes</code> sind zunächst nur Blob-Daten und werden weder ausgeführt noch für einen Checkout interpretiert.</p>
+<p>Materialisierung erst nach Full-Tree-Validierung: Pfade als Bytes parsen; ungültiges UTF-8, Kontrollzeichen, <code>.</code>/<code>..</code>, <code>.git</code>, Case-/Unicode-Normalisierungs- und Datei/Verzeichnis-Kollisionen für V0.1 ablehnen. Nur genehmigte <code>100644</code>/<code>100755</code>-Blobs, frisches Ziel, keine Symlinks, exklusives Öffnen ohne Link-Following. Executable-Bit nicht automatisch ausführen. Limits für Objekte, Dateien, Gesamtbytes, Tiefe und Zeit. Keine Annahme, Git selbst sei immun gegen Parserfehler.</p>
+<p>Trusted Verifier-Dateien kommen aus dem gepinnten main/Base-SHA, Head ausschließlich als Daten in Stage 1 und als Testgegenstand in Stage 2. Für V0.1 verlangt die Policy <code>BASE == aktuelles main == verifier source</code> und <code>BASE</code> als Ancestor von <code>HEAD</code>; kein unbeprüfter synthetischer Merge-Tree. Git-Dokumentation bestätigt das Replacement-Flag; die oben beschriebenen Verhaltensbefunde stammen aus dem Labor. [S9]</p>
+<h2 id="6-canonical-diff-collector">6. Canonical Diff Collector</h2>
+<p><strong>EXPERIMENTALLY VERIFIED:</strong> <code>prototypes/collect_diff.py</code> implementiert den minimalen Object-Collector. Zwei <code>ls-tree -r -z</code>-Maps, byteweise sortierte Pfadunion, Vergleich von Modus und Objekt-ID. Kein Checkout und keinerlei Rename-Heuristik.</p>
+<pre><code class="language-ts">interface Change {
+  path: string;          // Anzeige; niemals die einzige Identität
+  pathBase64: string;    // originale Git-Pfadbytes
+  types: ('ADD'|'MODIFY'|'DELETE'|'MODE_CHANGE')[];
+  oldMode: string|null; newMode: string|null;
+  oldBlob: string|null; newBlob: string|null;
+  oldObject: string|null; newObject: string|null;
+  oldType: 'blob'|'commit'|null; newType: 'blob'|'commit'|null;
+}
+</code></pre>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Testfall</th>
+<th>Kanonisches Ergebnis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gewöhnliche Änderung</td>
+<td>MODIFY, beide Blob-IDs</td>
+</tr>
+<tr>
+<td>Hinzufügen / leere Datei / Binary / Unicode</td>
+<td>ADD; leere Datei hat eine reale Blob-ID, kein null</td>
+</tr>
+<tr>
+<td>Löschen</td>
+<td>DELETE</td>
+</tr>
+<tr>
+<td>Rename</td>
+<td>DELETE old + ADD new, auch bei gleichem Blob</td>
+</tr>
+<tr>
+<td>Case-only Rename</td>
+<td>DELETE <code>Case.ts</code> + ADD <code>case.ts</code></td>
+</tr>
+<tr>
+<td>Nur executable bit</td>
+<td>MODE_CHANGE, Blob-ID unverändert</td>
+</tr>
+<tr>
+<td>Inhalt und Modus geändert</td>
+<td>Zwei Flags: MODIFY und MODE_CHANGE; keine Information geht verloren</td>
+</tr>
+<tr>
+<td>Symlink</td>
+<td>ADD mit Modus 120000 und Linktext-Blob; Gate lehnt Modus ab</td>
+</tr>
+<tr>
+<td>Gitlink</td>
+<td>ADD mit Modus 160000 und Commit-ID; <code>newBlob=null</code>, <code>newObject=commit SHA</code></td>
+</tr>
+<tr>
+<td>Case-Kollision</td>
+<td>Beide Pfade sichtbar; kein Überschreiben beim Collector; Gate muss Export ablehnen</td>
+</tr>
+</tbody>
+</table></div>
+<p>Der eigenständige Collector wurde gegen den adversarial Tree und PR #2 geprüft. Wiederholung ergab identisch sortierte Datensätze. Byte-identische Evidence-Digests erfordern zusätzlich festgelegte JSON-Kanonisierung; Zeitstempel nicht in den kanonischen Diff aufnehmen. Die Scratch-Commit-SHAs sind wegen Commit-Zeiten bei erneuter Fixture-Erzeugung nicht konstant; die Assertions und Änderungstypen sind reproduzierbar.</p>
+<h2 id="7-test-baseline">7. Test Baseline</h2>
+<p><strong>EXPERIMENTALLY VERIFIED:</strong> Alle folgenden Experimente wurden an getrennten lokalen Kopien durchgeführt. Jede Manipulation hatte Vitest-/npm-Exitcode 0, soweit nicht anders angegeben.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Experiment</th>
+<th style="text-align: right;">Passed</th>
+<th style="text-align: right;">Skipped/pending</th>
+<th style="text-align: right;">Todo</th>
+<th style="text-align: right;">Fehlende Baseline-Identitäten</th>
+<th>Bewertung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unveränderte trusted Baseline</td>
+<td style="text-align: right;">1087</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Eine 19-Test-Datei gelöscht</td>
+<td style="text-align: right;">1068</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">19</td>
+<td>FAIL</td>
+</tr>
+<tr>
+<td>Ein <code>it.skip</code></td>
+<td style="text-align: right;">1086</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>FAIL</td>
+</tr>
+<tr>
+<td>Ein <code>describe.skip</code></td>
+<td style="text-align: right;">1076</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>FAIL</td>
+</tr>
+<tr>
+<td>Ein neues <code>it.todo</code></td>
+<td style="text-align: right;">1087</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td>FAIL unter V0.1-Policy</td>
+</tr>
+<tr>
+<td>Neue einschränkende <code>vitest.config.mjs</code></td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1068</td>
+<td>FAIL</td>
+</tr>
+<tr>
+<td>Dieselbe Injection, explizite trusted Config</td>
+<td style="text-align: right;">1087</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>Runtime vollständig; Static Gate würde trotzdem Injection ablehnen</td>
+</tr>
+<tr>
+<td><code>package.json</code> test-Script auf eine Datei reduziert</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1068</td>
+<td>FAIL</td>
+</tr>
+<tr>
+<td>Type-Fehler + eingeschränktes <code>tsconfig.include</code></td>
+<td style="text-align: right;">Vollständiger Typecheck: Exit 1; eingeschränkter: Exit 0</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td>Config-Änderung muss statisch auffallen</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Erfassung A:</strong> Testdateien aus dem Git-Tree plus deren Blob-IDs; Status und expandierte Namen aus dem vollständigen Vitest-JSON-Run. Separate Anzahl passed/failed/skipped/todo. Identität als <code>(Datei, Projekt, ancestor titles, title, occurrence)</code>; identische Namen als Multiset behandeln. Im aktuellen Prototyp werden Datei/fullName plus Multiset verwendet; Projekt-/Ancestor-Trennung ist die Ausbauspezifikation. Keine lokalisierte Konsolenausgabe parsen.</p>
+<p>Vitest 5.0.3 <code>list --json</code> benutzt in dieser Installation standardmäßig statisches Parsing: <strong>370 Einträge</strong>, darunter nicht expandierte Parameterplatzhalter. <code>list --no-staticParse --json</code> lieferte <strong>1.087</strong>. Die Runtime-Liste ist keine ausführungslos gewonnene Wahrheit: sie lädt Testmodule. Deshalb ausschließlich Stage 2. Der vollständige Run bleibt maßgeblich für Statuswerte. [S10 für CLI; Zählwerte aus lokal installierter Version]</p>
+<p><strong>Vergleich B:</strong> Jede Baseline-Testidentität muss in HEAD weiterhin vorhanden und passed sein. Zusätzliche Tests kompensieren keine entfernten. Unbekannte Statuswerte, Duplicate-Verlust, Collection Errors, leere Reports, Run-Fehler und nicht ausgeführte Dateien sind Fehler. Nicht bloß <code>numTotalTests &gt;= 1087</code> prüfen.</p>
+<p><strong>Legitime Änderungen C:</strong> Default Developer-Policy friert bestehende Tests, Test-Fixtures und Steuerdateien per Blob-Identität ein. Neue Tests sind nur in ausdrücklich freigegebenen Pfaden erlaubt. Änderungen bestehender Tests benötigen einen eigenen Owner-attestierten Vertrag mit explizitem add/remove/rename/status-Diff, anschließend vollständigen Baseline-/Head-Lauf. Umbenennungen werden bewusst genehmigt, nicht heuristisch verschluckt. Der erste Drill braucht keine Testausnahme.</p>
+<p><strong>Verhinderung D — INFERRED Design:</strong> Stage 1 sperrt <code>package.json</code>, Lockfiles, <code>tsconfig*</code>, Vitest/Vite-/Workspace-/Projekt-Konfigurationen, <code>.npmrc</code>, Loader, Setup-/GlobalSetup-/Reporter-Dateien, bestehende Test-/Fixture-Dateien und Verifier. Nicht nur Änderungen vorhandener Configs, sondern auch neue automatisch entdeckbare Config-Dateien blockieren. Für den kleinen V0.1 eine positive Datei-Scope-Allowlist, keine endlose Blacklist. Stage 2 ruft trusted Runner direkt auf, feste Config, kein PR-<code>npm test</code>, kein <code>--changed</code>, Name-Filter, <code>.only</code>, Empty-Suite-Pass oder Snapshot-Update. Umgebungs-Allowlist entfernt unter anderem <code>NODE_OPTIONS</code> und fremde <code>npm_config_*</code>.</p>
+<p><strong>Grenze:</strong> Dieser Mechanismus erkennt die verlangten strukturellen Lösch-/Deaktivierungs-/Config-Verkleinerungen. Er beweist keine allgemeine Testqualität und keine Ehrlichkeit beliebigen bösartigen JavaScripts im Testprozess. Imports können Framework-Verhalten manipulieren, Tests können tautologisch sein, Ausgaben gefälscht werden. Unveränderte trusted Tests und Mutants erhöhen Aussagekraft; sie sind kein Vollbeweis gegen beliebigen adversarial Code.</p>
+<h2 id="8-npm-ci-threat-result">8. npm ci Threat Result</h2>
+<p><strong>EXPERIMENTALLY VERIFIED:</strong> Sowohl <code>npm ci --foreground-scripts --no-audit --no-fund</code> als auch <code>npm ci --ignore-scripts --no-audit --no-fund</code> installierten hier 42 Pakete. Beide Typechecks und kompletten Suiten bestanden. Keine ausgeführten Install-Lifecycle-Scripts im normalen Linux-Installationslog.</p>
+<p>Lockfile: genau <code>fsevents@2.3.3</code> trägt <code>hasInstallScript=true</code>; es ist optional, auf Darwin begrenzt und auf diesem Linux-Lauf nicht installiert. Installierte Pakete <code>lightningcss@1.33.0</code> und <code>tinyexec@1.3.1</code> enthalten <code>prepare</code>-Scripts im Paketmanifest; diese wurden beim gewöhnlichen Registry-<code>npm ci</code> hier nicht ausgeführt. Vorhandenes Script ist nicht gleich ausgeführtes Install-Script. Für Linux ist keine Install-Script-abhängige Dependency gefunden worden; Darwin-Verhalten bleibt UNKNOWN.</p>
+<p>Ein lokales, dependencyfreies Marker-Paket belegt:</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Befehl</th>
+<th>preinstall</th>
+<th>postinstall</th>
+<th>explizites test-Script</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm ci</code></td>
+<td>ausgeführt</td>
+<td>ausgeführt</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>npm ci --ignore-scripts</code></td>
+<td>blockiert</td>
+<td>blockiert</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>npm test --ignore-scripts</code></td>
+<td>—</td>
+<td>—</td>
+<td>weiterhin ausgeführt</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Empfehlung: <code>npm ci --ignore-scripts</code> für den Linux-Verifier.</strong> Das blockiert Lifecycle-Ausführung beim Installieren, nicht bösartigen Code beim späteren Import, nicht ein explizit aufgerufenes Test-Script, nicht unsichere Dependency-Auflösung bei manipulierter Lock-/npm-Konfiguration und nicht Netzwerkzugriffe des Package Managers. Lockfile-Integrität ist Byte-Integrität, keine Sicherheitsprüfung des Pakets. Dependency-Änderungen benötigen ein gesondertes Owner-OPS-Verfahren. [S11]</p>
+<h2 id="9-safe-execution-boundary">9. Safe Execution Boundary</h2>
+<p><strong>DOCUMENTED:</strong> Ein Standard-<code>ubuntu-24.04</code>-GitHub-hosted Job läuft auf einer neuen VM. Linux-Runner haben passwordless sudo; Netzwerk und gemeinsames Job-Dateisystem existieren. Das ist keine Sicherheitsgrenze zwischen trusted Verifier und untrusted Tests desselben Jobs. <code>ubuntu-slim</code> hat ein anderes Container-Modell und wird hier nicht verwendet. [S12]</p>
+<p><strong>INFERRED: kleinste vertretbare V0.1-Annahme für dieses adversarial Modell:</strong> getrennte GitHub-hosted Jobs, keine Secrets, keine Repository-Schreibrechte, keine persistenten Credentials/Caches. Zusätzlich eine explizite Execution-Grenze innerhalb Stage 2: trusted Supervisor außerhalb, Testprozess in kurzlebigem eingeschränktem Container, non-root, alle Capabilities entfernt, no-new-privileges, kein Docker-Socket/Host-PID/Host-Netz, read-only Mounts für Verifier/Toolchain/Tests/Eingaben, begrenzte tmpfs-Ausgaben, CPU-/RAM-/PID-/Zeitlimits, Tests mit <code>--network=none</code>. Image auf überprüften Digest pinnen. Container-Isolation vertraut dem Host-Kernel; kein Anspruch auf perfekte VM-Isolation gegen Kernel-Exploits.</p>
+<p>Installation getrennt: gepinnte Baseline-Pakete mit <code>--ignore-scripts</code> in einem frischen Installationsbereich; Netzwerk nur in dieser Phase. Keine PR-Dateien als ausführbare Package-Manager-Konfiguration. Danach unveränderte Toolchain schreibgeschützt in Testcontainer. Fresh toolchain installation ersetzt Cache-Abhängigkeit.</p>
+<p><strong>Was eine frische VM isoliert:</strong> Zustand zu vorherigen/nächsten normalen Jobs, bei getrennten Standard-Jobs auch deren lokale Arbeitsbereiche. <strong>Was sie nicht isoliert:</strong> Schritte/Prozesse desselben Jobs, erreichbare Netzressourcen, innerhalb des Jobs vorhandene Credentials, Reports/Runner-Dateien und das System vor eigenem sudo-fähigem Code. Ein separates Unterverzeichnis ist keine Sandbox.</p>
+<p><code>permissions: {}</code> reduziert GitHub-API-Rechte des Job-Tokens. Es entfernt nicht alle Runner-Service-Credentials und ist keine Netz-/Filesystem-Sandbox. Keine Secrets referenzieren, keinen OIDC-Token anfordern, keine Auth-URL, kein <code>persist-credentials</code>. Tests erhalten eine neu aufgebaute Umgebung, keinen Host-Runner-Servicekontext.</p>
+<p><strong>UNKNOWN:</strong> Ein passendes Container-Image, dessen Digest und die GitHub-hosted Sandbox-Ausführung wurden hier nicht implementiert oder live geprüft; Docker steht in diesem Labor nicht bereit. Die durchgeführten harmlosen Testmutationen liefen lokal ohne solche Isolation. Das Labor behauptet ausdrücklich keinen bestandenen Sandbox-Drill.</p>
+<h2 id="10-two-stage-verifier">10. Two-Stage Verifier</h2>
+<p><strong>Entscheidung — INFERRED: zwei Jobs in einem Workflow.</strong></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Job</th>
+<th>Aufgaben</th>
+<th>Nicht erlaubt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>forge-gate</code></td>
+<td>Repository/IDs, Base/Head/Ancestry, Contract, Scope, Tree-Modi, geschützte Dateien, Config-/Paketänderungen, Identität, Limits</td>
+<td>npm, Imports von HEAD, Vitest-Collection, PR-Hooks, PR-Workflow-Ausführung</td>
+</tr>
+<tr>
+<td><code>forge-verify</code></td>
+<td>Nach erfolgreichem Gate: erneute statische Validierung auf frischer VM, Installation ohne Scripts, Typecheck, gesamte Suite, Inventarvergleich, Mutants, aktuelle Owner-Attestation und finale SHA-Prüfung</td>
+<td>Schreib-Token, Secrets, ungeprüftes Übernehmen von Artefakten, privilegierter Report-Consumer</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ein einzelner Job spart kaum YAML, teilt aber Kontrolle und Ausführung im selben Dateisystem. Zwei Jobs vermeiden diesen direkten Zugriff auf Stage 1. Stage 2 lädt Quelle und Fakten neu vom gepinnten SHA; kein Artefakttransfer notwendig. Das Job-Ergebnis von Stage 1 ist nur eine Startbedingung, ersetzt nicht das erneute statische Prüfen.</p>
+<p><code>forge-verify</code> wird mit <code>if: always()</code> gestartet und beendet sich explizit fehlerhaft, wenn <code>needs.gate.result != success</code>. Ein nur übersprungener Pflichtjob darf nicht versehentlich als akzeptabler Checkzustand wirken. Kein <code>continue-on-error</code> für Pflichtschritte. Laufzeitfehler, Cancellation und unbekannte Zustände sind kein PASS.</p>
+<p>Automatischer Erstlauf kann Testresultate liefern, aber ohne passende Owner-Attestation bleibt der finale Verify-Check rot. Nach externem Review: Owner-Attestation und Re-run all jobs. Für einen ausschließlich automatischen technischen Vorcheck darf das fehlende Review im Report getrennt vom Testergebnis erklärt werden; die Merge-Gesamtentscheidung bleibt FAIL.</p>
+<h2 id="11-check-semantics">11. Check Semantics</h2>
+<p><strong>DOCUMENTED:</strong> Required Checks beziehen sich auf den aktuellen Head beziehungsweise gegebenenfalls den geprüften Merge-Commit. Alte Commit-Ergebnisse reichen nicht. <code>workflow_dispatch</code>-Jobchecks erfüllen laut aktueller GitHub-Dokumentation keine PR-Ruleset-Checks; <code>pull_request_target</code> ist ein dafür berücksichtigter Event-Typ. Skipped/neutral können als erfolgreiche erforderliche Checks gewertet werden. [S13]</p>
+<p><strong>INFERRED Design:</strong> Genau ein Workflow mit zwei ungematrixten nativen Jobnamen <strong><code>forge-gate</code></strong> und <strong><code>forge-verify</code></strong>. Keine gleichnamigen Commit Statuses, keine zweiten Publisher, keine dynamischen Suffixe, keine weiteren Workflow-Jobs mit diesen Namen. Required source: GitHub Actions, nicht „any source“. Zusätzlich die all-workflow Event-Policy aus H3, weil App-Identität allein nicht das Workflow-YAML authentifiziert.</p>
+<p><strong>UNKNOWN / zwingender Live-Drill:</strong> Die tatsächlichen <code>check_run.head_sha</code>, <code>check_suite</code>, <code>workflow_run.head_sha</code>, PR-Zuordnung und Mergebox-Wertung von PR-target erfassen. <code>GITHUB_SHA</code> ist hier Default-Branch-SHA; nicht einfach behaupten, das sei der PR-Head. Explicit <code>HEAD_SHA</code> in Testdaten ändert keine native Check-Zuordnung. Aktuelle Dokumentation erlaubt den Event-Typ, ersetzt aber keinen Nachweis für diese konkrete Zwei-Job-/Re-run-Konfiguration.</p>
+<p>Prüfen: PR H1 grün → H2 pushen → H1-Lauf erneut starten → H2 darf dadurch nicht mergefähig werden. Ein alter Re-run darf nur seinen gebundenen Head prüfen und muss bei Abweichung von aktuellem Head abbrechen. Parallelität pro PR begrenzen, alte Runs abbrechen; direkt vor erfolgreichem Abschluss PR/Base/Review neu lesen. Strikte Up-to-date-Checks auf main begrenzen Basisveraltung. Keine Behauptung einer atomaren Transaktion zwischen letztem GET und Merge; Owner muss beim Merge erwarteten Head SHA verwenden, wo die API das unterstützt.</p>
+<p>Wenn native Zuordnung im Live-Drill scheitert, nicht durch einen grünen main-Check ersetzen. Dann separater vertrauenswürdiger Check-Publisher mit explizitem <code>head_sha</code> nötig; das wäre mehr Komplexität und eine neue Rechteentscheidung. [S14]</p>
+<h2 id="12-owner-recheck">12. Owner Recheck</h2>
+<p><strong>Entscheidung: Re-run all jobs des passenden PR-target-Laufs.</strong></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Methode</th>
+<th>Ergebnis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Re-run all jobs</td>
+<td>Gleiche Event-SHAs und Workflow-Version, frische Ausführung; kein Developer-Commit. Bevorzugt.</td>
+</tr>
+<tr>
+<td>edited Event</td>
+<td>Developer kann PR-Metadaten bearbeiten; unnötiger Trigger und kein sicherer Owner-Nachweis. Nicht abonnieren.</td>
+</tr>
+<tr>
+<td>workflow_dispatch</td>
+<td>Ref-/Actor-Policy und separate Check-Zuordnung nötig. Für V0.1 weglassen.</td>
+</tr>
+<tr>
+<td>Neuer leerer Commit</td>
+<td>Verändert den zu reviewenden Head und entwertet bestehende Attestation. Nicht verwenden.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>DOCUMENTED:</strong> Re-run verwendet die ursprünglichen Actor-Privilegien und ursprünglichen <code>GITHUB_SHA</code>/<code>GITHUB_REF</code>; er macht einen Codex-getriggerten Lauf nicht zu einem Owner-privilegierten Lauf. [S5]</p>
+<p><strong>INFERRED Vertrag:</strong> Beide Jobs bleiben ohne Rechte. <code>github.actor</code> nicht als Beweis für den Re-run-Auslöser benutzen; <code>github.triggering_actor</code> serverseitig auf Owner-ID auflösen [S5], wenn ein Owner-Recheck beansprucht wird. Aktuelle PR-/Review-Daten neu lesen; ursprünglichen Event-Payload nicht als aktuelle Attestation behandeln. Eine Owner-Review vom Typ COMMENT kann auch die eigene OPS-PR attestieren: serverseitige User-ID und <code>commit_id</code>, plus im Inhalt exakte Base/Head/Contract/Verifier-/AI-Report-Hashes. Kein bloßes „LGTM“ und keine vom Developer selbst eingetragene Owner-Zeichenkette.</p>
+<p>Neue main-/Verifier-Version seit ursprünglichem Lauf: Re-run soll fail closed abbrechen. Reopen des bestehenden PR kann einen neuen trusted Event-Lauf auslösen; fachliche neue main-Änderungen müssen tatsächlich in den Head integriert werden. Ein leerer Commit löst weder Ancestry noch Review-Frische. Für den normalen Recheck bei unverändertem Base/Head genügt Re-run vollständig.</p>
+<h2 id="13-minimal-rulesets">13. Minimal Rulesets</h2>
+<p><strong>INFERRED Design; Enforcement sämtlicher Zeilen noch LIVE zu prüfen.</strong> Explizite V0.1-Wahl: <strong>Owner ist zugleich zulässiger Contract-Autor.</strong> Wenn ein anderer Contract-Autor erforderlich ist, braucht dessen andere Actor-Menge ein eigenes Ruleset; die Zusammenlegung R5 entfällt.</p>
+<p>Notation: <code>C=creation</code>, <code>U=update</code> mit <code>update_allows_fetch_and_merge=false</code>, <code>D=deletion</code>, <code>F=non_fast_forward</code>. API-Patterns verwenden vollständige Ref-Namen; für rekursive Namespaces <code>/**/*</code>, nicht blind eine eigene Glob-Engine voraussetzen. [S2, S3]</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Name / Nr.</th>
+<th>Target</th>
+<th>Include</th>
+<th>Exclude</th>
+<th>Bypass</th>
+<th>Rules</th>
+<th>Warum notwendig?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 <code>forge-refs-immutable</code></td>
+<td>branch</td>
+<td><code>~ALL</code></td>
+<td>keine</td>
+<td><strong>keiner</strong></td>
+<td>D, F</td>
+<td>Verhindert Delete/Force-Push auch für Actor mit Schreib-Bypass.</td>
+</tr>
+<tr>
+<td>R2 <code>forge-main-quality</code></td>
+<td>branch</td>
+<td><code>refs/heads/main</code></td>
+<td>keine</td>
+<td><strong>keiner</strong></td>
+<td>PR erforderlich; 0 Approvals; Last-Push false; Codeowner-Approval false; beide Required Checks mit Actions-App als Quelle; strict up-to-date</td>
+<td>Owner-Merge darf Qualitäts-/Review-Verifier nicht umgehen.</td>
+</tr>
+<tr>
+<td>R3 <code>forge-main-owner-merge</code></td>
+<td>branch</td>
+<td><code>refs/heads/main</code></td>
+<td>keine</td>
+<td>nur Owner-ID <code>315180734</code>, <strong>pull_request</strong></td>
+<td>C, U</td>
+<td>Nur Owner kann main per PR aktualisieren; weder Developer-Merge noch direkter Owner-Push. Kein always-Bypass.</td>
+</tr>
+<tr>
+<td>R4 <code>forge-codex-writer</code></td>
+<td>branch</td>
+<td><code>refs/heads/forge/run/codex/**/*</code></td>
+<td>keine</td>
+<td>nur Codex-ID <code>337272506</code>, <strong>always</strong></td>
+<td>C, U</td>
+<td>Codex kann seinen Namespace schreiben; Owner und Actions nicht. R1 bleibt wirksam.</td>
+</tr>
+<tr>
+<td>R5 <code>forge-owner-contract-writer</code></td>
+<td>branch</td>
+<td><code>refs/heads/forge/owner/**/*</code>, <code>refs/heads/forge/contract/**/*</code></td>
+<td>keine</td>
+<td>nur Owner-ID <code>315180734</code>, <strong>always</strong></td>
+<td>C, U</td>
+<td>Identische Actor-Menge für Owner/Contract spart ein Ruleset. R1 bleibt wirksam.</td>
+</tr>
+<tr>
+<td>R6 <code>forge-deny-other-branches</code></td>
+<td>branch</td>
+<td><code>~ALL</code></td>
+<td>main und genau die drei erlaubten rekursiven Namespaces aus R4/R5</td>
+<td><strong>keiner</strong></td>
+<td>C, U</td>
+<td>Sperrt Claude und sämtliche Stray-Branches einschließlich bisher bestehender fremder Namespaces.</td>
+</tr>
+<tr>
+<td>R7 <code>forge-no-tags</code></td>
+<td>tag</td>
+<td><code>~ALL</code></td>
+<td>keine</td>
+<td><strong>keiner</strong></td>
+<td>C, U, D</td>
+<td>Tags benötigen eigenen Target-Typ; Branch-Regeln decken sie nicht ab.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Alle sieben <code>enforcement=active</code> nach bestandenem Live-Drill; keine <code>exempt</code>-Bypässe, keine allgemeine Admin-/Write-Rolle als Bypass. Aktuelle REST-Dokumentation nennt <code>User</code> als Bypass-Actor-Typ. Falls die Oberfläche dies noch nicht bietet: ausschließlich einzeln besetzte Teams mit überprüfter Membership verwenden; nicht pauschal „Repository write“ als Ersatz. API-/UI-Unterstützung im Zielkonto bleibt zu prüfen.</p>
+<p><strong>Zusätzlich, nicht als Branch-Ruleset versteckt:</strong> eine Actions-Execution-Policy für sämtliche Workflow-Pfade, ausschließlich PR-target, exakt Owner/Codex als auslösende Identitäten. Keine anderen Events. Ihre Wirkung auf native Re-runs und eingebaute GitHub-Features muss der Live-Drill erfassen. Das macht <strong>7 Ref-Rulesets + 1 Actions-Policy</strong>, nicht „7 insgesamt“.</p>
+<p>Warum nicht 3–6? R1 darf keinen Schreib-Bypass erben. R2 darf keinen Owner-Bypass erben. R3 braucht Owner-PR-only. R4 braucht Codex-always. R5 braucht Owner-always. R6 hat für unbekannte Namespaces niemanden. R7 hat einen anderen Target-Typ. Diese sieben unterschiedlichen Regel-/Bypass-/Target-Kombinationen lassen sich in diesem Modell nicht ohne Verlust zusammenfalten. Ein klassischer Branch-Protection-Actorfilter als Ersatz für R3 würde nur die Ruleset-Zählung kosmetisch reduzieren.</p>
+<p>Pattern-Drill: ein Segment, mehrere Segmente, Namespace ohne nachfolgendes Segment, ähnliche Präfixe (<code>codexevil</code>), Groß-/Kleinschreibung und vorhandene alte Branches. Excludes sind ebenso sicherheitsrelevant wie Includes. <code>forge/run/claude/**</code> erhält absichtlich kein eigenes Ruleset; R6 deckt es ab. Unknown klassische/übergeordnete Schutzregeln können zusätzliche Sperren verursachen und müssen vor Aktivierung ausgelesen werden.</p>
+<h2 id="14-workflow-draft">14. Workflow Draft</h2>
+<p><strong>INFERRED, nur Textentwurf.</strong> Der vollständige YAML-Entwurf folgt. Er ist bewusst nicht direkt aktivierbar: <code>bootstrapTrustedObjects</code> und der Supervisor müssen implementiert und geprüft werden. Es wurden keine Actions oder Workflows aktiviert.</p>
+<p>Der Inline-Bootstrap muss unabhängig von HEAD sein. Algorithmus: Validate Inputs → neue leere Bare-ODB → eng begrenzter anonymer Fetch → aktuelle main/PR-SHAs prüfen → trusted Verifier-Blobs ausschließlich aus <code>TRUST_SHA</code> in eigenes Verzeichnis exportieren → Verifier starten. Kein Shell-Code aus PR-Titel, Body, Branch oder Config interpolieren. Öffentliche GETs brauchen hier kein Token; Rate Limit/Fetch-Fehler sind FAIL, kein Anlass zur Rechteausweitung.</p>
+<pre><code class="language-yaml"># DESIGN ONLY. No workflow was installed or enabled.
+# BLOCKERS: implement/review trusted bootstrap + verifier; pin/test sandbox image;
+# live-test native PR check association; activate all-workflow event policy FIRST.
+# bootstrap below means inline trusted code, NOT a PR-side script/action.
+name: forge-verifier-v0.1
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+permissions: {}
+concurrency:
+  group: forge-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  gate:
+    name: forge-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    env:
+      FORGE_REPO: Forge-Dice/Forge
+      FORGE_REPO_ID: '1401864629'
+      TRUST_SHA: ${{ github.sha }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_REPO_ID: ${{ github.event.pull_request.head.repo.id }}
+      EVENT_NAME: ${{ github.event_name }}
+      RUN_ATTEMPT: ${{ github.run_attempt }}
+      TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+    steps:
+      - name: Trusted static verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          # IMPLEMENT INLINE: bootstrapTrustedObjects(), specified in report.
+          # It returns TRUSTED_DIR after verifying source SHA/path/mode;
+          # it never checks out HEAD and never reads PR shell/npm/config files.
+          # No authenticated URL, Authorization header, checkout action or cache.
+          bootstrapTrustedObjects
+          python3 &quot;$TRUSTED_DIR/entry.py&quot; static \
+            --base &quot;$BASE_SHA&quot; --head &quot;$HEAD_SHA&quot; --pr &quot;$PR_NUMBER&quot;
+  verify:
+    name: forge-verify
+    needs: gate
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions: {}
+    env:
+      GATE_RESULT: ${{ needs.gate.result }}
+      FORGE_REPO: Forge-Dice/Forge
+      FORGE_REPO_ID: '1401864629'
+      TRUST_SHA: ${{ github.sha }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_REPO_ID: ${{ github.event.pull_request.head.repo.id }}
+      EVENT_NAME: ${{ github.event_name }}
+      RUN_ATTEMPT: ${{ github.run_attempt }}
+      TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+    steps:
+      - name: Execute only after successful static gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test &quot;$GATE_RESULT&quot; = success
+          # Same inline trusted bootstrap on a NEW runner; no artifact transfer.
+          bootstrapTrustedObjects
+          # Revalidate static facts against fresh public GitHub GET responses.
+          python3 &quot;$TRUSTED_DIR/entry.py&quot; static \
+            --base &quot;$BASE_SHA&quot; --head &quot;$HEAD_SHA&quot; --pr &quot;$PR_NUMBER&quot;
+          # Trusted supervisor materializes validated blobs, installs with
+          # npm ci --ignore-scripts in disposable install environment, then runs
+          # base+head tests/typecheck/inventory/mutants in confined containers.
+          # No host runner token/env/socket is passed into these containers.
+          # If tests pass but no current Owner attestation exists: exit nonzero.
+          # Re-read PR/head/main/review after tests, before concluding success.
+          python3 &quot;$TRUSTED_DIR/entry.py&quot; execute-and-finalize \
+            --base &quot;$BASE_SHA&quot; --head &quot;$HEAD_SHA&quot; --pr &quot;$PR_NUMBER&quot;
+# Deliberately no workflow_dispatch, workflow_call, push, edited or workflow_run.
+# Both native job names are required, GitHub Actions is the required source App.
+# These function/helper names are contracts, not an implemented runnable workflow.
+</code></pre>
+<p>Der Entwurf hat keine Checkout-/Setup-/Cache-/Artifact-Actions. Python-/Git-Bootstrap nutzt die trusted Runner-Installation, die TypeScript-Toolchain und Runtime werden im gepinnten Execution-Image explizit festgelegt. Die Quelle des Verifiers muss vor Ausführung gleich Base/main sein, nicht nur einen vertrauenerweckenden Pfadnamen haben. Die Sandbox-Anforderungen aus Abschnitt 9 gehören verbindlich zum Supervisor, nicht zu einer optionalen späteren Optimierung.</p>
+<h2 id="15-verifier-design">15. Verifier Design</h2>
+<p><strong>INFERRED Spezifikation; der Git-Diff-Teil und Inventarvergleich haben lokale Prototypen.</strong> Folgendes TypeScript beschreibt Daten und Verantwortlichkeiten, keine vollständige implementierte Sicherheitslösung.</p>
+<pre><code class="language-typescript">// IMPLEMENTATION-ORIENTED DESIGN, NOT a complete implementation.
+type Sha = string &amp; { readonly __sha: unique symbol };
+type ChangeType = 'ADD' | 'MODIFY' | 'DELETE' | 'MODE_CHANGE';
+type GitEntry = { pathBytesBase64: string; path: string; mode: string;
+  object: Sha; kind: 'blob' | 'commit' };
+type Change = { path: string; pathBytesBase64: string; types: ChangeType[];
+  oldMode: string | null; newMode: string | null;
+  oldBlob: Sha | null; newBlob: Sha | null;
+  oldObject: Sha | null; newObject: Sha | null };
+type Binding = { repoId: number; pr: number; base: Sha; head: Sha;
+  verifierSha: Sha; policyHash: string; contractHash: string };
+type TestCase = { file: string; project: string; ancestors: string[];
+  title: string; occurrence: number; status: 'passed'|'failed'|'skipped'|'todo' };
+type Inventory = { binding: Binding; files: {path:string;blob:Sha}[];
+  cases: TestCase[]; toolchainHash: string; configHash: string;
+  totals: Record&lt;TestCase['status'],number&gt; };
+type Evidence = { binding: Binding; runId: string; attempt: number;
+  checkNames: ['forge-gate','forge-verify']; diffHash: string;
+  baselineHash: string; inventoryHash: string; commandResults: unknown[];
+  mutantResults: {id:string;killed:boolean;reason:string}[];
+  ownerReviewId: number; ownerId: 315180734; reviewHash: string;
+  limitations: string[]; conclusion: 'PASS'|'FAIL'|'UNKNOWN' };
+
+async function collectGitFacts(base: Sha, head: Sha) {
+  // Full SHA syntax; hardcoded canonical HTTPS origin. A NEW verifier-owned bare
+  // DB, --template=&lt;empty-dir&gt;, env allowlist, system/global config disabled.
+  // Fetch ONLY main and refs/pull/&lt;validated integer&gt;/head, --no-tags,
+  // --no-recurse-submodules; bounded time/bytes. No --shared/--reference.
+  // Assert refs resolve to pinned SHAs. Reject alternates/shallow/grafts/replaces,
+  // unexpected local config/includes, partial clone/promisor/lazy fetch.
+  // cat-file -t =&gt; commits; validate object types/sizes and parent count.
+  // merge-base --is-ancestor(base,head): fail if false in V0.1.
+  // Walk ls-tree -r -z --full-tree for BOTH trees; retain raw path bytes.
+  // Diff the maps; never -M/-C. Gitlink object IDs are NOT blob IDs.
+  // Sort bytewise, deterministic flags order; canonical JSON excludes timestamps.
+  return { binding: await readAndPinPublicPrMetadata(), changes: diffTreeMaps(),
+    baseTree: readTree(base), headTree: readTree(head), ancestry: readParents() };
+}
+function validateStaticGate(facts: unknown, policy: unknown) {
+  // Exact repo ID/base main/head repo and namespace; author numeric ID.
+  // Current main == BASE == verifierSha; PR still open and same HEAD.
+  // Allow owner OPS path only for Owner PR in owner namespace; never general bypass.
+  // Contract/limits/scope/protected paths evaluated from BASE policy, not HEAD.
+  // V0.1 developer changes: ordinary source + approved new test files only.
+  // Existing tests/fixtures, package/lock, tsconfig, vitest/vite configs, .npmrc,
+  // .github/**, verifier, .gitattributes/.gitmodules and environment loaders frozen.
+  // Reject symlinks/gitlinks/unexpected executable files, controls/invalid UTF-8,
+  // normalization/case/prefix collisions before filesystem materialization.
+  // Validate ALL trees for modes/path hazards, not just changed paths.
+  // Reject contract-gate inconsistencies, unknown approvals or oversized input.
+  return failClosedDecision();
+}
+async function collectTestBaseline(binding: Binding): Promise&lt;Inventory&gt; {
+  // Run on pinned BASE inside execution boundary, not during static gate.
+  // Trusted config and runner/lock; full run JSON + all file inventory.
+  // Runtime list may supplement, but imports test code: NEVER in stage 1.
+  // Preserve duplicate counts (multiset); no reliance on total count alone.
+  // Parameterized cases expanded by runtime; fail collection errors/unknown status.
+  return normalizeRunResult();
+}
+async function executeVerification(binding: Binding) {
+  // Fresh supervisor repeats static checks. Install exact BASE lock, ignore scripts.
+  // For owner dependency-update OPS, run a separately reviewed candidate toolchain;
+  // don't silently reuse old dependencies as proof for new package contents.
+  // Frozen tests plus HEAD source, then complete approved HEAD test set.
+  // Direct node &lt;trusted tsc&gt; --project &lt;trusted config&gt; --noEmit.
+  // Direct node &lt;trusted vitest&gt; run --config &lt;trusted config&gt;
+  // --allowOnly=false --passWithNoTests=false --reporter=json.
+  // Env allowlist, NODE_OPTIONS cleared, CI=true, no npm test script selected by PR.
+  // Read-only dependencies/tests/config; per-run tmp dirs; no network during tests.
+  // Compare (file,project,ancestors,title,occurrence) multisets + statuses.
+  // Existing BASE cases must remain and pass; additions never compensate removal.
+  // Mutants: clean copy per ID, prove patch applied; specific expected assertion
+  // failure kills mutant. Timeout/import error is INFRA_FAILURE, not a valid kill.
+  // Supervisor exit status + bounded JSON schema + source/run bindings checked.
+  return boundedExecutionResults();
+}
+async function produceEvidence(binding: Binding): Promise&lt;Evidence&gt; {
+  // Current PR SHA/main/review fetched again, public GET only. Rate-limit =&gt; FAIL.
+  // Owner COMMENT review may attest own OPS PR: server user.id and commit_id,
+  // binding {base,head,contractHash,verifierSha,AI-report-hash,result} all match.
+  // Resolve revocations/latest attestation deterministically; author text isn't ID.
+  // For fresh Owner recheck validate triggering_actor via numeric user lookup,
+  // run_attempt &gt; 1 and current policy; actor is NOT triggering_actor on reruns.
+  // Evidence authenticates provenance, NOT arbitrary JS semantics/result honesty.
+  // No reports are executed, no archive extraction/eval in privileged context.
+  return encodeEvidenceAndFailUnlessEveryObligationPassed();
+}
+</code></pre>
+<p>Zusätzliche Evidence-Regeln: SHA und Contract-/Policy-Digests sind Identitätsbindungen, keine Signatur einer richtigen Testausführung. Beim Mutant muss eine konkrete Assertion fehlschlagen; ein Timeout, Importfehler oder kaputter Compiler ist kein bestätigter Kill. Keine Erfolgsmeldung ohne vollständige erwartete Inventare. Baseline aus main darf nicht durch eine vom PR gelieferte JSON-Datei ersetzt werden.</p>
+<h2 id="16-first-drill">16. First Drill</h2>
+<p><strong>INFERRED Testsequenz, nicht im kanonischen Repository durchgeführt.</strong> Winziger Fachvertrag: <code>src/forge/drill/clamp-at-zero.ts</code> exportiert <code>clampAtZero(n: number): number</code>, für endliche Zahlen <code>n &lt; 0 ? 0 : n</code>. NaN/Infinity werden im Vertrag ausgeschlossen. Drei trusted Assertions: <code>-1 → 0</code>, <code>0 → 0</code>, <code>2 → 2</code>. Anfangszustand ist eine bereits korrekte mehrzeilige Variante: <code>if (n &lt; 0) return 0; return n;</code>. Der legitime Drill ist deren triviale Umformung in den ternären Ausdruck; die trusted Baseline bleibt dadurch bereits grün. Verifier-Policy erlaubt beim Developer genau die eine Source-Datei. Trusted Tests, Vertrag und Mutants werden vorher als Owner-OPS eingebracht.</p>
+<p>Ein Mutant <code>return n</code> muss vom negativen Test gekillt werden. Zusätzlich bewusst überlebender Audit-Mutant: semantisch identisch die mehrzeilige Ausgangsvariante <code>if (n &lt; 0) return 0; return n;</code>. Der ist nicht sinnvoll als Qualitätsmutant, aber ein gezielter Test, ob der Verifier ein überlebendes Mutant-Ergebnis korrekt als FAIL behandelt. Nicht behaupten, ein äquivalenter Mutant müsse fachlich killbar sein.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Schritt / separater PR bzw. Versuch</th>
+<th>Änderung</th>
+<th>Erwartung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D1 legitime Änderung</td>
+<td><code>return n &lt; 0 ? 0 : n</code> in genau dem erlaubten Pfad</td>
+<td>Gate grün; Tests/normaler Mutant grün; ohne Owner-Attestation Verify rot; nach Attestation + Re-run grün.</td>
+</tr>
+<tr>
+<td>D2 Scope-Verstoß</td>
+<td>Zusätzlich bestehende andere Source-Datei ändern</td>
+<td>Stage 1 FAIL, keine PR-Ausführung.</td>
+</tr>
+<tr>
+<td>D3 Test gelöscht</td>
+<td>Baseline-Testdatei entfernen</td>
+<td>Stage 1 FAIL; separat Lab-Inventar zeigt fehlende Tests.</td>
+</tr>
+<tr>
+<td>D4 Test skipped</td>
+<td>Ein vorhandenes <code>test.skip</code>/<code>describe.skip</code></td>
+<td>Stage 1 FAIL wegen Test-Blob-Änderung; Inventar-Lab zeigt Statuswechsel.</td>
+</tr>
+<tr>
+<td>D5 Config injection</td>
+<td>Neue <code>vitest.config.mjs</code> mit enger include-Liste</td>
+<td>Stage 1 FAIL vor Config-Laden. Zusätzlich prüfen, dass kein push-/PR-Workflow aus Head startet.</td>
+</tr>
+<tr>
+<td>D6 Protected path</td>
+<td><code>.github/workflows/evil.yml</code> oder Verifier-Datei ändern</td>
+<td>Actions-Policy verhindert Developer-Workflow-Ausführung; Stage 1 FAIL.</td>
+</tr>
+<tr>
+<td>D7 Extra file</td>
+<td>Zusätzlich <code>notes.txt</code> außerhalb exakter Scope-Allowlist</td>
+<td>Stage 1 FAIL.</td>
+</tr>
+<tr>
+<td>D8 Surviving mutant</td>
+<td>Legitime Source, trusted Drill-Vertrag verlangt den bewusst überlebenden Audit-Mutant</td>
+<td>Stage 2 FAIL mit <code>MUTANT_SURVIVED</code>, nicht INFRA_FAILURE. Eigener Drill-Vertrag, keine Developer-Manipulation am Mutantensatz.</td>
+</tr>
+<tr>
+<td>D9 Stale review/head</td>
+<td>Review für H1; erlaubte Änderung zu H2; alten H1-Lauf neu starten</td>
+<td>H2 nicht mergefähig; alte Attestation/alter Run darf H2 nicht freigeben. Neue H2-Attestation + vollständiger Re-run erforderlich.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Jeder negative Versuch isoliert genau einen Verstoß gegenüber der legitimen Änderung. Keinen Sammel-PR mit neun Fehlern verwenden. Alte Experiment-Branches bleiben unter der geforderten Löschsperre bestehen; geschlossene PRs sind erlaubt. Zusätzlich zum fachlichen Drill die H1-/Ruleset-/Check-Microdrills aus Abschnitt 19 im entbehrlichen Repository ausführen.</p>
+<h2 id="17-lockout-matrix">17. Lockout Matrix</h2>
+<p><strong>EXPERIMENTALLY VERIFIED als lokales Regelmodell; sämtliche GitHub-Resultate INFERRED bis zum Live-Drill.</strong> ALLOW setzt gültigen Contract, aktuelle Checks und Review voraus, wo angegeben. „GitHub Actions“ meint den Job-Token ohne Rechte, nicht GitHubs interne Implementierung eines vom Owner angeforderten Merges.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Aktion</th>
+<th>Wuerfelduell</th>
+<th>forge-codex</th>
+<th>GitHub Actions</th>
+<th>Tragende Grenze</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direct main push</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R3; Actions zusätzlich permissions={}</td>
+</tr>
+<tr>
+<td>Owner-Branch create/update</td>
+<td>ALLOW</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R5</td>
+</tr>
+<tr>
+<td>Owner-PR eröffnen</td>
+<td>ALLOW</td>
+<td>DENY für Owner-Identität/Owner-Branch-Schreiben</td>
+<td>DENY mit gewähltem Token</td>
+<td>PR-Eröffnung ist nicht identisch mit Branch-Schreiben; Gate prüft Autor</td>
+</tr>
+<tr>
+<td>Codex run create/update</td>
+<td>DENY</td>
+<td>ALLOW</td>
+<td>DENY</td>
+<td>R4</td>
+</tr>
+<tr>
+<td>Codex run PR eröffnen</td>
+<td>Nicht als Codex-Autor erlaubt</td>
+<td>ALLOW</td>
+<td>DENY</td>
+<td>Gate bindet Autoren-ID an Namespace</td>
+</tr>
+<tr>
+<td>Owner update Codex branch</td>
+<td>DENY</td>
+<td>—</td>
+<td>—</td>
+<td>R4 ohne Owner-Bypass</td>
+</tr>
+<tr>
+<td>Codex update owner branch</td>
+<td>—</td>
+<td>DENY</td>
+<td>—</td>
+<td>R5</td>
+</tr>
+<tr>
+<td>Contract create/update</td>
+<td>ALLOW</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R5; Owner als Contract-Autor gewählt</td>
+</tr>
+<tr>
+<td>Run-/Contract-/Owner-Branch delete</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R1</td>
+</tr>
+<tr>
+<td>Run force push</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R1</td>
+</tr>
+<tr>
+<td>Main/Contract/Owner force push</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R1, konservative V0.1-Wahl</td>
+</tr>
+<tr>
+<td>Claude-Branch create/update</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R6</td>
+</tr>
+<tr>
+<td>Stray branch create/update</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R6</td>
+</tr>
+<tr>
+<td>Tag create/update/delete</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R7</td>
+</tr>
+<tr>
+<td>Merge nach main, alle Gates grün</td>
+<td>ALLOW</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R3 Owner-PR-only + R2 ohne Bypass</td>
+</tr>
+<tr>
+<td>Merge nach main, Gate/Review fehlt</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>R2</td>
+</tr>
+<tr>
+<td>Manueller workflow_dispatch</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>DENY</td>
+<td>all-workflow Event-Policy</td>
+</tr>
+<tr>
+<td>Owner-Re-run</td>
+<td>ALLOW</td>
+<td>kein gültiger Owner-Recheck; technische Re-run-Anfrage kann möglich sein</td>
+<td>keine privilegierte Re-run-API</td>
+<td>triggering_actor prüfen; keine Rechteeskalation</td>
+</tr>
+<tr>
+<td>Halt: einzelne laufende Jobs abbrechen</td>
+<td>ALLOW</td>
+<td>kann als write-Actor ebenfalls abbrechen</td>
+<td>DENY mit permissions={}</td>
+<td>Availability ist keine ausschließlich dem Owner vorbehaltene Eigenschaft</td>
+</tr>
+<tr>
+<td>Halt: weitere Runs stoppen + Merge einfrieren</td>
+<td>ALLOW als Admin</td>
+<td>DENY für Admin-Änderung</td>
+<td>DENY</td>
+<td>Owner deaktiviert Workflow/ändert Actor-Policy und aktiviert main-Update-Sperre ohne Bypass</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Wichtige Präzisierung:</strong> Rulesets verbieten nicht unbedingt, dass ein anderer write-Actor eine PR zwischen schon existierenden Branches eröffnet. Die Zeilen „Owner-PR/Codex-PR“ beschreiben zulässige Forge-Identität, nicht eine behauptete GitHub-PR-Erstellungs-ACL. Der Static Gate muss solche vertauschten Autoren ablehnen. Die Ref-Mutationen selbst werden durch R4/R5 eingeschränkt.</p>
+<p><strong>Gefundene Widersprüche und Auflösung:</strong></p>
+<ul>
+<li>Last-Push-Approval sperrt den Single-Owner-OPS-Pfad: entfernen.</li>
+<li>Owner-Bypass zusammen mit Checkpflicht erlaubt Check-Umgehung: R2/R3 trennen.</li>
+<li>Namespace-Bypass zusammen mit Delete-Protection erlaubt Löschen: R1 separat.</li>
+<li>One-commit-Revision auf derselben Branch kollidiert mit Force-Push-Verbot: neue Contract-Revisionsbranch.</li>
+<li>„Keine Workflows aus PR“ ist durch Stage-1-Pathprüfung allein nicht erreicht: Actions-Event-Policy vor Workflow-Aktivierung.</li>
+<li>„Halt = Actions aus“ reicht nicht gegen bereits grüne Heads: Merge-Schreibrecht vorübergehend sperren. Eine dauerhafte zusätzliche Halt-Regel würde die Ruleset-Zahl erhöhen; der Operator-Eingriff im Notfall ist explizit und nicht im Normalmodell versteckt.</li>
+</ul>
+<p>Ein Owner kann als Admin Regeln ändern und später eigene Sperren entfernen. Eine unveränderliche Garantie gegen diesen Admin selbst ist außerhalb dieser technischen Konstruktion.</p>
+<h2 id="18-exact-five-step-bootstrap">18. Exact Five-Step Bootstrap</h2>
+<p><strong>STEP 1 — Lokalen Verifier fertigstellen.</strong> Die getesteten Collector-/Inventarbausteine in trusted Code übernehmen; Static Gate, SHA-bound Owner-Attestation, Supervisor, Container-Digest, Evidence und Drill-Fixtures vervollständigen. Im lokalen Labor erneut D1–D9 und die Container-Dateisystem-/Netzgrenzen prüfen. Keine kanonischen Änderungen in dieser Berichtssitzung.</p>
+<p><strong>STEP 2 — Ein entbehrliches GitHub-Repository prüfen.</strong> Mit Owner- und Developer-Testidentität sieben Rulesets plus Actions-Policy exakt ausprobieren: H1 0+last-push, Bypass-Layering, Pattern-Kanten, Checks an H1/H2, Re-run, Developer-Workflow-Injection, Owner-eigene OPS-PR, Halt. Schlägt ein geforderter Pfad fehl, nicht auf Forge übertragen. Falls kein solches Repo verfügbar ist, Bootstrap bleibt NO-GO für unbewiesene Enforcement-Garantien.</p>
+<p><strong>STEP 3 — Kanonische Bootstrap-OPS vorbereiten und gesondert autorisiert einbringen.</strong> Schutz-/Workflow-Entwurf, Verifier, Scope-Policy, Contract und Baseline zusammen reviewen. All-workflow Event-Policy vor untrusted Workflow-Ausführung einrichten, Actor-/Namespace-Sperren aktivieren; trusted Verifier-Dateien über Owner-OPS einbringen. Die initiale Installation ist ein ausdrücklich dokumentierter Bootstrap-Zustand, kein durch bereits existierende Checks freigegebener Normalbetrieb. PR #2 nicht dafür missbrauchen.</p>
+<p><strong>STEP 4 — Pflichtchecks scharfstellen.</strong> Echte erfolgreiche Checknamen/App-Zuordnung erst erzeugen und prüfen, dann <code>forge-gate</code>/<code>forge-verify</code> ohne Bypass als erforderliche Checks aktivieren. Aktuelle main-Baseline inventarisieren, 1.087 nur für diesen SHA bestätigen, klassische/übergeordnete Schutzregeln abgleichen und finale Lockout-Matrix kontrollieren. Keine Lücke als „fertig geschützt“ deklarieren.</p>
+<p><strong>STEP 5 — Ersten echten Forge-Drill ausführen.</strong> Codex setzt nur die triviale Clamp-Änderung um; Owner attestiert externes Review für genau diesen Head, startet Re-run all jobs und mergt ausschließlich bei passenden frischen Nachweisen. Negative D2–D9 jeweils getrennt testen; keine produktive Folgearbeit vor bestandenem Drill.</p>
+<h2 id="19-remaining-unknowns">19. Remaining Unknowns</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Offener Punkt</th>
+<th>Status</th>
+<th>Kleinster abschließender Nachweis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H1 exakte Serverreaktion auf 0+last-push=true</td>
+<td>UNKNOWN</td>
+<td>Owner-eigene PR im Testrepo, ohne Fremd-Approval: regulärer Merge muss blockieren; false muss diesen einzelnen Blocker entfernen.</td>
+</tr>
+<tr>
+<td>Klassische Branch Protection/übergeordnete Policies</td>
+<td>UNKNOWN</td>
+<td>Autorisierter Admin-Read; vorhandene zusätzliche Regeln protokollieren.</td>
+</tr>
+<tr>
+<td>User-Bypass und PR-only Update Fence</td>
+<td>INFERRED</td>
+<td>Owner/Codex/Actions Push-/Merge-Matrix im Testrepo.</td>
+</tr>
+<tr>
+<td>Rekursive Includes/Excludes</td>
+<td>INFERRED</td>
+<td>Echte Ref-Namen mit einfacher/mehrfacher Tiefe, Präfixfallen und Root-Namespace testen.</td>
+</tr>
+<tr>
+<td>Actions-Event-Policy im aktuellen Konto</td>
+<td>UNKNOWN</td>
+<td>Policy readback und blockierter Developer-push/dispatch; erlaubter PR-target und Owner-Re-run.</td>
+</tr>
+<tr>
+<td>PR-target Default-Policy November-Änderung</td>
+<td>DOCUMENTED; konkrete Betroffenheit UNKNOWN</td>
+<td>Effektive Policy inklusive geerbter Ebene prüfen; explizite Zulassung testen.</td>
+</tr>
+<tr>
+<td>Native Head-/PR-Zuordnung beider Checks</td>
+<td>UNKNOWN</td>
+<td>Check/API-Metadaten und Mergebox bei H1, H2, altem Re-run und Duplicate-Name-Versuch erfassen.</td>
+</tr>
+<tr>
+<td>Owner-Attestation-Frische und Revocation</td>
+<td>INFERRED</td>
+<td>COMMENT-Review, edit/revoke/stale-Head und <code>triggering_actor</code>-Tests.</td>
+</tr>
+<tr>
+<td>Container-Ausführungsgrenze</td>
+<td>UNKNOWN</td>
+<td>Gepinntes Image und Probe für Netz, readonly mounts, Host-Dateien/Socket, Limits; keine Secrets verwenden.</td>
+</tr>
+<tr>
+<td>macOS/Node 22</td>
+<td>UNKNOWN</td>
+<td>Nicht für den ersten Linux-Drill erforderlich; keine Kompatibilitätsbehauptung.</td>
+</tr>
+<tr>
+<td>Vollständiger Static Gate / Supervisor</td>
+<td>Nicht implementiert</td>
+<td>Dieser Auftrag verlangt Prototypen/Pseudocode, keinen vollständigen produktiven Verifier; vor Aktivierung erforderlich.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ein Live-Experiment wurde nicht durch lokale Annahmen ersetzt. Kein Testrepository wurde erzeugt: die verfügbaren GitHub-Tools boten keinen passenden Create-Repository-/Ruleset-Administrationspfad; der kanonische Settings-Zugriff war ausgeschlossen. Die lokale Umgebung erlaubte anonymes Clone/Fetch und npm-Installation, nicht automatisch ein eigenständiges kontrolliertes GitHub-Labor.</p>
+<h2 id="20-go-no-go">20. GO / NO-GO</h2>
+<p><strong>GO:</strong> getesteter Object-Diff-Collector; Blob-basierte Checkout-Strategie mit expliziter Verwerfung gefährlicher Modi; Test-Inventarvergleich gegen echte 1.087er Baseline; Linux-Installation mit <code>--ignore-scripts</code>; konkrete sieben Rulesets, Workflow-Entwurf und isolierte Drill-Sequenz.</p>
+<p><strong>NO-GO:</strong> Jetzt schon untrusted Forge-Runs als sicher verifiziert behandeln oder kanonischen Bootstrap als einsatzbereit erklären. Es fehlen insbesondere Live-Nachweise für Check-Bindung/Ruleset-Enforcement/Actions-Policy sowie die implementierte Execution-Grenze. Dokumentation und lokale Modelle schließen diese Nachweise nicht ein.</p>
+<p><strong>Kein kanonischer Schreibzugriff durchgeführt.</strong> Die abschließende <code>git ls-remote</code>-Kontrolle ergab erneut <code>3d7545d843883418348004e68717399a64da7a7d</code> für main. Das bestätigt den beobachteten Endstand; die Read-only-Aussage stützt sich zusätzlich auf die ausschließlich lesenden Remote-Aufrufe, nicht nur auf einen unveränderten main-SHA.</p>
+<h3 id="quellen-und-laborbelege">Quellen und Laborbelege</h3>
+<p>Primärquellen, im Lauf am 3. Oktober 2026 gelesen. GitHub-Dokumentation kann sich ändern; neue Actions-Policies sind ausdrücklich Teil dieses zeitgebundenen Berichts.</p>
+<ul>
+<li><strong>S1:</strong> <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets">GitHub — Available rules for rulesets</a></li>
+<li><strong>S2:</strong> <a href="https://docs.github.com/en/rest/repos/rules">GitHub REST — Repository rules</a></li>
+<li><strong>S3:</strong> <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets">GitHub — About rulesets</a> und <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository">Creating rulesets</a></li>
+<li><strong>S4:</strong> <a href="https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows">GitHub — Events that trigger workflows</a></li>
+<li><strong>S5:</strong> <a href="https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs">GitHub — Re-running workflows and jobs</a> und <a href="https://docs.github.com/en/actions/reference/workflows-and-actions/contexts">Contexts reference</a></li>
+<li><strong>S6:</strong> <a href="https://docs.github.com/en/actions/how-tos/administer/control-workflow-execution">GitHub — Control workflow execution</a></li>
+<li><strong>S7:</strong> <a href="https://docs.github.com/en/rest/actions/policies">GitHub REST — Actions policies</a></li>
+<li><strong>S8:</strong> <a href="https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target">GitHub — Securely using pull_request_target</a></li>
+<li><strong>S9:</strong> <a href="https://git-scm.com/docs/git">Git — Environment and --no-replace-objects</a></li>
+<li><strong>S10:</strong> <a href="https://vitest.dev/guide/cli.html">Vitest — CLI</a>; genaue lokale 5.0.3-Flags zusätzlich in <code>evidence/vitest-list-help.txt</code></li>
+<li><strong>S11:</strong> <a href="https://docs.npmjs.com/cli/v11/commands/npm-ci/">npm v11 — npm ci</a></li>
+<li><strong>S12:</strong> <a href="https://docs.github.com/en/actions/reference/runners/github-hosted-runners">GitHub — Hosted runners</a> und <a href="https://docs.github.com/en/actions/reference/security/secure-use">Secure use</a></li>
+<li><strong>S13:</strong> <a href="https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks">GitHub — Troubleshooting required status checks</a></li>
+<li><strong>S14:</strong> <a href="https://docs.github.com/en/rest/checks/runs">GitHub REST — Check runs</a></li>
+<li><strong>S15:</strong> <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/reviewing-proposed-changes-in-a-pull-request">GitHub — Reviewing proposed changes</a></li>
+</ul>
+<p>Das Laborpaket enthält Prototypen, JSON-Inventare, vollständige Test-Reports, Install-/Typecheck-Logs, Remote-Metadaten, Ruleset-Modell und die Entwürfe. <code>README.txt</code> beschreibt Wiederholung und Grenzen. Keine node_modules, keine Credentials, kein kanonischer Repository-Checkout im Auslieferungspaket.</p></main></body></html>
