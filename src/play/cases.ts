@@ -111,3 +111,12 @@ export function loadFolderPackage(dir: string, npcs: readonly string[], salt: st
   const read = (name: string): unknown => JSON.parse(readFileSync(join(dir, name), "utf8"));
   return bindAndResolve(read, packageInputFrom(read, npcs, "mystery-session-v3"), salt, dir);
 }
+
+/** An imported case (file name -> text, already passed check-case) as a package under the play ruleset. */
+export function loadFilesPackage(files: Readonly<Record<string, string>>, npcs: readonly string[], salt: string, what: string): ResolvedCasePackage {
+  const read = (name: string): unknown => {
+    if (!Object.hasOwn(files, name)) throw new Error(`${name} fehlt`);
+    return JSON.parse(files[name]!);
+  };
+  return bindAndResolve(read, packageInputFrom(read, npcs, "mystery-session-v3"), salt, what);
+}

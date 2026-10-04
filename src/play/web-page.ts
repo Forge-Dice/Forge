@@ -92,6 +92,7 @@ export function renderCaseList(cases: readonly CaseCard[], editorLink = false, e
         : `<h3>Zuletzt geöffnet</h3><ul class="recent">${recent.map((r) => `<li><a href="/fall/${escape(r.slug)}">${escape(r.title)}</a>${r.progress === null ? "" : ` <span class="badge${r.progress === "Gelöst" ? " solved" : ""}">${escape(r.progress)}</span>`}</li>`).join("")}</ul>`
     }</section>
 <section class="load-any" aria-labelledby="laden"><h2 id="laden">Spielstand laden</h2><p>Eine gespeicherte Datei öffnet den passenden Fall, auch einen Zufallsfall mit seinem Seed.</p><label class="button" tabindex="0" role="button" id="load-any-label">Datei wählen<input type="file" id="load-any" accept=".json,application/json" hidden></label></section>
+<section class="load-any" aria-labelledby="eigen"><h2 id="eigen">Eigener Fall</h2><p>Eine Fall-Datei aus dem Fall-Editor. Sie wird vollständig geprüft, bevor du sie spielst.</p><a class="button" href="/eigener-fall">Eigenen Fall laden</a></section>
 </div>
 <p class="hint">Jeder Fall merkt sich seinen eigenen Stand, solange der Server läuft. Mit „Speichern“ nimmst du ihn mit.</p></main>
 ${extras.feedback ? notice(extras.feedback) : ""}
