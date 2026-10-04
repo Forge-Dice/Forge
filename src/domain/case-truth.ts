@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { deepFreeze } from "./shared.ts";
 
 // Objective, immutable truth of a mystery case (TASK-0001).
 // A successfully parsed CaseTruth is structurally valid and reference-complete.
@@ -314,16 +315,6 @@ export type DeepReadonly<T> = T extends string | number | boolean | null
   : T extends readonly (infer U)[]
     ? ReadonlyArray<DeepReadonly<U>>
     : { readonly [K in keyof T]: DeepReadonly<T[K]> };
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) {
-    for (const child of Object.values(value)) {
-      deepFreeze(child);
-    }
-    Object.freeze(value);
-  }
-  return value;
-}
 
 export const CaseTruthSchema = CaseTruthShapeSchema.superRefine(checkReferenceIntegrity)
   .transform((truth) => deepFreeze(structuredClone(truth)) as DeepReadonly<CaseTruthShape>)

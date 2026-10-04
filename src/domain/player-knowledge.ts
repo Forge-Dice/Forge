@@ -1,6 +1,7 @@
 import type { EvidenceObservation } from "./evidence-presentation.ts";
 import type { ConfrontationObservation, InterrogationObservation } from "./interrogation.ts";
 import type { EntityRef, ResolvedCasePackage } from "./case-package.ts";
+import { byCodeUnits } from "./shared.ts";
 
 // PlayerKnowledge V1 (MYST-SESSION-0001A §3): a source-bound journal of what the player received,
 // not a set of true propositions. Only initial known entities, released evidence itself and
@@ -39,8 +40,6 @@ export type PlayerKnowledge = {
   readonly discoveries: readonly { readonly evidence: string; readonly firstDiscoveryEvent: number }[];
   readonly observations: readonly ObservationRecord[];
 };
-
-const byCodeUnits = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
 function withKnown(
   knowledge: PlayerKnowledge,

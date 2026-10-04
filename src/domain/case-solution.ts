@@ -9,6 +9,7 @@ import {
   type DeepReadonly,
 } from "./case-truth.ts";
 import { hashCaseTruth } from "./case-truth.identity.ts";
+import { deepFreeze } from "./shared.ts";
 
 // Immutable, versioned answer key for a mystery case (TASK-0003).
 // A CaseSolution is bound to one exact CaseTruth snapshot (caseId + truthHash).
@@ -299,14 +300,6 @@ export function evaluateConclusionClaim(truth: CaseTruth, solution: CaseSolution
 }
 
 // ---------- Immutability ----------
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
-}
 
 /** Zod schema bound to one CaseTruth snapshot. The only way to obtain a CaseSolution. */
 export function createCaseSolutionSchema(truth: CaseTruth) {

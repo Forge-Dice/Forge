@@ -1,3 +1,4 @@
+import { rulesetAllows } from "../domain/case-package.ts";
 import { accusations, confrontations, hintsUsed, investigations, known, questions, recordText, type Action, type Game } from "./game.ts";
 
 // HTML views of the local browser front end. Pure: (game, feedback) -> page. Every label comes from
@@ -285,7 +286,7 @@ ${
 </div>
 <aside class="dossier side" aria-label="Bekannt und Spielstand">
 <section id="bekannt" class="card" tabindex="-1"><h2>Bekannt</h2>${knownList(game)}</section>
-${solved || game.pkg.identity.rulesetVersion !== "mystery-session-v3" ? "" : hintCard(game, slug)}
+${solved || !rulesetAllows(game.pkg.identity.rulesetVersion, "hints") ? "" : hintCard(game, slug)}
 <section class="card save"><h2>Spielstand</h2>
 <div class="actions"><a class="button" href="/fall/${slug}/save" download="${slug}.save.json">Speichern</a>
 <label class="button" tabindex="0" role="button" id="load-label">Laden<input type="file" id="load" accept=".json,application/json" hidden></label>

@@ -37,6 +37,7 @@ import {
   utf8Length,
   validateSessionJson,
 } from "./case-package.identity.ts";
+import { deepFreezeUnfrozen } from "./shared.ts";
 
 // Exact, immutable case package (MYST-SESSION-0001A §2). resolveCasePackage is the only identity
 // boundary: it parses every component with its real parser, recomputes every binding and hash,
@@ -60,11 +61,22 @@ export const PACKAGE_LIMITS = Object.freeze({
   releaseManifestBytes: 256 * 1024,
 });
 
-// v1: every NPC statement is sincere. v2 adds authored lies (interrogation rule act "lie"); a v1
-// package with a lie rule is rejected, so v1 packages and their identities stay exactly as they were.
-// v3 = v2 plus the player event {type:"hint"} (case-hints.ts), which needs a bound proof.
+// Ruleset versions: the one place that says what each version allows. The version is part of the
+// package identity and of the release context, and any change to accepted actions needs a new
+// version (R06), so older packages, saves and certificates keep exactly their identity.
+//   mystery-session-v1  every NPC statement is sincere; events investigate, interrogate, accuse.
+//   mystery-session-v2  v1 plus authored lies (interrogation rule act "lie") and the event
+//                       confront (hold found evidence against an earlier statement).
+//   mystery-session-v3  v2 plus the event hint (case-hints.ts); needs a bound proof (witness).
+// check-case certifies a case under v1, or v2 if it has a lie; the play host runs every case
+// under v3 and binds the proof on load (play/cases.ts).
 export const RULESET_VERSIONS = ["mystery-session-v1", "mystery-session-v2", "mystery-session-v3"] as const;
 export type RulesetVersion = (typeof RULESET_VERSIONS)[number];
+export type RulesetFeature = "lies" | "confront" | "hints";
+const FEATURES_SINCE: Record<RulesetFeature, RulesetVersion> = { lies: "mystery-session-v2", confront: "mystery-session-v2", hints: "mystery-session-v3" };
+/** Whether a ruleset version allows a feature (see the table above). */
+export const rulesetAllows = (version: RulesetVersion, feature: RulesetFeature): boolean =>
+  RULESET_VERSIONS.indexOf(version) >= RULESET_VERSIONS.indexOf(FEATURES_SINCE[feature]);
 const KINDS = PLAYER_REF_KINDS;
 
 export type EntityRef = { readonly kind: (typeof KINDS)[number]; readonly id: string };
@@ -270,14 +282,6 @@ function verifyRefs(source: PackageRefSource, truth: CaseTruth, truthHash: strin
   return mapping;
 }
 
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
-}
-
 const notSerializable = (): never => {
   throw new TypeError("ResolvedCasePackage is trusted-only and not serializable");
 };
@@ -308,7 +312,7 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
     profile.rules.forEach((rule, j) => {
       if (rule.act !== "lie") return;
       const path = ["npcs", i, "profile", "rules", j];
-      if (input.rulesetVersion === "mystery-session-v1") reject("RULESET", [...path, "act"]);
+      if (!rulesetAllows(input.rulesetVersion, "lies")) reject("RULESET", [...path, "act"]);
       // A lie is knowingly false: the NPC must hold the true stance as knowledge or belief.
       const proposition = lieProposition(truth, rule.claim)!;
       const own = snapshot.attitudes.find((a) => a.subject.kind === "proposition" && a.subject.id === proposition.id);
@@ -367,7 +371,7 @@ function resolve(rawInput: unknown, source: PackageRefSource): ResolvedCasePacka
     proofHash: proof?.proofHash ?? null,
   });
 
-  return deepFreeze({
+  return deepFreezeUnfrozen({
     identity: { schemaVersion: 1, packageHash, rulesetVersion: input.rulesetVersion },
     truth,
     solution,
@@ -690,6 +694,6 @@ export function resolveCasePackage(input: unknown, source: PackageRefSource): Pa
     return Object.freeze({ ok: true, package: resolve(input, source) });
   } catch (error) {
     if (!(error instanceof Rejected)) throw error;
-    return deepFreeze({ ok: false, findings: error.findings });
+    return deepFreezeUnfrozen({ ok: false, findings: error.findings });
   }
 }

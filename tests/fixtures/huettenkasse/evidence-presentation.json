@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "caseId": "case:huettenkasse",
-  "truthHash": "501c5179e93578c2a77abb53ea0098cec9af44efbafaed8ad18ff26dfa0c7eab",
+  "truthHash": "7eb089891564275ca1e43ee76a8404bc99768a906729973fd1df2c668701e070",
   "entries": [
     {
       "evidenceId": "evidence:schrank",
@@ -194,6 +194,21 @@
         {
           "kind": "location",
           "id": "location:winterraum"
+        }
+      ],
+      "reports": []
+    },
+    {
+      "evidenceId": "evidence:banderole",
+      "text": "Unter dem Schlafsack im Winterraum lugt ein Papierstreifen hervor: eine Geldbanderole mit Rosas Stempel „Hüttenkasse“, datiert auf heute.",
+      "mentions": [
+        {
+          "kind": "location",
+          "id": "location:winterraum"
+        },
+        {
+          "kind": "item",
+          "id": "item:kasse"
         }
       ],
       "reports": []

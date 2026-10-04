@@ -14,6 +14,7 @@ import {
   newGame,
   questions,
   saveText,
+  SESSION_ERRORS,
   type Action,
   type Game,
 } from "./game.ts";
@@ -24,13 +25,6 @@ import { PLAY_CASES, loadPlayPackage, playCaseName, type PlayCaseName } from "./
 // the CLI. The server holds one game per case in memory; saves are the Session C text.
 
 const MAX_BODY = 1024 * 1024 + 4096; // one Session C save plus slack for a form body
-
-const ERRORS: Record<string, string> = {
-  ACTION_UNAVAILABLE: "Das geht gerade nicht.",
-  SESSION_CLOSED: "Der Fall ist bereits gelöst.",
-  LIMIT_REACHED: "Das Aktionslimit dieses Falls ist erreicht.",
-  HOST_FAILURE: "Technischer Fehler, die Aktion wurde nicht ausgeführt.",
-};
 
 function readBody(req: IncomingMessage): Promise<string | null> {
   return new Promise((resolve) => {
@@ -133,7 +127,7 @@ export function createWebHandler(packages: Partial<Record<PlayCaseName, Resolved
     if (action === undefined) return;
     const result = reduceSession(game.pkg, game.state, action.event);
     if (!result.ok) {
-      s.feedback = { tone: "warn", title: ERRORS[result.code]!, lines: [] };
+      s.feedback = { tone: "warn", title: SESSION_ERRORS[result.code]!, lines: [] };
       return;
     }
     s.game = { ...game, state: result.state };

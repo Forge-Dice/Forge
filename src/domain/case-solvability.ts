@@ -13,6 +13,7 @@ import {
 import { hashCaseTruth } from "./case-truth.identity.ts";
 import { ConclusionIdSchema, evaluateConclusionClaim, type CaseSolution } from "./case-solution.ts";
 import { hashCaseSolution } from "./case-solution.identity.ts";
+import { byCodeUnits, deepFreeze } from "./shared.ts";
 
 // Minimum solvability V1 (MYST-SOLVABILITY-0001), author-side only: AND implications over replayed,
 // released observations plus all 2^n answer vectors over a small scope. PASS means derivable under
@@ -84,10 +85,6 @@ type Path = (string | number)[];
 export type ProofBindings = DeepReadonly<z.output<typeof BindingsSchema>>;
 export type ReleasedObservation = DeepReadonly<z.output<typeof ReleasedObservationSchema>>;
 
-function byCodeUnits(a: string, b: string): number {
-  return a < b ? -1 : a > b ? 1 : 0;
-}
-
 /** Canonical JSON: keys sorted, arrays treated as sets. Used for payload and literal equality. */
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).sort(byCodeUnits).join(",")}]`;
@@ -96,14 +93,6 @@ function canonical(value: unknown): string {
     return `{${keys.map((k) => `${JSON.stringify(k)}:${canonical((value as Record<string, unknown>)[k])}`).join(",")}}`;
   }
   return JSON.stringify(value);
-}
-
-function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null) {
-    for (const child of Object.values(value)) deepFreeze(child);
-    Object.freeze(value);
-  }
-  return value;
 }
 
 /** Canonical status of a literal's claim: true/false, "undetermined", or null for an unknown reference. */
