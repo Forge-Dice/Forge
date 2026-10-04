@@ -51,3 +51,16 @@ describe("DockerRunner prerequisites", () => {
     expect(outcome(py1("seams.docker_runner_for_test", [docker, workspace(), "img:1"]))).toBe("EXECUTION_SANDBOX");
   });
 });
+
+describe("DockerRunner deadline: the container must be gone, not only the client", () => {
+  it("deadline + successful `docker rm -f` → an observed timeout", () => {
+    const docker = fakeDocker({ run: "exec sleep 30" });
+    const r = py1("seams.docker_runner_for_test", [docker, workspace(), "img:1", 1]);
+    expect(r.ok).toEqual({ exitCode: null, timedOut: true, overflow: false });
+  }, 10_000);
+
+  it("deadline + failing `docker rm -f` (container may still run) → EXECUTION_SANDBOX, never a plain timeout", () => {
+    const docker = fakeDocker({ run: "exec sleep 30", rm: "exit 1" });
+    expect(outcome(py1("seams.docker_runner_for_test", [docker, workspace(), "img:1", 1]))).toBe("EXECUTION_SANDBOX");
+  }, 10_000);
+});

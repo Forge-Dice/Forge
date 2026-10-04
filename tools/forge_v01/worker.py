@@ -148,7 +148,9 @@ class DockerRunner:
             done = process.run_bounded(docker_argv(spec.role, spec.mounts, self.image, name, spec.argv, spec.env, self.docker), self.env,
                                        deadline_seconds=spec.deadline, output_limit=TRANSPORT_LIMIT)
         except ForgeFail as failure:
-            self._docker("rm", "-f", name)  # killing the client does not stop the container
+            # killing the client does not stop the container; an unconfirmed removal may leave it running
+            if self._docker("rm", "-f", name).returncode != 0:
+                raise fail("EXECUTION_SANDBOX", "worker") from None
             if failure.code == "EXECUTION_TIMEOUT":
                 return Observed(None, True, b"")
             if failure.code == "EXECUTION_IO":
