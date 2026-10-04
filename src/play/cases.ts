@@ -25,6 +25,7 @@ export type PlayCase = {
 };
 
 export const PLAY_CASES = {
+  lernfall: { dir: "lernfall", npcs: ["jonas", "mila"], salt: "1ea51ea51ea51ea51ea51ea51ea51ea5", clockOrigin: 16 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 2 },
   vitrine: { dir: "vitrine", npcs: ["lina", "max", "nora", "oskar"], salt: "5a175a175a175a175a175a175a175a17", clockOrigin: 18 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 5 },
   "brieföffner": { dir: "brieffoeffner", npcs: ["anna", "ben"], salt: "b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 4 },
   geige: { dir: "geige", npcs: ["ida", "kurt", "paul", "vera"], salt: "6e16e16e16e16e16e16e16e16e16e16e", clockOrigin: 20 * 3600, rulesetVersion: "mystery-session-v3", difficulty: 3 },

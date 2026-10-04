@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "revision": 1,
+  "title": "Die Vereinskasse",
+  "timeline": {
+    "unit": "second",
+    "originLabel": "16:00 Uhr am Trainingsnachmittag"
+  },
+  "persons": [
+    {
+      "id": "person:jonas",
+      "name": "Jonas"
+    },
+    {
+      "id": "person:mila",
+      "name": "Mila"
+    },
+    {
+      "id": "person:kurt",
+      "name": "Kurt"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location:clubhouse",
+      "name": "Vereinsheim"
+    },
+    {
+      "id": "location:field",
+      "name": "Sportplatz"
+    }
+  ],
+  "items": [
+    {
+      "id": "item:cashbox",
+      "name": "Vereinskasse"
+    }
+  ],
+  "relationships": [],
+  "events": [
+    {
+      "id": "event:theft",
+      "description": "Die Vereinskasse verschwindet aus dem Vereinsheim",
+      "time": {
+        "kind": "instant",
+        "at": 3600
+      },
+      "locationId": "location:clubhouse",
+      "participantIds": [
+        "person:jonas"
+      ],
+      "itemIds": [
+        "item:cashbox"
+      ],
+      "causedByEventIds": []
+    },
+    {
+      "id": "event:training",
+      "description": "Training auf dem Sportplatz",
+      "time": {
+        "kind": "interval",
+        "start": 3000,
+        "end": 4200
+      },
+      "locationId": "location:field",
+      "participantIds": [
+        "person:mila",
+        "person:kurt"
+      ],
+      "itemIds": [],
+      "causedByEventIds": []
+    }
+  ],
+  "motives": [
+    {
+      "id": "motive:debt",
+      "personId": "person:jonas",
+      "eventIds": [
+        "event:theft"
+      ],
+      "description": "Jonas hat Spielschulden"
+    }
+  ],
+  "propositions": [
+    {
+      "id": "proposition:jonas-in-clubhouse",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:jonas",
+        "locationId": "location:clubhouse",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:jonas-at-theft",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:theft",
+        "personId": "person:jonas"
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:mila-on-field",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:mila",
+        "locationId": "location:field",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:kurt-on-field",
+      "claim": {
+        "kind": "personAt",
+        "personId": "person:kurt",
+        "locationId": "location:field",
+        "at": 3600
+      },
+      "truth": true
+    },
+    {
+      "id": "proposition:mila-at-theft",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:theft",
+        "personId": "person:mila"
+      },
+      "truth": false
+    },
+    {
+      "id": "proposition:kurt-at-theft",
+      "claim": {
+        "kind": "eventHasParticipant",
+        "eventId": "event:theft",
+        "personId": "person:kurt"
+      },
+      "truth": false
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence:shoeprint",
+      "description": "Schlammiger Stollenabdruck von Jonas' Fußballschuhen vor dem Kassenschrank",
+      "source": {
+        "kind": "location",
+        "id": "location:clubhouse"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:jonas-in-clubhouse",
+          "direction": "supports"
+        }
+      ]
+    },
+    {
+      "id": "evidence:training-list",
+      "description": "Gegengezeichnete Trainingsliste: Mila und Kurt von 16:50 bis 17:10 auf dem Platz",
+      "source": {
+        "kind": "location",
+        "id": "location:field"
+      },
+      "links": [
+        {
+          "propositionId": "proposition:mila-on-field",
+          "direction": "supports"
+        },
+        {
+          "propositionId": "proposition:kurt-on-field",
+          "direction": "supports"
+        }
+      ]
+    }
+  ],
+  "secrets": [],
+  "redHerrings": []
+}

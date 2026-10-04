@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "bindings": {
+    "caseId": "case:lernfall-vereinskasse",
+    "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+    "solutionHash": "cc15fcf1834a2659632bacaf046860dee74fb7dc0234df272168de760035445d",
+    "releaseHash": "a2a8d4d9fc5db10ab62b0c650a5a9f3c62b5d8bb0b270af915ac67406731430c"
+  },
+  "answerScope": [
+    "conclusion:jonas-responsible",
+    "conclusion:mila-responsible",
+    "conclusion:kurt-responsible"
+  ],
+  "ambiguityPolicy": "must_disambiguate",
+  "question": {
+    "kind": "required_literals"
+  },
+  "observations": [
+    {
+      "id": "reported:jonas-denies",
+      "kind": "REPORTED_BY_NPC",
+      "npcId": "person:jonas",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:jonas-in-clubhouse",
+        "value": false
+      }
+    },
+    {
+      "id": "reported:jonas-admits",
+      "kind": "REPORTED_BY_NPC",
+      "npcId": "person:jonas",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:jonas-in-clubhouse",
+        "value": true
+      }
+    },
+    {
+      "id": "public-rule:confession",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "responsible:jonas",
+          "allOf": [
+            "observation:jonas-admits"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:jonas-responsible",
+            "value": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "observed:mila",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:mila-on-field",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:training-list"
+      }
+    },
+    {
+      "id": "observed:kurt",
+      "kind": "OBSERVED",
+      "literal": {
+        "kind": "proposition",
+        "propositionId": "proposition:kurt-on-field",
+        "value": true
+      },
+      "source": {
+        "kind": "evidence",
+        "evidenceId": "evidence:training-list"
+      }
+    },
+    {
+      "id": "public-rule:alibi",
+      "kind": "PUBLIC_RULE",
+      "rules": [
+        {
+          "edgeId": "alibi:mila",
+          "allOf": [
+            "observation:mila"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:mila-responsible",
+            "value": false
+          }
+        },
+        {
+          "edgeId": "alibi:kurt",
+          "allOf": [
+            "observation:kurt"
+          ],
+          "yields": {
+            "kind": "conclusion",
+            "conclusionId": "conclusion:kurt-responsible",
+            "value": false
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "observation:jonas-admits",
+      "kind": "observation",
+      "observationId": "reported:jonas-admits"
+    },
+    {
+      "id": "license:confession",
+      "kind": "observation",
+      "observationId": "public-rule:confession"
+    },
+    {
+      "id": "literal:jonas",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:jonas-responsible",
+        "value": true
+      }
+    },
+    {
+      "id": "license:alibi",
+      "kind": "observation",
+      "observationId": "public-rule:alibi"
+    },
+    {
+      "id": "observation:mila",
+      "kind": "observation",
+      "observationId": "observed:mila"
+    },
+    {
+      "id": "literal:mila",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:mila-responsible",
+        "value": false
+      }
+    },
+    {
+      "id": "observation:kurt",
+      "kind": "observation",
+      "observationId": "observed:kurt"
+    },
+    {
+      "id": "literal:kurt",
+      "kind": "literal",
+      "literal": {
+        "kind": "conclusion",
+        "conclusionId": "conclusion:kurt-responsible",
+        "value": false
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "responsible:jonas",
+      "allOf": [
+        "observation:jonas-admits",
+        "license:confession"
+      ],
+      "to": "literal:jonas",
+      "license": "license:confession"
+    },
+    {
+      "id": "alibi:mila",
+      "allOf": [
+        "observation:mila",
+        "license:alibi"
+      ],
+      "to": "literal:mila",
+      "license": "license:alibi"
+    },
+    {
+      "id": "alibi:kurt",
+      "allOf": [
+        "observation:kurt",
+        "license:alibi"
+      ],
+      "to": "literal:kurt",
+      "license": "license:alibi"
+    }
+  ],
+  "witnessStepIds": [
+    "search-clubhouse",
+    "search-field",
+    "ask-jonas",
+    "confront-jonas"
+  ]
+}

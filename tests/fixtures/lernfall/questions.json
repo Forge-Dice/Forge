@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "caseId": "case:lernfall-vereinskasse",
+  "truthHash": "afbe2521c68d2aec3757165f0f44b8d158e49d1d57fd5e8f5d2e0dd7ad9f9616",
+  "revision": 1,
+  "questions": [
+    {
+      "id": "question:q01",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:jonas"
+        },
+        {
+          "kind": "location",
+          "id": "location:clubhouse"
+        }
+      ]
+    },
+    {
+      "id": "question:q02",
+      "mentions": [
+        {
+          "kind": "person",
+          "id": "person:mila"
+        },
+        {
+          "kind": "location",
+          "id": "location:field"
+        }
+      ]
+    }
+  ]
+}

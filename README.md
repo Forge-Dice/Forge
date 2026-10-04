@@ -8,7 +8,7 @@ Node 22, TypeScript, zod. `npm install`, then `npm run typecheck` and `npm test`
 
 ```sh
 npm run play                 # Terminal, Fall "vitrine"
-npm run play -- geige        # anderer Fall: vitrine, brieföffner (briefoeffner), geige, hüttenkasse, nachtzug
+npm run play -- geige        # anderer Fall: lernfall (Einstieg), vitrine, brieföffner (briefoeffner), geige, hüttenkasse, nachtzug, leuchtfeuer
 npm run play:web             # Browser auf http://localhost:4173 (PORT=… für einen anderen Port)
 npm run build:web            # eine einzige HTML-Datei (dist/kriminalfaelle.html), spielbar ohne Server
 npm run play -- liste        # alle Fälle mit Schwierigkeit

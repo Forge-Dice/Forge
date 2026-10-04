@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "known": [
+    {
+      "kind": "person",
+      "id": "person:jonas"
+    },
+    {
+      "kind": "person",
+      "id": "person:mila"
+    },
+    {
+      "kind": "person",
+      "id": "person:kurt"
+    },
+    {
+      "kind": "location",
+      "id": "location:clubhouse"
+    },
+    {
+      "kind": "location",
+      "id": "location:field"
+    },
+    {
+      "kind": "event",
+      "id": "event:theft"
+    }
+  ]
+}

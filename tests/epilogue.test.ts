@@ -11,9 +11,9 @@ import { createWebApp } from "../src/play/web.ts";
 // Optional PublicContent.epilogue: player text rules, bound into the package identity, shown in CLI
 // and web only after a solving accusation.
 
-const CASES: PlayCaseName[] = ["vitrine", "brieföffner", "geige", "hüttenkasse", "nachtzug", "leuchtfeuer"];
-const SOLVER: Record<PlayCaseName, string> = { vitrine: "Lina Kern", "brieföffner": "Ben", geige: "Ida Reiner", "hüttenkasse": "Tobias Wenger", nachtzug: "Clara Mai", leuchtfeuer: "Knut Sievers" };
-const WRONG: Record<PlayCaseName, string> = { vitrine: "Max Brandt", "brieföffner": "Anna", geige: "Paul Adler", "hüttenkasse": "Lukas Brandl", nachtzug: "Bruno Kessler", leuchtfeuer: "Hinrich Paulsen" };
+const CASES: PlayCaseName[] = ["lernfall", "vitrine", "brieföffner", "geige", "hüttenkasse", "nachtzug", "leuchtfeuer"];
+const SOLVER: Record<PlayCaseName, string> = { lernfall: "Jonas", vitrine: "Lina Kern", "brieföffner": "Ben", geige: "Ida Reiner", "hüttenkasse": "Tobias Wenger", nachtzug: "Clara Mai", leuchtfeuer: "Knut Sievers" };
+const WRONG: Record<PlayCaseName, string> = { lernfall: "Mila", vitrine: "Max Brandt", "brieföffner": "Anna", geige: "Paul Adler", "hüttenkasse": "Lukas Brandl", nachtzug: "Bruno Kessler", leuchtfeuer: "Hinrich Paulsen" };
 /** Actions before the accusation: late suspects (Tobias, Knut) can only be accused once a find introduces them. */
 const PRELUDE: Partial<Record<PlayCaseName, string[]>> = {
   "hüttenkasse": ["Ort durchsuchen: Gaststube", "Gegenstand untersuchen: Hüttenbuch"],
