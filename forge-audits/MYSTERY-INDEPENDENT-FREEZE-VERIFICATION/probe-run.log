@@ -1,0 +1,289 @@
+[
+  {
+    "name": "original-host-early-correct-guess",
+    "result": {
+      "success": true,
+      "verdict": "not_solved"
+    }
+  },
+  {
+    "name": "original-host-five-action-witness",
+    "result": "recorded"
+  },
+  {
+    "name": "false-npc-belief-output",
+    "result": "recorded"
+  },
+  {
+    "name": "report-only-proof",
+    "result": {
+      "facts": {},
+      "trace": [],
+      "survivingVectors": [
+        [
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          true
+        ],
+        [
+          false,
+          false,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          true,
+          true
+        ],
+        [
+          false,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          true,
+          false,
+          true
+        ],
+        [
+          false,
+          true,
+          true,
+          false
+        ],
+        [
+          false,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          true
+        ],
+        [
+          true,
+          false,
+          true,
+          false
+        ],
+        [
+          true,
+          false,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          true,
+          true,
+          false,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "pass_": false
+    }
+  },
+  {
+    "name": "misleading-true-visit-proof",
+    "result": {
+      "facts": {},
+      "trace": [],
+      "survivingVectors": [
+        [
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          true
+        ],
+        [
+          false,
+          false,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          true,
+          true
+        ],
+        [
+          false,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          true,
+          false,
+          true
+        ],
+        [
+          false,
+          true,
+          true,
+          false
+        ],
+        [
+          false,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          true
+        ],
+        [
+          true,
+          false,
+          true,
+          false
+        ],
+        [
+          true,
+          false,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          true,
+          true,
+          false,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "pass_": false
+    }
+  },
+  {
+    "name": "uncertain-npc-output",
+    "result": "recorded"
+  },
+  {
+    "name": "conflicting-reports",
+    "result": "recorded"
+  },
+  {
+    "name": "hidden-person-in-initial-brief",
+    "result": {
+      "before": 4,
+      "after": 5,
+      "leakedEntry": {
+        "ref": "pr1_0000000000000000",
+        "name": "Hidden test person",
+        "role": "Unreleased role"
+      },
+      "inInitialKnown": false
+    }
+  },
+  {
+    "name": "canonical-id-order-enters-public-cards",
+    "result": "recorded"
+  },
+  {
+    "name": "session-shared-semantics-byte-equality",
+    "result": true
+  },
+  {
+    "name": "session-empty-save-golden",
+    "result": {
+      "hash": "58a1857b0b76ba1f342237261c2d4c9877f7cc7bb2a78c116d8e1ecebdc6875f",
+      "matches": true
+    }
+  },
+  {
+    "name": "literal-prospective-size-work",
+    "result": [
+      {
+        "events": 128,
+        "eventOccurrencesSerialized": 8256,
+        "incrementalOccurrences": 128
+      },
+      {
+        "events": 256,
+        "eventOccurrencesSerialized": 32896,
+        "incrementalOccurrences": 256
+      },
+      {
+        "events": 512,
+        "eventOccurrencesSerialized": 131328,
+        "incrementalOccurrences": 512
+      }
+    ]
+  },
+  {
+    "name": "original-artifact-inventory",
+    "result": "recorded"
+  }
+]

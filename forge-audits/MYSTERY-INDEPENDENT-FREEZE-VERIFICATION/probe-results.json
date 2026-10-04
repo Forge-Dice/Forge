@@ -1,0 +1,978 @@
+[
+  {
+    "name": "original-host-early-correct-guess",
+    "result": {
+      "success": true,
+      "verdict": "not_solved"
+    },
+    "scope": "Original archived host, no invented production API. Session §6 specifies solved for the complete correct known-ref answer without receipt."
+  },
+  {
+    "name": "original-host-five-action-witness",
+    "result": {
+      "trace": [
+        {
+          "event": {
+            "type": "search",
+            "target": "pr1_khxvnbrm8atv0q51"
+          },
+          "output": {
+            "success": true,
+            "evidence": [
+              {
+                "ref": "pr1_2fnb64crterj75r4",
+                "title": "Kontaktbogen",
+                "text": "Nora ist auf einem undatierten Kontaktbogen des Hoffototermins erkennbar. Frage sie nach dem vollständigen Fotonachweis.",
+                "observations": [
+                  {
+                    "type": "observed",
+                    "statement": {
+                      "kind": "eventHasParticipant",
+                      "event": "pr1_twzwjy71btn3afk2",
+                      "person": "pr1_w0xdq30wrnz5vpxq"
+                    },
+                    "value": true
+                  }
+                ],
+                "mentions": [
+                  {
+                    "kind": "event",
+                    "ref": "pr1_twzwjy71btn3afk2"
+                  },
+                  {
+                    "kind": "person",
+                    "ref": "pr1_w0xdq30wrnz5vpxq"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "event": {
+            "type": "ask",
+            "npc": "pr1_w0xdq30wrnz5vpxq",
+            "questionId": "question:q08"
+          },
+          "output": {
+            "success": true,
+            "observation": {
+              "schemaVersion": 1,
+              "npc": "pr1_w0xdq30wrnz5vpxq",
+              "questionId": "question:q08",
+              "act": "answer",
+              "stance": "affirms",
+              "statement": {
+                "kind": "eventHasItem",
+                "event": "pr1_twzwjy71btn3afk2",
+                "item": "pr1_t5pajf09f2dprwz6"
+              },
+              "mentions": [
+                {
+                  "kind": "item",
+                  "ref": "pr1_t5pajf09f2dprwz6"
+                },
+                {
+                  "kind": "event",
+                  "ref": "pr1_twzwjy71btn3afk2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "event": {
+            "type": "read_record",
+            "target": "pr1_t5pajf09f2dprwz6"
+          },
+          "output": {
+            "success": true,
+            "evidence": [
+              {
+                "ref": "pr1_njyfj86bntb8be1x",
+                "title": "Vollständiger Hoffilm",
+                "text": "Vollständiger Kamerafilm zeigt Max und Nora um 18:04:00 im Hof.",
+                "observations": [
+                  {
+                    "type": "observed",
+                    "statement": {
+                      "kind": "personAt",
+                      "person": "pr1_5532yfw071bsb5mj",
+                      "location": "pr1_khxvnbrm8atv0q51",
+                      "at": 240
+                    },
+                    "value": true
+                  },
+                  {
+                    "type": "observed",
+                    "statement": {
+                      "kind": "personAt",
+                      "person": "pr1_w0xdq30wrnz5vpxq",
+                      "location": "pr1_khxvnbrm8atv0q51",
+                      "at": 240
+                    },
+                    "value": true
+                  }
+                ],
+                "mentions": [
+                  {
+                    "kind": "person",
+                    "ref": "pr1_5532yfw071bsb5mj"
+                  },
+                  {
+                    "kind": "location",
+                    "ref": "pr1_khxvnbrm8atv0q51"
+                  },
+                  {
+                    "kind": "person",
+                    "ref": "pr1_w0xdq30wrnz5vpxq"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "event": {
+            "type": "ask",
+            "npc": "pr1_hg6wcpcdahfmwmqg",
+            "questionId": "question:q14"
+          },
+          "output": {
+            "success": true,
+            "observation": {
+              "schemaVersion": 1,
+              "npc": "pr1_hg6wcpcdahfmwmqg",
+              "questionId": "question:q14",
+              "act": "answer",
+              "stance": "affirms",
+              "statement": {
+                "kind": "eventHasItem",
+                "event": "pr1_dexr3fgjkm5fezvy",
+                "item": "pr1_6k5f334zgfnz19m6"
+              },
+              "mentions": [
+                {
+                  "kind": "item",
+                  "ref": "pr1_6k5f334zgfnz19m6"
+                },
+                {
+                  "kind": "event",
+                  "ref": "pr1_dexr3fgjkm5fezvy"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "event": {
+            "type": "read_record",
+            "target": "pr1_6k5f334zgfnz19m6"
+          },
+          "output": {
+            "success": true,
+            "evidence": [
+              {
+                "ref": "pr1_1fhve1k1swnvjn8p",
+                "title": "Archivaufnahme",
+                "text": "Archivkamera zeigt Oskar um 18:04:00 im Archiv.",
+                "observations": [
+                  {
+                    "type": "observed",
+                    "statement": {
+                      "kind": "personAt",
+                      "person": "pr1_hg6wcpcdahfmwmqg",
+                      "location": "pr1_6pjbg2prahwqpy0y",
+                      "at": 240
+                    },
+                    "value": true
+                  }
+                ],
+                "mentions": [
+                  {
+                    "kind": "location",
+                    "ref": "pr1_6pjbg2prahwqpy0y"
+                  },
+                  {
+                    "kind": "person",
+                    "ref": "pr1_hg6wcpcdahfmwmqg"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "event": {
+            "type": "accuse",
+            "actor": "pr1_4hapw0ynks68m4ng",
+            "evidenceRefs": [
+              "pr1_njyfj86bntb8be1x",
+              "pr1_1fhve1k1swnvjn8p"
+            ]
+          },
+          "output": {
+            "success": true,
+            "verdict": "solved"
+          }
+        }
+      ],
+      "phase": "solved"
+    },
+    "scope": "Original archived host only. Contains old observed DTO and citation gate; not an M4/Session conformance witness."
+  },
+  {
+    "name": "false-npc-belief-output",
+    "result": {
+      "success": true,
+      "observation": {
+        "schemaVersion": 1,
+        "npc": "pr1_hg6wcpcdahfmwmqg",
+        "questionId": "question:q12",
+        "act": "answer",
+        "stance": "affirms",
+        "statement": {
+          "kind": "personAt",
+          "person": "pr1_5532yfw071bsb5mj",
+          "location": "pr1_agd9et349nh7sefp",
+          "at": 240
+        },
+        "mentions": [
+          {
+            "kind": "person",
+            "ref": "pr1_5532yfw071bsb5mj"
+          },
+          {
+            "kind": "location",
+            "ref": "pr1_agd9et349nh7sefp"
+          }
+        ]
+      }
+    },
+    "scope": "Original archived host; affirms is retained as report, not a proof seed."
+  },
+  {
+    "name": "report-only-proof",
+    "result": {
+      "facts": {},
+      "trace": [],
+      "survivingVectors": [
+        [
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          true
+        ],
+        [
+          false,
+          false,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          true,
+          true
+        ],
+        [
+          false,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          true,
+          false,
+          true
+        ],
+        [
+          false,
+          true,
+          true,
+          false
+        ],
+        [
+          false,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          true
+        ],
+        [
+          true,
+          false,
+          true,
+          false
+        ],
+        [
+          true,
+          false,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          true,
+          true,
+          false,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "pass_": false
+    },
+    "scope": "Original authored finite proof, no evidence found."
+  },
+  {
+    "name": "misleading-true-visit-proof",
+    "result": {
+      "facts": {},
+      "trace": [],
+      "survivingVectors": [
+        [
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          true
+        ],
+        [
+          false,
+          false,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          true,
+          true
+        ],
+        [
+          false,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          true,
+          false,
+          true
+        ],
+        [
+          false,
+          true,
+          true,
+          false
+        ],
+        [
+          false,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          true
+        ],
+        [
+          true,
+          false,
+          true,
+          false
+        ],
+        [
+          true,
+          false,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          true,
+          true,
+          false,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "pass_": false
+    },
+    "scope": "Original authored finite proof; true earlier presence proves no direct role."
+  },
+  {
+    "name": "uncertain-npc-output",
+    "result": {
+      "success": true,
+      "observation": {
+        "schemaVersion": 1,
+        "npc": "pr1_w0xdq30wrnz5vpxq",
+        "questionId": "question:q10",
+        "act": "answer",
+        "stance": "uncertain",
+        "statement": {
+          "kind": "personAt",
+          "person": "pr1_4hapw0ynks68m4ng",
+          "location": "pr1_agd9et349nh7sefp",
+          "at": 240
+        },
+        "mentions": [
+          {
+            "kind": "person",
+            "ref": "pr1_4hapw0ynks68m4ng"
+          },
+          {
+            "kind": "location",
+            "ref": "pr1_agd9et349nh7sefp"
+          }
+        ]
+      }
+    },
+    "scope": "Original archived host; uncertainty has no Boolean proof conversion."
+  },
+  {
+    "name": "conflicting-reports",
+    "result": {
+      "outputs": [
+        {
+          "success": true,
+          "observation": {
+            "schemaVersion": 1,
+            "npc": "pr1_hg6wcpcdahfmwmqg",
+            "questionId": "question:q12",
+            "act": "answer",
+            "stance": "affirms",
+            "statement": {
+              "kind": "personAt",
+              "person": "pr1_5532yfw071bsb5mj",
+              "location": "pr1_agd9et349nh7sefp",
+              "at": 240
+            },
+            "mentions": [
+              {
+                "kind": "person",
+                "ref": "pr1_5532yfw071bsb5mj"
+              },
+              {
+                "kind": "location",
+                "ref": "pr1_agd9et349nh7sefp"
+              }
+            ]
+          }
+        },
+        {
+          "success": true,
+          "observation": {
+            "schemaVersion": 1,
+            "npc": "pr1_5532yfw071bsb5mj",
+            "questionId": "question:q02",
+            "act": "answer",
+            "stance": "denies",
+            "statement": {
+              "kind": "personAt",
+              "person": "pr1_5532yfw071bsb5mj",
+              "location": "pr1_agd9et349nh7sefp",
+              "at": 240
+            },
+            "mentions": [
+              {
+                "kind": "person",
+                "ref": "pr1_5532yfw071bsb5mj"
+              },
+              {
+                "kind": "location",
+                "ref": "pr1_agd9et349nh7sefp"
+              }
+            ]
+          }
+        }
+      ],
+      "journal": [
+        {
+          "type": "reported",
+          "observation": {
+            "schemaVersion": 1,
+            "npc": "pr1_hg6wcpcdahfmwmqg",
+            "questionId": "question:q12",
+            "act": "answer",
+            "stance": "affirms",
+            "statement": {
+              "kind": "personAt",
+              "person": "pr1_5532yfw071bsb5mj",
+              "location": "pr1_agd9et349nh7sefp",
+              "at": 240
+            },
+            "mentions": [
+              {
+                "kind": "person",
+                "ref": "pr1_5532yfw071bsb5mj"
+              },
+              {
+                "kind": "location",
+                "ref": "pr1_agd9et349nh7sefp"
+              }
+            ]
+          }
+        },
+        {
+          "type": "reported",
+          "observation": {
+            "schemaVersion": 1,
+            "npc": "pr1_5532yfw071bsb5mj",
+            "questionId": "question:q02",
+            "act": "answer",
+            "stance": "denies",
+            "statement": {
+              "kind": "personAt",
+              "person": "pr1_5532yfw071bsb5mj",
+              "location": "pr1_agd9et349nh7sefp",
+              "at": 240
+            },
+            "mentions": [
+              {
+                "kind": "person",
+                "ref": "pr1_5532yfw071bsb5mj"
+              },
+              {
+                "kind": "location",
+                "ref": "pr1_agd9et349nh7sefp"
+              }
+            ]
+          }
+        }
+      ],
+      "proof": {
+        "facts": {},
+        "trace": [],
+        "survivingVectors": [
+          [
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            true
+          ],
+          [
+            false,
+            false,
+            true,
+            false
+          ],
+          [
+            false,
+            false,
+            true,
+            true
+          ],
+          [
+            false,
+            true,
+            false,
+            false
+          ],
+          [
+            false,
+            true,
+            false,
+            true
+          ],
+          [
+            false,
+            true,
+            true,
+            false
+          ],
+          [
+            false,
+            true,
+            true,
+            true
+          ],
+          [
+            true,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            true
+          ],
+          [
+            true,
+            false,
+            true,
+            false
+          ],
+          [
+            true,
+            false,
+            true,
+            true
+          ],
+          [
+            true,
+            true,
+            false,
+            false
+          ],
+          [
+            true,
+            true,
+            false,
+            true
+          ],
+          [
+            true,
+            true,
+            true,
+            false
+          ],
+          [
+            true,
+            true,
+            true,
+            true
+          ]
+        ],
+        "pass_": false
+      }
+    },
+    "scope": "Original archived host; same claim affirms and denies both remain received records."
+  },
+  {
+    "name": "hidden-person-in-initial-brief",
+    "result": {
+      "before": 4,
+      "after": 5,
+      "leakedEntry": {
+        "ref": "pr1_0000000000000000",
+        "name": "Hidden test person",
+        "role": "Unreleased role"
+      },
+      "inInitialKnown": false
+    },
+    "scope": "Direct local original-host boundary probe, fixed aliases to isolate release logic. No claim of a rebound semantically playable twin."
+  },
+  {
+    "name": "canonical-id-order-enters-public-cards",
+    "result": {
+      "before": [
+        "Der Besucherstempel bestätigt: Max war um 18:02 in der Galerie. Über den Zeitpunkt 18:04 sagt der Stempel nichts.",
+        "Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität."
+      ],
+      "after": [
+        "Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität.",
+        "Der Besucherstempel bestätigt: Max war um 18:02 in der Galerie. Über den Zeitpunkt 18:04 sagt der Stempel nichts."
+      ]
+    },
+    "scope": "Direct original-host rename probe with preserved aliases/text; no whole package binding claim."
+  },
+  {
+    "name": "session-shared-semantics-byte-equality",
+    "result": true,
+    "scope": "Exact common sections in three original drafts; does not assign a single owner by itself."
+  },
+  {
+    "name": "session-empty-save-golden",
+    "result": {
+      "hash": "58a1857b0b76ba1f342237261c2d4c9877f7cc7bb2a78c116d8e1ecebdc6875f",
+      "matches": true
+    },
+    "scope": "Independent hashlib check of published empty-vector ASCII bytes; not a complete codec implementation."
+  },
+  {
+    "name": "literal-prospective-size-work",
+    "result": [
+      {
+        "events": 128,
+        "eventOccurrencesSerialized": 8256,
+        "incrementalOccurrences": 128
+      },
+      {
+        "events": 256,
+        "eventOccurrencesSerialized": 32896,
+        "incrementalOccurrences": 256
+      },
+      {
+        "events": 512,
+        "eventOccurrencesSerialized": 131328,
+        "incrementalOccurrences": 512
+      }
+    ],
+    "scope": "Exact operation count for full prospective-envelope serialization after every accepted event; no timing benchmark."
+  },
+  {
+    "name": "original-artifact-inventory",
+    "result": [
+      {
+        "name": "DIE-LEERE-VITRINE-CASE-PACK.zip",
+        "bytes": 160417,
+        "sha256": "fddfdb4c1d4ad1c90fa14beb11f8e087cb1916ed3907d9b9da6565f4cb2bdfd7"
+      },
+      {
+        "name": "DIE-LEERE-VITRINE-CERT-EVIDENCE.zip",
+        "bytes": 1927785,
+        "sha256": "05790f1214803b03e9b17797f604db0e3551d41794286ab3f650d9f952a815fe"
+      },
+      {
+        "name": "DIE-LEERE-VITRINE-HEADLESS-SPEC.html",
+        "bytes": 65626,
+        "sha256": "d5e894ecd1734b3c72c7f0b369f89315e1b25fd8d9f9ba4f6542ae5c447fd418"
+      },
+      {
+        "name": "DIE-LEERE-VITRINE-PLAYER-BRIEF.html",
+        "bytes": 4742,
+        "sha256": "954bf39433fc6dac397fcb19bebec32d435e823347c9486bd883366114b72fdc"
+      },
+      {
+        "name": "DIE-LEERE-VITRINE-PROOF-PROFILE.json",
+        "bytes": 5910,
+        "sha256": "c052e467cf22fb72791ee82c033dd93f81458994eca2ac6b2fb091a42550963c"
+      },
+      {
+        "name": "DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION.html",
+        "bytes": 76115,
+        "sha256": "59725aa2639b6de4cdbf2735ac9b95b044b66849426a71a7369dad6fa19d5150"
+      },
+      {
+        "name": "MYST-0002-ACCUSATION-VERDICT-PACKAGE.md",
+        "bytes": 16740,
+        "sha256": "1012fba1b99d8a6bb75ae28d9c0190099b7f38f64b4d460872a498e5940b6fd2"
+      },
+      {
+        "name": "MYST-0002-ACCUSATION-VERDICT-V1.contract.DRAFT.md",
+        "bytes": 35954,
+        "sha256": "8822470ba5fe2c5959d7f113991e2dc3731b9770393ade234e6899915d5e663c"
+      },
+      {
+        "name": "MYST-0002-REPAIR-EVIDENCE.zip",
+        "bytes": 16335,
+        "sha256": "e0254f7ba374e08a61aa8fdd633c7a2fe5167a0db690b05b2c47a21cd75e4bca"
+      },
+      {
+        "name": "MYST-0002-REPAIR-REPORT.md",
+        "bytes": 15637,
+        "sha256": "582d19e7229a3e24c2b12e25fd8a2d34f1a16704d37114576a1bc6875b49c154"
+      },
+      {
+        "name": "MYST-0002.contract.FINAL-CANDIDATE.md",
+        "bytes": 42994,
+        "sha256": "f8f72fa58115fec37b1994c551a697470fd29a87d627736a2060b85a8708b84c"
+      },
+      {
+        "name": "MYST-0003-EVIDENCE-ACCESS-PACKAGE.md",
+        "bytes": 33573,
+        "sha256": "c156256da7e1a63a41bb909be6ee138092cac23142428ffb5f04ca8de12646f8"
+      },
+      {
+        "name": "MYST-0003-EVIDENCE-ACCESS-V1.contract.DRAFT.md",
+        "bytes": 34480,
+        "sha256": "dd39b7fc8c36eab5745f6b1c9ba505f3e7595bd22d6dbc99c62e4c89a6c84f35"
+      },
+      {
+        "name": "MYST-0004-EVIDENCE-PRESENTATION-PACKAGE.md",
+        "bytes": 28957,
+        "sha256": "cfe9674c108bad73cdcb0e4c16917720c59a55cafe460c317578b12830a0240d"
+      },
+      {
+        "name": "MYST-0004-EVIDENCE-PRESENTATION-V1.contract.DRAFT.md",
+        "bytes": 44015,
+        "sha256": "6a2e155f7767f9cc09ba5324fa0e5cd2913826a2b5b3c6801b33d8136d992973"
+      },
+      {
+        "name": "MYST-0005-INTERROGATION-PACKAGE.md",
+        "bytes": 39115,
+        "sha256": "811be18c8362d261552e64e2a6e6cdf811e00504ee22b9904ae9766c0b6ca149"
+      },
+      {
+        "name": "MYST-0005A-INTERROGATION-AUTHORING-V1.contract.DRAFT.md",
+        "bytes": 22611,
+        "sha256": "fc4c7a633ccd88082b38ba1ebad4fed1e835a9e6c7cf62ea34c6ec66db123e0e"
+      },
+      {
+        "name": "MYST-0005B-INTERROGATION-RELEASE-V1.contract.DRAFT.md",
+        "bytes": 27720,
+        "sha256": "abcb3a4879dbf19de1d32f9fd5be898b207995219cedd8364b4cf7afc4f6a180"
+      },
+      {
+        "name": "MYST-ACCUSATION-CHALLENGE-EVIDENCE.zip",
+        "bytes": 591073,
+        "sha256": "ec14b94ca24fd74b4069b6375631b746b6a5c66954af4d99584c88980493ffac"
+      },
+      {
+        "name": "MYST-ACCUSATION-CHALLENGE-EXACTNESS-REPORT.html",
+        "bytes": 70392,
+        "sha256": "6a42621247ec93d5ed62cd000c6baa1b10d80f9480307af1c0c793ff5e3977b8"
+      },
+      {
+        "name": "MYST-CHALLENGE-0001.contract.DRAFT.md",
+        "bytes": 24485,
+        "sha256": "9888f9b55da5955eb161014c5f34a74ee9e4ce65483007f5adc9b397686f58f4"
+      },
+      {
+        "name": "MYST-SESSION-0001A.contract.DRAFT.md",
+        "bytes": 42883,
+        "sha256": "060f3fc65fc1a8064f351f79a9ff90f51c5a614904abf28fd5f47a0b497bc394"
+      },
+      {
+        "name": "MYST-SESSION-0001B.contract.DRAFT.md",
+        "bytes": 42935,
+        "sha256": "3550a9df80c8f595b0b459133a1f9d2fde3643fe6d30f22e525a67dbc18c7251"
+      },
+      {
+        "name": "MYST-SESSION-0001C.contract.DRAFT.md",
+        "bytes": 43131,
+        "sha256": "6263e005e637bc57f15bdac21e8dd1abb22ece34fbf831573c370d5e213e3205"
+      },
+      {
+        "name": "MYST-SOLVABILITY-0001.contract.DRAFT.md",
+        "bytes": 28073,
+        "sha256": "06b0e5f2774d22ce520ef6787e91c8b84ed6907983cfee2d0f0d3432391e09d8"
+      },
+      {
+        "name": "MYSTERY-CROSS-CONTRACT-CONSISTENCY-REPORT.html",
+        "bytes": 76902,
+        "sha256": "8721d86db5a64d0f3f61b62aa7c2ba02801b0d159dcb2a4c706e26077315f88d"
+      },
+      {
+        "name": "MYSTERY-CROSS-CONTRACT-EVIDENCE.zip",
+        "bytes": 891631,
+        "sha256": "ac0e870936ff70b1ec1951e460c28fae07f080fb628d0a2f0eb513eb3676cf99"
+      },
+      {
+        "name": "MYSTERY-INFOFLOW-EVIDENCE.zip",
+        "bytes": 610833,
+        "sha256": "08ae88b6d90824ecabf9e01b51baa1102a051efbda8daffddc15580a6bc28a80"
+      },
+      {
+        "name": "MYSTERY-INFOFLOW-SPOILERFREE-SUMMARY.html",
+        "bytes": 4469,
+        "sha256": "6e89c954ea65b77eaaee9aca24cbd8238d1c8ed775c0e892d0b352a39be30476"
+      },
+      {
+        "name": "MYSTERY-INFORMATION-FLOW-REPORT.html",
+        "bytes": 61882,
+        "sha256": "53c38b83f6eabfc58cd4805d926fa9197fe95a3ba4d3d54eb6ca4e976c48f8ad"
+      },
+      {
+        "name": "MYSTERY-SCALE-COMPLEXITY-REPORT.html",
+        "bytes": 628587,
+        "sha256": "667ded6e26dd5627bfd046a051baa124629f9d9ed9e6b17d9c50ee063e72753b"
+      },
+      {
+        "name": "MYSTERY-SCALE-EVIDENCE.zip",
+        "bytes": 1534383,
+        "sha256": "110bc550094f4d28a3a57e2e86782f2430fb93adcdd44270bbafbdf9def07b9e"
+      },
+      {
+        "name": "MYSTERY-SESSION-PRODUCTION-EVIDENCE.zip",
+        "bytes": 414607,
+        "sha256": "a7a7bbd9e390b9092fa747222e3ccaef7d041d3637cdd5c4f66cea352445cd5c"
+      },
+      {
+        "name": "MYSTERY-SESSION-PRODUCTION-PACKAGE.html",
+        "bytes": 75557,
+        "sha256": "2546141e5b45b8019f6adabee8c61264428ed9b0e566e1f2359efcc750268e69"
+      },
+      {
+        "name": "MYSTERY-SOLVABILITY-ACCUSATION-REPAIR-REPORT.html",
+        "bytes": 2901321,
+        "sha256": "52287b491a7facc44152382da548c5619f1dbc11a4312b9e4d721c2721d5e7bc"
+      },
+      {
+        "name": "MYSTERY-SOLVABILITY-REPAIR-EVIDENCE.zip",
+        "bytes": 667941,
+        "sha256": "12a573b825c43702f4bed4b567913aca82573b4c95b5a303b340a51bc009f0e3"
+      },
+      {
+        "name": "MYSTERY-VERTICAL-SLICE-ADVERSARIAL-PRODUCT-AUDIT.html",
+        "bytes": 3491031,
+        "sha256": "9569ea577dcc0fbd80a2ae26e3dff2b9c19471ac55cb958ef378fd4f0150c2dc"
+      },
+      {
+        "name": "MYSTERY_CASE_AUTHORING_EXPERIMENTAL_APPENDIX.zip",
+        "bytes": 496036,
+        "sha256": "0d147964c939a112d71bc2a63ce1803e466d8bddf8dbd67e4da2f3fbdfb7c597"
+      },
+      {
+        "name": "MYSTERY_CASE_AUTHORING_STRESS_REPORT.pdf",
+        "bytes": 185241,
+        "sha256": "a1583b41aac02233681c0e91203f3d134df52f62860029c25ad63881c25db9d0"
+      }
+    ],
+    "scope": "Hashes of materialized originals, not summaries."
+  }
+]

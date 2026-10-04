@@ -1,0 +1,1016 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MYSTERY INDEPENDENT FREEZE VERIFICATION</title><style>
+:root{color-scheme:light;--navy:#122338;--ink:#213044;--line:#d5dce3}*{box-sizing:border-box}body{margin:0;background:#f3f5f7;color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:1400px;margin:auto;background:white;padding:40px 44px 70px}header{border-bottom:4px solid var(--navy);padding-bottom:24px}h1{font-size:clamp(26px,4vw,44px);line-height:1.15;color:var(--navy);max-width:1050px}h2{font-size:27px;color:var(--navy);border-top:1px solid var(--line);padding-top:28px;margin-top:34px}h3{font-size:19px;margin-top:28px}.kicker{letter-spacing:.12em;text-transform:uppercase;font-size:12px;font-weight:700;color:#59708a}.verdict{display:inline-block;background:#922d2b;color:white;padding:8px 18px;font-weight:800;font-size:24px;letter-spacing:.04em}p{max-width:1120px;margin:18px 0}.scroll{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.5;min-width:720px}th{text-align:left;background:var(--navy);color:white;padding:12px;vertical-align:top}td{padding:12px;border:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}tr:nth-child(even){background:#f5f7fa}pre{font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;background:#eef2f6;border-left:3px solid #7791aa;padding:18px;white-space:pre-wrap;overflow-wrap:anywhere}nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}nav a{font-size:12px;background:#edf2f7;color:#22384d;text-decoration:none;padding:6px 9px;border-radius:4px}details{margin:22px 0;border:1px solid var(--line);padding:14px}summary{cursor:pointer;font-weight:600}section{scroll-margin-top:20px}@media(max-width:700px){main{padding:25px 18px}h2{font-size:23px}p{font-size:15px}}@media print{body{background:white}main{padding:0;max-width:none}nav{display:none}.scroll{overflow:visible}table{min-width:0;font-size:10px}h2,h3,tr{break-inside:avoid}details{display:block}pre{font-size:10px}}</style></head><body><main><header><div class="kicker">Read-only · unabhängiges Specification Lab · 04.10.2026</div><h1>MYSTERY INDEPENDENT FREEZE VERIFICATION</h1><div class="verdict">NO-GO</div><nav><a href="#s1">1. Freeze Criteria</a><a href="#s2">2. Artifact Completeness</a><a href="#s3">3. Ownership</a><a href="#s4">4. Producer/Consumer</a><a href="#s5">5. Release→Proof</a><a href="#s6">6. Challenge</a><a href="#s7">7. Package Identity</a><a href="#s8">8. Session</a><a href="#s9">9. Error Boundary</a><a href="#s10">10. Vitrine Witness</a><a href="#s11">11. DAG</a><a href="#s12">12. 50 Freeze Attacks</a><a href="#s13">13. Blocking Findings</a><a href="#s14">14. Final Verdict</a></nav></header><p>Unabhängige Prüfung vom 04.10.2026. Bezugsobjekt: die tatsächlich verfügbaren aktuellen Originalcontracts und Fallartefakte nach den belegten Repairs. Repository Forge-Dice/Forge, main 3d7545d843883418348004e68717399a64da7a7d. STRICT READ-ONLY: ausschließlich GitHub-GET, lokale Kopien und lokale Proben; keine Repository-, Branch-, PR-, Review- oder Settingsänderung.</p><p>Urteil: NO-GO für den vollständigen Mystery-Spec-Freeze. Das bestehende Design muss nicht neu entworfen werden. Fehlende normative Ref-/Release→Proof-Grenzen, nicht gebundener öffentlicher Fallinhalt und konkrete Semantikwidersprüche verhindern den Freeze. Die fehlende Produktionsimplementierung an sich ist KEIN Spec-Freeze-Blocker.</p><p>Dieser Bericht enthält private Vitrine-Autoreninformationen. Originalreports wurden gelesen, ihre Modell-PASS-Zahlen werden nicht als eigene Produktionsprüfungen ausgegeben. CLAUDE FINAL REPAIR: Als eigenständige finale Claude-Datei ist M2 FINAL-CANDIDATE belegt. Eine darüber hinausgehende finale Release→Proof-Reparatur ist nicht verfügbar; der Zertifizierungsanhang liefert ausdrücklich nur einen LAB ADAPTER PROPOSAL. Keine Rekonstruktion aus Zusammenfassungen.</p><section id="s1"><h2>1. Freeze Criteria</h2><p>Die Kriterien wurden in FREEZE-CRITERIA-PRECOMMITTED.md vor Sichtung individueller Findings festgeschrieben. Fehlendes Original = NOT VERIFIED; ein Report ersetzt niemals einen Contract. SMALL REPAIRS setzt vollständige Evidenz und ausschließlich endliche, genaue, semantikerhaltende Textkorrekturen voraus. Eine fehlende normative Schnittstelle ist nicht automatisch eine kleine Reparatur.</p><div class="scroll"><table><thead><tr><th>ID</th><th>Objektives Kriterium</th><th>Ergebnis</th><th>Begründung</th></tr></thead><tbody><tr><td>C1</td><td>Jedes persistente Datum besitzt genau eine Autorität.</td><td>FAIL</td><td>Öffentliche Setup-/Frage-/Label-/Regeldaten und Adapterzertifikate besitzen noch keinen vollständigen normativen Owner.</td></tr><tr><td>C2</td><td>Jedes Runtime-Datum besitzt einen eindeutigen Producer je Grenze.</td><td>FAIL</td><td>Kein vollständig spezifizierter Producer von ReleasedObservation aus aktuellem ReleaseTrace.</td></tr><tr><td>C3</td><td>Jeder Consumer besitzt exakten Typ, Binding, Lifetime und Serialization.</td><td>FAIL</td><td>M1 fehlt; Package.refs erfüllt M4/M5B-Translator nicht direkt; Proof-Port ist offen.</td></tr><tr><td>C4</td><td>Keine offene semantische Contradiction.</td><td>FAIL</td><td>Required-only, ask/interrogate, Vitrine-Belegpflicht und enge Rollenfrage.</td></tr><tr><td>C5</td><td>Kein zyklischer harter Dependencygraph.</td><td>PARTIAL</td><td>Bekannter Session-/Hash-DAG azyklisch; M1-Namespace und dynamische Public-Rule-Freigabe nicht abschließend geprüft.</td></tr><tr><td>C6</td><td>Kein verborgenes Truth-Leak oder implizite Faktpromotion.</td><td>NOT VERIFIED</td><td>Lokale DTO-Regeln gut; Vitrine-Startbrief-Leak reproduziert, gesamte finale Adaptergrenze fehlt.</td></tr><tr><td>C7</td><td>Deterministischer bounded Replay ohne quadratischen Contractzwang.</td><td>PARTIAL / FAIL</td><td>Eventautorität und Terminalität exakt; Vollprefix-Serialisierung pro Event wörtlich vorgeschrieben.</td></tr><tr><td>C8</td><td>Challenge Core/Scope/determined/matching/Required/public question vollständig.</td><td>PARTIAL</td><td>Verdictformel exakt; Publicationformulierungen widersprechen sich und Vitrine-Policy weicht ab.</td></tr><tr><td>C9</td><td>Solvability ist endlich und garantiert präzise Begrenztes.</td><td>PASS lokal</td><td>n≤6, 2^n≤64, explicit roots/licenses und gemeinsamen Witness normiert; Adapterintegration bleibt gesondert FAIL.</td></tr><tr><td>C10</td><td>Referenzidentitäten und Mutation/Invalidation stabil definiert.</td><td>PARTIAL</td><td>Sessionkomponenten gut gebunden, aber Ref-Ableitung und öffentliche Inhaltsabdeckung nicht vollständig.</td></tr><tr><td>C11</td><td>Versionierungs-/Compatibilitypfad vorhanden.</td><td>PASS lokal / PARTIAL gesamt</td><td>Exact package/ruleset, kein Upgrade; endgültige Contractfassung und M1-/Adapterversion fehlen.</td></tr></tbody></table></div></section><section id="s2"><h2>2. Artifact Completeness</h2><p>Native Datei-Titelsuche MYST/MYSTERY/VITRINE/VS-5, zusätzliche Titelprüfungen MYST-0001/FREEZE/RECONCILIATION/REPAIR/PREFLIGHT, aktuelle vollständige gefilterte Dateiliste und zehn extrahierte Evidenzarchive wurden geprüft. Die gelesene vollständige main-Dateiliste enthält keine MYST-0001- oder finale Release→Proof-Datei. NOT AVAILABLE bezeichnet den zugänglichen Bestand, keine Behauptung über alle anderen Projektthreads oder privaten Datenträger.</p><div class="scroll"><table><thead><tr><th>Verlangt</th><th>Tatsächlich verfügbares Original</th><th>Status / Freeze-Relevanz</th></tr></thead><tbody><tr><td>0001</td><td>Kein Volltext, keine Implementierung; nur M4/M5B/Session-Zitate.</td><td>NOT AVAILABLE — BLOCKING. Kein Hash-/Encoding-/Namespacevertrag daraus erfunden.</td></tr><tr><td>0002</td><td>MYST-0002.contract.FINAL-CANDIDATE.md + REPAIR-REPORT + REPAIR-EVIDENCE; alter Draft ebenfalls vorhanden.</td><td>Volltext gelesen. Final Candidate gewählt; ältere Fassung nur Herkunft.</td></tr><tr><td>0003</td><td>MYST-0003-EVIDENCE-ACCESS-V1.contract.DRAFT.md + PACKAGE.</td><td>Volltext gelesen.</td></tr><tr><td>0004</td><td>MYST-0004-EVIDENCE-PRESENTATION-V1.contract.DRAFT.md + PACKAGE; Fassung 04.10. 06:42 UTC.</td><td>Volltext gelesen. Reports sind ausdrücklich nicht faktiv.</td></tr><tr><td>0005A</td><td>MYST-0005A-INTERROGATION-AUTHORING-V1.contract.DRAFT.md + 0005-PACKAGE.</td><td>Volltext gelesen.</td></tr><tr><td>0005B</td><td>MYST-0005B-INTERROGATION-RELEASE-V1.contract.DRAFT.md + 0005-PACKAGE.</td><td>Volltext gelesen. Persistenzvokabular noch ask.</td></tr><tr><td>Challenge</td><td>MYST-CHALLENGE-0001.contract.DRAFT.md + Exactness-Report/Evidence.</td><td>Volltext gelesen; verweist auf alten M2-Inhaltshash.</td></tr><tr><td>Solvability</td><td>MYST-SOLVABILITY-0001.contract.DRAFT.md + Repair-Report/Evidence.</td><td>Volltext gelesen; versionierten trusted Releaseadapter ausdrücklich vorausgesetzt.</td></tr><tr><td>Session A/B/C</td><td>MYST-SESSION-0001A.contract.DRAFT.md / MYST-SESSION-0001B.contract.DRAFT.md / MYST-SESSION-0001C.contract.DRAFT.md + Production-Package/Evidence.</td><td>Drei echte aktuelle Volltexte. Gemeinsame §§2–11 bytegleich; ersetzen fehlenden alten VS-5 nicht rückwirkend.</td></tr><tr><td>Vitrine</td><td>DIE-LEERE-VITRINE-HEADLESS-SPEC.html / DIE-LEERE-VITRINE-PLAYER-BRIEF.html / DIE-LEERE-VITRINE-CASE-PACK.zip / DIE-LEERE-VITRINE-PROOF-PROFILE.json.</td><td>Originale und enthaltene truth/solution/access/NPC/profile/host/proof/manifests gelesen. 55 ZIP-Einträge. Kein modernes Presentation- oder Sessionpackage.</td></tr><tr><td>InfoFlow</td><td>MYSTERY-INFORMATION-FLOW-REPORT.html + INFOFLOW-EVIDENCE.zip.</td><td>Vollbericht verfügbar. Befunde/Modellgrenzen mit Originalhost geprüft.</td></tr><tr><td>Scale</td><td>MYSTERY-SCALE-COMPLEXITY-REPORT.html + SCALE-EVIDENCE.zip.</td><td>Vollbericht verfügbar. Copy/Serialization-Prefixkosten relevant; keine Optimierungsarbeit durchgeführt.</td></tr><tr><td>Cross-Contract</td><td>MYSTERY-CROSS-CONTRACT-CONSISTENCY-REPORT.html + CROSS-CONTRACT-EVIDENCE.zip.</td><td>Vollbericht verfügbar. Frühere Session-UNKNOWN durch heutige A/B/C teilweise geschlossen.</td></tr><tr><td>Certification</td><td>DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION.html + CERT-EVIDENCE.zip.</td><td>Original NOT CERTIFIED; Reparaturdateien ausdrücklich Kandidaten.</td></tr><tr><td>Zusätzlicher Authoring-Report</td><td>MYSTERY_CASE_AUTHORING_STRESS_REPORT.pdf + EXPERIMENTAL_APPENDIX.zip.</td><td>Original gelesen. Kein zwingender neuer Truth-Claimtyp für engen Slice erforderlich.</td></tr><tr><td>Claudes finale Release→Proof-Reparatur</td><td>Nur factivity-bridge.REPAIR-CANDIDATE.json: status LAB ADAPTER PROPOSAL, NOT accepted Session or MYST-0004 API.</td><td>Finale normative Reparatur NOT AVAILABLE. Kandidat ist Prüfinput, keine Ersatzautorität.</td></tr></tbody></table></div><p>Quellenrang: implementierte Basisschemas für vorhandene APIs; jüngster verfügbarer Contract für geplante APIs; Case-Spec für authored Fallinhalt; Reports nur als Evidenz. Nicht akzeptierte Dependency-Commits blockieren einen Implementierungsstart, aber nicht automatisch einen reinen Designfreeze. Die semantisch maßgebliche finale Textauswahl muss trotzdem feststehen.</p></section><section id="s3"><h2>3. Ownership</h2><p>Authority meint die Herkunft des fachlichen Datums, nicht jede Kopie desselben Werts. Ein truthHash in mehreren Dokumenten ist eine überprüfte Bindung, keine zweite Truth-Autorität. Persistierte abgeleitete Reports oder Projektionen dürfen keine Autorität erhalten. Die folgenden Pfadfamilien decken alle persistenten Domänen-/Session-/Fallartefakte ab; * bedeutet alle Felder des jeweils benannten Schemas.</p><div class="scroll"><table><thead><tr><th>Persistentes Feld / Artefakt</th><th>Ein fachlicher Owner</th><th>Consumer / erlaubte Kopie</th><th>Befund</th></tr></thead><tbody><tr><td>CaseTruth.schemaVersion/caseId/revision; persons/locations/items/relationships/events/motives/propositions/evidence/secrets/redHerrings[*]</td><td>CaseTruth-Schema + authored Truth</td><td>Solution/NPC/Authoring; Hash bindet vollständigen Snapshot.</td><td>ONE. Proposition.truth nur hier. Evidence.links erzeugt keine Prooftruth.</td></tr><tr><td>CaseSolution.schemaVersion/caseId/revision/truthHash; resolutions[*], conclusions[*], requiredConclusions[*]</td><td>CaseSolution-Schema + authored Solution</td><td>M2/CH/SOL; Status aus bestehendem resolveConclusion.</td><td>ONE. Required steht nur in Solution; Profile/Challenge besitzen Coverage, keine zweite Requiredliste.</td></tr><tr><td>NpcKnowledgeSnapshot.schemaVersion/caseId/truthHash/solutionHash/npcId/revision/asOf/awareness[*]/attitudes[*]</td><td>NPC-Snapshot-Schema + authored Snapshot</td><td>Projection/M5B; SA snapshotHash.</td><td>ONE. acquire/provenance/knowledge-vs-belief privat.</td></tr><tr><td>EvidenceAccessMap.schemaVersion/caseId/truthHash/entries[evidenceId,access.kind,paths[*]]</td><td>M3</td><td>Session Discovery; host.access ist ältere abgeleitete Fallkopie.</td><td>ONE normativ; alte host.access-Kopie vor Migration nicht zugleich bearbeiten.</td></tr><tr><td>EvidencePresentation.schemaVersion/caseId/truthHash/entries[evidenceId,text,mentions[*],reports[claim,stance,source]]</td><td>M4</td><td>releaseEvidence; Session hält Empfangskopie.</td><td>ONE normativ. Alte Vitrine presentation{title,text,observed} hat anderen Shape.</td></tr><tr><td>QuestionCatalogue.schemaVersion/caseId/truthHash/revision/questions[id,mentions[*]]</td><td>M5A</td><td>M5B Askability; SA catalogueHash.</td><td>ONE. questionText ist NICHT Teil dieses Schemas.</td></tr><tr><td>InterrogationProfile.schemaVersion/caseId/truthHash/catalogueHash/npcId/revision/rules[*]</td><td>M5A</td><td>M5B selected question/reveal.</td><td>ONE.</td></tr><tr><td>PlayerRef config.profile/saltHex, preimage/namespace, Mapping und Collision-/Resolutionregeln</td><td>Soll MYST-0001 besitzen</td><td>SA PackageRefSource konsumiert actual Mapping.</td><td>ZERO VERIFIED OWNER für vollständiges Protokoll, M1 fehlt.</td></tr><tr><td>Accusation.schemaVersion/caseId/truthHash/literals[claim,value]</td><td>M2 Schema; Sessionevent für tatsächlichen Empfang</td><td>CH; Save bewahrt Playerinputs, Canonicalaccusation transient.</td><td>ONE je Grenze; fachlich keine persistente Verdictautorität.</td></tr><tr><td>Challenge.schemaVersion/caseId/truthHash/solutionHash/allowedClaims[*]</td><td>CH</td><td>SA bindet; SB wendet an.</td><td>ONE, aber M2 §15 konkurriert mit CH §6 beim Required-only-Verbot.</td></tr><tr><td>CaseProofProfile.schemaVersion/bindings[*]/answerScope/ambiguityPolicy/question/observations[*]/nodes[*]/edges[*]/witnessStepIds</td><td>SOL</td><td>Private Checker-/Certification-Inputs.</td><td>ONE. expected observations keine tatsächlich empfangenen Roots.</td></tr><tr><td>ReleaseManifest.schemaVersion/releaseContextHash/adapterVersion/certificateData</td><td>SA Envelope; Inhalt benötigt authored Adaptercontract</td><td>SOL WitnessReplay und Fallabnahme.</td><td>ZERO OWNER für certificateData-Schema, Reportmapping, Lizenzfreigabe und Eventtabelle.</td></tr><tr><td>InitialSetup.schemaVersion/known[*]</td><td>SA</td><td>B initialSession; keine Initial-Discovery aus Evidence-Awareness.</td><td>ONE für Grantliste. Vitrine public-initial/host.initialKnown müssen explizit darauf reconciliieren.</td></tr><tr><td>Public question, publicRoster, crimeTime/location, publicRules[id,text], questionText[npc,text], publicEventLabels, personRoles, entityLabels, BRIEF</td><td>Vitrine authored Hostinhalt; kein vollständiger V1-Packagecontract dafür</td><td>Initial-/PublicView, Frageliste, Lizenzpräsentation.</td><td>ZERO normativer Package-/Releaseowner; manche Labels doppelt gespeichert. Source of truth und Hashpfad offen.</td></tr><tr><td>CasePackageInput Komponenten; CasePackageIdentity schemaVersion/packageHash/rulesetVersion und Componenthashprofile</td><td>Soll SA sein</td><td>SB/SC lesen; identische Definitionen in drei gemeinsamen Drafttexten.</td><td>ONE fachlich: identische gemeinsame Packageautorität. Drei normative Textkopien ohne redaktionelle Vorrangregel; aktuell kein inhaltlicher Drift (F12 NONBLOCKING).</td></tr><tr><td>SessionEvent.type/action/target/npc/questionId/literals[claim,value]</td><td>Soll SB Eventcontract sein</td><td>SC accepted event history; M5B beschreibt ask als persistente Form.</td><td>MULTIPLE incompatible vocabulary: ask vs interrogate.</td></tr><tr><td>Save.schemaVersion/packageIdentity/events/checksum</td><td>SC</td><td>Decoder prüft; SB replay rekonstruiert.</td><td>ONE im geplanten Split. Legacy savedData{schemaVersion,packageHash,commands} ist anderes Format.</td></tr><tr><td>PlayerKnowledge known[firstSeen], discoveries[firstDiscoveryEvent], observations[source,eventIndex,payload]; SessionState phase/verdicts</td><td>Nur abgeleitet durch SA helper / SB Transition</td><td>UI trusted allowlist; keine untrusted Loadautorität.</td><td>KEIN zusätzliches persistentes Authorityfeld. Observation payload owner M4/M5B, Empfangsprovenance SB.</td></tr><tr><td>PRIVATE projection-*.json, golden traces, certification/InfoFlow/Scale/Crossreports und result files</td><td>Jeweiliges Lab als Evidenzproducer</td><td>Nur Review/QA; dürfen Snapshot/Contract/Runtime nicht überschreiben.</td><td>Keine konkurrierende Gameplayautorität. content/status/sourceMain/redHerringDesign-Metadaten bleiben authored/QA.</td></tr></tbody></table></div><p>ZERO OWNER ist bei einer bewusst privaten QA-Datei unproblematisch, bei Releasecertificate-Semantik und öffentlichem Gameplayinhalt blockierend. MULTIPLE OWNERS meint hier normative Konflikte oder fehlenden Vorrang; nicht legitime Bindingkopien. Die drei Sessiontexte sind aktuell bytegleich. Das allein erzeugt weder einen zweiten fachlichen Owner noch einen aktuellen Semantikkonflikt; eine redaktionelle Ein-Owner-Regel ist F12 NONBLOCKING.</p></section><section id="s4"><h2>4. Producer/Consumer</h2><div class="scroll"><table><thead><tr><th>Runtime-Typ</th><th>Producer → Consumer</th><th>Binding / Übersetzung</th><th>Lifetime / Serialization</th><th>Trust / Ergebnis</th></tr></thead><tbody><tr><td>CaseTruth / CaseSolution</td><td>parseCaseTruth / parseCaseSolution → alle privaten Domänenmodule</td><td>Solution an caseId+truthHash; veröffentlichte Truth semantisch prüfen.</td><td>Immutable Packagelebenszeit; private canonical domain JSON.</td><td>Trusted authored; geschlossen.</td></tr><tr><td>NpcKnowledgeSnapshot</td><td>parseNpcKnowledge → projectNpcKnowledgeWithBridge</td><td>T/S/npcId/asOf; komplette snapshotHash-Bindung in SA.</td><td>Frozen im Package; privat serialisierbar.</td><td>Trusted; geschlossen.</td></tr><tr><td>PlayerRefIndex / resolved EntityRef</td><td>M1 build/resolve → SA PackageRefSource, SB</td><td>Exakter Algorithmus/namespace/encoding fehlen.</td><td>Packagelebenszeit; Reversemap privat.</td><td>OFFEN — F01.</td></tr><tr><td>PackageRefSource / ResolvedCasePackage.refs</td><td>Trusted M1 adapter → resolveCasePackage → SB</td><td>Source caseId+truthHash+config; vollständige injektive Tabelle+Inverse; kopiert.</td><td>Source transient, refs Closure Packagelebenszeit; kein Public DTO.</td><td>Shape für consumer translator fehlt: refs hat nur refFor/resolve — F07.</td></tr><tr><td>ResolvedCasePackage / identity</td><td>SA resolveCasePackage → SB initial/reduce/replay, SC save</td><td>Komponentenhash-DAG, exact-package/exact-ruleset.</td><td>Immutable; toJSON wirft; Funktionen nicht clonebar.</td><td>Trusted-only; öffentliche Semantikabdeckung offen — F03.</td></tr><tr><td>KnownEntity / PlayerKnowledge</td><td>SA initial/record helpers im SB Commit → SB, PublicView</td><td>Nur initial + veröffentlichte Evidence + autorisierte Mentions; eventIndex nullbasiert.</td><td>Abgeleitet; Journal geordnet, Known/Discovery nach ref. Nicht saved.</td><td>Keine Faktenautorität; geschlossen bis Interface-/Ownershippatch.</td></tr><tr><td>SessionEvent / PlayerConclusionClaim</td><td>SB strict parse von untrusted input → Transition / SC</td><td>3 Eventarten, 6 Conclusionvarianten; Refkind und prefix-Known.</td><td>Accepted Inputlog; kanonische Eventarrays geordnet.</td><td>Untrusted bis Parse/Authorize; M5B ask widerspricht — F06.</td></tr><tr><td>Canonical EntityRef[] / InvestigationAction</td><td>SB feldweise Refauflösung → M3 resolveInvestigation</td><td>search_location→locationId, examine_item→itemId, examine_person→personId.</td><td>Pro Aktion transient; nie Playeroutput.</td><td>Hostderived; geschlossen.</td></tr><tr><td>InvestigationResult.found</td><td>M3 → SB difference(discoveries) → M4</td><td>T-Bindung beider Komponenten über Package; found existierende Evidence prüfen.</td><td>Aktion; canonical-ID-sort intern, öffentlich nach übersetztem ref.</td><td>Privat; Discovery≠Release.</td></tr><tr><td>M4/M5B PlayerRefTranslator</td><td>SB muss aus pkg.truth + pkg.refs konstruieren → releaseEvidence/interrogate</td><td>{caseId,truthHash,refFor}; pkg.refs allein nicht type-compatible.</td><td>Aktion/Package; trusted Funktionen, keine Serialisierung.</td><td>MISSING EXACT CONVERSION — F07.</td></tr><tr><td>EvidenceObservation / PlayerReport / M4.PlayerClaim</td><td>M4 releaseEvidence → SB recordEvidence / public output</td><td>Evidence+Mentions+Reports closure; Translator T; Paketrückauflösung.</td><td>Einmal pro Discovery; DTO mit fixem key/orderprofil; nicht im Save.</td><td>Authored public payload, source=observation trotzdem kein Fakt.</td></tr><tr><td>NpcEpistemicContext / VisibleRef</td><td>Projection core → decideResponse/bridge</td><td>Lokale Objectidentity; kind/index nur innerhalb derselben Projection.</td><td>Ein Aufruf; raw context serialisierbar aber privat.</td><td>Trusted; darf nie UI/untrusted Generator erreichen.</td></tr><tr><td>NpcProjectionBridge / ReleaseTranslator</td><td>M5B factory → interrogate</td><td>Original emitted object + explicit authorization, keine copied/fremden/statement refs.</td><td>Transient; toJSON wirft; keine Persistenz.</td><td>Trusted capability; geschlossen.</td></tr><tr><td>ResponseDecision / NpcVisibleClaim</td><td>M5B decideResponse → selected release</td><td>Struktureller Claimvergleich; knowledge/belief gleicher Commitment.</td><td>Transient; nicht Public-/Saveobjekt.</td><td>Privat; geschlossen.</td></tr><tr><td>InterrogationObservation / M5B.PlayerClaim</td><td>M5B interrogate → SB recordInterrogation / output</td><td>T/S/snapshot/catalogue/profile; canonical Known; statement mentions.</td><td>Empfangsrecord pro Wiederholung; 3 diskriminierte Varianten.</td><td>Public authored report; decline/dnk haben keine mentions.</td></tr><tr><td>ObservationRecord / verdict record</td><td>SB atomarer Commit → Journal/Views</td><td>eventIndex+Evidence oder npc/question; Empfangsquelle, nicht private NPC-Provenance.</td><td>Derived Sessionstate; replay regeneriert.</td><td>Geschlossen; kein last-writer-wins-Fakt.</td></tr><tr><td>Canonical Accusation</td><td>SB translates 6 variants + M2 parseAccusation → CH</td><td>T binding; client liefert keine hash/caseId; Duplicatepolarity verboten.</td><td>Nur Evaluation; canonical IDs nicht persistierter Playerinput.</td><td>Private host datum; geschlossen.</td></tr><tr><td>ConclusionEvaluation / AccusationResult</td><td>M2 → CH/SOL/QA</td><td>Bestehende status authority; T/S binding; U neutral im Core.</td><td>Pro Evaluation; true/false/U nur intern.</td><td>Answer-key oracle privat; no-throw-Versprechen offen — F08.</td></tr><tr><td>ChallengeAccusationResult / SessionOutput.accuse</td><td>CH → SB terminal transition → Player</td><td>Core + Scope + determined matching; globale Requiredcoverage.</td><td>Binäres Public Verdict; Statephase derived.</td><td>Legitime Antwortdeklassifikation; Vitrine receipt widerspricht — F04.</td></tr><tr><td>ReleaseTrace → ReleasedObservation</td><td>Noch zu spezifizierender authored Witnessadapter → SOL</td><td>Exact payload/ref/literal/source/licence mapping; canonical certificate, kein stance-only promotion.</td><td>Gemeinsamer ordered witness; private finite output.</td><td>MISSING PRODUCER — F02. Profile.observations sind keine Ersatzproduktion.</td></tr><tr><td>PUBLIC_RULE DTO / rule receipt</td><td>Fallpräsentation/Adapter → Spieler + SOL</td><td>Deskriptorbody+yield müssen zur wirklich sichtbaren Regel passen; Releasezeit fixieren.</td><td>Initial oder expliziter authorized release; keine private Graphserialisierung.</td><td>MISSING normative public type/release mapping — F02/F03.</td></tr><tr><td>WitnessReplayResult / SolvabilityReport / HypothesisVector</td><td>Trusted real replay adapter / SOL → Author QA</td><td>ProofBindings+releaseHash; status pass/fail/unknown; ≤64 vollständige Boolvektoren.</td><td>Private Certification; kein Spielerreport.</td><td>SOL semantisch exakt; Portinhalt fehlt.</td></tr><tr><td>Save text / decoded SessionState</td><td>SC encode/decode → SB replay → trusted host</td><td>Canonical wire, exact identity, checksum, accepted-prefix transitions.</td><td>Persistierter Inputlog; neu abgeleitete frozen State.</td><td>Save untrusted; no derived-state load; geschlossen bis obige boundaries.</td></tr></tbody></table></div><p>Die zeichnerische Pipeline enthält zwei verschiedene Prüfpfade: Authoring-Solvability konsumiert Releases über den Witnessadapter; Runtime-accuse konsumiert ausdrücklich keine Proofclosure. Der vom Nutzer verlangte Pfeil proof→accusation hat im aktuellen Runtimecontract daher keinen normativen Owner. Ihn mit einem Mock einzusetzen wäre eine heimliche Belegpflicht.</p></section><section id="s5"><h2>5. Release→Proof</h2><p>Adversarialer Maßstab: Autorisierung des Reports, Wahrheit seines Inhalts und rechtfertigbare Inferenz sind drei verschiedene Schritte. M4 §3.2/§8 und M5B §5.2 verwehren implizite Faktivität; SOL §§4–6 verlangt authored Faktivitätszertifikat für OBSERVED und veröffentlichte License für Schlusskanten. Diese Trennung ist richtig. Die Umsetzung der Grenze ist nicht final spezifiziert.</p><div class="scroll"><table><thead><tr><th>Fall</th><th>Tatsächlicher Payload / Quelle</th><th>Ohne explizite Regel</th><th>Mit expliziter authored Berechtigung</th><th>Status</th></tr></thead><tbody><tr><td>Truthful Evidence observation</td><td>D04: Bericht Max/Hof@240 affirms, source=observation; Kandidat nennt p03=true.</td><td>Nur EvidenceReport. source=observation oder canonical true allein seeds nichts.</td><td>Exakte D04/report→observed:max/p03:true-Faktivitätslizenz + tatsächlich released Payload; danach public exclude:max-Kante.</td><td>Kandidat vorhanden, normative Zertifikats-/Receiptgrenze offen.</td></tr><tr><td>Misleading true observation</td><td>D01: Max/Galerie@120; wahrer früherer Besuch.</td><td>Kein direct_actor@240. Lokaler Originalproof liefert keine Rollenfacts.</td><td>Falls dieser Fakt zertifiziert wird, nur der gleiche Zeitliteralroot; Schuld braucht eigene explizite zulässige Kante.</td><td>Kein automatischer Schluss. D01 ist kein benötigter SOL-root.</td></tr><tr><td>False NPC belief</td><td>Oskar Q12 affirms Max/Galerie@240; authored belief falsch.</td><td>Reportevent, kein OBSERVED. Nur Q12 gehört nach lokalem Host in Journal; proof facts {}.</td><td>REPORTED_BY_NPC kann exakt diese Äußerung modellieren; Inhalt nur über öffentlich reviewte Kante weiterführen, falscher kanonischer Schluss wird abgewiesen.</td><td>Boolean Reportmapping erforderlich; kein knowledge-kind lesen.</td></tr><tr><td>Uncertain NPC report</td><td>Nora Q10 stance=uncertain, statement Lina/Galerie@240.</td><td>Kein true/false aus uncertain, leans_affirms oder leans_denies.</td><td>Im aktuellen SOL-Roottyp nicht boolesch repräsentierbar; im Journal erhalten und aus booleschem Prooftrace auslassen. Neue Rootart wäre neue Semantik, hier nicht vorgeschlagen.</td><td>Normative Ausschlussregel im Adapter muss exakt sein.</td></tr><tr><td>Conflicting reports</td><td>Oskar Q12 affirms und Max Q02 denies denselben Claim; zwei Empfangsrecords.</td><td>Beide berichten; weder Mehrheit, letzter Writer noch interne knowledge-Stance gibt objektive Wahrheit. Lokaler proof facts {}.</td><td>Separate ausdrücklich authored Beobachtungsidentitäten/Quellen; eine veröffentlichte, fachlich reviewte Schlusskante kann eine Konsequenz tragen.</td><td>Kein implizites Konfliktauflösen.</td></tr></tbody></table></div><p>Die verfügbare factivity-bridge.REPAIR-CANDIDATE.json enthält vier Evidence/report/literal-Mappings und publicLicense=&quot;rule:certified-sources&quot;. Sie enthält keinen endgültigen Schema-/Parservertrag, keinen vollständigen uncertain/conflicting/NPC-Mappingvertrag, keinen standardisierten Rule-Receipt-Datentyp und keinen Eventtabellen-/Session-Adapter. presentationBytesSha256 bindet zwar eine Kandidatendatei, beweist aber keine tatsächlich autorisierte Runtimefreigabe. Sie ist ausdrücklich keine accepted API.</p><p>SOL prüft canonical consistency, aber kann menschliche Berechtigung einer Schlussregel nicht beweisen. Ein explizit authored Report→Literal-Gesetz darf nicht allein dadurch als fachlich korrekt gelten, dass die private Solution die Konsequenz zufällig bestätigt. Review der öffentlichen Regel bleibt erforderlich. Ebenso darf ein Claimalias nicht über first-match auf beliebige Proposition-ID aufgelöst werden; der Adapter muss das konkrete Literal binden.</p></section><section id="s6"><h2>6. Challenge</h2><pre>CoreSolved(A) = CoversAllRequired(A) AND no determined literal contradicts its asserted polarity.
+ChallengeSolved(A) = CoreSolved(A) AND every claim is in Scope AND status(claim) is Boolean AND status(claim) == asserted value.</pre><div class="scroll"><table><thead><tr><th>Begriff / Attack</th><th>Exakte verfügbare Regel</th><th>Ergebnis</th></tr></thead><tbody><tr><td>Core</td><td>M2 §7: undetermined neutral; Requiredvergleich claimKey+Polarity; Solution global.</td><td>Geschlossen. Kein Playerabschluss über Core allein.</td></tr><tr><td>Scope</td><td>CH §4: 1..256 nackte Claims, unique claimKey; jede Requiredclaim enthalten; false/U zulässig.</td><td>Geschlossen strukturell. Keine Gewinnpolarität im Scope.</td></tr><tr><td>determined / matching</td><td>CH §5: literal.status === literal.value; U passt weder true noch false.</td><td>Geschlossen. Shotgun via U-Extras abgewiesen.</td></tr><tr><td>Required</td><td>A deckt alle S.requiredConclusions exakt ab, auch negative. Keine Proof-/Challenge-eigene Requiredliste.</td><td>Geschlossen. Semantisch ähnliche andere Claims ersetzen nichts.</td></tr><tr><td>Shotgun alles=true</td><td>Complete: unschuldige/andere falsche Claims widersprechen; partial: U-Claims rejected durch CH.</td><td>Geschlossen für eine einzelne Anklage. Alle tatsächlich verantwortlichen Akteure sind kein verbotener Shotgun.</td></tr><tr><td>Wahre Extras</td><td>In-scope+determined+matching Extras bleiben zulässig; Out-of-scope→not_solved.</td><td>Geschlossen. Solvabilityscope muss nicht pauschal gleich Challengeumfang sein.</td></tr><tr><td>Public question / Required-only</td><td>M2 §15: nie Required-only-Whitelist. CH §6/P21 erlaubt öffentlich vorgewählte Ja/Nein-Dimensionen mit Scope=Requiredkeys.</td><td>BLOCKING contradiction F05; kein verdict-code defect.</td></tr><tr><td>Enge direct_actor-Frage</td><td>Vitrine fragt direct_actor für vier feste Personen. CH Rollenfrage verlangt pro Kandidat alle drei Rollen; §6 required_literals erlaubt enge Teilfrage.</td><td>Explizit required_literals-Einordnung und Vorrang dieser Zeile fehlen im Fallvertrag — F05/F11.</td></tr><tr><td>identify_all_responsible</td><td>CH: vollständige öffentliche Kandidaten+alle tatsächlichen Verantwortlichen+nobody; SOL: jede Truthperson+nobody, max5 Personen.</td><td>Kompatibel nur mit bewusst geschlossener veröffentlichter Population. Enthält T hidden Personen, darf man sie nicht automatisch als UI-Kandidaten ausgeben. Publication ablehnen oder enge Frage authoren.</td></tr><tr><td>Mehrere vollständige Versuche</td><td>CH keine Attempts/Proofpolicy; SB lässt gültige Fehlanklagen aktiv; Start-Known kennt vier Personen und e04.</td><td>Raten/Enumeration der vollständigen Antwort ist ausdrücklich zulässig. Kein Anti-Bruteforce-Claim. Vitrine verlangt derzeit anderes Verhalten — F04.</td></tr><tr><td>Scope-/Required-Leak</td><td>CH §6 Gegenweltcheck: gleiche öffentliche Frage bei geänderter privater Antwort → gleiche Kandidatenfamilie. Lösungshash/Required/kanonische Hidden-IDs privat.</td><td>Richtig normiert; öffentliche Frage selbst noch nicht vollständig packagegebunden — F03.</td></tr></tbody></table></div></section><section id="s7"><h2>7. Package Identity</h2><p>Legende: RC=releaseContextHash, RH=releaseHash, PH=proofHash, PK=packageHash. Bei proof=null sind RH/PH null. Jede PK- oder Rulesetänderung macht einen Save mit alter Identity im neuen Package INCOMPATIBLE_PACKAGE, auch einen leeren Save. Der Save bleibt gegen archiviertes altes Package+alten Ruleset gültig. „Invalidieren“ bedeutet keine rückwirkende Zerstörung.</p><div class="scroll"><table><thead><tr><th>Mutation einer Komponente</th><th>Welche Identität muss ändern?</th><th>Save im neuen Package</th><th>Semantisch irrelevant? / offene Stelle</th></tr></thead><tbody><tr><td>Truthfeld: IDs, revision, name/description, events, propositions, Evidence.links/source, secret/redHerring</td><td>truthHash; abhängige T-bindings; RC/RH/PH/PK neu berechnen.</td><td>Alle alten Saves inkompatibel.</td><td>Auch nicht gameplayrelevante Truthprosa ist derzeit absichtlich signifikant; M1-Refrotation UNKNOWN.</td></tr><tr><td>Solution: resolution/roles/null/completeness/intent/mechanism/targets/required/conclusions/revision</td><td>solutionHash; NPC/CH/Proof-S-bindings, RC/RH/PH/PK.</td><td>Alle.</td><td>Keine Ausnahme für zufällig gleiche betrachtete Verdicts.</td></tr><tr><td>Accesspfad/access.kind/evidence entry</td><td>accessHash→RC→RH/PH→PK.</td><td>Alle.</td><td>Reihenfolge entries/paths ist Menge, reine Permutation irrelevant.</td></tr><tr><td>Presentation.text/mentions/reports/source/stance</td><td>presentationHash→RC→RH/PH→PK.</td><td>Alle.</td><td>Ein Leerzeichen oder NFC/NFD signifikant. entries/mentions/reports-Mengenpermutation irrelevant.</td></tr><tr><td>Catalogue question id/mentions/revision</td><td>catalogueHash; profile.catalogueHash neu; RC/RH/PH/PK.</td><td>Alle.</td><td>question-/mention-Arrays Mengen; FrageTEXT steht nicht hier.</td></tr><tr><td>InterrogationProfile act/claim/reveal/revision</td><td>profileHash→npcBundleHash→RC/RH/PH/PK.</td><td>Alle.</td><td>rules/reveal Permutation als Menge irrelevant.</td></tr><tr><td>NPC snapshot stance/awareness/asOf/revision/provenance/acquiredAt</td><td>snapshotHash→npcBundleHash→RC/RH/PH/PK.</td><td>Alle.</td><td>Auch private Provenance signifikant. awareness/attitudes-Mengenpermutation irrelevant.</td></tr><tr><td>Initial known membership</td><td>initialHash→RC/RH/PH/PK.</td><td>Alle.</td><td>known-Reihenfolge irrelevant; Duplikate ungültig.</td></tr><tr><td>Challenge.allowedClaims membership/caseId/T/S binding</td><td>challengeHash→RC/RH/PH/PK.</td><td>Alle.</td><td>Scope-Reihenfolge irrelevant; kein per-Challenge Requiredset.</td></tr><tr><td>Ref salt/profile oder tatsächliche mapping bytes</td><td>refsHash→RC/RH/PH/PK.</td><td>Alle, einschließlich empty save.</td><td>Saltwechsel bei gleich geliefertem Mapping bleibt signifikant. Ob nackte Refs bei jeder PK-Änderung rotieren: M1 fehlt.</td></tr><tr><td>Manifest adapterVersion/certificateData</td><td>RH→Profile.bindings.releaseHash→PH→PK.</td><td>Alle.</td><td>CertificateData-Schema/typisierte Mengenpfade noch UNKNOWN. Nicht automatisch sortieren.</td></tr><tr><td>Proof answerScope/observations/nodes/edges/question/ambiguity</td><td>PH→PK; RH nur falls gebundene Release-/Regelbedeutungen ebenfalls ändern.</td><td>Alle.</td><td>Typisierte Sets irrelevant permutierbar; eigene ID-/Inhaltsänderung signifikant. Keine PH-Rückbindung in RH.</td></tr><tr><td>witnessStepIds Reihenfolge</td><td>PH→PK.</td><td>Alle.</td><td>GEORDNET: immer signifikant. Der Eventkatalog der Step-IDs ist noch kein vollständig normiertes Identityinput.</td></tr><tr><td>Public question wording/type, publicRules text/descriptors, questionText, entity labels/roster/brief</td><td>Soll semantischen Host-/Manifestinput→RC/RH/PK ändern. AKTUELL kein vollständiger Pflichtpfad.</td><td>AKTUELL NICHT GARANTIERT; F03.</td><td>Kein pauschales „nur UI“. Negation/Rollenwort/Regelzeit ändern Gameplayinformation.</td></tr><tr><td>Engine-/Reducer-/Release-/Verdictsemantik</td><td>Neue rulesetVersion und neue PK; ggf. Adapterversion/Hashprofil.</td><td>Alle.</td><td>Unveränderte Semantik bei Refactoring braucht keine Version, Regression erforderlich.</td></tr><tr><td>Objekt-Key-Reihenfolge / explizit mengenartige Arrays</td><td>Nach jeweiligem canonical profile Identität gleich.</td><td>Kompatibel.</td><td>C bewahrt nicht-mengenartige Arrays, besonders Saveevents und witness.</td></tr><tr><td>Eventreihenfolge / Anklageliteral-Reihenfolge im Save</td><td>PK gleich, Savebody/checksum anders.</td><td>Replay abhängig von neuer Reihenfolge; keine packageinvalidierung.</td><td>Verdict kann bei Claimpermutation gleich bleiben, Historybytes nicht.</td></tr><tr><td>checksum allein / zusätzliche derived Felder im Save</td><td>Checksum muss aus body neu berechnet sein; derived Zusatzfeld Shape-REJECT.</td><td>Corrupt checksum rejected; neu gehashte gültige Geschichte erlaubt.</td><td>Keine Authentizität/Anti-Cheat-Garantie.</td></tr><tr><td>UI-Font/Layout/Codeformatierung außerhalb authored Package</td><td>Keine fachliche Identität ändert.</td><td>Kompatibel.</td><td>Nur wirklich außerhalb gebundener Semantik; keine Textstrip-Heuristik.</td></tr></tbody></table></div><p>Der aktuelle bekannte Hashgraph ist azyklisch: Komponenten→RC→RH→PH→PK→Savechecksum. M1-Namespace darf keine Rückkante zum PK verlangen, solange PK die Reftabelle bindet. Der alte Vitrine-Host leitet Refs dagegen aus seinem eigenen vollständigen case-lab-package-v1-Hash ab. Das ist ein anderes provisional Profil und keine bestätigte M1-Kompatibilität.</p></section><section id="s8"><h2>8. Session</h2><div class="scroll"><table><thead><tr><th>Aspekt</th><th>Verfügbarer Vertrag</th><th>Urteil</th></tr></thead><tbody><tr><td>Event authority</td><td>SB §4/5: nur akzeptierte investigate/interrogate/accuse Inputs; reject unveränderter State; nullbasierter eventIndex.</td><td>Geschlossen, F06-Eventname bereinigen.</td></tr><tr><td>Derived state</td><td>SA §3: Known/Discovery/Observation/verdict/phase aus Package+accepted log; SC §8 speichert nichts davon.</td><td>Geschlossen. Kein PlayerKnowledge-Load aus untrusted JSON.</td></tr><tr><td>History</td><td>Wiederholungen/leere gültige Suchen/decline/dnk werden akzeptiert und geloggt; Empfangsreports pro Befragung, Evidence einmal.</td><td>Geschlossen. Keine implizite Requestidempotenz.</td></tr><tr><td>Atomicity</td><td>SB §5: temporäre Portauswertung, jeder Release/Ref validiert; einmal Commit. Zweiter fehlender Release rollback alles.</td><td>Geschlossen. Keine Discovery vor tatsächlichem Release.</td></tr><tr><td>Replay</td><td>SB §7: gleicher Package, initial state, ordered prefix, echte M5B-Pipeline, snapshot.asOf eingefroren, erster invalid event abort.</td><td>Deterministische Semantik geschlossen; Ref-/Portkonstruktion F01/F07 bleibt.</td></tr><tr><td>terminal solved</td><td>Nach erstem CH-solved jede Aktion SESSION_CLOSED ohne Gameplayport, log nach solved INVALID_HISTORY, nicht trimmen.</td><td>Geschlossen. Technischer Terminalzustand erlaubt Publicwissen phase=solved.</td></tr><tr><td>package mismatch</td><td>Exact package/ruleset; kein Upgrade/Migration. Encode replays und vergleicht Derived State; wrong state identity HOST_FAILURE.</td><td>Geschlossen für vorhandene Identitätsinputs. Public semantics F03 fehlt.</td></tr><tr><td>Limits</td><td>512 events, 32 literals/event, 16KiB canonical event, 1MiB save, 2MiB raw package, depth32/nodes100000; 256 entities/64 evidence/16 NPC/128 questions.</td><td>Finite Ressourcen. Package-/Savebudgets zusätzlich zu Domainlimits, keine aktuelle Runtimebenchmark-Garantie.</td></tr><tr><td>History immutability</td><td>SA helper: neue deeply frozen Kopie; SB outputs frozen/eigene Kopie; Replay derselbe Reducer.</td><td>Observationale Unveränderlichkeit gut; ob private append/shared frozen subtrees erlaubt sind, nicht ausdrücklich geschlossen.</td></tr><tr><td>Quadratischer Contractzwang</td><td>Gemeinsame Ergänzung verlangt C({…events:prospectiveEvents,checksum:64zeros}) in UTF-8 vor jeder Annahme; wörtlicher Ablauf serialisiert alle Prefixe.</td><td>F09 BLOCKING für explizites Freeze-Kriterium. 512 Events: 131328 Eventvorkommen statt 512. Keine Historyimmutability-Sicherheitsanforderung erzwingt diesen Algorithmus.</td></tr></tbody></table></div><p>Die 512-Grenze macht den Aufwand endlich, beseitigt aber keinen O(n²)-Contractzwang. Der konkrete Patch in §13 erlaubt intern Working-State/structural sharing und exakte inkrementelle Bytelänge, bei gleichen Übergängen und immutable veröffentlichten States. Kein neuer Snapshot-, Checkpoint-, Savechain- oder Autoritätsmechanismus wird benötigt. Eine einzelne Encode-Replayprüfung mit linearer abschließender Serialisierung ist sinnvoll; vollständige Prefixserialisierung nach jedem Event ist dafür unnötig.</p></section><section id="s9"><h2>9. Error Boundary</h2><div class="scroll"><table><thead><tr><th>Grenze</th><th>Normativer öffentlicher Ausgang</th><th>Private Diagnose / NI-Prüfung</th></tr></thead><tbody><tr><td>Malformed/foreign/stale/unknown/unreleased/wrong-kind Ref bei aktiver Session</td><td>ACTION_UNAVAILABLE, gleicher public shape, keine echo IDs oder fehlenden refs.</td><td>SB §4/5 und B02–04/B14–16; INFO modelliert ACTION_NOT_AVAILABLE, kein automatisch normativer Codewechsel.</td></tr><tr><td>Valid known investigation ohne Fund</td><td>Erfolg mit observations:[].</td><td>Legitime Information über nutzbare Aktion; kein hidden evidence count.</td></tr><tr><td>NPC unavailable question / unknown NPC</td><td>ACTION_UNAVAILABLE.</td><td>5B QUESTION_NOT_AVAILABLE private; existence vs askability nicht differenzieren.</td></tr><tr><td>NPC decline / does_not_know / uncertain</td><td>Erfolgreicher selected Observation DTO.</td><td>Spielinhalt, keine Errorcodes. Keine implizite factivity.</td></tr><tr><td>Valid accusation false/U/out of scope/missing Required</td><td>Binär not_solved.</td><td>Keine per-Claim-Gründe, counts, remainingRequired, solutionHash oder proofpath.</td></tr><tr><td>Domain Binding/Ref/Portthrow</td><td>Generische technische Nichtverfügbarkeit; kein not_solved.</td><td>HOST_FAILURE nur trusted; private Domain-/Zod-/Refdiagnose nicht weitergeben.</td></tr><tr><td>Session closed / event/save limit</td><td>SESSION_CLOSED / LIMIT_REACHED in festgelegter Priorität.</td><td>Hängt von bekanntem Verlauf ab; zulässige Declassification, kein Existenzorakel.</td></tr><tr><td>Load/Replay-Fehler</td><td>Keine Teilstates/Privateindexdetails; finale Public-DTO-Codemap fehlt.</td><td>SC besitzt detaillierte Codes; SB §7 eventIndex intern. INFO verlangt generic rejection. Nicht ohne explizite Transportregel veröffentlichen.</td></tr><tr><td>M2 unknown claim</td><td>M2 §5.1/AC05/06 verspricht no-throw für beliebige unknown/Getters.</td><td>Zod safeParse allein schützt vor werfendem Getter nicht. F08: Plain-JSON-Vertrag exakt einschränken; keine JS-Sandbox erfinden.</td></tr></tbody></table></div><p>INFO berichtet 1024 Modell-Twins mit 0 unerlaubten Unterschieden; das ist historische, begrenzte Modellevidenz. Session A/B/C war dort nicht als aktuelle Quelle verfügbar. Die heutige SB-Facade schließt action error classes weitgehend, die öffentliche Loadfehlercodierung ist noch nicht vollständig festgelegt. Bytegleiche Outputs über verschiedene geheime Packageversionen werden nicht versprochen: packageHash und Refrotation sind deklarierte Identitätsmetadaten; legitime Verdictabfragen dürfen sich unterscheiden.</p><p>INFO-F01/F02 wurden hier direkt am Originalhost nachgestellt: public_initial iteriert alle Truthpersons/locations; eine nichtinitiale zusätzliche Person erhöht suspects von 4 auf 5. Canonical-Evidence-Rename bei konstanten public aliases/Texten dreht die Kartenreihenfolge. Dies sind lokale Boundaryproben des alten Scratchhosts, keine production bugs und kein zertifiziert spielbarer rebound Twin. M4/SB regeln bereits Publicref-Sortierung; deren reale Fallübernahme fehlt.</p><p>Ausdrücklich akzeptiert: selected stance/mention/card count, geordneter Playerverlauf, binäres Verdict, veröffentlichte Kandidatenliste und immutable Packagewechsel. Nicht behauptet: konstante Laufzeit, Schutz des manipulierten JS-Heaps oder Geheimhaltung vollständig lokal ausgelieferter Fallassets. Diese Non-goals werden nicht zu neuen Freezeanforderungen umgedeutet.</p></section><section id="s10"><h2>10. Vitrine Witness</h2><p>Der vollständig verlangte abstrakte Fluss ist mit den Originalcontracts nicht schließbar. Nachfolgend steht für jeden Pfeil sein Owner, exakter Typ und fehlende Naht. Fünf produktive Beschaffungsaktionen sind im Originalhost nachgestellt; nach anschließender Beleganklage lautet phase=solved. Das ist weiterhin das alte observed/citation-Modell.</p><div class="scroll"><table><thead><tr><th>Schritt / Pfeil</th><th>Daten / Typ</th><th>Contractowner</th><th>Belegt / fehlend</th></tr></thead><tbody><tr><td>start→initial knowledge</td><td>InitialSetup.known: 4 Personen, 5 Orte, Medaille, e04; keine discovery.</td><td>SA initialPlayerKnowledge; SB initialSession.</td><td>Grantliste kompatibel. Public brief/rules/labels Outputowner und Binding fehlen (F03).</td></tr><tr><td>investigate Hof→Access</td><td>SessionEvent investigate/search_location/target PlayerRef → canonical locationId; known canonical refs.</td><td>SB §5→M3 resolveInvestigation.</td><td>Typkonversion beschrieben; tatsächliche M1-Refs unbestätigt.</td></tr><tr><td>Access→release D03</td><td>found evidence:d03 → new evidenceId → EvidenceObservation.</td><td>SB atomic orchestration→M4 releaseEvidence.</td><td>Alte card{ref,title,text,observations} passt nicht zu neuem DTO. Kandidat verfügbar, Migration nicht finale Autorität (F11).</td></tr><tr><td>release→knowledge</td><td>D03 mentions e05/Nora → Known e05, Discovery D03.</td><td>SA recordEvidence im SB commit.</td><td>Typisch geschlossen mit aktuellem DTO; kein Wahrheitssprung.</td></tr><tr><td>knowledge→interrogate Nora Q08</td><td>Bekannter e05+Nora autorisiert Q08, refs translator und canonical known.</td><td>SB→M5A catalogue/profile→M5B interrogate.</td><td>Portkonstruktion F07 muss ergänzt werden.</td></tr><tr><td>interrogate→observation</td><td>affirms eventHasItem(e05,Kamera), statement+mentions.</td><td>M5B §5.4.</td><td>Reveal Kamera, kein factivity. Originalhost nachgestellt.</td></tr><tr><td>observation→knowledge→investigate Kamera</td><td>Kamera-Mention→known→examine_item→D04.</td><td>SA/SB→M3→M4.</td><td>Closed sequence im Design. D04 moderner Release nur Kandidat.</td></tr><tr><td>interrogate Oskar Q14→Terminal→D05</td><td>affirms eventHasItem(e06,Terminal), mentions Terminal; examine_item.</td><td>M5B→SA/SB→M3/M4.</td><td>Gleiche Grenze; unabhängige Beschaffungskette.</td></tr><tr><td>Evidence/NPC observations→proof roots</td><td>D04 p03/p04, D05 p05 als zertifizierte OBSERVED; NPC selected reports bleiben Reports.</td><td>Soll authored Witnessadapter→SOL ReleasedObservation sein.</td><td>KEIN vollständiger normativer Producer. F02, kein Mock zum Auffüllen.</td></tr><tr><td>released premises→public license receipts</td><td>exclude:max/nora/oskar; remaining:Lina erst nach veröffentlichter Schlussbasis.</td><td>Soll authored public-rule release→SOL PUBLIC_RULE sein.</td><td>Runtime DTO/Receipt/Releaseeligibility offen. Keine private remaining-Kante initial exportieren (F02/F03).</td></tr><tr><td>proof→accusation</td><td>4 hergeleitete direct_actor-Literale; Player wählt Antwort.</td><td>SOL ist Authoringchecker; SB accuse liest KEINE Proofclosure.</td><td>Pfeil fehlt absichtlich im aktuellen Runtimevertrag. Vitrine verlangt dagegen Receipt: F04.</td></tr><tr><td>accusation→challenge</td><td>6 PlayerConclusionClaimvarianten feldweise canonical; hier 4 direct_actor-Literale.</td><td>SB→M2 parseAccusation→CH evaluateChallengeAccusation.</td><td>Geschlossen nach scope reconciliation; keine automatische UI-Expansion als Contract behauptet.</td></tr><tr><td>challenge→verdict</td><td>solved/not_solved; first solved terminal.</td><td>CH→SB.</td><td>Gleiches vollständig richtiges initial guess: aktueller Sessionvertrag solved, Originalhost not_solved.</td></tr><tr><td>verdict→save</td><td>phase/verdicts derived, persistierte accepted inputs + identity + checksum.</td><td>SC §8.</td><td>Legacy manifest saved commands ist anderes Format; final package identity fehlt.</td></tr><tr><td>save→replay→gleicher State</td><td>Wire check→identity→checksum→ordered accepted events→fresh actual releases.</td><td>SC→SB.</td><td>Designpfad exakt; voller Vitrine-Witness bleibt wegen F01/F02/F03/F04/F07/F11 NOT VERIFIED.</td></tr></tbody></table></div><p>Das authored Fallmodell selbst bleibt plausibel bounded lösbar: CERT enumeriert 192 Fortschrittszustände, 16 Boolantworten für vier direkte Rollen und 1200 konstruierte Folgen. Diese Zahlen sind gelesene Certification-Evidenz, nicht hier erneut ausgeführte Gesamtprüfung. Zertifiziert wurde gerade nicht die aktuelle Vertragskette. Hier neu ausgeführt: fünf Originalhost-Beschaffungsaktionen+Anklage, Frühanklage, falscher Belief, uncertainty, Konfliktreports, zwei Releaseboundary-Proben, Sessiontextvergleich, Empty-save-Golden und Serialisierungsarbeit.</p></section><section id="s11"><h2>11. DAG</h2><div class="scroll"><table><thead><tr><th>Graph / Kante</th><th>Befund</th><th>Minimaler Umgang</th></tr></thead><tbody><tr><td>Baseline Truth→Solution; Truth+Solution→NPC snapshot/projection</td><td>Azyklisch; bestehende Datenschemata.</td><td>Keine Verantwortung→Präsenz-Rückinferenz einführen.</td></tr><tr><td>M3/M4/M5A→Baseline; M5B→M5A+Projection</td><td>Keine nötige M3↔M4-Direktabhängigkeit. M4/M5B verwenden Refport, keinen M1-Import.</td><td>M1 trotzdem Laufzeit-/Integrationdependency des Host.</td></tr><tr><td>M2→Baseline; CH→M2; SOL→Baseline+M2</td><td>Azyklisch. SOL benötigt nicht implementierte Session zur Unitsemantik, nur trusted Witnessport zur Zertifizierung.</td><td>Keine Solvability-PASS-Abhängigkeit vor Ref/Access/Presentation erfinden.</td></tr><tr><td>SA→M1/M2/M3/M4/M5A/M5B/CH/SOL-parser; SB→SA; SC→SA+SB</td><td>Bekannte Frontmatter-DAG azyklisch. B runtime-importiert M2/M3/M4/M5B/CH transitiv verfügbare accepted Module.</td><td>A kann B/C initial types definieren, aber ruft sie nicht zum Resolve auf. A→SOL nur Parser, kein echter Witness.</td></tr><tr><td>B prospective save size→A serializer; C encode/decode→B replay</td><td>Kein B→C-Import. Envelopeform gemeinsam beschrieben.</td><td>Byteprofil hat C als semantischen Owner; exakte Größenhilfe darf A/B ohne C-import berechnen.</td></tr><tr><td>Real witness→SB replay+M4/M5B traces→SOL check</td><td>Kein harter Zyklus, wenn SA nur Bindung prüft und nicht Zertifizierung zum Auflösen verlangt.</td><td>Nicht parse/resolved package mit publication certificate verwechseln.</td></tr><tr><td>Dynamic PUBLIC_RULE depends on derived proof closure</td><td>Privater Adaptercode kann Regelinstances nach bereits veröffentlichten Prämissen freigeben; genaue Eligibility-/Producerregel fehlt.</td><td>Nicht automatisch alle privaten edges initial releasen; F02 muss release order ohne self-licensing spezifizieren.</td></tr><tr><td>Component hashes→RC→RH→PH→PK→save checksum</td><td>Aktuell bekannte definierte Hashkanten ohne Rückbindung.</td><td>manifest darf weder PK noch PH als eigenen Input tragen.</td></tr><tr><td>M1 refs←final PK bei gleichzeitiger PK←refsHash</td><td>Mögliche harte cycle, kein belegter aktueller M1-Defekt.</td><td>M1 fehlt: Graph nicht abschließend geschlossen. Kein Fixed-point-/Dummyhash.</td></tr><tr><td>Challenge Draftpin→alter M2-Hash</td><td>Keine cycle, aber dokumentarisch stale Dependency.</td><td>Aktuellen M2-Textinhalt genau pinnen, acceptedCommit erst bei tatsächlicher Annahme.</td></tr></tbody></table></div><p>Unnötig: M4→M3 oder M5B→M4 nur wegen identischer Refports; SOL-checker als Prerequisite jedes laufenden accuse. Fehlend: normativer M1-/public-content-/Witnessadapter-Anschluss. Ein noch nicht gepinnter Commit ist kein erfundener Graphzyklus. Der bekannte DAG lässt eine endliche Build-/Authoringreihenfolge zu, sein unbekannter Teil darf nicht als PASS gelten.</p></section><section id="s12"><h2>12. 50 Freeze Attacks</h2><p>Jede Zeile formuliert eine plausible Implementiererentscheidung. CLOSED/NONBLOCKING bedeutet: Contracts bestimmen die Semantik bereits eindeutig, Umsetzung darf wählen. OPEN/BLOCKING bedeutet: eine normative Lücke oder Contradiction bleibt. OPEN/NONBLOCKING markiert nur die redaktionelle Quellenpflege bei aktuell identischer Semantik. Dies ist ein Spezifikationsangriffskatalog; er behauptet nicht 50 ausgeführte Produktionsmutationstests.</p><div class="scroll"><table><thead><tr><th>#</th><th>Plausible Interpretation / Änderung</th><th>Antwort aus verfügbaren Contracts</th><th>Klasse / Finding</th></tr></thead><tbody><tr><td>1</td><td>Andere Ref-Preimage-Trennung/Encoding wählen.</td><td>Nicht eindeutig; vollständiger M1 fehlt.</td><td>OPEN / BLOCKING — F01</td></tr><tr><td>2</td><td>PlayerRefs mit finalem packageHash statt truthHash erzeugen.</td><td>Nicht entscheidbar; mögliche Hashrückkante.</td><td>OPEN / BLOCKING — F01</td></tr><tr><td>3</td><td>Salt bei jeder Packageänderung rotieren statt beibehalten.</td><td>M1-Namespacepolicy unbekannt.</td><td>OPEN / BLOCKING — F01</td></tr><tr><td>4</td><td>Globale Refkollision still reindexieren.</td><td>SA §2 verlangt injektiv/inverse, fehlende Tabelle/Kollision Packagefehler.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>5</td><td>Salt ändern, tatsächliches Mapping gleich lassen und empty save laden.</td><td>SA §2/9 refsHash bindet config+mapping; Save inkompatibel.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>6</td><td>Freies validiertes Ref genügt als Berechtigung.</td><td>SB §4 verlangt prefix-Known und passenden kind.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>7</td><td>Found Evidence direkt als Truth/Playerkarte ausgeben.</td><td>M3 §6 intern; SB→M4 vor Discoverycommit.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>8</td><td>Evidence.source automatisch zum Fundort machen.</td><td>M3 §4/5 explizit nicht aus source ableiten.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>9</td><td>Initial bekannte Evidence sofort releasen.</td><td>SA §2/A14: Awareness ohne Discovery/Release.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>10</td><td>Report.claim referenzierte Entity automatisch known machen.</td><td>SA §3 erlaubt nur mentions/Evidence/initial; closure-Verletzung Hostfehler.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>11</td><td>Source=observation ohne Zertifikat zu OBSERVED machen.</td><td>M4 verneint das; aber exakter zulässiger Zertifikatsvertrag fehlt.</td><td>OPEN / BLOCKING — F02</td></tr><tr><td>12</td><td>Zertifikat nach Reportindex statt vollständigem Payload matchen.</td><td>Kandidat nutzt exakte Reports; finale Matching-/Canonicalisierungsvorschrift fehlt.</td><td>OPEN / BLOCKING — F02</td></tr><tr><td>13</td><td>Wahr passenden Claimalias per first-match Proposition auswählen.</td><td>Kein vollständiges authored Alias/Literal-Mapping im Adaptercontract.</td><td>OPEN / BLOCKING — F02</td></tr><tr><td>14</td><td>NPC affirms nach Lesen interner knowledge als faktiv nehmen.</td><td>M5B knowledge/belief öffentlich gleich; SOL automatische Reportseeds verboten.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>15</td><td>Leans_affirms als Report=true im Solvabilityport codieren.</td><td>SA §2 verbietet Booleanaufwertung; konkrete Adapterauslassung/Union fehlt.</td><td>OPEN / BLOCKING — F02</td></tr><tr><td>16</td><td>Konfliktreports durch latest writer überschreiben.</td><td>SA §3/B22: beide quellengebunden erhalten.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>17</td><td>Unreleased expected profile.observations als replay roots zurückgeben.</td><td>SA §2 und SOL §6 ausdrücklich verboten.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>18</td><td>Alle PUBLIC_RULE-Instanzen mit Täteryield initial veröffentlichen.</td><td>Fall fordert spätere Freigabe; normativer public-rule release/receipt fehlt.</td><td>OPEN / BLOCKING — F02</td></tr><tr><td>19</td><td>Proofseed direkt aus Evidence.links erzeugen.</td><td>M4/SOL autorisieren das ausdrücklich nicht.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>20</td><td>True earlier presence zum direct_actor-Beweis erklären.</td><td>SOL nur explizit gelicensete kanonisch konsistente Kante; kein eingebauter Schluss.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>21</td><td>Core-solved als Player-solved ausgeben.</td><td>M2 §7a, SB §5: immer CH.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>22</td><td>Undetermined zu false umschreiben.</td><td>M2 neutral, CH status matching rejects beide Polaritäten.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>23</td><td>Extra true literal außerhalb Scope akzeptieren.</td><td>CH §5 not_solved ohne per-Literal-Hinweis.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>24</td><td>Negatives Required durch Abwesenheit/ähnliche Claims ersetzen.</td><td>M2 §7 literal/claimKey/Polarity exakt.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>25</td><td>Required-only Scope für vorgewählte Ja/Nein-Frage erlauben.</td><td>M2 §15 verbietet, CH §6/P21 erlaubt.</td><td>OPEN / BLOCKING — F05</td></tr><tr><td>26</td><td>Vier direct_actor-Claims statt zwölf Rollenclaims authoren.</td><td>required_literals vs Rollenfrage-Priorität für Vitrine nicht endgültig geschlossen.</td><td>OPEN / BLOCKING — F05</td></tr><tr><td>27</td><td>Öffentliche Kandidaten nach tatsächlichen Assignments filtern.</td><td>CH §6 verbietet answerabhängigen Scope; Gegenweltcheck.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>28</td><td>Zusätzliche wahre, bestimmte in-scope Claims akzeptieren.</td><td>CH §2/5 erlaubt; keine generelle answer-equality nötig.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>29</td><td>Vitrine schon vor Belegen mit korrekter vollständiger Antwort lösen.</td><td>SA/B §6 ja, VIT/BRIEF/certification receipt nein.</td><td>OPEN / BLOCKING — F04</td></tr><tr><td>30</td><td>Saveevent Befragung als ask statt interrogate speichern.</td><td>M5B §6 vs SB §4.</td><td>OPEN / BLOCKING — F06</td></tr><tr><td>31</td><td>Wiederholte leere Suchen oder decline/dnk nicht loggen.</td><td>SB §5/B06/17/18/34: akzeptiert/loggen.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>32</td><td>Nach solved weiteres Event ignorieren und log abschneiden.</td><td>SB §5/7: closed; replay invalid history, niemals trimmen.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>33</td><td>Beim zweiten fehlgeschlagenen Release ersten Fund behalten.</td><td>SB §5/B08 atomarer vollständiger rollback.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>34</td><td>Received NPC report einmal deduplizieren statt pro Gespräch erfassen.</td><td>SA §3/B21: gleiche Payload, verschiedene eventIndex-Records.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>35</td><td>Raw pkg.refs direkt an M4/M5B geben.</td><td>Resolved refs hat keine caseId/truthHash, Consumer braucht beide.</td><td>OPEN / BLOCKING — F07</td></tr><tr><td>36</td><td>PlayerKnown refs direkt als InterrogationInput.known verwenden.</td><td>M5B erwartet canonical EntityRef; exakte SB-interrogate-Portkonversion nur teilweise beschrieben.</td><td>OPEN / BLOCKING — F07</td></tr><tr><td>37</td><td>Initialsuspects aus Truthpersons statt initialKnown/publicRoster bauen.</td><td>Alter Host tut das; V1 besitzt keinen vollständigen PublicViewvertrag.</td><td>OPEN / BLOCKING — F03/F11</td></tr><tr><td>38</td><td>Karten in canonical found-ID-Reihenfolge emittieren.</td><td>SB/M4 regeln public ref order; Originalhost entspricht nicht.</td><td>OPEN / BLOCKING — F11</td></tr><tr><td>39</td><td>Questiontext ändern, Identity gleich lassen.</td><td>Kein bindender V1-Owner/Pfad für questionText.</td><td>OPEN / BLOCKING — F03</td></tr><tr><td>40</td><td>Public law negieren oder Roster ändern, neues Package nicht erzeugen.</td><td>Im alten hostHash gebunden, in SA input nicht zwingend enthalten.</td><td>OPEN / BLOCKING — F03</td></tr><tr><td>41</td><td>Falschen npc provenance/asOf ändern, Package gleich lassen.</td><td>SA snapshotHash kompletter Snapshot, RC/PK ändert.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>42</td><td>Proof/Witnessarrays pauschal als Mengen sortieren.</td><td>SA §2: witnessStepIds geordnet, typisierte Sets exakt normalisiert.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>43</td><td>Saveevents mit Truth-Mengenserializer sortieren.</td><td>SA/SC strukturelles C bewahrt Eventreihenfolge.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>44</td><td>Nichtkanonisches SaveJSON mit doppelten Keys akzeptieren.</td><td>SC §8 wire-equality rejects nach JSON.parse.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>45</td><td>Gültigen Verlauf editieren/rechecksummen, trotzdem laden.</td><td>SC §8 ausdrücklich erlaubt bei valid replay; kein Anti-Cheat.</td><td>CLOSED / NONBLOCKING</td></tr><tr><td>46</td><td>Jeden bisherigen Prefix für Prospective-Savebytes neu serialisieren.</td><td>Wörtliche SA-Ergänzung fordert genau das, O(n²)-Kriterium nicht erfüllt.</td><td>OPEN / BLOCKING — F09</td></tr><tr><td>47</td><td>Beim Replay intern append und frozen subtrees teilen.</td><td>Neue deeply frozen Kopie/gleicher Reducer lässt Interpretationsspielraum; explizite äquivalente interne Strategie nötig.</td><td>OPEN / BLOCKING — F09</td></tr><tr><td>48</td><td>Werfenden Getter bei M2 unknown claim safeParse durchlassen.</td><td>M2 no-throw auch Getter vs Zod-Aufruf; Plain-JSON-Grenze widerspricht nicht normiertem Versprechen.</td><td>OPEN / BLOCKING — F08</td></tr><tr><td>49</td><td>Detaillierten Loadcode/eventIndex an Spieler schicken.</td><td>Private Index normiert; vollständige öffentliche Loadcodemap fehlt.</td><td>OPEN / BLOCKING — F10</td></tr><tr><td>50</td><td>Drei Session-Semantiktexte unabhängig korrigieren.</td><td>Aktuell bytegleich, aber keine exakte normative Ein-Owner-/Vorrangregel für Weiterentwicklung.</td><td>OPEN / NONBLOCKING — F12</td></tr></tbody></table></div><p>Ergebnis: 23 offene Angriffe, 27 geschlossene Angriffe. Davon 22 BLOCKING und eine redaktionell NONBLOCKING (F12). Die Zeilen werden zu elf blockierenden Findings plus einem redaktionellen Finding gebündelt; kein künstliches Zählen gleicher Rootursachen als neue Architekturprobleme. Öffentliches standalone arbitrary JS, universelle Casegrößen, Online-Autorität und natürliche Sprach-Spoilererkennung sind keine zusätzlichen V1-Requirements.</p></section><section id="s13"><h2>13. Blocking Findings</h2><p>OLD→NEW-Patches sind Vorschläge im Bericht; keine Quelldatei geändert. Fertige Patchtexte stehen nur dort, wo die vorhandene Semantik eine genaue Korrektur erlaubt. Fehlende Originale oder noch nicht spezifizierte Zertifikats-/Public-Content-Interfaces werden nicht durch erfundene Vollverträge „repariert“. Diese offenen Abschlussbedingungen reichen für NO-GO.</p><div class="scroll"><table><thead><tr><th>Finding</th><th>Problem</th><th>Evidenz</th><th>Einordnung</th></tr></thead><tbody><tr><td>F01</td><td>MYST-0001 / finale Reparatur nicht verfügbar</td><td>M4 §1.3/5.3, M5B §1.3, SA §2; Artifactsearch.</td><td>BLOCKING — fehlende Originalautorität.</td></tr><tr><td>F02</td><td>Release→Proof / Public-Rule / Witnessadapter normativ offen</td><td>SA §2 UNKNOWN/BLOCKER; SOL §4/6; CERT R2; vier-entry LAB-Kandidat.</td><td>BLOCKING — zentrale fehlende Schnittstelle.</td></tr><tr><td>F03</td><td>Öffentliches authored Gameplay nicht vollständig packagegebunden</td><td>SA CasePackageInput/RC-Tabelle; VIT host.publicRules/questionText/entityLabels/roster/BRIEF.</td><td>BLOCKING — Ownership+Identity+Releaseboundary.</td></tr><tr><td>F04</td><td>Vitrine Receiptpflicht widerspricht Session V1</td><td>SA/SB/SC §6; VIT requireReleasedProof=true; BRIEF Auftrag; CERT §14/20.</td><td>BLOCKING — bewusste semantische Entscheidung noch nicht konsolidiert.</td></tr><tr><td>F05</td><td>Required-only / enge Rollenfrage widersprüchlich</td><td>M2 §15; CH §6/P21/Rollenzeile; VIT 4 direct_actor Claims.</td><td>BLOCKING; präziser Textrepair verfügbar.</td></tr><tr><td>F06</td><td>Persistentes ask vs interrogate</td><td>M5B §6 gegen SB §4; alle Sessioncopies.</td><td>BLOCKING; kleiner eindeutiger Repair.</td></tr><tr><td>F07</td><td>Ref-Port / Known-Übersetzung beim Consumer fehlt exakt</td><td>SA ResolvedCasePackage.refs vs M4 §5.1 / M5B InterrogationInput; SB §5.</td><td>BLOCKING; kleiner exakter Adapterpatch.</td></tr><tr><td>F08</td><td>M2 no-throw für beliebiges JS unknown nicht erfüllt</td><td>M2 §5.1/AC05/06; CROSS X107 Getterprobe; SA/SOL Plain-JSON-Grenze.</td><td>BLOCKING; kleiner präziser Scopepatch.</td></tr><tr><td>F09</td><td>Quadratische Prefixarbeit durch wörtlichen Contract</td><td>SA gemeinsame Ergänzung, helper Kopie, SB/SC replay; SCALE Copy-Kosten.</td><td>BLOCKING für verlangtes Komplexitätskriterium; semantikerhaltender Repair.</td></tr><tr><td>F10</td><td>Finale Public-Loadfehler-Allowlist offen</td><td>SC §7/8 detaillierte Codes; SB eventIndex privat; INFO §13 generic rejection.</td><td>BLOCKING für vollständige Error-NI-Grenze; kleiner exakter Facadepatch.</td></tr><tr><td>F11</td><td>Vitrine aktuelle Release-/Save-Kompatibilität fehlt</td><td>VIT card()/manifest/host presentation; CERT NOT CERTIFIED; INFO F01/F02.</td><td>BLOCKING — realer typed witness nicht durch alte Simulation ersetzbar.</td></tr><tr><td>F12</td><td>Eine finale Textautorität für Session-Split fehlt</td><td>SA/SB/SC gemeinsame §§2–11 alle normativ, bytegleich; CH pin alter M2.</td><td>NONBLOCKING — identische Semantik, kein aktueller fachlicher Mehrfachowner; Quellenpflege.</td></tr></tbody></table></div><h3>F01 — MYST-0001 / finale Reparatur nicht verfügbar</h3><pre>OLD: Nur sekundäre Refmuster/Portannahmen gelten als ausreichender Anschluss.
+NEW: Freeze von Ref-/Sessionintegration bleibt NOT VERIFIED, bis der vollständige aktuelle MYST-0001-Originaltext mit exact namespace/preimage/encoding/config/resolve/collision/goldens gelesen und gegen SA bestätigt ist. Ein Final-Repair-Text muss im Freezeinventar mit Inhaltshash gewählt sein. Kein generierter Ersatzalgorithmus.</pre><h3>F02 — Release→Proof / Public-Rule / Witnessadapter normativ offen</h3><pre>OLD: certificateData = beliebiges bounded JSON; exakter Release-/Rule-/Eventtabellenadapter später.
+NEW: Für diesen Freeze muss ein einzelner normativer authored Adapteranhang gewählt sein, der certificateData exakt typisiert, Step-ID→SessionEvent bindet, Evidence/NPC-Claim→konkretes Literal+Quelle+Observation-ID abbildet, uncertainty ausdrücklich ohne Booleanroot lässt, public Rulepayload/Receipt und Eligibility fixiert sowie keine first-match-Aliase akzeptiert. Checker konsumiert nur real replayte Releasepayloads, keine expected observations. Volltext fehlt; dieser Bericht behauptet keinen fertig entworfenen Anhang.</pre><h3>F03 — Öffentliches authored Gameplay nicht vollständig packagegebunden</h3><pre>OLD: Package bindet nur bereits aufgeführte Komponenten; publicRules/questionText/labels/brief können extern bleiben.
+NEW: Bestehender Vitrine-Hostanhang muss einen einzigen normativen Owner und exakte private/public Shapes für öffentlichen Frage-/Roster-/Regel-/Labelinhalt benennen und deren autoritative Bytes in den Release-/Packageinput binden. Gleiche Packageidentity mit anderem bedeutungsänderndem Frage-/Regeltext ist unzulässig. Bound-content Mutationstest muss alten Save im neuen Package ablehnen. Kein implizites Truth-Roster als PublicView.</pre><h3>F04 — Vitrine Receiptpflicht widerspricht Session V1</h3><pre>OLD (VIT): requireReleasedProof:true; accuse{actor,evidenceRefs}; not_solved auch bei unzureichenden Belegen.
+NEW (falls Session V1 maßgeblich): requireReleasedProof entfernen; Event ist strikt accuse{literals}. Richtige vollständige bekannte Antwort darf initial solved liefern. BRIEF „Zitiere unabhängige entdeckte Nachweise…“ → „Untersuche die Nachweise und wähle den eigenhändigen Entnehmer. Die vollständige richtige Antwort schließt den Fall ab.“ Aussage not_solved unterscheidet unzureichende Belege entfernen; angepasste Caseabnahme/Expected-results neu binden.
+Diese NEW-Fassung ändert Gameplay, ist deshalb kein semantikerhaltender Kleinpatch und wird hier nicht als bereits gewählte Produktentscheidung ausgegeben. Bleibt die Belegpflicht maßgeblich, ist Session V1 dafür ausdrücklich unzureichend; kein verstecktes Gate ergänzen.</pre><h3>F05 — Required-only / enge Rollenfrage widersprüchlich</h3><pre>OLD M2 §15: „allowedClaims enthält Claims ohne Polarität, nie eine Required-only-Whitelist…“
+NEW: „allowedClaims enthält Claims ohne Gewinnpolarität. Verboten ist eine aus geheimen Required-Zielen oder Assignments abgeleitete Kandidatenauswahl. Gleichheit mit Required-Claimkeys ist zulässig, wenn die abgefragten Dimensionen vor Antwortwahl öffentlich und antwortunabhängig festgelegt sind; CH §6 entscheidet die Publicationprüfung.“
+OLD CH Rollenzeile: pauschal alle drei Rollenclaims pro Kandidat.
+NEW: „Bei einer offenen/all-roles Frage alle drei Rollenclaims pro öffentlich gewähltem Kandidaten. Eine vorab öffentlich festgelegte einzelne Rollen-/Ja-Nein-Frage fällt unter required_literals; alle öffentlichen Kandidaten für genau diese feste Dimension anbieten.“
+VIT/Proof/Questionanhang ausdrücklich required_literals, direct_actor für vier feste Kandidaten, keine identify_all_responsible-Deklaration.</pre><h3>F06 — Persistentes ask vs interrogate</h3><pre>OLD M5B §6: Persistiert ausschließlich {type:&quot;ask&quot;,npc:PlayerRef,questionId}.
+NEW: Session B besitzt das accepted Eventvokabular. Eine akzeptierte Befragung wird als {type:&quot;interrogate&quot;,npc:PlayerRef,questionId} gespeichert. Frageablehnung wird nicht gespeichert. Replay benutzt exakt dieses Event; ask ist nur Legacy-Scratch und kein V1-Alias. Bei decline/does_not_know existieren keine mentions; nur statement-bearing Variante erweitert Known.</pre><h3>F07 — Ref-Port / Known-Übersetzung beim Consumer fehlt exakt</h3><pre>OLD SB: pkg.refs bzw. „refs“ direkt an releaseEvidence/interrogate reichen.
+NEW SB: const translator = {caseId:pkg.truth.caseId, truthHash:hashCaseTruth(pkg.truth), refFor:pkg.refs.refFor}; den aktuellen unveränderlichen pkg.truthHash darf ein trusted vorgebundener Host äquivalent wiederverwenden. Für jeden prefix-KnownRef pkg.refs.resolve auflösen, kind/inverse prüfen und Canonical EntityRef[] an M3/M5B übergeben; nicht KnownEntity{ref,firstSeen}. M4 bekommt translator. M5B bekommt {truth,solution,snapshot,catalogue,profile,refs:translator,known:canonicalKnown,questionId}. Kein Clienttranslator. Missing/wrong binding ist HOST_FAILURE.</pre><h3>F08 — M2 no-throw für beliebiges JS unknown nicht erfüllt</h3><pre>OLD: wirft für keine unknown-Eingabe, inkl. Objekt mit Getter; safeParse wirft für keine Eingabe.
+NEW: No-throw gilt für unterstützte Plain-JSON-Werte; Runtime-untrusted Inputs kommen aus eigenem begrenztem JSON-Parse. Accessoren, Proxies, fremde Prototypen, Zyklen und fremder ausführbarer JS-Code sind keine unterstützte Schnittstelle. AC05/06 ersetzen Gettergarantie durch Plain-JSON-positive/negative Werte; trusted Host-Portexceptions behandelt Session außen als HOST_FAILURE. API claim:unknown bleibt erhalten, kein Sandboxclaim.</pre><h3>F09 — Quadratische Prefixarbeit durch wörtlichen Contract</h3><pre>OLD: B prüft Größe durch vollständiges C(envelope mit prospectiveEvents) pro Event; überall neue tief gefrorene Kopie.
+NEW: Normiert sind exakte prospective canonical UTF-8-Bytelänge, atomarer Commit und beobachtbare Unveränderlichkeit, NICHT Vollprefixserialisierung/-kopie pro Event. Frozen Subtrees dürfen geteilt werden. replaySession darf einen privaten Working-State benutzen, wenn Übergänge/Outputs/Limits/Errorpriorität genau reduceSession entsprechen; veröffentlichte Snapshots und Endstate bleiben immutable und caller Inputs unmutiert.
+Exakte Größenäquivalenz: B0=UTF8Length(C({schemaVersion:1,packageIdentity:pkg.identity,events:[],checksum:&quot;0&quot;.repeat(64)})). Für n Events: B=B0+ΣUTF8Length(C(event_i))+max(0,n−1). Keine Rundung/Approximation; rejected event ändert B nicht. Encode behält Replay-/Derivedvergleich und serialisiert den endgültigen Body. Differential Prefixchecks gegen Vollserialisierung genügen; kein neuer persistierter Cacheowner.</pre><h3>F10 — Finale Public-Loadfehler-Allowlist offen</h3><pre>OLD: Decoder-Union kann vom Transport beliebig weitergereicht werden.
+NEW: decodeSessionSave bleibt trusted Host-API. Playerfacade konstruiert exakt success-Output oder einen konstanten generischen SAVE_UNAVAILABLE-Fehler für jede nicht erfolgreiche Lade-/Replayoperation. Keine eventIndex-, checksum-, packagecomponent-, Zod-, ID- oder Proofdiagnose öffentlich. Detaillierte Codes bleiben im privaten Hostlog; HOST_FAILURE wird niemals not_solved. Autoritative Publiccodekonstante im Sessiontransportanhang wählen, keine Änderung an innerer Decodersemantik.</pre><h3>F11 — Vitrine aktuelle Release-/Save-Kompatibilität fehlt</h3><pre>OLD: Alte card{title,observations[type:observed,value]} / commands-Save / provisional refs gelten als aktueller Witness.
+NEW: Finale Casefassung besitzt gültige M4.entries/mentions/reports, finalen CH-Anhang, final gebundene Ref-/Public-/Zertifikatsdaten und SessionEvent-Trace. Aktionsabbildung explizit: search→investigate/search_location; read_record→investigate/examine_item; ask→interrogate. accuse folgt F04. Startbrief ausschließlich aus ausdrücklich freigegebenen Initialdaten; Evidencekarten nach öffentlichem Ref statt canonical ID. Erst dieser Trace kann current-contract Witness sein; alter Scratch-PASS bleibt historische Evidenz.</pre><h3>F12 — Eine finale Textautorität für Session-Split fehlt</h3><pre>OLD: Drei gemeinsame Semantikblöcke gelten normativ ohne priorisierten Owner; CH nennt älteren M2-Hash.
+NEW: SA besitzt Packageidentity/JSONprofil/PlayerKnowledge (§§2–3 und Packagehelper); SB besitzt Events/Transition/Terminal/Replay/Sessionlimits (§§4–7 und zugehörige Limits); SC besitzt Savewire/Checksum/Decode/Compatibility (§§8–9 und Savegrenzen). Gleichlautende Kopien in anderen Dateien sind informativ; Konflikt erfordert Revision, keinen stillen Vorrang zur Runtime. §10-Publicboundary gehört zum expliziten Hostanhang. Finale Texte über genaue Inhaltshashes pinnen; CH Basishash auf gewählten M2-Candidate aktualisieren. acceptedCommit:null bleibt bis tatsächlicher Annahme, keinen Commit erfinden.</pre><p>F12 wird ausdrücklich nicht als NO-GO-Grund verwendet: identische normative Kopien sind aktuell semantisch eine Autorität; der alte CH-Basishash ist als Herkunftspin erkennbar. Die vorgeschlagene Ein-Owner-Regel verhindert künftigen Drift, sie repariert keinen heute belegten Gameplaykonflikt. Nicht blockierend: keine production implementation heute; fehlender Blindtest/Funbeweis; optionale Autorendiagnose-/Editorqualität; bewusst fehlende Online-/Anti-Cheat-/Migrationfeatures; O(n²)-Stellen im vorhandenen Worldvalidator innerhalb gewählter endlicher Slicebudgets; nichtkanonische Voransichten; getrennte M4/M5B.PlayerClaim-Namen ohne unqualifizierten Barrel. Keine neue Feature-Roadmap erforderlich.</p></section><section id="s14"><h2>14. Final Verdict</h2><div class="verdict">NO-GO</div><p>Antwort auf die einzige Zielfrage: NEIN. Die tatsächlich verfügbare Mystery-Architektur ist nach den belegten Repairs noch nicht vollständig freeze-ready. Das entscheidende Problem ist die offene normative Integration: vollständiger M1, exact Release→Proof/Public-Rule/Witnesscontract und gebundener öffentlicher Fallinhalt fehlen; Vitrine und Session wollen unterschiedliche Siegbedingungen. Deshalb wäre FREEZE READY WITH SMALL REPAIRS derzeit zu stark.</p><p>M2 Core/CH-Exactness, M3 Discovery, M4 Report-Release, M5 Authoring/Commitment und bounded SOL-Proof bilden eine nachvollziehbare Grundlage. Session A/B/C schließt Eventautorität, Ableitung, Terminalität und große Teile von Save/Identity. Genau diese belastbaren Grenzen erlauben endliche Repairs statt eines Architekturwechsels. Sie ersetzen aber keine fehlenden Originale und entscheiden den Belegpflichtkonflikt nicht.</p><p>Freeze kann erst neu bewertet werden, wenn F01–F04/F11 durch ausgewählte finale Originale geschlossen und die präzisen F05–F10-Korrekturen konsistent übernommen sind. F12 ist redaktionelle Pflege und verändert das Verdict nicht. Kein Commit, neue Featureplanung oder Implementierung wurde in diesem Auftrag ausgelöst. STOP.</p><details><summary>Quellenregister — Originalbytes und Scope</summary><div class="scroll"><table><thead><tr><th>Kurzquelle</th><th>Originaldatei</th><th>SHA-256 der lokalen Originalbytes</th></tr></thead><tbody><tr><td>M2</td><td>MYST-0002.contract.FINAL-CANDIDATE.md</td><td>f8f72fa58115fec37b1994c551a697470fd29a87d627736a2060b85a8708b84c</td></tr><tr><td>M3</td><td>MYST-0003-EVIDENCE-ACCESS-V1.contract.DRAFT.md</td><td>dd39b7fc8c36eab5745f6b1c9ba505f3e7595bd22d6dbc99c62e4c89a6c84f35</td></tr><tr><td>M4</td><td>MYST-0004-EVIDENCE-PRESENTATION-V1.contract.DRAFT.md</td><td>6a2e155f7767f9cc09ba5324fa0e5cd2913826a2b5b3c6801b33d8136d992973</td></tr><tr><td>M5A</td><td>MYST-0005A-INTERROGATION-AUTHORING-V1.contract.DRAFT.md</td><td>fc4c7a633ccd88082b38ba1ebad4fed1e835a9e6c7cf62ea34c6ec66db123e0e</td></tr><tr><td>M5B</td><td>MYST-0005B-INTERROGATION-RELEASE-V1.contract.DRAFT.md</td><td>abcb3a4879dbf19de1d32f9fd5be898b207995219cedd8364b4cf7afc4f6a180</td></tr><tr><td>CH</td><td>MYST-CHALLENGE-0001.contract.DRAFT.md</td><td>9888f9b55da5955eb161014c5f34a74ee9e4ce65483007f5adc9b397686f58f4</td></tr><tr><td>SOL</td><td>MYST-SOLVABILITY-0001.contract.DRAFT.md</td><td>06b0e5f2774d22ce520ef6787e91c8b84ed6907983cfee2d0f0d3432391e09d8</td></tr><tr><td>SA</td><td>MYST-SESSION-0001A.contract.DRAFT.md</td><td>060f3fc65fc1a8064f351f79a9ff90f51c5a614904abf28fd5f47a0b497bc394</td></tr><tr><td>SB</td><td>MYST-SESSION-0001B.contract.DRAFT.md</td><td>3550a9df80c8f595b0b459133a1f9d2fde3643fe6d30f22e525a67dbc18c7251</td></tr><tr><td>SC</td><td>MYST-SESSION-0001C.contract.DRAFT.md</td><td>6263e005e637bc57f15bdac21e8dd1abb22ece34fbf831573c370d5e213e3205</td></tr><tr><td>INFO</td><td>MYSTERY-INFORMATION-FLOW-REPORT.html</td><td>53c38b83f6eabfc58cd4805d926fa9197fe95a3ba4d3d54eb6ca4e976c48f8ad</td></tr><tr><td>SCALE</td><td>MYSTERY-SCALE-COMPLEXITY-REPORT.html</td><td>667ded6e26dd5627bfd046a051baa124629f9d9ed9e6b17d9c50ee063e72753b</td></tr><tr><td>CROSS</td><td>MYSTERY-CROSS-CONTRACT-CONSISTENCY-REPORT.html</td><td>8721d86db5a64d0f3f61b62aa7c2ba02801b0d159dcb2a4c706e26077315f88d</td></tr><tr><td>CERT</td><td>DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION.html</td><td>59725aa2639b6de4cdbf2735ac9b95b044b66849426a71a7369dad6fa19d5150</td></tr><tr><td>VIT</td><td>DIE-LEERE-VITRINE-CASE-PACK.zip</td><td>fddfdb4c1d4ad1c90fa14beb11f8e087cb1916ed3907d9b9da6565f4cb2bdfd7</td></tr><tr><td>VSPEC</td><td>DIE-LEERE-VITRINE-HEADLESS-SPEC.html</td><td>d5e894ecd1734b3c72c7f0b369f89315e1b25fd8d9f9ba4f6542ae5c447fd418</td></tr><tr><td>BRIEF</td><td>DIE-LEERE-VITRINE-PLAYER-BRIEF.html</td><td>954bf39433fc6dac397fcb19bebec32d435e823347c9486bd883366114b72fdc</td></tr><tr><td>AUTHOR</td><td>MYSTERY_CASE_AUTHORING_STRESS_REPORT.pdf</td><td>a1583b41aac02233681c0e91203f3d134df52f62860029c25ad63881c25db9d0</td></tr></tbody></table></div><p>Repositorydateien wurden über fixierte Commit-URLs vollständig für den relevanten Domainkern heruntergeladen; Blob-SHAs sind im vollständigen Tree verankert. Das gepinnte main hat seven domain files, die hier vollständig gelesen wurden. Die Testzahlen anderer Labs bleiben deren historische Resultate. Keine externe Bibliotheksinstallation oder Produktionssuite als eigener Testlauf behauptet.</p><p>Neu ausgeführte unabhängige Proben: Originalhostdefinitionen bis vor scenarios[] geladen, ohne dessen Generator-/Writebackteil auszuführen. Private probe.py/probe-results.json liegen im Scratchprüfverzeichnis. Die drei Session-Gemeinschaftsblöcke wurden bitgleich verglichen. Verfügbare normative Draftkopien in den verschiedenen Evidenzarchiven besitzen jeweils identische Raw-SHA-256; kein versteckter neuerer Contract wurde darin gefunden.</p><details><summary>Eigene Probe-Ergebnisse (privat)</summary><pre>[
+  {
+    &quot;name&quot;: &quot;original-host-early-correct-guess&quot;,
+    &quot;result&quot;: {
+      &quot;success&quot;: true,
+      &quot;verdict&quot;: &quot;not_solved&quot;
+    },
+    &quot;scope&quot;: &quot;Original archived host, no invented production API. Session §6 specifies solved for the complete correct known-ref answer without receipt.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;original-host-five-action-witness&quot;,
+    &quot;result&quot;: {
+      &quot;trace&quot;: [
+        {
+          &quot;event&quot;: {
+            &quot;type&quot;: &quot;search&quot;,
+            &quot;target&quot;: &quot;pr1_khxvnbrm8atv0q51&quot;
+          },
+          &quot;output&quot;: {
+            &quot;success&quot;: true,
+            &quot;evidence&quot;: [
+              {
+                &quot;ref&quot;: &quot;pr1_2fnb64crterj75r4&quot;,
+                &quot;title&quot;: &quot;Kontaktbogen&quot;,
+                &quot;text&quot;: &quot;Nora ist auf einem undatierten Kontaktbogen des Hoffototermins erkennbar. Frage sie nach dem vollständigen Fotonachweis.&quot;,
+                &quot;observations&quot;: [
+                  {
+                    &quot;type&quot;: &quot;observed&quot;,
+                    &quot;statement&quot;: {
+                      &quot;kind&quot;: &quot;eventHasParticipant&quot;,
+                      &quot;event&quot;: &quot;pr1_twzwjy71btn3afk2&quot;,
+                      &quot;person&quot;: &quot;pr1_w0xdq30wrnz5vpxq&quot;
+                    },
+                    &quot;value&quot;: true
+                  }
+                ],
+                &quot;mentions&quot;: [
+                  {
+                    &quot;kind&quot;: &quot;event&quot;,
+                    &quot;ref&quot;: &quot;pr1_twzwjy71btn3afk2&quot;
+                  },
+                  {
+                    &quot;kind&quot;: &quot;person&quot;,
+                    &quot;ref&quot;: &quot;pr1_w0xdq30wrnz5vpxq&quot;
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          &quot;event&quot;: {
+            &quot;type&quot;: &quot;ask&quot;,
+            &quot;npc&quot;: &quot;pr1_w0xdq30wrnz5vpxq&quot;,
+            &quot;questionId&quot;: &quot;question:q08&quot;
+          },
+          &quot;output&quot;: {
+            &quot;success&quot;: true,
+            &quot;observation&quot;: {
+              &quot;schemaVersion&quot;: 1,
+              &quot;npc&quot;: &quot;pr1_w0xdq30wrnz5vpxq&quot;,
+              &quot;questionId&quot;: &quot;question:q08&quot;,
+              &quot;act&quot;: &quot;answer&quot;,
+              &quot;stance&quot;: &quot;affirms&quot;,
+              &quot;statement&quot;: {
+                &quot;kind&quot;: &quot;eventHasItem&quot;,
+                &quot;event&quot;: &quot;pr1_twzwjy71btn3afk2&quot;,
+                &quot;item&quot;: &quot;pr1_t5pajf09f2dprwz6&quot;
+              },
+              &quot;mentions&quot;: [
+                {
+                  &quot;kind&quot;: &quot;item&quot;,
+                  &quot;ref&quot;: &quot;pr1_t5pajf09f2dprwz6&quot;
+                },
+                {
+                  &quot;kind&quot;: &quot;event&quot;,
+                  &quot;ref&quot;: &quot;pr1_twzwjy71btn3afk2&quot;
+                }
+              ]
+            }
+          }
+        },
+        {
+          &quot;event&quot;: {
+            &quot;type&quot;: &quot;read_record&quot;,
+            &quot;target&quot;: &quot;pr1_t5pajf09f2dprwz6&quot;
+          },
+          &quot;output&quot;: {
+            &quot;success&quot;: true,
+            &quot;evidence&quot;: [
+              {
+                &quot;ref&quot;: &quot;pr1_njyfj86bntb8be1x&quot;,
+                &quot;title&quot;: &quot;Vollständiger Hoffilm&quot;,
+                &quot;text&quot;: &quot;Vollständiger Kamerafilm zeigt Max und Nora um 18:04:00 im Hof.&quot;,
+                &quot;observations&quot;: [
+                  {
+                    &quot;type&quot;: &quot;observed&quot;,
+                    &quot;statement&quot;: {
+                      &quot;kind&quot;: &quot;personAt&quot;,
+                      &quot;person&quot;: &quot;pr1_5532yfw071bsb5mj&quot;,
+                      &quot;location&quot;: &quot;pr1_khxvnbrm8atv0q51&quot;,
+                      &quot;at&quot;: 240
+                    },
+                    &quot;value&quot;: true
+                  },
+                  {
+                    &quot;type&quot;: &quot;observed&quot;,
+                    &quot;statement&quot;: {
+                      &quot;kind&quot;: &quot;personAt&quot;,
+                      &quot;person&quot;: &quot;pr1_w0xdq30wrnz5vpxq&quot;,
+                      &quot;location&quot;: &quot;pr1_khxvnbrm8atv0q51&quot;,
+                      &quot;at&quot;: 240
+                    },
+                    &quot;value&quot;: true
+                  }
+                ],
+                &quot;mentions&quot;: [
+                  {
+                    &quot;kind&quot;: &quot;person&quot;,
+                    &quot;ref&quot;: &quot;pr1_5532yfw071bsb5mj&quot;
+                  },
+                  {
+                    &quot;kind&quot;: &quot;location&quot;,
+                    &quot;ref&quot;: &quot;pr1_khxvnbrm8atv0q51&quot;
+                  },
+                  {
+                    &quot;kind&quot;: &quot;person&quot;,
+                    &quot;ref&quot;: &quot;pr1_w0xdq30wrnz5vpxq&quot;
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          &quot;event&quot;: {
+            &quot;type&quot;: &quot;ask&quot;,
+            &quot;npc&quot;: &quot;pr1_hg6wcpcdahfmwmqg&quot;,
+            &quot;questionId&quot;: &quot;question:q14&quot;
+          },
+          &quot;output&quot;: {
+            &quot;success&quot;: true,
+            &quot;observation&quot;: {
+              &quot;schemaVersion&quot;: 1,
+              &quot;npc&quot;: &quot;pr1_hg6wcpcdahfmwmqg&quot;,
+              &quot;questionId&quot;: &quot;question:q14&quot;,
+              &quot;act&quot;: &quot;answer&quot;,
+              &quot;stance&quot;: &quot;affirms&quot;,
+              &quot;statement&quot;: {
+                &quot;kind&quot;: &quot;eventHasItem&quot;,
+                &quot;event&quot;: &quot;pr1_dexr3fgjkm5fezvy&quot;,
+                &quot;item&quot;: &quot;pr1_6k5f334zgfnz19m6&quot;
+              },
+              &quot;mentions&quot;: [
+                {
+                  &quot;kind&quot;: &quot;item&quot;,
+                  &quot;ref&quot;: &quot;pr1_6k5f334zgfnz19m6&quot;
+                },
+                {
+                  &quot;kind&quot;: &quot;event&quot;,
+                  &quot;ref&quot;: &quot;pr1_dexr3fgjkm5fezvy&quot;
+                }
+              ]
+            }
+          }
+        },
+        {
+          &quot;event&quot;: {
+            &quot;type&quot;: &quot;read_record&quot;,
+            &quot;target&quot;: &quot;pr1_6k5f334zgfnz19m6&quot;
+          },
+          &quot;output&quot;: {
+            &quot;success&quot;: true,
+            &quot;evidence&quot;: [
+              {
+                &quot;ref&quot;: &quot;pr1_1fhve1k1swnvjn8p&quot;,
+                &quot;title&quot;: &quot;Archivaufnahme&quot;,
+                &quot;text&quot;: &quot;Archivkamera zeigt Oskar um 18:04:00 im Archiv.&quot;,
+                &quot;observations&quot;: [
+                  {
+                    &quot;type&quot;: &quot;observed&quot;,
+                    &quot;statement&quot;: {
+                      &quot;kind&quot;: &quot;personAt&quot;,
+                      &quot;person&quot;: &quot;pr1_hg6wcpcdahfmwmqg&quot;,
+                      &quot;location&quot;: &quot;pr1_6pjbg2prahwqpy0y&quot;,
+                      &quot;at&quot;: 240
+                    },
+                    &quot;value&quot;: true
+                  }
+                ],
+                &quot;mentions&quot;: [
+                  {
+                    &quot;kind&quot;: &quot;location&quot;,
+                    &quot;ref&quot;: &quot;pr1_6pjbg2prahwqpy0y&quot;
+                  },
+                  {
+                    &quot;kind&quot;: &quot;person&quot;,
+                    &quot;ref&quot;: &quot;pr1_hg6wcpcdahfmwmqg&quot;
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          &quot;event&quot;: {
+            &quot;type&quot;: &quot;accuse&quot;,
+            &quot;actor&quot;: &quot;pr1_4hapw0ynks68m4ng&quot;,
+            &quot;evidenceRefs&quot;: [
+              &quot;pr1_njyfj86bntb8be1x&quot;,
+              &quot;pr1_1fhve1k1swnvjn8p&quot;
+            ]
+          },
+          &quot;output&quot;: {
+            &quot;success&quot;: true,
+            &quot;verdict&quot;: &quot;solved&quot;
+          }
+        }
+      ],
+      &quot;phase&quot;: &quot;solved&quot;
+    },
+    &quot;scope&quot;: &quot;Original archived host only. Contains old observed DTO and citation gate; not an M4/Session conformance witness.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;false-npc-belief-output&quot;,
+    &quot;result&quot;: {
+      &quot;success&quot;: true,
+      &quot;observation&quot;: {
+        &quot;schemaVersion&quot;: 1,
+        &quot;npc&quot;: &quot;pr1_hg6wcpcdahfmwmqg&quot;,
+        &quot;questionId&quot;: &quot;question:q12&quot;,
+        &quot;act&quot;: &quot;answer&quot;,
+        &quot;stance&quot;: &quot;affirms&quot;,
+        &quot;statement&quot;: {
+          &quot;kind&quot;: &quot;personAt&quot;,
+          &quot;person&quot;: &quot;pr1_5532yfw071bsb5mj&quot;,
+          &quot;location&quot;: &quot;pr1_agd9et349nh7sefp&quot;,
+          &quot;at&quot;: 240
+        },
+        &quot;mentions&quot;: [
+          {
+            &quot;kind&quot;: &quot;person&quot;,
+            &quot;ref&quot;: &quot;pr1_5532yfw071bsb5mj&quot;
+          },
+          {
+            &quot;kind&quot;: &quot;location&quot;,
+            &quot;ref&quot;: &quot;pr1_agd9et349nh7sefp&quot;
+          }
+        ]
+      }
+    },
+    &quot;scope&quot;: &quot;Original archived host; affirms is retained as report, not a proof seed.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;report-only-proof&quot;,
+    &quot;result&quot;: {
+      &quot;facts&quot;: {},
+      &quot;trace&quot;: [],
+      &quot;survivingVectors&quot;: [
+        [
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          true
+        ],
+        [
+          false,
+          false,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          true,
+          true
+        ],
+        [
+          false,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          true,
+          false,
+          true
+        ],
+        [
+          false,
+          true,
+          true,
+          false
+        ],
+        [
+          false,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          true
+        ],
+        [
+          true,
+          false,
+          true,
+          false
+        ],
+        [
+          true,
+          false,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          true,
+          true,
+          false,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      &quot;pass_&quot;: false
+    },
+    &quot;scope&quot;: &quot;Original authored finite proof, no evidence found.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;misleading-true-visit-proof&quot;,
+    &quot;result&quot;: {
+      &quot;facts&quot;: {},
+      &quot;trace&quot;: [],
+      &quot;survivingVectors&quot;: [
+        [
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          true
+        ],
+        [
+          false,
+          false,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          true,
+          true
+        ],
+        [
+          false,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          true,
+          false,
+          true
+        ],
+        [
+          false,
+          true,
+          true,
+          false
+        ],
+        [
+          false,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          true
+        ],
+        [
+          true,
+          false,
+          true,
+          false
+        ],
+        [
+          true,
+          false,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          true,
+          true,
+          false,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      &quot;pass_&quot;: false
+    },
+    &quot;scope&quot;: &quot;Original authored finite proof; true earlier presence proves no direct role.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;uncertain-npc-output&quot;,
+    &quot;result&quot;: {
+      &quot;success&quot;: true,
+      &quot;observation&quot;: {
+        &quot;schemaVersion&quot;: 1,
+        &quot;npc&quot;: &quot;pr1_w0xdq30wrnz5vpxq&quot;,
+        &quot;questionId&quot;: &quot;question:q10&quot;,
+        &quot;act&quot;: &quot;answer&quot;,
+        &quot;stance&quot;: &quot;uncertain&quot;,
+        &quot;statement&quot;: {
+          &quot;kind&quot;: &quot;personAt&quot;,
+          &quot;person&quot;: &quot;pr1_4hapw0ynks68m4ng&quot;,
+          &quot;location&quot;: &quot;pr1_agd9et349nh7sefp&quot;,
+          &quot;at&quot;: 240
+        },
+        &quot;mentions&quot;: [
+          {
+            &quot;kind&quot;: &quot;person&quot;,
+            &quot;ref&quot;: &quot;pr1_4hapw0ynks68m4ng&quot;
+          },
+          {
+            &quot;kind&quot;: &quot;location&quot;,
+            &quot;ref&quot;: &quot;pr1_agd9et349nh7sefp&quot;
+          }
+        ]
+      }
+    },
+    &quot;scope&quot;: &quot;Original archived host; uncertainty has no Boolean proof conversion.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;conflicting-reports&quot;,
+    &quot;result&quot;: {
+      &quot;outputs&quot;: [
+        {
+          &quot;success&quot;: true,
+          &quot;observation&quot;: {
+            &quot;schemaVersion&quot;: 1,
+            &quot;npc&quot;: &quot;pr1_hg6wcpcdahfmwmqg&quot;,
+            &quot;questionId&quot;: &quot;question:q12&quot;,
+            &quot;act&quot;: &quot;answer&quot;,
+            &quot;stance&quot;: &quot;affirms&quot;,
+            &quot;statement&quot;: {
+              &quot;kind&quot;: &quot;personAt&quot;,
+              &quot;person&quot;: &quot;pr1_5532yfw071bsb5mj&quot;,
+              &quot;location&quot;: &quot;pr1_agd9et349nh7sefp&quot;,
+              &quot;at&quot;: 240
+            },
+            &quot;mentions&quot;: [
+              {
+                &quot;kind&quot;: &quot;person&quot;,
+                &quot;ref&quot;: &quot;pr1_5532yfw071bsb5mj&quot;
+              },
+              {
+                &quot;kind&quot;: &quot;location&quot;,
+                &quot;ref&quot;: &quot;pr1_agd9et349nh7sefp&quot;
+              }
+            ]
+          }
+        },
+        {
+          &quot;success&quot;: true,
+          &quot;observation&quot;: {
+            &quot;schemaVersion&quot;: 1,
+            &quot;npc&quot;: &quot;pr1_5532yfw071bsb5mj&quot;,
+            &quot;questionId&quot;: &quot;question:q02&quot;,
+            &quot;act&quot;: &quot;answer&quot;,
+            &quot;stance&quot;: &quot;denies&quot;,
+            &quot;statement&quot;: {
+              &quot;kind&quot;: &quot;personAt&quot;,
+              &quot;person&quot;: &quot;pr1_5532yfw071bsb5mj&quot;,
+              &quot;location&quot;: &quot;pr1_agd9et349nh7sefp&quot;,
+              &quot;at&quot;: 240
+            },
+            &quot;mentions&quot;: [
+              {
+                &quot;kind&quot;: &quot;person&quot;,
+                &quot;ref&quot;: &quot;pr1_5532yfw071bsb5mj&quot;
+              },
+              {
+                &quot;kind&quot;: &quot;location&quot;,
+                &quot;ref&quot;: &quot;pr1_agd9et349nh7sefp&quot;
+              }
+            ]
+          }
+        }
+      ],
+      &quot;journal&quot;: [
+        {
+          &quot;type&quot;: &quot;reported&quot;,
+          &quot;observation&quot;: {
+            &quot;schemaVersion&quot;: 1,
+            &quot;npc&quot;: &quot;pr1_hg6wcpcdahfmwmqg&quot;,
+            &quot;questionId&quot;: &quot;question:q12&quot;,
+            &quot;act&quot;: &quot;answer&quot;,
+            &quot;stance&quot;: &quot;affirms&quot;,
+            &quot;statement&quot;: {
+              &quot;kind&quot;: &quot;personAt&quot;,
+              &quot;person&quot;: &quot;pr1_5532yfw071bsb5mj&quot;,
+              &quot;location&quot;: &quot;pr1_agd9et349nh7sefp&quot;,
+              &quot;at&quot;: 240
+            },
+            &quot;mentions&quot;: [
+              {
+                &quot;kind&quot;: &quot;person&quot;,
+                &quot;ref&quot;: &quot;pr1_5532yfw071bsb5mj&quot;
+              },
+              {
+                &quot;kind&quot;: &quot;location&quot;,
+                &quot;ref&quot;: &quot;pr1_agd9et349nh7sefp&quot;
+              }
+            ]
+          }
+        },
+        {
+          &quot;type&quot;: &quot;reported&quot;,
+          &quot;observation&quot;: {
+            &quot;schemaVersion&quot;: 1,
+            &quot;npc&quot;: &quot;pr1_5532yfw071bsb5mj&quot;,
+            &quot;questionId&quot;: &quot;question:q02&quot;,
+            &quot;act&quot;: &quot;answer&quot;,
+            &quot;stance&quot;: &quot;denies&quot;,
+            &quot;statement&quot;: {
+              &quot;kind&quot;: &quot;personAt&quot;,
+              &quot;person&quot;: &quot;pr1_5532yfw071bsb5mj&quot;,
+              &quot;location&quot;: &quot;pr1_agd9et349nh7sefp&quot;,
+              &quot;at&quot;: 240
+            },
+            &quot;mentions&quot;: [
+              {
+                &quot;kind&quot;: &quot;person&quot;,
+                &quot;ref&quot;: &quot;pr1_5532yfw071bsb5mj&quot;
+              },
+              {
+                &quot;kind&quot;: &quot;location&quot;,
+                &quot;ref&quot;: &quot;pr1_agd9et349nh7sefp&quot;
+              }
+            ]
+          }
+        }
+      ],
+      &quot;proof&quot;: {
+        &quot;facts&quot;: {},
+        &quot;trace&quot;: [],
+        &quot;survivingVectors&quot;: [
+          [
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            true
+          ],
+          [
+            false,
+            false,
+            true,
+            false
+          ],
+          [
+            false,
+            false,
+            true,
+            true
+          ],
+          [
+            false,
+            true,
+            false,
+            false
+          ],
+          [
+            false,
+            true,
+            false,
+            true
+          ],
+          [
+            false,
+            true,
+            true,
+            false
+          ],
+          [
+            false,
+            true,
+            true,
+            true
+          ],
+          [
+            true,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            true
+          ],
+          [
+            true,
+            false,
+            true,
+            false
+          ],
+          [
+            true,
+            false,
+            true,
+            true
+          ],
+          [
+            true,
+            true,
+            false,
+            false
+          ],
+          [
+            true,
+            true,
+            false,
+            true
+          ],
+          [
+            true,
+            true,
+            true,
+            false
+          ],
+          [
+            true,
+            true,
+            true,
+            true
+          ]
+        ],
+        &quot;pass_&quot;: false
+      }
+    },
+    &quot;scope&quot;: &quot;Original archived host; same claim affirms and denies both remain received records.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;hidden-person-in-initial-brief&quot;,
+    &quot;result&quot;: {
+      &quot;before&quot;: 4,
+      &quot;after&quot;: 5,
+      &quot;leakedEntry&quot;: {
+        &quot;ref&quot;: &quot;pr1_0000000000000000&quot;,
+        &quot;name&quot;: &quot;Hidden test person&quot;,
+        &quot;role&quot;: &quot;Unreleased role&quot;
+      },
+      &quot;inInitialKnown&quot;: false
+    },
+    &quot;scope&quot;: &quot;Direct local original-host boundary probe, fixed aliases to isolate release logic. No claim of a rebound semantically playable twin.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;canonical-id-order-enters-public-cards&quot;,
+    &quot;result&quot;: {
+      &quot;before&quot;: [
+        &quot;Der Besucherstempel bestätigt: Max war um 18:02 in der Galerie. Über den Zeitpunkt 18:04 sagt der Stempel nichts.&quot;,
+        &quot;Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität.&quot;
+      ],
+      &quot;after&quot;: [
+        &quot;Authentifizierter Entnahmesensor meldet 18:04:00; zeigt keine Identität.&quot;,
+        &quot;Der Besucherstempel bestätigt: Max war um 18:02 in der Galerie. Über den Zeitpunkt 18:04 sagt der Stempel nichts.&quot;
+      ]
+    },
+    &quot;scope&quot;: &quot;Direct original-host rename probe with preserved aliases/text; no whole package binding claim.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;session-shared-semantics-byte-equality&quot;,
+    &quot;result&quot;: true,
+    &quot;scope&quot;: &quot;Exact common sections in three original drafts; does not assign a single owner by itself.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;session-empty-save-golden&quot;,
+    &quot;result&quot;: {
+      &quot;hash&quot;: &quot;58a1857b0b76ba1f342237261c2d4c9877f7cc7bb2a78c116d8e1ecebdc6875f&quot;,
+      &quot;matches&quot;: true
+    },
+    &quot;scope&quot;: &quot;Independent hashlib check of published empty-vector ASCII bytes; not a complete codec implementation.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;literal-prospective-size-work&quot;,
+    &quot;result&quot;: [
+      {
+        &quot;events&quot;: 128,
+        &quot;eventOccurrencesSerialized&quot;: 8256,
+        &quot;incrementalOccurrences&quot;: 128
+      },
+      {
+        &quot;events&quot;: 256,
+        &quot;eventOccurrencesSerialized&quot;: 32896,
+        &quot;incrementalOccurrences&quot;: 256
+      },
+      {
+        &quot;events&quot;: 512,
+        &quot;eventOccurrencesSerialized&quot;: 131328,
+        &quot;incrementalOccurrences&quot;: 512
+      }
+    ],
+    &quot;scope&quot;: &quot;Exact operation count for full prospective-envelope serialization after every accepted event; no timing benchmark.&quot;
+  },
+  {
+    &quot;name&quot;: &quot;original-artifact-inventory&quot;,
+    &quot;result&quot;: [
+      {
+        &quot;name&quot;: &quot;DIE-LEERE-VITRINE-CASE-PACK.zip&quot;,
+        &quot;bytes&quot;: 160417,
+        &quot;sha256&quot;: &quot;fddfdb4c1d4ad1c90fa14beb11f8e087cb1916ed3907d9b9da6565f4cb2bdfd7&quot;
+      },
+      {
+        &quot;name&quot;: &quot;DIE-LEERE-VITRINE-CERT-EVIDENCE.zip&quot;,
+        &quot;bytes&quot;: 1927785,
+        &quot;sha256&quot;: &quot;05790f1214803b03e9b17797f604db0e3551d41794286ab3f650d9f952a815fe&quot;
+      },
+      {
+        &quot;name&quot;: &quot;DIE-LEERE-VITRINE-HEADLESS-SPEC.html&quot;,
+        &quot;bytes&quot;: 65626,
+        &quot;sha256&quot;: &quot;d5e894ecd1734b3c72c7f0b369f89315e1b25fd8d9f9ba4f6542ae5c447fd418&quot;
+      },
+      {
+        &quot;name&quot;: &quot;DIE-LEERE-VITRINE-PLAYER-BRIEF.html&quot;,
+        &quot;bytes&quot;: 4742,
+        &quot;sha256&quot;: &quot;954bf39433fc6dac397fcb19bebec32d435e823347c9486bd883366114b72fdc&quot;
+      },
+      {
+        &quot;name&quot;: &quot;DIE-LEERE-VITRINE-PROOF-PROFILE.json&quot;,
+        &quot;bytes&quot;: 5910,
+        &quot;sha256&quot;: &quot;c052e467cf22fb72791ee82c033dd93f81458994eca2ac6b2fb091a42550963c&quot;
+      },
+      {
+        &quot;name&quot;: &quot;DIE-LEERE-VITRINE-SOLVABILITY-CERTIFICATION.html&quot;,
+        &quot;bytes&quot;: 76115,
+        &quot;sha256&quot;: &quot;59725aa2639b6de4cdbf2735ac9b95b044b66849426a71a7369dad6fa19d5150&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0002-ACCUSATION-VERDICT-PACKAGE.md&quot;,
+        &quot;bytes&quot;: 16740,
+        &quot;sha256&quot;: &quot;1012fba1b99d8a6bb75ae28d9c0190099b7f38f64b4d460872a498e5940b6fd2&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0002-ACCUSATION-VERDICT-V1.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 35954,
+        &quot;sha256&quot;: &quot;8822470ba5fe2c5959d7f113991e2dc3731b9770393ade234e6899915d5e663c&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0002-REPAIR-EVIDENCE.zip&quot;,
+        &quot;bytes&quot;: 16335,
+        &quot;sha256&quot;: &quot;e0254f7ba374e08a61aa8fdd633c7a2fe5167a0db690b05b2c47a21cd75e4bca&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0002-REPAIR-REPORT.md&quot;,
+        &quot;bytes&quot;: 15637,
+        &quot;sha256&quot;: &quot;582d19e7229a3e24c2b12e25fd8a2d34f1a16704d37114576a1bc6875b49c154&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0002.contract.FINAL-CANDIDATE.md&quot;,
+        &quot;bytes&quot;: 42994,
+        &quot;sha256&quot;: &quot;f8f72fa58115fec37b1994c551a697470fd29a87d627736a2060b85a8708b84c&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0003-EVIDENCE-ACCESS-PACKAGE.md&quot;,
+        &quot;bytes&quot;: 33573,
+        &quot;sha256&quot;: &quot;c156256da7e1a63a41bb909be6ee138092cac23142428ffb5f04ca8de12646f8&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0003-EVIDENCE-ACCESS-V1.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 34480,
+        &quot;sha256&quot;: &quot;dd39b7fc8c36eab5745f6b1c9ba505f3e7595bd22d6dbc99c62e4c89a6c84f35&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0004-EVIDENCE-PRESENTATION-PACKAGE.md&quot;,
+        &quot;bytes&quot;: 28957,
+        &quot;sha256&quot;: &quot;cfe9674c108bad73cdcb0e4c16917720c59a55cafe460c317578b12830a0240d&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0004-EVIDENCE-PRESENTATION-V1.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 44015,
+        &quot;sha256&quot;: &quot;6a2e155f7767f9cc09ba5324fa0e5cd2913826a2b5b3c6801b33d8136d992973&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0005-INTERROGATION-PACKAGE.md&quot;,
+        &quot;bytes&quot;: 39115,
+        &quot;sha256&quot;: &quot;811be18c8362d261552e64e2a6e6cdf811e00504ee22b9904ae9766c0b6ca149&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0005A-INTERROGATION-AUTHORING-V1.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 22611,
+        &quot;sha256&quot;: &quot;fc4c7a633ccd88082b38ba1ebad4fed1e835a9e6c7cf62ea34c6ec66db123e0e&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-0005B-INTERROGATION-RELEASE-V1.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 27720,
+        &quot;sha256&quot;: &quot;abcb3a4879dbf19de1d32f9fd5be898b207995219cedd8364b4cf7afc4f6a180&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-ACCUSATION-CHALLENGE-EVIDENCE.zip&quot;,
+        &quot;bytes&quot;: 591073,
+        &quot;sha256&quot;: &quot;ec14b94ca24fd74b4069b6375631b746b6a5c66954af4d99584c88980493ffac&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-ACCUSATION-CHALLENGE-EXACTNESS-REPORT.html&quot;,
+        &quot;bytes&quot;: 70392,
+        &quot;sha256&quot;: &quot;6a42621247ec93d5ed62cd000c6baa1b10d80f9480307af1c0c793ff5e3977b8&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-CHALLENGE-0001.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 24485,
+        &quot;sha256&quot;: &quot;9888f9b55da5955eb161014c5f34a74ee9e4ce65483007f5adc9b397686f58f4&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-SESSION-0001A.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 42883,
+        &quot;sha256&quot;: &quot;060f3fc65fc1a8064f351f79a9ff90f51c5a614904abf28fd5f47a0b497bc394&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-SESSION-0001B.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 42935,
+        &quot;sha256&quot;: &quot;3550a9df80c8f595b0b459133a1f9d2fde3643fe6d30f22e525a67dbc18c7251&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-SESSION-0001C.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 43131,
+        &quot;sha256&quot;: &quot;6263e005e637bc57f15bdac21e8dd1abb22ece34fbf831573c370d5e213e3205&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYST-SOLVABILITY-0001.contract.DRAFT.md&quot;,
+        &quot;bytes&quot;: 28073,
+        &quot;sha256&quot;: &quot;06b0e5f2774d22ce520ef6787e91c8b84ed6907983cfee2d0f0d3432391e09d8&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-CROSS-CONTRACT-CONSISTENCY-REPORT.html&quot;,
+        &quot;bytes&quot;: 76902,
+        &quot;sha256&quot;: &quot;8721d86db5a64d0f3f61b62aa7c2ba02801b0d159dcb2a4c706e26077315f88d&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-CROSS-CONTRACT-EVIDENCE.zip&quot;,
+        &quot;bytes&quot;: 891631,
+        &quot;sha256&quot;: &quot;ac0e870936ff70b1ec1951e460c28fae07f080fb628d0a2f0eb513eb3676cf99&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-INFOFLOW-EVIDENCE.zip&quot;,
+        &quot;bytes&quot;: 610833,
+        &quot;sha256&quot;: &quot;08ae88b6d90824ecabf9e01b51baa1102a051efbda8daffddc15580a6bc28a80&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-INFOFLOW-SPOILERFREE-SUMMARY.html&quot;,
+        &quot;bytes&quot;: 4469,
+        &quot;sha256&quot;: &quot;6e89c954ea65b77eaaee9aca24cbd8238d1c8ed775c0e892d0b352a39be30476&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-INFORMATION-FLOW-REPORT.html&quot;,
+        &quot;bytes&quot;: 61882,
+        &quot;sha256&quot;: &quot;53c38b83f6eabfc58cd4805d926fa9197fe95a3ba4d3d54eb6ca4e976c48f8ad&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-SCALE-COMPLEXITY-REPORT.html&quot;,
+        &quot;bytes&quot;: 628587,
+        &quot;sha256&quot;: &quot;667ded6e26dd5627bfd046a051baa124629f9d9ed9e6b17d9c50ee063e72753b&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-SCALE-EVIDENCE.zip&quot;,
+        &quot;bytes&quot;: 1534383,
+        &quot;sha256&quot;: &quot;110bc550094f4d28a3a57e2e86782f2430fb93adcdd44270bbafbdf9def07b9e&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-SESSION-PRODUCTION-EVIDENCE.zip&quot;,
+        &quot;bytes&quot;: 414607,
+        &quot;sha256&quot;: &quot;a7a7bbd9e390b9092fa747222e3ccaef7d041d3637cdd5c4f66cea352445cd5c&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-SESSION-PRODUCTION-PACKAGE.html&quot;,
+        &quot;bytes&quot;: 75557,
+        &quot;sha256&quot;: &quot;2546141e5b45b8019f6adabee8c61264428ed9b0e566e1f2359efcc750268e69&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-SOLVABILITY-ACCUSATION-REPAIR-REPORT.html&quot;,
+        &quot;bytes&quot;: 2901321,
+        &quot;sha256&quot;: &quot;52287b491a7facc44152382da548c5619f1dbc11a4312b9e4d721c2721d5e7bc&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-SOLVABILITY-REPAIR-EVIDENCE.zip&quot;,
+        &quot;bytes&quot;: 667941,
+        &quot;sha256&quot;: &quot;12a573b825c43702f4bed4b567913aca82573b4c95b5a303b340a51bc009f0e3&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY-VERTICAL-SLICE-ADVERSARIAL-PRODUCT-AUDIT.html&quot;,
+        &quot;bytes&quot;: 3491031,
+        &quot;sha256&quot;: &quot;9569ea577dcc0fbd80a2ae26e3dff2b9c19471ac55cb958ef378fd4f0150c2dc&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY_CASE_AUTHORING_EXPERIMENTAL_APPENDIX.zip&quot;,
+        &quot;bytes&quot;: 496036,
+        &quot;sha256&quot;: &quot;0d147964c939a112d71bc2a63ce1803e466d8bddf8dbd67e4da2f3fbdfb7c597&quot;
+      },
+      {
+        &quot;name&quot;: &quot;MYSTERY_CASE_AUTHORING_STRESS_REPORT.pdf&quot;,
+        &quot;bytes&quot;: 185241,
+        &quot;sha256&quot;: &quot;a1583b41aac02233681c0e91203f3d134df52f62860029c25ad63881c25db9d0&quot;
+      }
+    ],
+    &quot;scope&quot;: &quot;Hashes of materialized originals, not summaries.&quot;
+  }
+]</pre></details><details><summary>Vorab fixierte Freeze-Kriterien</summary><pre># Freeze criteria — fixed before individual findings
+
+Recorded 2026-10-04. Scope: Mystery specification freeze, not implementation approval.
+
+PASS requires normative original files, exact cross-contract definitions and no unresolved blocking evidence. Missing originals produce NOT VERIFIED, never inferred PASS. Reports are evidence, not substitutes for contracts.
+
+1. Every persistent field/artifact has exactly one normative authority; projections cannot override source data.
+2. Every runtime datum has exactly one producer per boundary; alternate producers require an explicit common contract.
+3. Each consumer has exact input type, package/version binding, lifetime, serialization and trust contract; every conversion is specified.
+4. No unresolved semantic contradictions, including conflicts between current candidates and reports.
+5. No circular hard dependency; validation and authoring can follow a finite dependency order.
+6. No unauthorized Truth disclosure or implicit observation-to-objective-proof promotion, including errors, identifiers, ordering and sizes within the declared threat model.
+7. Saves contain authoritative accepted events and identity; replay is deterministic, rejects incompatible packages, preserves terminal rules and has bounded resources without requiring quadratic history copying.
+8. Challenge Core, Scope, determined, matching, Required and public question semantics are complete and prevent shotgun acceptance and unauthorized disclosure.
+9. Solvability specifies a finite model, bounds, exactness and what certification does and does not establish.
+10. Reference identities and all identity-changing mutations have a defined invalidation rule.
+11. Schema/ruleset/package versioning and compatibility paths are explicit.
+
+Verdicts: FREEZE READY = all criteria pass. FREEZE READY WITH SMALL REPAIRS = complete evidence and only finite, exact, semantics-preserving editorial repairs remain. NO-GO = any missing normative boundary, substantive ambiguity, contradiction, security defect, or indispensable missing original. NONBLOCKING = implementation choice whose observable semantics are already fixed.
+</pre></details></details></section></main></body></html>
