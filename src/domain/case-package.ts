@@ -98,6 +98,9 @@ const PublicContentSchema = z.strictObject({
     .array(z.strictObject({ npc: z.string(), questionId: QuestionIdSchema, text: ShortText }))
     .max(PACKAGE_LIMITS.questionTexts),
   publicRules: z.array(z.strictObject({ id: z.string().regex(/^[a-z][a-z0-9:_-]{0,63}$/), text: ShortText })).max(PACKAGE_LIMITS.publicRules),
+  // Narrated resolution, shown to the player only after a solving accusation. Optional; part of
+  // publicContentHash and therefore of the release context and the package identity.
+  epilogue: BriefText.optional(),
 });
 export type PublicContent = DeepReadonly<z.output<typeof PublicContentSchema>>;
 
